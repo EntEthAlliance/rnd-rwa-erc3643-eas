@@ -92,6 +92,80 @@ Token Transfer Request
 | `EASIdentityProxy` | Maps wallet addresses to identity addresses for multi-wallet support |
 | `EASClaimVerifierIdentityWrapper` | IIdentity-compatible wrapper for zero-modification integration |
 
+## Basic Implementation Example
+
+This shows the minimal steps to deploy the bridge, configure a KYC provider, and verify an investor — end to end.
+
+### 1. Deploy the bridge contracts
+
+```solidity
+// Deploy the three core contracts
+EASTrustedIssuersAdapter adapter = new EASTrustedIssuersAdapter(tokenIssuer);
+EASIdentityProxy identityProxy = new EASIdentityProxy(tokenIssuer);
+EASClaimVerifier verifier = new EASClaimVerifier(tokenIssuer);
+```
+
+### 2. Configure the verifier
+
+```solidity
+// Point the verifier at EAS and its dependencies
+verifier.setEASAddress(0xC2679fBD37d54388Ce493F1DB75320D236e1815e); // EAS on Sepolia
+verifier.setTrustedIssuersAdapter(address(adapter));
+verifier.setIdentityProxy(address(identityProxy));
+verifier.setClaimTopicsRegistry(address(existingRegistry)); // your ERC-3643 registry
+
+// Map ERC-3643 claim topics to EAS schemas
+// Topic 1 = KYC, Topic 7 = Accreditation
+verifier.setTopicSchemaMapping(1, kycSchemaUID);
+verifier.setTopicSchemaMapping(7, accreditationSchemaUID);
+```
+
+### 3. Add a trusted KYC provider
+
+```solidity
+// Trust a KYC provider (e.g., a licensed verifier already issuing EAS attestations)
+uint256[] memory topics = new uint256[](2);
+topics[0] = 1; // KYC
+topics[1] = 7; // Accreditation
+adapter.addTrustedAttester(kycProviderAddress, topics);
+```
+
+### 4. Register an investor's attestation
+
+```solidity
+// An investor already has an EAS attestation from the trusted KYC provider.
+// Anyone can register it (the contract validates it's real and from a trusted source).
+verifier.registerAttestation(
+    investorIdentity,  // investor's identity address
+    1,                 // claim topic (KYC)
+    attestationUID     // the EAS attestation UID
+);
+```
+
+### 5. Verify investor eligibility
+
+```solidity
+// The Identity Registry calls this during token transfers.
+// Returns true if the investor has valid attestations for ALL required topics.
+bool eligible = verifier.isVerified(investorWallet);
+
+// That's it. The investor can now receive and trade the security token.
+```
+
+### What happens under the hood
+
+When `isVerified(investorWallet)` is called:
+
+1. **Resolve identity** — maps the wallet to an identity address (supports multi-wallet)
+2. **Get required topics** — reads from the ERC-3643 Claim Topics Registry (e.g., KYC + Accreditation)
+3. **Check each topic** — for each required topic, looks up the registered EAS attestation
+4. **Validate attestation** — confirms it exists, matches the expected schema, is from a trusted attester, hasn't been revoked, and hasn't expired
+5. **Return result** — `true` only if every required topic has a valid attestation
+
+The token transfer proceeds normally if `true`. No changes to the ERC-3643 token contract itself.
+
+> **Full pilot script:** See [`script/SetupPilot.s.sol`](script/SetupPilot.s.sol) for a complete deployment with 5 test investors.
+
 ## Quickstart
 
 ### Prerequisites
