@@ -255,6 +255,32 @@ Located in `diagrams/`:
 - [`attestation-lifecycle.mmd`](diagrams/attestation-lifecycle.mmd) - Attestation state machine
 - [`wallet-identity-mapping.mmd`](diagrams/wallet-identity-mapping.mmd) - Multi-wallet identity relationships
 
+## Who Is This For?
+
+### Token Issuers
+
+> "I'm launching a tokenized fund on Base. I need investors to be KYC-verified and accredited before they can hold tokens — but I don't want to lock into a single identity provider."
+
+**What you do:** Deploy the bridge alongside your ERC-3643 token. Configure which claim topics are required (KYC, accreditation, country). Approve one or more KYC providers as trusted attesters. Your token's compliance checks now work with any EAS attestation from those providers.
+
+### KYC / Identity Providers
+
+> "We verify investor identities for multiple token issuers. We want to issue credentials once and have them accepted across all ERC-3643 tokens — not re-verify the same investor for each issuer."
+
+**What you do:** Issue EAS attestations for investors you've verified. Any ERC-3643 token using the bridge can accept your attestations. One verification, many tokens — across Ethereum, Base, Arbitrum, and Optimism.
+
+### Compliance Officers
+
+> "I need to revoke an investor's access immediately when they fail ongoing AML checks — and I need it to take effect across every token they hold."
+
+**What you do:** Revoke the EAS attestation. Every bridge-connected token that relied on that attestation will immediately block the investor from trading. Real-time, automated, on-chain compliance enforcement.
+
+### Investors
+
+> "I did KYC once for a DeFi protocol. Now I want to invest in a tokenized security — do I really need to go through KYC again?"
+
+**What happens:** If your KYC provider issued an EAS attestation and the token issuer trusts that provider, you're already eligible. No new identity deployment, no re-verification. Your attestation carries across tokens and chains.
+
 ## Integration Paths
 
 ### Path A: Pluggable Verifier (Recommended)
@@ -276,6 +302,12 @@ For existing deployments where you cannot modify the Identity Registry:
 3. Token uses existing verification flow unchanged
 
 See [Integration Guide](docs/integration-guide.md) for detailed steps.
+
+## Live Demo
+
+Try the interactive demo on Sepolia testnet: **[Demo UI](https://eas-erc3643-bridge-demo.vercel.app)** *(coming soon)*
+
+The demo walks you through a complete scenario — deploying contracts, onboarding investors with EAS attestations, verifying eligibility, and revoking access — all on-chain, all in your browser.
 
 ## Schema
 
