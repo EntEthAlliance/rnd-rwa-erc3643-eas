@@ -12,15 +12,37 @@ Meanwhile, the broader Ethereum ecosystem has converged on [EAS](https://attest.
 
 **The result:** tokenized securities live in an identity silo, cut off from the growing ecosystem of onchain attestations.
 
-### Why It Matters
+### Benefits
 
-**For the tokenized asset market ($16T+ opportunity):** Real-world asset tokenization is accelerating, but compliance infrastructure is the bottleneck. Every issuer building on ERC-3643 today must onboard investors through a narrow set of ONCHAINID-compatible providers. This bridge opens that funnel — any EAS-compatible KYC provider becomes a potential onramp.
+| Without the bridge | With the bridge |
+|---|---|
+| Token issuers must use ONCHAINID-compatible KYC providers only | Any EAS-compatible KYC provider works — broader provider market, lower costs |
+| Investor onboarding requires deploying an ONCHAINID identity per user | Investors reuse existing EAS attestations they already have from other protocols |
+| Compliance verification is single-chain | EAS attestations work across Ethereum, Base, Arbitrum, Optimism — one KYC, many chains |
+| Adding a new compliance check means a new ONCHAINID claim type | New checks are just new EAS schemas — flexible, permissionless, no protocol upgrade needed |
+| Existing tokens can't adopt new identity infrastructure without redeployment | Zero-modification wrapper (Path B) adds EAS support without touching deployed contracts |
 
-**For interoperability:** EAS is deployed across Ethereum, Base, Arbitrum, Optimism, and more. By bridging EAS attestations into ERC-3643 compliance checks, tokenized assets gain access to a multi-chain identity layer without abandoning the regulatory framework that makes them legally compliant.
+**In short:** EAS turns investor identity from a closed, vendor-locked system into an open, composable layer — while keeping ERC-3643's regulatory compliance framework fully intact.
 
-**For existing deployments:** The zero-modification integration path (Path B) means existing ERC-3643 tokens can adopt EAS attestations without redeploying contracts or breaking current compliance flows. No migration, no downtime — just expanded verification options.
+### Use Case: Tokenized Treasury Fund on Base
 
-**For the EEA community:** This is a concrete deliverable showing how Enterprise Ethereum standards (ERC-3643, which originated from EEA member work) can integrate with newer ecosystem infrastructure (EAS). It demonstrates that enterprise and public Ethereum aren't separate worlds — they're converging.
+A fund manager issues a tokenized US Treasury product on **Base** using ERC-3643. Investors must be KYC-verified and accredited.
+
+**Today (without the bridge):**
+1. Fund deploys ERC-3643 token on Base
+2. Each investor must create an ONCHAINID identity contract on Base
+3. A specific ONCHAINID-compatible KYC provider must issue claims to that identity
+4. Investor can only trade this token — their KYC doesn't carry over to other protocols
+5. If the fund also launches on Arbitrum, investors repeat the entire process
+
+**With the bridge:**
+1. Fund deploys ERC-3643 token on Base with the EAS bridge
+2. Investor already has an EAS attestation from a KYC provider (e.g., from onboarding to another DeFi protocol)
+3. Fund adds that KYC provider as a **trusted attester** — investor is immediately eligible, no new identity deployment
+4. Same attestation works on Arbitrum, Optimism, mainnet — investor is verified everywhere
+5. Fund can accept attestations from **multiple** KYC providers simultaneously, giving investors choice
+
+**Result:** Faster investor onboarding, lower compliance costs, multi-chain portability, and no vendor lock-in — without sacrificing the regulatory guarantees that make ERC-3643 the standard for security tokens.
 
 ### What This Project Delivers
 
