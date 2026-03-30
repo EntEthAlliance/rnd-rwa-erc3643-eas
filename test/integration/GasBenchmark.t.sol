@@ -268,7 +268,7 @@ contract GasBenchmarkTest is Test {
         address identity = makeAddr("identity");
         address[] memory wallets = new address[](5);
         for (uint256 i = 0; i < 5; i++) {
-            wallets[i] = address(uint160(0x5000 + i));
+            wallets[i] = makeAddr(string(abi.encodePacked("batchWallet", i)));
         }
 
         vm.prank(tokenIssuer);
@@ -332,7 +332,7 @@ contract GasBenchmarkTest is Test {
     /**
      * @notice Benchmark: Resolving identity (no mapping - returns wallet)
      */
-    function test_gas_getIdentity_noMapping() public {
+    function test_gas_getIdentity_noMapping() public view {
         address wallet = address(0xDEADBEEF);
 
         uint256 gasBefore = gasleft();

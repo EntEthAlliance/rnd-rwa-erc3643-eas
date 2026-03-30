@@ -26,11 +26,11 @@ contract ConfigureBridge is Script {
         address claimTopicsRegistry = vm.envAddress("CLAIM_TOPICS_REGISTRY");
 
         EASClaimVerifier verifier = EASClaimVerifier(verifierAddress);
-        EASTrustedIssuersAdapter adapter = EASTrustedIssuersAdapter(adapterAddress);
 
         console2.log("Configuring bridge contracts...");
         console2.log("Verifier:", verifierAddress);
         console2.log("Adapter:", adapterAddress);
+        // Note: adapter is configured separately via AddTrustedAttester.s.sol
 
         vm.startBroadcast(deployerPrivateKey);
 

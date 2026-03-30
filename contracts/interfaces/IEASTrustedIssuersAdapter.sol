@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 /**
  * @title IEASTrustedIssuersAdapter
+ * @author EEA Working Group
  * @notice Interface for managing trusted EAS attesters for specific claim topics
  * @dev Mirrors the ERC-3643 TrustedIssuersRegistry pattern for EAS attesters
  */

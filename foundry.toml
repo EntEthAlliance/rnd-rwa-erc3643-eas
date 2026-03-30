@@ -9,11 +9,6 @@ optimizer_runs = 200
 via_ir = false
 ffi = false
 
-# Exclude library contracts with incompatible pragma versions
-ignore = [
-    "lib/T-REX/**",
-    "lib/solidity/**",
-]
 
 remappings = [
     "forge-std/=lib/forge-std/src/",

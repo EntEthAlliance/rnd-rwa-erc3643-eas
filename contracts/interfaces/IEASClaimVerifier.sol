@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 /**
  * @title IEASClaimVerifier
+ * @author EEA Working Group
  * @notice Interface for the EAS Claim Verifier contract that bridges EAS attestations to ERC-3643 compliance
  * @dev The core adapter that enables ERC-3643 security tokens to accept EAS attestations for identity verification
  */

@@ -133,7 +133,7 @@ contract DualModeVerificationTest is Test {
     /**
      * @notice Test investor with neither provider
      */
-    function test_investorWithNeitherProvider() public {
+    function test_investorWithNeitherProvider() public view {
         assertFalse(verifier.isVerified(investorD));
     }
 

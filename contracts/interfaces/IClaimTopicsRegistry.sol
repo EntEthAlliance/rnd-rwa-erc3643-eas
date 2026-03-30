@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 /**
  * @title IClaimTopicsRegistry
+ * @author EEA Working Group
  * @notice Interface for the ERC-3643 Claim Topics Registry
  * @dev Compatible re-declaration for Solidity 0.8.24
  */

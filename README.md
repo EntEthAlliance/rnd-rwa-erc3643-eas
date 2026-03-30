@@ -46,7 +46,14 @@ Token Transfer Request
 | `EASIdentityProxy` | Maps wallet addresses to identity addresses for multi-wallet support |
 | `EASClaimVerifierIdentityWrapper` | IIdentity-compatible wrapper for zero-modification integration |
 
-## Installation
+## Quickstart
+
+### Prerequisites
+
+- [Foundry](https://getfoundry.sh/) installed
+- Git
+
+### Installation
 
 ```bash
 # Clone the repository
@@ -57,8 +64,6 @@ cd eas-erc3643-bridge
 forge install
 ```
 
-## Quick Start
-
 ### Build
 
 ```bash
@@ -68,7 +73,17 @@ forge build
 ### Test
 
 ```bash
+# Run all tests
 forge test
+
+# Run with verbosity
+forge test -vvv
+
+# Run specific test
+forge test --match-test test_isVerified_withValidAttestation
+
+# Run coverage
+forge coverage
 ```
 
 ### Deploy
@@ -78,12 +93,47 @@ forge test
 export PRIVATE_KEY=<your-private-key>
 export OWNER_ADDRESS=<owner-address>  # Optional, defaults to deployer
 
-# Deploy to Base Sepolia
-forge script script/DeployBridge.s.sol:DeployBridge --rpc-url base-sepolia --broadcast
+# Deploy to Sepolia testnet
+forge script script/DeployTestnet.s.sol:DeployTestnet --rpc-url $SEPOLIA_RPC_URL --broadcast
 
-# Deploy with custom EAS address
-EAS_ADDRESS=0x... forge script script/DeployBridge.s.sol:DeployBridge --rpc-url <rpc-url> --broadcast
+# Deploy to mainnet (requires multi-sig)
+export MULTISIG_ADDRESS=<gnosis-safe-address>
+export CLAIM_TOPICS_REGISTRY=<existing-registry-address>
+forge script script/DeployMainnet.s.sol:DeployMainnet --rpc-url $MAINNET_RPC_URL --broadcast --verify
 ```
+
+## Documentation
+
+### Core Documentation
+
+- [Integration Guide](docs/integration-guide.md) - Step-by-step integration instructions
+- [Gas Benchmarks](docs/gas-benchmarks.md) - Gas cost analysis for bridge operations
+
+### Architecture
+
+- [System Architecture](docs/architecture/system-architecture.md) - Component overview and design
+- [Contract Interaction Diagrams](docs/architecture/contract-interaction-diagrams.md) - UML sequence diagrams
+- [Data Flow](docs/architecture/data-flow.md) - How data moves through the system
+
+### Schemas
+
+- [Schema Definitions](docs/schemas/schema-definitions.md) - EAS schema specifications
+- [Schema Governance](docs/schemas/schema-governance.md) - Schema versioning and updates
+
+### Research
+
+- [Gap Analysis](docs/research/gap-analysis.md) - ONCHAINID vs EAS comparison
+- [Claim Topic Analysis](docs/research/claim-topic-analysis.md) - ERC-3643 claim topic mapping
+- [Minimal Identity Structure](docs/research/minimal-identity-structure.md) - Identity design decisions
+
+### Diagrams
+
+Located in `diagrams/`:
+- [`architecture-overview.mmd`](diagrams/architecture-overview.mmd) - High-level system architecture
+- [`transfer-verification-flow.mmd`](diagrams/transfer-verification-flow.mmd) - Token transfer verification sequence
+- [`dual-mode-verification.mmd`](diagrams/dual-mode-verification.mmd) - Path A vs Path B verification flows
+- [`attestation-lifecycle.mmd`](diagrams/attestation-lifecycle.mmd) - Attestation state machine
+- [`wallet-identity-mapping.mmd`](diagrams/wallet-identity-mapping.mmd) - Multi-wallet identity relationships
 
 ## Integration Paths
 
@@ -123,55 +173,28 @@ address identity, uint8 kycStatus, uint8 accreditationType, uint16 countryCode, 
 | `countryCode` | uint16 | ISO 3166-1 numeric country code |
 | `expirationTimestamp` | uint64 | Unix timestamp when attestation expires |
 
-## Documentation
+## Deployment Scripts
 
-- [Integration Guide](docs/integration/integration-guide.md) - Step-by-step integration instructions
-- [Schema Definitions](docs/schemas/schema-definitions.md) - EAS schema specifications
-- [Schema Governance](docs/schemas/schema-governance.md) - Schema versioning and updates
-- [System Architecture](docs/architecture/system-architecture.md) - Component overview
-- [Gap Analysis](docs/research/gap-analysis.md) - ONCHAINID vs EAS comparison
-
-### Architecture Diagrams
-
-Located in `diagrams/`:
-- `architecture-overview.mmd` - High-level system architecture
-- `transfer-verification-flow.mmd` - Token transfer verification sequence
-- `dual-mode-verification.mmd` - Path A vs Path B verification flows
-- `attestation-lifecycle.mmd` - Attestation state machine
-- `wallet-identity-mapping.mmd` - Multi-wallet identity relationships
-
-## Testing
-
-The project includes comprehensive tests:
-
-```bash
-# Run all tests
-forge test
-
-# Run with verbosity
-forge test -vvv
-
-# Run specific test
-forge test --match-test test_isVerified_withValidAttestation
-
-# Run coverage
-forge coverage
-```
-
-Test categories:
-- **Unit tests** (`test/unit/`): Individual contract function testing
-- **Integration tests** (`test/integration/`): Multi-contract interaction flows
-- **Scenario tests** (`test/scenarios/`): Real-world use case simulations (STO, investor lifecycle)
+| Script | Purpose |
+|--------|---------|
+| `RegisterSchemas.s.sol` | Register EAS schemas (idempotent) |
+| `SetupPilot.s.sol` | Complete pilot deployment with test data |
+| `DeployTestnet.s.sol` | Sepolia deployment with test configuration |
+| `DeployMainnet.s.sol` | Production deployment with multi-sig ownership |
+| `DeployBridge.s.sol` | Basic bridge deployment |
+| `ConfigureBridge.s.sol` | Post-deployment configuration |
+| `AddTrustedAttester.s.sol` | Add trusted KYC providers |
 
 ## Networks
 
-### Deployed EAS Addresses
+### Supported EAS Networks
 
 | Network | EAS Address |
 |---------|-------------|
 | Ethereum Mainnet | `0xA1207F3BBa224E2c9c3c6D5aF63D0eb1582Ce587` |
 | Sepolia | `0xC2679fBD37d54388Ce493F1DB75320D236e1815e` |
 | Base | `0x4200000000000000000000000000000000000021` |
+| Base Sepolia | `0x4200000000000000000000000000000000000021` |
 | Arbitrum | `0xbD75f629A22Dc1ceD33dDA0b68c546A1c035c458` |
 | Optimism | `0x4200000000000000000000000000000000000021` |
 

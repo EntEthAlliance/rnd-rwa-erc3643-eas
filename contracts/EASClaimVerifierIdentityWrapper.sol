@@ -191,17 +191,16 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
 
     /**
      * @notice Validates a claim (checks EAS attestation validity)
+     * @dev The sig and data parameters are unused since EAS handles validation internally
      * @param _identity The identity to validate against
      * @param claimTopic The claim topic
-     * @param sig Not used (EAS handles signatures)
-     * @param data Not used (EAS handles data)
      * @return True if the claim is valid
      */
     function isClaimValid(
         IIdentity _identity,
         uint256 claimTopic,
-        bytes calldata sig,
-        bytes calldata data
+        bytes calldata,
+        bytes calldata
     ) external view override returns (bool) {
         // Get trusted attesters for this topic
         address[] memory attesters = trustedIssuersAdapter.getTrustedAttestersForTopic(claimTopic);

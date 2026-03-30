@@ -148,7 +148,7 @@ contract EASClaimVerifierTest is Test {
 
     // ============ isVerified Tests ============
 
-    function test_isVerified_noTopicsRequired_returnsTrue() public {
+    function test_isVerified_noTopicsRequired_returnsTrue() public view {
         // No topics in registry
         assertTrue(verifier.isVerified(user1));
     }

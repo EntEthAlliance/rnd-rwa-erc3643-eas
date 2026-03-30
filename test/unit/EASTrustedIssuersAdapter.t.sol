@@ -96,14 +96,14 @@ contract EASTrustedIssuersAdapterTest is Test {
         uint256[] memory topics = new uint256[](1);
         topics[0] = TOPIC_KYC;
 
-        // Add 50 attesters (max)
+        // Add 50 attesters (max) using makeAddr for safe address generation
         for (uint256 i = 0; i < 50; i++) {
-            adapter.addTrustedAttester(address(uint160(i + 1)), topics);
+            adapter.addTrustedAttester(makeAddr(string(abi.encodePacked("attester", i))), topics);
         }
 
         // 51st should fail
         vm.expectRevert("MaxAttestersReached");
-        adapter.addTrustedAttester(address(uint160(51)), topics);
+        adapter.addTrustedAttester(makeAddr("attester50"), topics);
     }
 
     function test_addTrustedAttester_maxTopicsPerAttester() public {
