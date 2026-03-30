@@ -4,6 +4,60 @@
 
 This document describes the contract interactions in the EAS-to-ERC-3643 Identity Bridge. The corresponding Mermaid diagram source files are in the `diagrams/` directory.
 
+All diagrams can be rendered with any Mermaid viewer ([mermaid.live](https://mermaid.live), GitHub, VS Code extension).
+
+---
+
+## Context & Strategy Diagrams
+
+These diagrams explain the "why" — the problem space, the before/after comparison, and how different stakeholders interact with the system.
+
+### Current ERC-3643 Identity
+
+**File:** `diagrams/current-erc3643-identity.mmd`
+
+**What it shows:** How ERC-3643 identity verification works today using ONCHAINID. Illustrates the flow from investor through KYC provider to ONCHAINID contract, Identity Registry, and finally token transfer. Highlights the pain points: vendor lock-in, per-user contract deployment, no cross-chain portability.
+
+**When to reference:** When explaining why the bridge exists, or when comparing ONCHAINID to EAS.
+
+### Before/After Comparison
+
+**File:** `diagrams/bridge-before-after.mmd`
+
+**What it shows:** Side-by-side comparison of the identity architecture before (closed ONCHAINID system) and after (open EAS attestation layer). Shows how the bridge opens up the identity layer without changing ERC-3643 fundamentals.
+
+**When to reference:** When explaining the value proposition, or in executive summaries.
+
+### Multi-Chain Reuse
+
+**File:** `diagrams/multi-chain-reuse.mmd`
+
+**What it shows:** How a single KYC verification can result in attestations across multiple chains (Ethereum, Base, Arbitrum, Optimism), enabling an investor to access security tokens on any chain without re-verification.
+
+**When to reference:** When discussing cross-chain strategy or the multi-chain value proposition.
+
+### Stakeholder Interactions
+
+**File:** `diagrams/stakeholder-interactions.mmd`
+
+**What it shows:** The four key stakeholders (token issuer, KYC provider, investor, compliance officer) and their interactions with the bridge. Shows what each stakeholder does, sees, and cares about.
+
+**When to reference:** When explaining the system from different user perspectives, or in user documentation.
+
+### Revocation Flow
+
+**File:** `diagrams/revocation-flow.mmd`
+
+**What it shows:** The real-time revocation process: AML flag triggered → attestation revoked → transfer blocked. Demonstrates how compliance enforcement is immediate and automatic.
+
+**When to reference:** When explaining compliance mechanisms or the revocation process.
+
+---
+
+## Technical Architecture Diagrams
+
+These diagrams show the "how" — contract relationships, data flows, and verification logic.
+
 ## Diagram 1: Architecture Overview
 
 **File:** `diagrams/architecture-overview.mmd`
@@ -23,7 +77,7 @@ Sequence diagram showing:
 3. Identity Registry calls isVerified
 4. EASClaimVerifier resolves identity
 5. Queries EAS for attestations
-6. Checks trusted issuers
+6. Checks trusted attesters
 7. Returns result
 8. Transfer approved or rejected
 

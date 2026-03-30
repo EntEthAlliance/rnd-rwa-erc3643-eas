@@ -1,5 +1,7 @@
 # System Architecture
 
+> **Start Here:** For a comprehensive explanation of how ERC-3643 identity works, what EAS brings, and how the bridge connects them, see [Identity Architecture Explained](identity-architecture-explained.md). This document serves as the technical component reference.
+
 ## Overview
 
 The EAS-to-ERC-3643 Identity Bridge enables ERC-3643 security tokens to accept Ethereum Attestation Service (EAS) attestations as an alternative identity backend to ONCHAINID. The system is designed as a plug-in adapter that integrates with the existing ERC-3643 infrastructure without requiring modifications to the token contract or compliance modules.
@@ -57,7 +59,7 @@ The EAS-to-ERC-3643 Identity Bridge enables ERC-3643 security tokens to accept E
                       │  ┌─────────┼──────────────────────────────────────┐   │
                       │  │         │                                      │   │
                       │  │    ┌────▼─────┐    ┌─────────────────────┐    │   │
-                      │  │    │  EAS     │    │  Trusted Issuers    │    │   │
+                      │  │    │  EAS     │    │ Trusted Attesters   │    │   │
                       │  │    │ Identity │    │  Adapter            │    │   │
                       │  │    │  Proxy   │    │                     │    │   │
                       │  │    └──────────┘    └─────────────────────┘    │   │
