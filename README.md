@@ -2,6 +2,30 @@
 
 A bridge that enables ERC-3643 security tokens to accept EAS (Ethereum Attestation Service) attestations as proof of investor eligibility.
 
+## Why This Exists
+
+### The Problem
+
+Security tokens built on [ERC-3643](https://github.com/TokenySolutions/T-REX) (the leading standard for regulated tokenized assets) rely on [ONCHAINID](https://github.com/onchain-id/solidity) for investor identity verification. ONCHAINID works — but it's a closed system. Every KYC provider, every identity verifier, every compliance check must fit into its specific ERC-734/735 key-and-claim model.
+
+Meanwhile, the broader Ethereum ecosystem has converged on [EAS](https://attest.sh) (Ethereum Attestation Service) as a general-purpose attestation layer. KYC providers, credential issuers, and identity platforms are increasingly issuing attestations through EAS — but none of that infrastructure can talk to ERC-3643 tokens today.
+
+**The result:** tokenized securities live in an identity silo, cut off from the growing ecosystem of onchain attestations.
+
+### Why It Matters
+
+**For the tokenized asset market ($16T+ opportunity):** Real-world asset tokenization is accelerating, but compliance infrastructure is the bottleneck. Every issuer building on ERC-3643 today must onboard investors through a narrow set of ONCHAINID-compatible providers. This bridge opens that funnel — any EAS-compatible KYC provider becomes a potential onramp.
+
+**For interoperability:** EAS is deployed across Ethereum, Base, Arbitrum, Optimism, and more. By bridging EAS attestations into ERC-3643 compliance checks, tokenized assets gain access to a multi-chain identity layer without abandoning the regulatory framework that makes them legally compliant.
+
+**For existing deployments:** The zero-modification integration path (Path B) means existing ERC-3643 tokens can adopt EAS attestations without redeploying contracts or breaking current compliance flows. No migration, no downtime — just expanded verification options.
+
+**For the EEA community:** This is a concrete deliverable showing how Enterprise Ethereum standards (ERC-3643, which originated from EEA member work) can integrate with newer ecosystem infrastructure (EAS). It demonstrates that enterprise and public Ethereum aren't separate worlds — they're converging.
+
+### What This Project Delivers
+
+Smart contracts and tooling that let ERC-3643 tokens accept EAS attestations as valid proof of investor eligibility — alongside or instead of traditional ONCHAINID claims. Drop-in for new deployments, zero-modification wrapper for existing ones.
+
 ## Overview
 
 This project provides smart contracts and tooling to integrate EAS attestations with the ERC-3643 (T-REX) security token standard. It allows token issuers to leverage EAS's flexible attestation infrastructure while maintaining compatibility with existing ERC-3643 compliance frameworks.
