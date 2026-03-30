@@ -319,10 +319,8 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
 
         // Check data-level expiration (expirationTimestamp is last field in our schema)
         // Schema: address identity, uint8 kycStatus, uint8 accreditationType, uint16 countryCode, uint64 expirationTimestamp
-        if (attestation.data.length >= 96) {
-            // Decode the expirationTimestamp (last 8 bytes of the 96-byte data)
-            // Layout: address (32) + uint8 (32) + uint8 (32) + uint16 (32) + uint64 (32) = 160 bytes with padding
-            // But abi.encode packs: 32 + 32 + 32 + 32 + 32 = 160 bytes
+        // abi.encode packs each value to 32 bytes: 32 + 32 + 32 + 32 + 32 = 160 bytes
+        if (attestation.data.length >= 160) {
             (, , , , uint64 expirationTimestamp) = abi.decode(
                 attestation.data,
                 (address, uint8, uint8, uint16, uint64)
