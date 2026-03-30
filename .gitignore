@@ -7,8 +7,8 @@ out/
 /broadcast/*/31337/
 /broadcast/**/dry-run/
 
-# Docs
-docs/
+# Foundry generated docs (not our project docs)
+docs/book/
 
 # Dotenv file
 .env
