@@ -350,11 +350,14 @@ contract UseCase_CrossBorderTransfer_Test is Test {
         );
         domesticVerifier.registerAttestation(domesticInvestor, TOPIC_KYC, uid);
 
-        // Verified for domestic transfers
+        // Verified for domestic transfers (only KYC required)
         assertTrue(domesticVerifier.isVerified(domesticInvestor));
 
-        // Not verified for cross-border (missing tax treaty in main verifier)
-        vm.expectRevert("Attester not trusted");
+        // Register same attestation in cross-border verifier
         verifier.registerAttestation(domesticInvestor, TOPIC_KYC, uid);
+
+        // NOT verified for cross-border because missing tax treaty
+        // (has KYC but not tax treaty)
+        assertFalse(verifier.isVerified(domesticInvestor));
     }
 }
