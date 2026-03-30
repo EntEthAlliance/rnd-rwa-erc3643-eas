@@ -1,0 +1,52 @@
+sequenceDiagram
+    participant User
+    participant Token
+    participant Compliance
+    participant IR as IdentityRegistry
+    participant ECV as EASClaimVerifier
+    participant EIP as EASIdentityProxy
+    participant CTR as ClaimTopicsRegistry
+    participant TIA as TrustedIssuersAdapter
+    participant EAS as EAS.sol
+
+    User->>Token: transfer(to, amount)
+    Token->>Compliance: canTransfer(from, to, amount)
+    Compliance->>IR: isVerified(to)
+
+    Note over IR,ECV: Path A: EAS Verification
+    IR->>ECV: isVerified(userAddress)
+
+    ECV->>EIP: getIdentity(userAddress)
+    EIP-->>ECV: identityAddress
+
+    ECV->>CTR: getClaimTopics()
+    CTR-->>ECV: [topic1, topic2, ...]
+
+    loop For each required topic
+        ECV->>ECV: getSchemaUID(topic)
+        ECV->>TIA: getTrustedAttestersForTopic(topic)
+        TIA-->>ECV: [attester1, attester2, ...]
+
+        loop For each trusted attester
+            ECV->>ECV: getRegisteredAttestation(identity, topic, attester)
+            alt Attestation registered
+                ECV->>EAS: getAttestation(uid)
+                EAS-->>ECV: Attestation{uid, schema, revocationTime, expirationTime, data}
+                ECV->>ECV: validate(notRevoked, notExpired, schemaMatch)
+                alt Valid attestation found
+                    Note over ECV: Topic satisfied, continue
+                end
+            end
+        end
+    end
+
+    ECV-->>IR: true/false
+    IR-->>Compliance: verified/not verified
+    Compliance-->>Token: canTransfer result
+
+    alt Transfer allowed
+        Token->>Token: Execute transfer
+        Token-->>User: Transfer success
+    else Transfer blocked
+        Token-->>User: Transfer failed: compliance check
+    end

@@ -1,0 +1,50 @@
+flowchart TD
+    Start([Token Transfer Request])
+    IR{Identity Registry\nisVerified}
+
+    subgraph OnchainIDPath["ONCHAINID Path"]
+        OCID_Check{Has ONCHAINID\nIdentity?}
+        IRS[IdentityRegistryStorage]
+        OCID[IIdentity Contract]
+        CI[IClaimIssuer]
+        OCID_Valid{Claims Valid?}
+    end
+
+    subgraph EASPath["EAS Path"]
+        EAS_Enabled{EAS Bridge\nEnabled?}
+        ECV[EASClaimVerifier]
+        EIP[EASIdentityProxy]
+        TIA[TrustedIssuersAdapter]
+        EAS[EAS.sol]
+        EAS_Valid{Attestations\nValid?}
+    end
+
+    Verified([Verification Passed])
+    NotVerified([Verification Failed])
+
+    Start --> IR
+
+    IR --> OCID_Check
+    OCID_Check -->|Yes| IRS
+    IRS --> OCID
+    OCID --> CI
+    CI --> OCID_Valid
+    OCID_Valid -->|Yes| Verified
+    OCID_Valid -->|No| EAS_Enabled
+
+    OCID_Check -->|No| EAS_Enabled
+
+    EAS_Enabled -->|Yes| ECV
+    ECV --> EIP
+    ECV --> TIA
+    TIA --> EAS
+    EAS --> EAS_Valid
+    EAS_Valid -->|Yes| Verified
+    EAS_Valid -->|No| NotVerified
+
+    EAS_Enabled -->|No| NotVerified
+
+    style Verified fill:#c8e6c9,stroke:#2e7d32
+    style NotVerified fill:#ffcdd2,stroke:#c62828
+    style ECV fill:#bbdefb,stroke:#1976d2
+    style OCID fill:#e1bee7,stroke:#7b1fa2

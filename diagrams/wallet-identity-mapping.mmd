@@ -1,0 +1,58 @@
+flowchart LR
+    subgraph Wallets["User Wallets"]
+        W1[Wallet 1\n0xAAA...111]
+        W2[Wallet 2\n0xAAA...222]
+        W3[Wallet 3\n0xAAA...333]
+    end
+
+    subgraph EASIdentityProxy["EAS Identity Proxy"]
+        direction TB
+        Mapping["_walletToIdentity mapping"]
+        Resolve["getIdentity(wallet)"]
+    end
+
+    subgraph Identities["Identity Addresses"]
+        I1[Identity A\n0xBBB...111]
+        I2[Identity B\n0xBBB...222]
+    end
+
+    subgraph EASAttestations["EAS Attestations"]
+        A1["Attestation 1\nrecipient: Identity A\ntopic: KYC\nstatus: VERIFIED"]
+        A2["Attestation 2\nrecipient: Identity A\ntopic: ACCREDITATION\ntype: ACCREDITED"]
+        A3["Attestation 3\nrecipient: Identity B\ntopic: KYC\nstatus: VERIFIED"]
+    end
+
+    W1 -->|registered to| Mapping
+    W2 -->|registered to| Mapping
+    W3 -->|registered to| Mapping
+
+    Mapping -->|maps to| I1
+    Mapping -->|maps to| I2
+
+    W1 -.->|resolves to| I1
+    W2 -.->|resolves to| I1
+    W3 -.->|resolves to| I2
+
+    I1 -->|has| A1
+    I1 -->|has| A2
+    I2 -->|has| A3
+
+    subgraph Verification["Verification Flow"]
+        V1["isVerified(Wallet 1)"]
+        V2["getIdentity(Wallet 1) → Identity A"]
+        V3["Check attestations for Identity A"]
+        V4["KYC ✓ ACCREDITATION ✓"]
+        V5["Return: true"]
+
+        V1 --> V2 --> V3 --> V4 --> V5
+    end
+
+    style W1 fill:#e3f2fd
+    style W2 fill:#e3f2fd
+    style W3 fill:#e3f2fd
+    style I1 fill:#fff3e0
+    style I2 fill:#fff3e0
+    style A1 fill:#c8e6c9
+    style A2 fill:#c8e6c9
+    style A3 fill:#c8e6c9
+    style V5 fill:#c8e6c9,stroke:#2e7d32

@@ -1,0 +1,72 @@
+stateDiagram-v2
+    [*] --> Unverified: Investor onboards
+
+    state KYCProcess {
+        OffchainKYC: Offchain KYC
+        KYCApproved: KYC Approved
+        KYCRejected: KYC Rejected
+    }
+
+    Unverified --> OffchainKYC: Submit documents
+    OffchainKYC --> KYCApproved: Documents verified
+    OffchainKYC --> KYCRejected: Documents rejected
+
+    state EASAttestation {
+        Creating: Creating Attestation
+        Registering: Registering in Verifier
+        Active: Attestation Active
+    }
+
+    KYCApproved --> Creating: KYC provider calls EAS.attest()
+    Creating --> Registering: registerAttestation()
+    Registering --> Active: Attestation registered
+
+    state Verified {
+        CanTransfer: Can Transfer Tokens
+        CanHold: Can Hold Tokens
+    }
+
+    Active --> CanTransfer: isVerified() = true
+    Active --> CanHold
+
+    state Revoked {
+        AttestationRevoked: Attestation Revoked
+    }
+
+    Active --> AttestationRevoked: attester.revoke()
+    AttestationRevoked --> Unverified: isVerified() = false
+
+    state Expired {
+        AttestationExpired: Attestation Expired
+    }
+
+    Active --> AttestationExpired: Time passes
+    AttestationExpired --> Unverified: isVerified() = false
+
+    state Renewal {
+        NewKYC: New KYC Process
+        NewAttestation: New Attestation
+    }
+
+    AttestationExpired --> NewKYC: Investor re-verifies
+    Unverified --> NewKYC: Investor re-applies
+    NewKYC --> NewAttestation: KYC approved again
+    NewAttestation --> Active: New attestation active
+
+    KYCRejected --> [*]: Exit
+
+    note right of Active
+        Attestation data includes:
+        - identity
+        - kycStatus
+        - accreditationType
+        - countryCode
+        - expirationTimestamp
+    end note
+
+    note right of AttestationRevoked
+        Revocation reasons:
+        - Compliance violation
+        - Fraud detected
+        - User request
+    end note
