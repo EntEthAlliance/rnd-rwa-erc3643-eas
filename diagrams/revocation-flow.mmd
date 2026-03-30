@@ -1,0 +1,31 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f0f0f0', 'primaryTextColor': '#333', 'primaryBorderColor': '#666', 'lineColor': '#444'}}}%%
+sequenceDiagram
+    participant CO as ⚖️ Compliance Officer
+    participant KYC as 🔍 KYC Provider
+    participant EAS as 📋 EAS Contract
+    participant Bridge as 🌉 EAS-ERC3643 Bridge
+    participant Token as 📜 ERC-3643 Token
+    participant Bob as 👤 Bob (Investor)
+
+    Note over CO,Bob: Bob is currently ELIGIBLE — holds tokens, can trade
+
+    CO->>KYC: Bob failed AML re-check
+    KYC->>EAS: revoke(bob's attestation UID)
+    EAS-->>EAS: attestation.revocationTime = now
+
+    Note over EAS: Attestation is now REVOKED on-chain
+
+    Bob->>Token: transfer(alice, 100 tokens)
+    Token->>Bridge: isVerified(bob)?
+    Bridge->>EAS: getAttestation(uid)
+    EAS-->>Bridge: attestation (revocationTime ≠ 0)
+    Bridge-->>Token: FALSE ❌
+    Token-->>Bob: TRANSFER BLOCKED
+
+    Note over CO,Bob: Bob cannot trade until re-verified with a new attestation
+
+    rect rgb(254, 243, 199)
+        Note over KYC,EAS: Alternative: Issuer removes trust in the entire provider
+        Note over KYC,EAS: adapter.removeTrustedAttester(provider)
+        Note over KYC,EAS: ALL attestations from that provider become invalid instantly
+    end

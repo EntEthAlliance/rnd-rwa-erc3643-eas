@@ -1,0 +1,42 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f0f0f0', 'primaryTextColor': '#333', 'primaryBorderColor': '#666', 'lineColor': '#444'}}}%%
+flowchart TB
+    subgraph OneKYC["Investor Does KYC Once"]
+        Investor["👤 Alice<br/>Accredited US Investor"]
+        Provider["🔍 KYC Provider<br/>(Coinbase Verifications,<br/>Fractal, etc.)"]
+        Investor -->|"1. Complete KYC"| Provider
+    end
+
+    subgraph EASLayer["EAS Attestation (One Per Chain)"]
+        EAS_ETH["📋 EAS Attestation<br/>Ethereum Mainnet"]
+        EAS_BASE["📋 EAS Attestation<br/>Base"]
+        EAS_ARB["📋 EAS Attestation<br/>Arbitrum"]
+        EAS_OP["📋 EAS Attestation<br/>Optimism"]
+        Provider -->|"2. Issue attestation"| EAS_ETH
+        Provider -->|"2. Issue attestation"| EAS_BASE
+        Provider -->|"2. Issue attestation"| EAS_ARB
+        Provider -->|"2. Issue attestation"| EAS_OP
+    end
+
+    subgraph Tokens["Multiple Security Tokens Accept It"]
+        T1["🏛️ Treasury Fund<br/>on Ethereum<br/>(ERC-3643 + Bridge)"]
+        T2["🏠 Real Estate Token<br/>on Base<br/>(ERC-3643 + Bridge)"]
+        T3["💰 Private Credit<br/>on Arbitrum<br/>(ERC-3643 + Bridge)"]
+        T4["📈 Equity Token<br/>on Optimism<br/>(ERC-3643 + Bridge)"]
+
+        EAS_ETH -->|"✅ Verified"| T1
+        EAS_BASE -->|"✅ Verified"| T2
+        EAS_ARB -->|"✅ Verified"| T3
+        EAS_OP -->|"✅ Verified"| T4
+    end
+
+    subgraph Result["Result"]
+        R["Alice is eligible for ALL 4 tokens<br/>across 4 chains — from ONE KYC"]
+    end
+
+    Tokens ~~~ Result
+
+    style OneKYC fill:#dbeafe,stroke:#2563eb
+    style EASLayer fill:#fef3c7,stroke:#d97706
+    style Tokens fill:#dcfce7,stroke:#16a34a
+    style Result fill:#f0fdf4,stroke:#16a34a
+    style R fill:#dcfce7,stroke:#16a34a

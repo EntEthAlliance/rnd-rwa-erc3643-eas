@@ -1,0 +1,51 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f0f0f0', 'primaryTextColor': '#333', 'primaryBorderColor': '#666', 'lineColor': '#444'}}}%%
+flowchart TB
+    subgraph Stakeholders["Who Does What"]
+        direction TB
+
+        subgraph Issuer["🏢 Token Issuer"]
+            I1["Deploy bridge contracts"]
+            I2["Define required topics<br/>(KYC, accreditation, country)"]
+            I3["Approve trusted KYC providers"]
+            I4["Remove compromised providers"]
+        end
+
+        subgraph KYCProvider["🔍 KYC Provider"]
+            K1["Verify investor identity<br/>(off-chain KYC/AML)"]
+            K2["Issue EAS attestation<br/>(on-chain, reusable)"]
+            K3["Revoke attestation<br/>(AML flag, sanctions)"]
+        end
+
+        subgraph InvestorRole["👤 Investor"]
+            INV1["Complete KYC once"]
+            INV2["Receive EAS attestation"]
+            INV3["Reuse across tokens & chains"]
+            INV4["No per-token identity setup"]
+        end
+
+        subgraph ComplianceOfficer["⚖️ Compliance Officer"]
+            C1["Monitor attestation events"]
+            C2["Audit verification history"]
+            C3["Trigger revocations"]
+            C4["Add/update required topics"]
+        end
+
+        subgraph TokenContract["📜 Token Contract (ERC-3643)"]
+            T1["Call isVerified() on transfer"]
+            T2["Block if not eligible"]
+            T3["No code changes needed"]
+        end
+    end
+
+    Issuer -->|"configures"| TokenContract
+    Issuer -->|"trusts"| KYCProvider
+    KYCProvider -->|"attests"| InvestorRole
+    InvestorRole -->|"verified by"| TokenContract
+    ComplianceOfficer -->|"monitors"| KYCProvider
+    ComplianceOfficer -->|"updates"| Issuer
+
+    style Issuer fill:#dbeafe,stroke:#2563eb
+    style KYCProvider fill:#fef3c7,stroke:#d97706
+    style InvestorRole fill:#dcfce7,stroke:#16a34a
+    style ComplianceOfficer fill:#f3e8ff,stroke:#7c3aed
+    style TokenContract fill:#f1f5f9,stroke:#475569

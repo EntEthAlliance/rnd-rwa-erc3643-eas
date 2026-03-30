@@ -248,12 +248,21 @@ forge script script/DeployMainnet.s.sol:DeployMainnet --rpc-url $MAINNET_RPC_URL
 
 ### Diagrams
 
-Located in `diagrams/`:
-- [`architecture-overview.mmd`](diagrams/architecture-overview.mmd) - High-level system architecture
-- [`transfer-verification-flow.mmd`](diagrams/transfer-verification-flow.mmd) - Token transfer verification sequence
-- [`dual-mode-verification.mmd`](diagrams/dual-mode-verification.mmd) - Path A vs Path B verification flows
-- [`attestation-lifecycle.mmd`](diagrams/attestation-lifecycle.mmd) - Attestation state machine
-- [`wallet-identity-mapping.mmd`](diagrams/wallet-identity-mapping.mmd) - Multi-wallet identity relationships
+Located in `diagrams/`. Render with any Mermaid viewer ([mermaid.live](https://mermaid.live), GitHub, VS Code extension).
+
+**Context & Strategy:**
+- [`current-erc3643-identity.mmd`](diagrams/current-erc3643-identity.mmd) — How ERC-3643 identity works today (ONCHAINID flow + pain points)
+- [`bridge-before-after.mmd`](diagrams/bridge-before-after.mmd) — Before vs after: closed system → open attestation layer
+- [`multi-chain-reuse.mmd`](diagrams/multi-chain-reuse.mmd) — One KYC → attestations reused across 4 chains and multiple tokens
+- [`stakeholder-interactions.mmd`](diagrams/stakeholder-interactions.mmd) — Who does what: issuer, KYC provider, investor, compliance officer
+
+**Technical Architecture:**
+- [`architecture-overview.mmd`](diagrams/architecture-overview.mmd) — Bridge contract architecture and component relationships
+- [`transfer-verification-flow.mmd`](diagrams/transfer-verification-flow.mmd) — Token transfer verification sequence (full call flow)
+- [`dual-mode-verification.mmd`](diagrams/dual-mode-verification.mmd) — Path A (pluggable verifier) vs Path B (identity wrapper)
+- [`revocation-flow.mmd`](diagrams/revocation-flow.mmd) — Real-time revocation: AML flag → attestation revoked → transfer blocked
+- [`attestation-lifecycle.mmd`](diagrams/attestation-lifecycle.mmd) — Attestation state machine (created → registered → verified → revoked/expired)
+- [`wallet-identity-mapping.mmd`](diagrams/wallet-identity-mapping.mmd) — Multi-wallet identity relationships via EASIdentityProxy
 
 ## Who Is This For?
 

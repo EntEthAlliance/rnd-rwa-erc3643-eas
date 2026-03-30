@@ -1,0 +1,52 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#fee2e2', 'primaryTextColor': '#333', 'primaryBorderColor': '#dc2626', 'lineColor': '#666', 'secondaryColor': '#fef3c7', 'tertiaryColor': '#fff'}}}%%
+flowchart TB
+    subgraph Today["How ERC-3643 Identity Works Today"]
+        direction TB
+
+        subgraph InvestorSide["Investor Onboarding"]
+            Investor[👤 Investor]
+            KYC_Process["KYC Process<br/>(documents, AML checks)"]
+            OCID_Deploy["Deploy ONCHAINID<br/>Identity Contract<br/>(per investor, per chain)"]
+        end
+
+        subgraph ProviderSide["KYC Provider"]
+            Provider["ONCHAINID-Compatible<br/>KYC Provider"]
+            Claims["Issue ERC-735 Claims<br/>(proprietary format)"]
+        end
+
+        subgraph TokenSide["Token Compliance"]
+            Token["ERC-3643<br/>Security Token"]
+            IR["Identity Registry"]
+            IRS["Identity Registry<br/>Storage"]
+            CTRS["Claim Topics<br/>Registry"]
+            TIR["Trusted Issuers<br/>Registry"]
+            OCID_Contract["ONCHAINID<br/>Identity Contract"]
+        end
+
+        Investor -->|1. Submit docs| KYC_Process
+        KYC_Process -->|2. Verify| Provider
+        Provider -->|3. Issue claims| Claims
+        Claims -->|4. Write to| OCID_Deploy
+        OCID_Deploy -->|5. Register| IRS
+
+        Token -->|"transfer()"| IR
+        IR -->|"check"| IRS
+        IRS -->|"lookup"| OCID_Contract
+        OCID_Contract -->|"validate claims"| TIR
+        IR -->|"required topics"| CTRS
+    end
+
+    subgraph Problems["❌ Pain Points"]
+        P1["Single vendor lock-in<br/>(must use ONCHAINID)"]
+        P2["Per-investor contract deployment<br/>(expensive, slow)"]
+        P3["Per-chain identity<br/>(no portability)"]
+        P4["Limited provider ecosystem<br/>(only ONCHAINID-compatible)"]
+    end
+
+    Today ~~~ Problems
+
+    style Problems fill:#fee2e2,stroke:#dc2626
+    style P1 fill:#fee2e2,stroke:#dc2626
+    style P2 fill:#fee2e2,stroke:#dc2626
+    style P3 fill:#fee2e2,stroke:#dc2626
+    style P4 fill:#fee2e2,stroke:#dc2626
