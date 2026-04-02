@@ -1,52 +1,94 @@
-# EAS-to-ERC-3643 Identity Bridge
+# EAS-ERC3643: Open Identity Infrastructure for Security Tokens
 
-A bridge that enables ERC-3643 security tokens to accept EAS (Ethereum Attestation Service) attestations as proof of investor eligibility.
+A modular, open-source identity layer for ERC-3643 security tokens that makes compliance verification pluggable — so token issuers aren't locked into a single identity vendor.
 
 ## Why This Exists
 
-### The Problem
+### The Challenge
 
-Security tokens built on [ERC-3643](https://github.com/TokenySolutions/T-REX) (the leading standard for regulated tokenized assets) rely on [ONCHAINID](https://github.com/onchain-id/solidity) for investor identity verification. ONCHAINID works — but it's a closed system. Every KYC provider, every identity verifier, every compliance check must fit into its specific ERC-734/735 key-and-claim model.
+[ERC-3643](https://github.com/ERC-3643/ERC-3643) is the leading standard for regulated security tokens on Ethereum. It defines a comprehensive framework for tokenized securities that enforces transfer restrictions based on investor eligibility.
 
-Meanwhile, the broader Ethereum ecosystem has converged on [EAS](https://attest.sh) (Ethereum Attestation Service) as a general-purpose attestation layer. KYC providers, credential issuers, and identity platforms are increasingly issuing attestations through EAS — but none of that infrastructure can talk to ERC-3643 tokens today.
+For identity verification, ERC-3643 implementations typically rely on [ONCHAINID](https://github.com/onchain-id/solidity) (ERC-734/735). While ONCHAINID contracts are open source, the **practical tooling ecosystem is vendor-specific**. Token issuers face:
 
-**The result:** tokenized securities live in an identity silo, cut off from the growing ecosystem of onchain attestations.
+- **Vendor lock-in:** Limited choice in KYC providers who support the ONCHAINID claim model
+- **High deployment costs:** Each investor requires their own identity contract (~1.5M gas vs ~218K for an EAS attestation)
+- **Tooling dependency:** Integration requires vendor-specific SDKs and infrastructure
+- **Inflexible compliance:** Adding new verification types requires protocol-level changes
+
+**The core issue:** ERC-3643 defines **WHAT** compliance checks are needed (KYC, accreditation, jurisdiction), but current implementations prescribe **HOW** those checks must be implemented.
+
+### The Solution: Modular Identity
+
+This project makes the compliance verification layer **pluggable**. Token issuers can choose their identity backend — ONCHAINID, [EAS](https://attest.org), or future systems — without changing the security token standard itself.
+
+By creating an adapter for [Ethereum Attestation Service](https://attest.org) (EAS), we demonstrate that:
+
+- **Standards should define interfaces, not implementations**
+- **The compliance layer should be open infrastructure, not proprietary middleware**
+- **Token issuers should have choice in identity providers**
+
+This is the same principle that [ERC-7943](https://eips.ethereum.org/EIPS/eip-7943) got right — defining `canSend`/`canReceive`/`canTransfer` interfaces without prescribing the identity infrastructure underneath.
+
+### Why EAS?
+
+EAS is already deployed on 15+ chains with active usage by Coinbase, Optimism, Gitcoin Passport, and Base. It provides:
+
+- **Lower deployment costs:** Attestations vs per-user contracts
+- **Broad ecosystem adoption:** Existing credential infrastructure
+- **Multi-chain presence:** Same attestation works across networks
+- **Open tooling:** No vendor lock-in
 
 ### Benefits
 
-| Without the bridge | With the bridge |
+| Vendor-locked identity | Modular identity (this project) |
 |---|---|
-| Token issuers must use ONCHAINID-compatible KYC providers only | Any EAS-compatible KYC provider works — broader provider market, lower costs |
-| Investor onboarding requires deploying an ONCHAINID identity per user | Investors reuse existing EAS attestations they already have from other protocols |
-| Compliance verification is single-chain | EAS attestations work across Ethereum, Base, Arbitrum, Optimism — one KYC, many chains |
-| Adding a new compliance check means a new ONCHAINID claim type | New checks are just new EAS schemas — flexible, permissionless, no protocol upgrade needed |
-| Existing tokens can't adopt new identity infrastructure without redeployment | Zero-modification wrapper (Path B) adds EAS support without touching deployed contracts |
+| Limited KYC provider options | Open provider market — choose any EAS-compatible verifier |
+| ~1.5M gas per investor identity deployment | ~218K gas per attestation — lower onboarding costs |
+| Vendor-specific integration tooling | Standard EAS SDK — same tools across providers |
+| Single compliance model | Flexible attestation schemas — adapt to new requirements |
+| Per-chain identity deployment | Multi-chain attestations (Ethereum, Base, Arbitrum, Optimism, etc.) |
+| Locked into implementation | Works with ERC-3643 AND ERC-7943 standards |
 
-**In short:** EAS turns investor identity from a closed, vendor-locked system into an open, composable layer — while keeping ERC-3643's regulatory compliance framework fully intact.
+**In short:** This project preserves ERC-3643's regulatory compliance framework while making the identity verification layer open, competitive, and composable.
 
 ### Use Case: Tokenized Treasury Fund on Base
 
 A fund manager issues a tokenized US Treasury product on **Base** using ERC-3643. Investors must be KYC-verified and accredited.
 
-**Today (without the bridge):**
+**With vendor-locked identity:**
 1. Fund deploys ERC-3643 token on Base
-2. Each investor must create an ONCHAINID identity contract on Base
-3. A specific ONCHAINID-compatible KYC provider must issue claims to that identity
-4. Investor can only trade this token — their KYC doesn't carry over to other protocols
-5. If the fund also launches on Arbitrum, investors repeat the entire process
+2. Each investor must deploy an identity contract (~1.5M gas)
+3. Fund's chosen KYC provider issues claims to that identity contract
+4. Investor's credentials are siloed to this token
+5. Launching on another chain requires repeating the process
 
-**With the bridge:**
-1. Fund deploys ERC-3643 token on Base with the EAS bridge
-2. Investor already has an EAS attestation from a KYC provider (e.g., from onboarding to another DeFi protocol)
-3. Fund adds that KYC provider as a **trusted attester** — investor is immediately eligible, no new identity deployment
-4. Same attestation works on Arbitrum, Optimism, mainnet — investor is verified everywhere
-5. Fund can accept attestations from **multiple** KYC providers simultaneously, giving investors choice
+**With modular identity (this project):**
+1. Fund deploys ERC-3643 token on Base with the EAS adapter
+2. Investor already has an EAS attestation from any compatible KYC provider (possibly from another protocol)
+3. Fund adds that KYC provider as a **trusted attester** — investor is immediately eligible
+4. Same attestation can work on Arbitrum, Optimism, mainnet (if the provider attests there too)
+5. Fund can accept attestations from **multiple** KYC providers, giving investors choice
 
-**Result:** Faster investor onboarding, lower compliance costs, multi-chain portability, and no vendor lock-in — without sacrificing the regulatory guarantees that make ERC-3643 the standard for security tokens.
+**Result:** Faster investor onboarding, lower compliance costs, better provider competition, and open-source tooling — without sacrificing the regulatory guarantees that make ERC-3643 the standard for security tokens.
 
-### What This Project Delivers
+## Design Principles
 
-Smart contracts and tooling that let ERC-3643 tokens accept EAS attestations as valid proof of investor eligibility — alongside or instead of traditional ONCHAINID claims. Drop-in for new deployments, zero-modification wrapper for existing ones.
+This project embodies a specific philosophy about regulated token infrastructure:
+
+### 1. Open Infrastructure Over Proprietary Middleware
+The compliance layer for regulated tokens should be **open infrastructure** that anyone can build on, not proprietary middleware controlled by a single vendor.
+
+### 2. Standards Define Interfaces, Not Implementations
+ERC-3643 should specify **what** compliance checks are required (KYC status, accreditation level, jurisdiction). It should **not** mandate how those checks are performed or which identity system provides them.
+
+### 3. Built by a Standards Body, Not a Product Company
+This project is maintained by the **Enterprise Ethereum Alliance** — a membership organization focused on standards development, not a vendor with product incentives. The goal is **ecosystem growth**, not vendor lock-in.
+
+### 4. Composability Enables Competition
+By making identity verification pluggable, we create a **competitive market** for KYC providers. Token issuers choose based on price, quality, and coverage — not based on which vendor the standard prescribes.
+
+### 5. Preserve What Works, Open What Doesn't
+ERC-3643's compliance framework is solid. We keep it intact. What needs to change is the coupling to a specific identity implementation.
 
 ## Overview
 
@@ -290,6 +332,12 @@ Located in `diagrams/`. Render with any Mermaid viewer ([mermaid.live](https://m
 
 **What happens:** If your KYC provider issued an EAS attestation and the token issuer trusts that provider, you're already eligible. No new identity deployment, no re-verification. Your attestation carries across tokens and chains.
 
+### Standards Bodies & Working Groups
+
+> "We're defining compliance requirements for tokenized assets. We need a reference implementation that demonstrates how identity verification can be modular and vendor-neutral."
+
+**What this provides:** A working example of **interface-based compliance** where the standard defines verification requirements without prescribing implementation. Use this as a template for future standards work or as a proof-of-concept for modular regulatory infrastructure.
+
 ## Integration Paths
 
 ### Path A: Pluggable Verifier (Recommended)
@@ -314,7 +362,7 @@ See [Integration Guide](docs/integration-guide.md) for detailed steps.
 
 ## Live Demo
 
-Try the interactive demo on Sepolia testnet: **[Demo UI](https://eas-erc3643-bridge-demo.vercel.app)** *(coming soon)*
+Try the interactive demo on Sepolia testnet: **[Demo UI](https://claudyfaucant.github.io/eas-erc3643-bridge-demo/)**
 
 The demo walks you through a complete scenario — deploying contracts, onboarding investors with EAS attestations, verifying eligibility, and revoking access — all on-chain, all in your browser.
 
@@ -386,8 +434,16 @@ Contributions are welcome! Please:
 
 MIT License - see [LICENSE](LICENSE) for details.
 
+## References
+
+- **EAS Contracts:** https://github.com/ethereum-attestation-service/eas-contracts
+- **ERC-3643 Standard:** https://github.com/ERC-3643/ERC-3643
+- **ERC-7943 Proposal:** https://eips.ethereum.org/EIPS/eip-7943
+- **EAS Documentation:** https://docs.attest.org
+- **Live Demo:** https://claudyfaucant.github.io/eas-erc3643-bridge-demo/
+
 ## Acknowledgments
 
-- [ERC-3643 (T-REX)](https://github.com/TokenySolutions/T-REX) - Security token standard
-- [Ethereum Attestation Service](https://attest.sh) - Attestation infrastructure
+- [ERC-3643 (T-REX)](https://github.com/ERC-3643/ERC-3643) - Security token standard
+- [Ethereum Attestation Service](https://attest.org) - Attestation infrastructure
 - [ONCHAINID](https://github.com/onchain-id/solidity) - ERC-734/735 identity implementation
