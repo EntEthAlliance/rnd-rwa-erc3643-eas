@@ -35,7 +35,9 @@ contract SetupPilot is Script {
     uint256 constant TOPIC_ACCREDITATION = 7;
 
     // Demo schema UID (replace with actual registered schema)
-    bytes32 constant DEMO_SCHEMA_UID = keccak256("address identity,uint8 kycStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp");
+    bytes32 constant DEMO_SCHEMA_UID = keccak256(
+        "address identity,uint8 kycStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp"
+    );
 
     // Deployed contracts
     EASClaimVerifier public verifier;

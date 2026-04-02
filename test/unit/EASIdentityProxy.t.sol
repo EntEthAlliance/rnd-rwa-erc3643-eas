@@ -119,11 +119,7 @@ contract EASIdentityProxyTest is Test {
     function test_registerWallet_revertsIfAlreadyRegisteredToDifferentIdentity() public {
         proxy.registerWallet(wallet1, identity1);
 
-        vm.expectRevert(abi.encodeWithSelector(
-            IEASIdentityProxy.WalletAlreadyRegistered.selector,
-            wallet1,
-            identity1
-        ));
+        vm.expectRevert(abi.encodeWithSelector(IEASIdentityProxy.WalletAlreadyRegistered.selector, wallet1, identity1));
         proxy.registerWallet(wallet1, identity2);
     }
 
@@ -288,11 +284,7 @@ contract EASIdentityProxyTest is Test {
         wallets[0] = wallet1;
         wallets[1] = wallet2;
 
-        vm.expectRevert(abi.encodeWithSelector(
-            IEASIdentityProxy.WalletAlreadyRegistered.selector,
-            wallet1,
-            identity1
-        ));
+        vm.expectRevert(abi.encodeWithSelector(IEASIdentityProxy.WalletAlreadyRegistered.selector, wallet1, identity1));
         proxy.batchRegisterWallets(wallets, identity2);
     }
 

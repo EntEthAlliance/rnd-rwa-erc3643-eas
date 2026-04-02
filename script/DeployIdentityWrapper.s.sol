@@ -27,12 +27,8 @@ contract DeployIdentityWrapper is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        EASClaimVerifierIdentityWrapper wrapper = new EASClaimVerifierIdentityWrapper(
-            identityAddress,
-            easAddress,
-            verifierAddress,
-            adapterAddress
-        );
+        EASClaimVerifierIdentityWrapper wrapper =
+            new EASClaimVerifierIdentityWrapper(identityAddress, easAddress, verifierAddress, adapterAddress);
 
         vm.stopBroadcast();
 

@@ -247,8 +247,7 @@ contract UseCase_PrivateFund_Test is Test {
 
         // Create KYC attestation with expiration
         bytes32 kycUid = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, accreditedInvestor1, accreditedInvestor1,
-            1, 0, 840, kycExpiration
+            SCHEMA_KYC, accreditedInvestor1, accreditedInvestor1, 1, 0, 840, kycExpiration
         );
         verifier.registerAttestation(accreditedInvestor1, TOPIC_KYC, kycUid);
         _attestAccreditation(accreditedInvestor1, ACCRED_NET_WORTH);
@@ -326,8 +325,7 @@ contract UseCase_PrivateFund_Test is Test {
 
         // Get accreditation from second verifier
         bytes32 uid2 = secondVerifier.attestInvestorEligibility(
-            SCHEMA_ACCREDITATION, accreditedInvestor1, accreditedInvestor1,
-            1, ACCRED_INCOME, 840, 0
+            SCHEMA_ACCREDITATION, accreditedInvestor1, accreditedInvestor1, 1, ACCRED_INCOME, 840, 0
         );
         verifier.registerAttestation(accreditedInvestor1, TOPIC_ACCREDITATION, uid2);
 

@@ -38,8 +38,9 @@ contract DeployTestnet is Script {
     uint256 constant TOPIC_ACCREDITATION = 7;
 
     // Standard schema for investor eligibility
-    bytes32 constant INVESTOR_ELIGIBILITY_SCHEMA_UID =
-        keccak256("address identity,uint8 kycStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp");
+    bytes32 constant INVESTOR_ELIGIBILITY_SCHEMA_UID = keccak256(
+        "address identity,uint8 kycStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp"
+    );
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -47,7 +48,7 @@ contract DeployTestnet is Script {
         address owner = vm.envOr("OWNER_ADDRESS", deployer);
         address claimTopicsRegistry = vm.envOr("CLAIM_TOPICS_REGISTRY", address(0));
 
-        (address easAddress, ) = _getNetworkConfig();
+        (address easAddress,) = _getNetworkConfig();
 
         console2.log("=== EAS-ERC3643 Bridge Testnet Deployment ===");
         console2.log("Network:", _getNetworkName());

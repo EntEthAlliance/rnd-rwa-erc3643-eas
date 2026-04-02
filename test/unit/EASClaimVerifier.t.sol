@@ -41,10 +41,7 @@ contract EASClaimVerifierTest is Test {
     event IdentityProxySet(address indexed proxyAddress);
     event ClaimTopicsRegistrySet(address indexed registryAddress);
     event AttestationRegistered(
-        address indexed identity,
-        uint256 indexed claimTopic,
-        address indexed attester,
-        bytes32 attestationUID
+        address indexed identity, uint256 indexed claimTopic, address indexed attester, bytes32 attestationUID
     );
 
     function setUp() public {
@@ -202,13 +199,7 @@ contract EASClaimVerifierTest is Test {
 
         // Create attestation with expiration in the future
         uint64 expirationTime = uint64(block.timestamp + 100);
-        bytes memory data = _encodeInvestorEligibility(
-            user1,
-            1,
-            0,
-            840,
-            expirationTime
-        );
+        bytes memory data = _encodeInvestorEligibility(user1, 1, 0, 840, expirationTime);
         bytes32 uid = _createAttestation(schemaKYC, user1, attester1, data, 0);
         verifier.registerAttestation(user1, TOPIC_KYC, uid);
 
@@ -326,10 +317,7 @@ contract EASClaimVerifierTest is Test {
         bytes memory data = _encodeInvestorEligibility(user1, 1, 0, 840, 0);
         bytes32 uid = _createAttestation(schemaKYC, user1, attester1, data, 0);
 
-        vm.expectRevert(abi.encodeWithSelector(
-            IEASClaimVerifier.SchemaNotMappedForTopic.selector,
-            99
-        ));
+        vm.expectRevert(abi.encodeWithSelector(IEASClaimVerifier.SchemaNotMappedForTopic.selector, 99));
         verifier.registerAttestation(user1, 99, uid);
     }
 

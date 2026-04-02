@@ -55,12 +55,7 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
      * @param _claimVerifier The EASClaimVerifier address
      * @param _trustedIssuersAdapter The trusted issuers adapter address
      */
-    constructor(
-        address _identityAddress,
-        address _eas,
-        address _claimVerifier,
-        address _trustedIssuersAdapter
-    ) {
+    constructor(address _identityAddress, address _eas, address _claimVerifier, address _trustedIssuersAdapter) {
         identityAddress = _identityAddress;
         eas = IEAS(_eas);
         claimVerifier = IEASClaimVerifier(_claimVerifier);
@@ -81,9 +76,7 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
      * @return data The claim data (decoded from attestation)
      * @return uri Empty string (not used in EAS)
      */
-    function getClaim(
-        bytes32 _claimId
-    )
+    function getClaim(bytes32 _claimId)
         external
         view
         override
@@ -112,23 +105,20 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
                 if (expectedClaimId == _claimId) {
                     // Found the matching attester and topic
                     // Look up the registered attestation
-                    bytes32 attestationUID = claimVerifier.getRegisteredAttestation(
-                        identityAddress,
-                        topics[j],
-                        attesters[i]
-                    );
+                    bytes32 attestationUID =
+                        claimVerifier.getRegisteredAttestation(identityAddress, topics[j], attesters[i]);
 
                     if (attestationUID != bytes32(0)) {
                         Attestation memory att = eas.getAttestation(attestationUID);
 
                         if (att.uid != bytes32(0)) {
                             return (
-                                topics[j],           // topic
-                                1,                   // scheme (ECDSA-equivalent)
-                                attesters[i],        // issuer
-                                "",                  // signature (handled by EAS)
-                                att.data,            // data
-                                ""                   // uri
+                                topics[j], // topic
+                                1, // scheme (ECDSA-equivalent)
+                                attesters[i], // issuer
+                                "", // signature (handled by EAS)
+                                att.data, // data
+                                "" // uri
                             );
                         }
                     }
@@ -146,19 +136,13 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
      * @param _topic The claim topic
      * @return claimIds Array of claim IDs
      */
-    function getClaimIdsByTopic(
-        uint256 _topic
-    ) external view override returns (bytes32[] memory claimIds) {
+    function getClaimIdsByTopic(uint256 _topic) external view override returns (bytes32[] memory claimIds) {
         address[] memory attesters = trustedIssuersAdapter.getTrustedAttestersForTopic(_topic);
         uint256 count = 0;
 
         // First pass: count valid attestations
         for (uint256 i = 0; i < attesters.length; i++) {
-            bytes32 attestationUID = claimVerifier.getRegisteredAttestation(
-                identityAddress,
-                _topic,
-                attesters[i]
-            );
+            bytes32 attestationUID = claimVerifier.getRegisteredAttestation(identityAddress, _topic, attesters[i]);
             if (attestationUID != bytes32(0)) {
                 Attestation memory att = eas.getAttestation(attestationUID);
                 if (att.uid != bytes32(0)) {
@@ -172,11 +156,7 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
         uint256 index = 0;
 
         for (uint256 i = 0; i < attesters.length; i++) {
-            bytes32 attestationUID = claimVerifier.getRegisteredAttestation(
-                identityAddress,
-                _topic,
-                attesters[i]
-            );
+            bytes32 attestationUID = claimVerifier.getRegisteredAttestation(identityAddress, _topic, attesters[i]);
             if (attestationUID != bytes32(0)) {
                 Attestation memory att = eas.getAttestation(attestationUID);
                 if (att.uid != bytes32(0)) {
@@ -196,20 +176,18 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
      * @param claimTopic The claim topic
      * @return True if the claim is valid
      */
-    function isClaimValid(
-        IIdentity _identity,
-        uint256 claimTopic,
-        bytes calldata,
-        bytes calldata
-    ) external view override returns (bool) {
+    function isClaimValid(IIdentity _identity, uint256 claimTopic, bytes calldata, bytes calldata)
+        external
+        view
+        override
+        returns (bool)
+    {
         // Get trusted attesters for this topic
         address[] memory attesters = trustedIssuersAdapter.getTrustedAttestersForTopic(claimTopic);
 
         for (uint256 i = 0; i < attesters.length; i++) {
             bytes32 attestationUID = claimVerifier.getRegisteredAttestation(
-                address(_identity) == address(this) ? identityAddress : address(_identity),
-                claimTopic,
-                attesters[i]
+                address(_identity) == address(this) ? identityAddress : address(_identity), claimTopic, attesters[i]
             );
 
             if (attestationUID != bytes32(0)) {
@@ -217,9 +195,8 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
 
                 // Check validity
                 if (
-                    att.uid != bytes32(0) &&
-                    att.revocationTime == 0 &&
-                    (att.expirationTime == 0 || att.expirationTime > block.timestamp)
+                    att.uid != bytes32(0) && att.revocationTime == 0
+                        && (att.expirationTime == 0 || att.expirationTime > block.timestamp)
                 ) {
                     return true;
                 }
@@ -235,14 +212,12 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
      * @notice Add claim - NOT SUPPORTED (attestations created via EAS)
      * @dev Reverts because claims should be created via EAS attestations
      */
-    function addClaim(
-        uint256,
-        uint256,
-        address,
-        bytes calldata,
-        bytes calldata,
-        string calldata
-    ) external pure override returns (bytes32) {
+    function addClaim(uint256, uint256, address, bytes calldata, bytes calldata, string calldata)
+        external
+        pure
+        override
+        returns (bytes32)
+    {
         revert("Use EAS to create attestations");
     }
 
@@ -260,7 +235,12 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
      * @notice Get key - returns identity address as management key
      * @dev Minimal implementation for compatibility
      */
-    function getKey(bytes32 _key) external view override returns (uint256[] memory purposes, uint256 keyType, bytes32 key) {
+    function getKey(bytes32 _key)
+        external
+        view
+        override
+        returns (uint256[] memory purposes, uint256 keyType, bytes32 key)
+    {
         if (_key == keccak256(abi.encode(identityAddress))) {
             purposes = new uint256[](1);
             purposes[0] = 1; // MANAGEMENT

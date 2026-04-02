@@ -91,9 +91,7 @@ contract DualModeVerificationTest is Test {
      * @notice Test investor with only primary provider attestation
      */
     function test_investorWithPrimaryProviderOnly() public {
-        bytes32 uid = kycProviderPrimary.attestInvestorEligibility(
-            SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProviderPrimary.attestInvestorEligibility(SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0);
         verifier.registerAttestation(investorA, TOPIC_KYC, uid);
 
         assertTrue(verifier.isVerified(investorA));
@@ -103,9 +101,7 @@ contract DualModeVerificationTest is Test {
      * @notice Test investor with only secondary provider attestation
      */
     function test_investorWithSecondaryProviderOnly() public {
-        bytes32 uid = kycProviderSecondary.attestInvestorEligibility(
-            SCHEMA_KYC, investorB, investorB, 1, 0, 826, 0
-        );
+        bytes32 uid = kycProviderSecondary.attestInvestorEligibility(SCHEMA_KYC, investorB, investorB, 1, 0, 826, 0);
         verifier.registerAttestation(investorB, TOPIC_KYC, uid);
 
         assertTrue(verifier.isVerified(investorB));
@@ -116,15 +112,11 @@ contract DualModeVerificationTest is Test {
      */
     function test_investorWithBothProviders() public {
         // Attestation from primary
-        bytes32 uid1 = kycProviderPrimary.attestInvestorEligibility(
-            SCHEMA_KYC, investorC, investorC, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProviderPrimary.attestInvestorEligibility(SCHEMA_KYC, investorC, investorC, 1, 0, 840, 0);
         verifier.registerAttestation(investorC, TOPIC_KYC, uid1);
 
         // Attestation from secondary
-        bytes32 uid2 = kycProviderSecondary.attestInvestorEligibility(
-            SCHEMA_KYC, investorC, investorC, 1, 0, 840, 0
-        );
+        bytes32 uid2 = kycProviderSecondary.attestInvestorEligibility(SCHEMA_KYC, investorC, investorC, 1, 0, 840, 0);
         verifier.registerAttestation(investorC, TOPIC_KYC, uid2);
 
         assertTrue(verifier.isVerified(investorC));
@@ -142,9 +134,8 @@ contract DualModeVerificationTest is Test {
      */
     function test_revokePrimaryAddSecondary() public {
         // Start with primary attestation
-        bytes32 primaryUid = kycProviderPrimary.attestInvestorEligibility(
-            SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0
-        );
+        bytes32 primaryUid =
+            kycProviderPrimary.attestInvestorEligibility(SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0);
         verifier.registerAttestation(investorA, TOPIC_KYC, primaryUid);
         assertTrue(verifier.isVerified(investorA));
 
@@ -153,9 +144,8 @@ contract DualModeVerificationTest is Test {
         assertFalse(verifier.isVerified(investorA));
 
         // Add secondary attestation
-        bytes32 secondaryUid = kycProviderSecondary.attestInvestorEligibility(
-            SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0
-        );
+        bytes32 secondaryUid =
+            kycProviderSecondary.attestInvestorEligibility(SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0);
         verifier.registerAttestation(investorA, TOPIC_KYC, secondaryUid);
 
         // Investor is verified again via secondary provider
@@ -167,9 +157,8 @@ contract DualModeVerificationTest is Test {
      */
     function test_revokeSecondaryAddPrimary() public {
         // Start with secondary attestation
-        bytes32 secondaryUid = kycProviderSecondary.attestInvestorEligibility(
-            SCHEMA_KYC, investorB, investorB, 1, 0, 826, 0
-        );
+        bytes32 secondaryUid =
+            kycProviderSecondary.attestInvestorEligibility(SCHEMA_KYC, investorB, investorB, 1, 0, 826, 0);
         verifier.registerAttestation(investorB, TOPIC_KYC, secondaryUid);
         assertTrue(verifier.isVerified(investorB));
 
@@ -178,9 +167,8 @@ contract DualModeVerificationTest is Test {
         assertFalse(verifier.isVerified(investorB));
 
         // Add primary attestation
-        bytes32 primaryUid = kycProviderPrimary.attestInvestorEligibility(
-            SCHEMA_KYC, investorB, investorB, 1, 0, 826, 0
-        );
+        bytes32 primaryUid =
+            kycProviderPrimary.attestInvestorEligibility(SCHEMA_KYC, investorB, investorB, 1, 0, 826, 0);
         verifier.registerAttestation(investorB, TOPIC_KYC, primaryUid);
 
         // Investor is verified again via primary provider
@@ -192,14 +180,10 @@ contract DualModeVerificationTest is Test {
      */
     function test_fallbackWhenProviderRemoved() public {
         // Both investors have attestations from different providers
-        bytes32 uid1 = kycProviderPrimary.attestInvestorEligibility(
-            SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProviderPrimary.attestInvestorEligibility(SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0);
         verifier.registerAttestation(investorA, TOPIC_KYC, uid1);
 
-        bytes32 uid2 = kycProviderSecondary.attestInvestorEligibility(
-            SCHEMA_KYC, investorB, investorB, 1, 0, 826, 0
-        );
+        bytes32 uid2 = kycProviderSecondary.attestInvestorEligibility(SCHEMA_KYC, investorB, investorB, 1, 0, 826, 0);
         verifier.registerAttestation(investorB, TOPIC_KYC, uid2);
 
         assertTrue(verifier.isVerified(investorA));
@@ -216,9 +200,7 @@ contract DualModeVerificationTest is Test {
         assertTrue(verifier.isVerified(investorB));
 
         // InvestorA gets new attestation from secondary provider
-        bytes32 uid3 = kycProviderSecondary.attestInvestorEligibility(
-            SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0
-        );
+        bytes32 uid3 = kycProviderSecondary.attestInvestorEligibility(SCHEMA_KYC, investorA, investorA, 1, 0, 840, 0);
         verifier.registerAttestation(investorA, TOPIC_KYC, uid3);
 
         // Now both are verified via secondary provider
@@ -231,14 +213,10 @@ contract DualModeVerificationTest is Test {
      */
     function test_dualAttestationsOneRevoked() public {
         // Create two attestations for same investor
-        bytes32 uid1 = kycProviderPrimary.attestInvestorEligibility(
-            SCHEMA_KYC, investorC, investorC, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProviderPrimary.attestInvestorEligibility(SCHEMA_KYC, investorC, investorC, 1, 0, 840, 0);
         verifier.registerAttestation(investorC, TOPIC_KYC, uid1);
 
-        bytes32 uid2 = kycProviderSecondary.attestInvestorEligibility(
-            SCHEMA_KYC, investorC, investorC, 1, 0, 840, 0
-        );
+        bytes32 uid2 = kycProviderSecondary.attestInvestorEligibility(SCHEMA_KYC, investorC, investorC, 1, 0, 840, 0);
         verifier.registerAttestation(investorC, TOPIC_KYC, uid2);
 
         assertTrue(verifier.isVerified(investorC));

@@ -96,11 +96,10 @@ interface IEASClaimVerifier {
      * @param attester The attester address
      * @return The registered attestation UID (bytes32(0) if not registered)
      */
-    function getRegisteredAttestation(
-        address identity,
-        uint256 claimTopic,
-        address attester
-    ) external view returns (bytes32);
+    function getRegisteredAttestation(address identity, uint256 claimTopic, address attester)
+        external
+        view
+        returns (bytes32);
 
     // ============ Configuration Functions ============
 

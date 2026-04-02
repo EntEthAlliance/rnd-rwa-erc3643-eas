@@ -105,25 +105,19 @@ contract UseCase_CrossBorderTransfer_Test is Test {
     // ============ Helper Functions ============
 
     function _attestKYCFromApprovedA(address investor, uint16 country) internal returns (bytes32) {
-        bytes32 uid = approvedKycProviderA.attestInvestorEligibility(
-            SCHEMA_KYC, investor, investor, 1, 0, country, 0
-        );
+        bytes32 uid = approvedKycProviderA.attestInvestorEligibility(SCHEMA_KYC, investor, investor, 1, 0, country, 0);
         verifier.registerAttestation(investor, TOPIC_KYC, uid);
         return uid;
     }
 
     function _attestKYCFromApprovedB(address investor, uint16 country) internal returns (bytes32) {
-        bytes32 uid = approvedKycProviderB.attestInvestorEligibility(
-            SCHEMA_KYC, investor, investor, 1, 0, country, 0
-        );
+        bytes32 uid = approvedKycProviderB.attestInvestorEligibility(SCHEMA_KYC, investor, investor, 1, 0, country, 0);
         verifier.registerAttestation(investor, TOPIC_KYC, uid);
         return uid;
     }
 
     function _attestTaxTreaty(address investor) internal returns (bytes32) {
-        bytes32 uid = taxTreatyProvider.attestInvestorEligibility(
-            SCHEMA_TAX_TREATY, investor, investor, 1, 0, 0, 0
-        );
+        bytes32 uid = taxTreatyProvider.attestInvestorEligibility(SCHEMA_TAX_TREATY, investor, investor, 1, 0, 0, 0);
         verifier.registerAttestation(investor, TOPIC_TAX_TREATY, uid);
         return uid;
     }

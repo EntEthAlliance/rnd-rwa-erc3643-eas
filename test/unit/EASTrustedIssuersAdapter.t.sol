@@ -69,10 +69,7 @@ contract EASTrustedIssuersAdapterTest is Test {
 
         adapter.addTrustedAttester(attester1, topics);
 
-        vm.expectRevert(abi.encodeWithSelector(
-            IEASTrustedIssuersAdapter.AttesterAlreadyTrusted.selector,
-            attester1
-        ));
+        vm.expectRevert(abi.encodeWithSelector(IEASTrustedIssuersAdapter.AttesterAlreadyTrusted.selector, attester1));
         adapter.addTrustedAttester(attester1, topics);
     }
 
@@ -137,10 +134,7 @@ contract EASTrustedIssuersAdapterTest is Test {
     }
 
     function test_removeTrustedAttester_revertsIfNotTrusted() public {
-        vm.expectRevert(abi.encodeWithSelector(
-            IEASTrustedIssuersAdapter.AttesterNotTrusted.selector,
-            attester1
-        ));
+        vm.expectRevert(abi.encodeWithSelector(IEASTrustedIssuersAdapter.AttesterNotTrusted.selector, attester1));
         adapter.removeTrustedAttester(attester1);
     }
 
@@ -197,10 +191,7 @@ contract EASTrustedIssuersAdapterTest is Test {
         uint256[] memory topics = new uint256[](1);
         topics[0] = TOPIC_KYC;
 
-        vm.expectRevert(abi.encodeWithSelector(
-            IEASTrustedIssuersAdapter.AttesterNotTrusted.selector,
-            attester1
-        ));
+        vm.expectRevert(abi.encodeWithSelector(IEASTrustedIssuersAdapter.AttesterNotTrusted.selector, attester1));
         adapter.updateAttesterTopics(attester1, topics);
     }
 

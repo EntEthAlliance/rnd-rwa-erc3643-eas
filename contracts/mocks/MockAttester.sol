@@ -25,11 +25,7 @@ contract MockAttester {
     // ============ Events ============
 
     /// @notice Emitted when an attestation is created
-    event AttestationCreated(
-        bytes32 indexed uid,
-        address indexed recipient,
-        bytes32 indexed schemaUID
-    );
+    event AttestationCreated(bytes32 indexed uid, address indexed recipient, bytes32 indexed schemaUID);
 
     // ============ Constructor ============
 
@@ -65,13 +61,7 @@ contract MockAttester {
         uint16 countryCode,
         uint64 expirationTimestamp
     ) external returns (bytes32 uid) {
-        bytes memory data = abi.encode(
-            identity,
-            kycStatus,
-            accreditationType,
-            countryCode,
-            expirationTimestamp
-        );
+        bytes memory data = abi.encode(identity, kycStatus, accreditationType, countryCode, expirationTimestamp);
 
         AttestationRequest memory request = AttestationRequest({
             schema: schemaUID,
@@ -135,21 +125,14 @@ contract MockAttester {
      * @param refUID The reference attestation UID
      * @return uid The created attestation UID
      */
-    function attestWithReference(
-        bytes32 schemaUID,
-        address recipient,
-        bytes calldata data,
-        bytes32 refUID
-    ) external returns (bytes32 uid) {
+    function attestWithReference(bytes32 schemaUID, address recipient, bytes calldata data, bytes32 refUID)
+        external
+        returns (bytes32 uid)
+    {
         AttestationRequest memory request = AttestationRequest({
             schema: schemaUID,
             data: AttestationRequestData({
-                recipient: recipient,
-                expirationTime: 0,
-                revocable: true,
-                refUID: refUID,
-                data: data,
-                value: 0
+                recipient: recipient, expirationTime: 0, revocable: true, refUID: refUID, data: data, value: 0
             })
         });
 
@@ -178,13 +161,7 @@ contract MockAttester {
         uint16 countryCode,
         uint64 expirationTimestamp
     ) external pure returns (bytes memory) {
-        return abi.encode(
-            identity,
-            kycStatus,
-            accreditationType,
-            countryCode,
-            expirationTimestamp
-        );
+        return abi.encode(identity, kycStatus, accreditationType, countryCode, expirationTimestamp);
     }
 
     /**
@@ -196,9 +173,7 @@ contract MockAttester {
      * @return countryCode The country code
      * @return expirationTimestamp The expiration timestamp
      */
-    function decodeInvestorEligibility(
-        bytes calldata data
-    )
+    function decodeInvestorEligibility(bytes calldata data)
         external
         pure
         returns (

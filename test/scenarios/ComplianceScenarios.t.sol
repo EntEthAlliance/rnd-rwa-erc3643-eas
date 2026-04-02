@@ -72,8 +72,8 @@ contract ComplianceScenariosTest is Test {
             schemaUID,
             investor,
             investor,
-            1,   // VERIFIED
-            2,   // ACCREDITED
+            1, // VERIFIED
+            2, // ACCREDITED
             840, // US
             uint64(block.timestamp + 365 days)
         );
@@ -103,10 +103,10 @@ contract ComplianceScenariosTest is Test {
             schemaUID,
             investor,
             investor,
-            1,   // VERIFIED
-            5,   // PROFESSIONAL
+            1, // VERIFIED
+            5, // PROFESSIONAL
             276, // Germany
-            0    // No expiration
+            0 // No expiration
         );
 
         verifier.registerAttestation(investor, TOPIC_KYC, uid);
@@ -161,9 +161,7 @@ contract ComplianceScenariosTest is Test {
 
         // Initial KYC valid for 1 year
         uint64 expiration1 = uint64(block.timestamp + 365 days);
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            schemaUID, investor, investor, 1, 0, 840, expiration1
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(schemaUID, investor, investor, 1, 0, 840, expiration1);
         verifier.registerAttestation(investor, TOPIC_KYC, uid1);
 
         assertTrue(verifier.isVerified(investor));
@@ -174,9 +172,7 @@ contract ComplianceScenariosTest is Test {
 
         // Investor renews KYC
         uint64 expiration2 = uint64(block.timestamp + 365 days);
-        bytes32 uid2 = kycProvider.attestInvestorEligibility(
-            schemaUID, investor, investor, 1, 0, 840, expiration2
-        );
+        bytes32 uid2 = kycProvider.attestInvestorEligibility(schemaUID, investor, investor, 1, 0, 840, expiration2);
         verifier.registerAttestation(investor, TOPIC_KYC, uid2);
 
         // Verified again
@@ -190,9 +186,7 @@ contract ComplianceScenariosTest is Test {
 
         topicsRegistry.addClaimTopic(TOPIC_KYC);
 
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            schemaUID, investor, investor, 1, 2, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(schemaUID, investor, investor, 1, 2, 840, 0);
         verifier.registerAttestation(investor, TOPIC_KYC, uid);
 
         assertTrue(verifier.isVerified(investor));
@@ -222,12 +216,8 @@ contract ComplianceScenariosTest is Test {
         topicsRegistry.addClaimTopic(TOPIC_KYC);
 
         // Different investors use different providers
-        bytes32 uid1 = provider1.attestInvestorEligibility(
-            schemaUID, investor1, investor1, 1, 0, 840, 0
-        );
-        bytes32 uid2 = provider2.attestInvestorEligibility(
-            schemaUID, investor2, investor2, 1, 0, 826, 0
-        );
+        bytes32 uid1 = provider1.attestInvestorEligibility(schemaUID, investor1, investor1, 1, 0, 840, 0);
+        bytes32 uid2 = provider2.attestInvestorEligibility(schemaUID, investor2, investor2, 1, 0, 826, 0);
 
         verifier.registerAttestation(investor1, TOPIC_KYC, uid1);
         verifier.registerAttestation(investor2, TOPIC_KYC, uid2);
@@ -262,9 +252,7 @@ contract ComplianceScenariosTest is Test {
         // Initially only KYC required
         topicsRegistry.addClaimTopic(TOPIC_KYC);
 
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            schemaUID, investor, investor, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(schemaUID, investor, investor, 1, 0, 840, 0);
         verifier.registerAttestation(investor, TOPIC_KYC, uid);
 
         assertTrue(verifier.isVerified(investor));
@@ -292,9 +280,7 @@ contract ComplianceScenariosTest is Test {
 
         topicsRegistry.addClaimTopic(TOPIC_KYC);
 
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            schemaUID, wallet, wallet, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(schemaUID, wallet, wallet, 1, 0, 840, 0);
         verifier.registerAttestation(wallet, TOPIC_KYC, uid);
 
         assertTrue(verifier.isVerified(wallet));

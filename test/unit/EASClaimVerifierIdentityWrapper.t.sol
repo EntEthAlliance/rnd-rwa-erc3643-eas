@@ -54,12 +54,8 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         adapter.addTrustedAttester(kycProviderAddr, topics);
 
         // Deploy wrapper for identity
-        wrapper = new EASClaimVerifierIdentityWrapper(
-            identityAddress,
-            address(eas),
-            address(verifier),
-            address(adapter)
-        );
+        wrapper =
+            new EASClaimVerifierIdentityWrapper(identityAddress, address(eas), address(verifier), address(adapter));
     }
 
     // ============ Constructor Tests ============
@@ -99,14 +95,8 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         bytes32 claimId = keccak256(abi.encode(kycProviderAddr, TOPIC_KYC));
 
         // Get claim
-        (
-            uint256 topic,
-            uint256 scheme,
-            address issuer,
-            bytes memory signature,
-            bytes memory data,
-            string memory uri
-        ) = wrapper.getClaim(claimId);
+        (uint256 topic, uint256 scheme, address issuer, bytes memory signature, bytes memory data, string memory uri) =
+            wrapper.getClaim(claimId);
 
         assertEq(topic, TOPIC_KYC);
         assertEq(scheme, 1); // ECDSA-equivalent
@@ -119,14 +109,8 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
     function test_getClaim_returnsEmptyForUnknownClaim() public view {
         bytes32 fakeClaimId = bytes32(uint256(999));
 
-        (
-            uint256 topic,
-            uint256 scheme,
-            address issuer,
-            bytes memory signature,
-            bytes memory data,
-            string memory uri
-        ) = wrapper.getClaim(fakeClaimId);
+        (uint256 topic, uint256 scheme, address issuer, bytes memory signature, bytes memory data, string memory uri) =
+            wrapper.getClaim(fakeClaimId);
 
         assertEq(topic, 0);
         assertEq(scheme, 0);
@@ -140,14 +124,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         // Claim ID exists but no attestation registered
         bytes32 claimId = keccak256(abi.encode(kycProviderAddr, TOPIC_KYC));
 
-        (
-            uint256 topic,
-            uint256 scheme,
-            address issuer,
-            ,
-            ,
-
-        ) = wrapper.getClaim(claimId);
+        (uint256 topic, uint256 scheme, address issuer,,,) = wrapper.getClaim(claimId);
 
         assertEq(topic, 0);
         assertEq(scheme, 0);
@@ -158,15 +135,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
 
     function test_getClaimIdsByTopic_returnsValidClaimIds() public {
         // Create and register attestation
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            schemaKYC,
-            identityAddress,
-            identityAddress,
-            1,
-            0,
-            840,
-            0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(schemaKYC, identityAddress, identityAddress, 1, 0, 840, 0);
         verifier.registerAttestation(identityAddress, TOPIC_KYC, uid);
 
         bytes32[] memory claimIds = wrapper.getClaimIdsByTopic(TOPIC_KYC);
@@ -190,12 +159,8 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         adapter.addTrustedAttester(kycProvider2Addr, topics);
 
         // Create attestations from both providers
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            schemaKYC, identityAddress, identityAddress, 1, 0, 840, 0
-        );
-        bytes32 uid2 = kycProvider2.attestInvestorEligibility(
-            schemaKYC, identityAddress, identityAddress, 1, 0, 826, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(schemaKYC, identityAddress, identityAddress, 1, 0, 840, 0);
+        bytes32 uid2 = kycProvider2.attestInvestorEligibility(schemaKYC, identityAddress, identityAddress, 1, 0, 826, 0);
 
         verifier.registerAttestation(identityAddress, TOPIC_KYC, uid1);
         verifier.registerAttestation(identityAddress, TOPIC_KYC, uid2);
@@ -208,9 +173,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
     // ============ isClaimValid Tests ============
 
     function test_isClaimValid_returnsTrueForValidAttestation() public {
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            schemaKYC, identityAddress, identityAddress, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(schemaKYC, identityAddress, identityAddress, 1, 0, 840, 0);
         verifier.registerAttestation(identityAddress, TOPIC_KYC, uid);
 
         bool isValid = wrapper.isClaimValid(IIdentity(address(wrapper)), TOPIC_KYC, "", "");
@@ -225,9 +188,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
     }
 
     function test_isClaimValid_returnsFalseForRevokedAttestation() public {
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            schemaKYC, identityAddress, identityAddress, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(schemaKYC, identityAddress, identityAddress, 1, 0, 840, 0);
         verifier.registerAttestation(identityAddress, TOPIC_KYC, uid);
 
         // Revoke the attestation

@@ -117,10 +117,7 @@ contract FullTransferLifecycleTest is Test {
         // ============ Step 8: Revoke attestation ============
         vm.prank(kycProviderAddr);
         mockEAS.revoke(
-            RevocationRequest({
-                schema: SCHEMA_KYC,
-                data: RevocationRequestData({uid: attestationUID, value: 0})
-            })
+            RevocationRequest({schema: SCHEMA_KYC, data: RevocationRequestData({uid: attestationUID, value: 0})})
         );
 
         // Investor can no longer receive transfers
@@ -158,9 +155,7 @@ contract FullTransferLifecycleTest is Test {
         assertFalse(verifier.isVerified(investor2));
 
         // Attest investor1
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0);
         verifier.registerAttestation(investor1, TOPIC_KYC, uid1);
 
         // Only investor1 is verified
@@ -169,7 +164,13 @@ contract FullTransferLifecycleTest is Test {
 
         // Attest investor2
         bytes32 uid2 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor2, investor2, 1, 0, 826, 0 // UK
+            SCHEMA_KYC,
+            investor2,
+            investor2,
+            1,
+            0,
+            826,
+            0 // UK
         );
         verifier.registerAttestation(investor2, TOPIC_KYC, uid2);
 
@@ -198,9 +199,7 @@ contract FullTransferLifecycleTest is Test {
         assertFalse(verifier.isVerified(identity1));
 
         // Attest the identity (not the individual wallets)
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, identity1, identity1, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(SCHEMA_KYC, identity1, identity1, 1, 0, 840, 0);
         verifier.registerAttestation(identity1, TOPIC_KYC, uid);
 
         // All wallets and identity are verified

@@ -96,9 +96,7 @@ contract GasBenchmarkTest is Test {
         claimTopicsRegistry.addClaimTopic(TOPIC_1);
 
         // Create and register attestation
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            SCHEMA_1, investor, investor, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(SCHEMA_1, investor, investor, 1, 0, 840, 0);
         verifier.registerAttestation(investor, TOPIC_1, uid);
 
         // Measure gas
@@ -120,15 +118,9 @@ contract GasBenchmarkTest is Test {
         claimTopicsRegistry.addClaimTopic(TOPIC_3);
 
         // Create and register attestations
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            SCHEMA_1, investor, investor, 1, 0, 840, 0
-        );
-        bytes32 uid2 = kycProvider.attestInvestorEligibility(
-            SCHEMA_2, investor, investor, 1, 0, 840, 0
-        );
-        bytes32 uid3 = kycProvider.attestInvestorEligibility(
-            SCHEMA_3, investor, investor, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(SCHEMA_1, investor, investor, 1, 0, 840, 0);
+        bytes32 uid2 = kycProvider.attestInvestorEligibility(SCHEMA_2, investor, investor, 1, 0, 840, 0);
+        bytes32 uid3 = kycProvider.attestInvestorEligibility(SCHEMA_3, investor, investor, 1, 0, 840, 0);
 
         verifier.registerAttestation(investor, TOPIC_1, uid1);
         verifier.registerAttestation(investor, TOPIC_2, uid2);
@@ -155,21 +147,11 @@ contract GasBenchmarkTest is Test {
         claimTopicsRegistry.addClaimTopic(TOPIC_5);
 
         // Create and register attestations
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            SCHEMA_1, investor, investor, 1, 0, 840, 0
-        );
-        bytes32 uid2 = kycProvider.attestInvestorEligibility(
-            SCHEMA_2, investor, investor, 1, 0, 840, 0
-        );
-        bytes32 uid3 = kycProvider.attestInvestorEligibility(
-            SCHEMA_3, investor, investor, 1, 0, 840, 0
-        );
-        bytes32 uid4 = kycProvider.attestInvestorEligibility(
-            SCHEMA_4, investor, investor, 1, 0, 840, 0
-        );
-        bytes32 uid5 = kycProvider.attestInvestorEligibility(
-            SCHEMA_5, investor, investor, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(SCHEMA_1, investor, investor, 1, 0, 840, 0);
+        bytes32 uid2 = kycProvider.attestInvestorEligibility(SCHEMA_2, investor, investor, 1, 0, 840, 0);
+        bytes32 uid3 = kycProvider.attestInvestorEligibility(SCHEMA_3, investor, investor, 1, 0, 840, 0);
+        bytes32 uid4 = kycProvider.attestInvestorEligibility(SCHEMA_4, investor, investor, 1, 0, 840, 0);
+        bytes32 uid5 = kycProvider.attestInvestorEligibility(SCHEMA_5, investor, investor, 1, 0, 840, 0);
 
         verifier.registerAttestation(investor, TOPIC_1, uid1);
         verifier.registerAttestation(investor, TOPIC_2, uid2);
@@ -210,9 +192,7 @@ contract GasBenchmarkTest is Test {
     function test_gas_registerAttestation() public {
         claimTopicsRegistry.addClaimTopic(TOPIC_1);
 
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            SCHEMA_1, investor, investor, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(SCHEMA_1, investor, investor, 1, 0, 840, 0);
 
         uint256 gasBefore = gasleft();
         verifier.registerAttestation(investor, TOPIC_1, uid);
@@ -227,18 +207,11 @@ contract GasBenchmarkTest is Test {
      * @notice Benchmark: Revoking an EAS attestation
      */
     function test_gas_revokeAttestation() public {
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            SCHEMA_1, investor, investor, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(SCHEMA_1, investor, investor, 1, 0, 840, 0);
 
         uint256 gasBefore = gasleft();
         vm.prank(kycProviderAddr);
-        mockEAS.revoke(
-            RevocationRequest({
-                schema: SCHEMA_1,
-                data: RevocationRequestData({uid: uid, value: 0})
-            })
-        );
+        mockEAS.revoke(RevocationRequest({schema: SCHEMA_1, data: RevocationRequestData({uid: uid, value: 0})}));
         uint256 gasUsed = gasBefore - gasleft();
 
         console.log("Revoke attestation:", gasUsed);

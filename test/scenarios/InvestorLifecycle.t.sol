@@ -194,13 +194,7 @@ contract InvestorLifecycleTest is Test {
 
         // Step 1: Initial KYC
         bytes32 initialKyc = kycProvider.attestInvestorEligibility(
-            schemaKYC,
-            investor1Identity,
-            investor1Identity,
-            1,
-            0,
-            840,
-            expirationTime
+            schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, expirationTime
         );
         verifier.registerAttestation(investor1Identity, TOPIC_KYC, initialKyc);
 
@@ -213,13 +207,7 @@ contract InvestorLifecycleTest is Test {
         // Step 3: Investor renews KYC - new attestation created
         uint64 newExpirationTime = uint64(block.timestamp + 365 days);
         bytes32 renewedKyc = kycProvider.attestInvestorEligibility(
-            schemaKYC,
-            investor1Identity,
-            investor1Identity,
-            1,
-            0,
-            840,
-            newExpirationTime
+            schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, newExpirationTime
         );
         verifier.registerAttestation(investor1Identity, TOPIC_KYC, renewedKyc);
 
@@ -248,14 +236,12 @@ contract InvestorLifecycleTest is Test {
         adapter.addTrustedAttester(address(backupKycProvider), kycTopics);
 
         // Step 1: Both investors verified by primary KYC provider
-        bytes32 kyc1 = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0
-        );
+        bytes32 kyc1 =
+            kycProvider.attestInvestorEligibility(schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0);
         verifier.registerAttestation(investor1Identity, TOPIC_KYC, kyc1);
 
-        bytes32 kyc2 = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor2Identity, investor2Identity, 1, 0, 826, 0
-        );
+        bytes32 kyc2 =
+            kycProvider.attestInvestorEligibility(schemaKYC, investor2Identity, investor2Identity, 1, 0, 826, 0);
         verifier.registerAttestation(investor2Identity, TOPIC_KYC, kyc2);
 
         assertTrue(verifier.isVerified(investor1Identity));
@@ -270,9 +256,8 @@ contract InvestorLifecycleTest is Test {
         assertFalse(verifier.isVerified(investor2Identity));
 
         // Step 4: Investors re-verify with backup provider
-        bytes32 newKyc1 = backupKycProvider.attestInvestorEligibility(
-            schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0
-        );
+        bytes32 newKyc1 =
+            backupKycProvider.attestInvestorEligibility(schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0);
         verifier.registerAttestation(investor1Identity, TOPIC_KYC, newKyc1);
 
         assertTrue(verifier.isVerified(investor1Identity));
@@ -293,14 +278,12 @@ contract InvestorLifecycleTest is Test {
          */
 
         // Step 1: Both investors verified
-        bytes32 kyc1 = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0
-        );
+        bytes32 kyc1 =
+            kycProvider.attestInvestorEligibility(schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0);
         verifier.registerAttestation(investor1Identity, TOPIC_KYC, kyc1);
 
-        bytes32 kyc2 = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor2Identity, investor2Identity, 1, 0, 826, 0
-        );
+        bytes32 kyc2 =
+            kycProvider.attestInvestorEligibility(schemaKYC, investor2Identity, investor2Identity, 1, 0, 826, 0);
         verifier.registerAttestation(investor2Identity, TOPIC_KYC, kyc2);
 
         assertTrue(verifier.isVerified(investor1Identity));
@@ -308,15 +291,7 @@ contract InvestorLifecycleTest is Test {
 
         // Step 2-3: Investor1's attestation is revoked due to fraud
         vm.prank(address(kycProvider));
-        eas.revoke(
-            RevocationRequest({
-                schema: schemaKYC,
-                data: RevocationRequestData({
-                    uid: kyc1,
-                    value: 0
-                })
-            })
-        );
+        eas.revoke(RevocationRequest({schema: schemaKYC, data: RevocationRequestData({uid: kyc1, value: 0})}));
 
         // Step 4: Only the fraudulent investor is affected
         assertFalse(verifier.isVerified(investor1Identity));
@@ -337,14 +312,12 @@ contract InvestorLifecycleTest is Test {
          */
 
         // Step 1-2: Investors verified with KYC only
-        bytes32 kyc1 = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0
-        );
+        bytes32 kyc1 =
+            kycProvider.attestInvestorEligibility(schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0);
         verifier.registerAttestation(investor1Identity, TOPIC_KYC, kyc1);
 
-        bytes32 kyc2 = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor2Identity, investor2Identity, 1, 0, 826, 0
-        );
+        bytes32 kyc2 =
+            kycProvider.attestInvestorEligibility(schemaKYC, investor2Identity, investor2Identity, 1, 0, 826, 0);
         verifier.registerAttestation(investor2Identity, TOPIC_KYC, kyc2);
 
         assertTrue(verifier.isVerified(investor1Identity));
@@ -383,9 +356,8 @@ contract InvestorLifecycleTest is Test {
          */
 
         // Step 1: Initial setup with one wallet
-        bytes32 kyc = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0
-        );
+        bytes32 kyc =
+            kycProvider.attestInvestorEligibility(schemaKYC, investor1Identity, investor1Identity, 1, 0, 840, 0);
         verifier.registerAttestation(investor1Identity, TOPIC_KYC, kyc);
 
         vm.prank(tokenIssuer);

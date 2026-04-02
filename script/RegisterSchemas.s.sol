@@ -32,8 +32,7 @@ contract RegisterSchemas is Script {
     string constant INVESTOR_ELIGIBILITY_SCHEMA =
         "address identity,uint8 kycStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp";
 
-    string constant ISSUER_AUTHORIZATION_SCHEMA =
-        "address issuerAddress,uint256[] authorizedTopics,string issuerName";
+    string constant ISSUER_AUTHORIZATION_SCHEMA = "address issuerAddress,uint256[] authorizedTopics,string issuerName";
 
     string constant WALLET_IDENTITY_LINK_SCHEMA =
         "address walletAddress,address identityAddress,uint64 linkedTimestamp";
@@ -65,28 +64,18 @@ contract RegisterSchemas is Script {
             registry,
             INVESTOR_ELIGIBILITY_SCHEMA,
             address(0), // No resolver - validation done by bridge contracts
-            true        // Revocable
+            true // Revocable
         );
         console2.log("Investor Eligibility Schema UID:");
         console2.logBytes32(investorEligibilityUID);
 
         // Register Issuer Authorization Schema
-        issuerAuthorizationUID = _registerSchemaIfNeeded(
-            registry,
-            ISSUER_AUTHORIZATION_SCHEMA,
-            address(0),
-            true
-        );
+        issuerAuthorizationUID = _registerSchemaIfNeeded(registry, ISSUER_AUTHORIZATION_SCHEMA, address(0), true);
         console2.log("Issuer Authorization Schema UID:");
         console2.logBytes32(issuerAuthorizationUID);
 
         // Register Wallet-Identity Link Schema
-        walletIdentityLinkUID = _registerSchemaIfNeeded(
-            registry,
-            WALLET_IDENTITY_LINK_SCHEMA,
-            address(0),
-            true
-        );
+        walletIdentityLinkUID = _registerSchemaIfNeeded(registry, WALLET_IDENTITY_LINK_SCHEMA, address(0), true);
         console2.log("Wallet-Identity Link Schema UID:");
         console2.logBytes32(walletIdentityLinkUID);
 
@@ -110,12 +99,10 @@ contract RegisterSchemas is Script {
      * @param revocable Whether attestations can be revoked
      * @return uid The schema UID (existing or newly registered)
      */
-    function _registerSchemaIfNeeded(
-        ISchemaRegistry registry,
-        string memory schema,
-        address resolver,
-        bool revocable
-    ) internal returns (bytes32 uid) {
+    function _registerSchemaIfNeeded(ISchemaRegistry registry, string memory schema, address resolver, bool revocable)
+        internal
+        returns (bytes32 uid)
+    {
         // Compute expected UID (matches EAS's implementation)
         uid = keccak256(abi.encodePacked(schema, resolver, revocable));
 

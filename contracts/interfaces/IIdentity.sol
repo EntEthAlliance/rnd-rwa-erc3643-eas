@@ -197,10 +197,8 @@ interface IIdentity is IERC734, IERC735 {
      * @param data The claim data to validate
      * @return True if the claim is valid
      */
-    function isClaimValid(
-        IIdentity _identity,
-        uint256 claimTopic,
-        bytes calldata sig,
-        bytes calldata data
-    ) external view returns (bool);
+    function isClaimValid(IIdentity _identity, uint256 claimTopic, bytes calldata sig, bytes calldata data)
+        external
+        view
+        returns (bool);
 }

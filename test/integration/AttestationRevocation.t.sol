@@ -76,9 +76,7 @@ contract AttestationRevocationTest is Test {
      */
     function test_attesterRevokesAttestation_immediateEffect() public {
         // Create and register attestation
-        bytes32 attestationUID = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0
-        );
+        bytes32 attestationUID = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0);
         verifier.registerAttestation(investor1, TOPIC_KYC, attestationUID);
 
         // Verify investor is eligible
@@ -87,10 +85,7 @@ contract AttestationRevocationTest is Test {
         // Attester revokes the attestation
         vm.prank(kycProviderAddr);
         mockEAS.revoke(
-            RevocationRequest({
-                schema: SCHEMA_KYC,
-                data: RevocationRequestData({uid: attestationUID, value: 0})
-            })
+            RevocationRequest({schema: SCHEMA_KYC, data: RevocationRequestData({uid: attestationUID, value: 0})})
         );
 
         // Immediate effect - investor is no longer eligible
@@ -108,13 +103,7 @@ contract AttestationRevocationTest is Test {
 
         // Create attestation with EAS-level expiration
         bytes memory data = abi.encode(investor1, uint8(1), uint8(0), uint16(840), uint64(0));
-        bytes32 attestationUID = kycProvider.attestCustom(
-            SCHEMA_KYC,
-            investor1,
-            data,
-            expirationTime,
-            true
-        );
+        bytes32 attestationUID = kycProvider.attestCustom(SCHEMA_KYC, investor1, data, expirationTime, true);
         verifier.registerAttestation(investor1, TOPIC_KYC, attestationUID);
 
         // Initially verified
@@ -138,15 +127,8 @@ contract AttestationRevocationTest is Test {
         uint64 dataExpiration = uint64(block.timestamp + 100);
 
         // Create attestation with data-level expiration (expirationTimestamp in data)
-        bytes32 attestationUID = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC,
-            investor1,
-            investor1,
-            1,
-            0,
-            840,
-            dataExpiration
-        );
+        bytes32 attestationUID =
+            kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor1, investor1, 1, 0, 840, dataExpiration);
         verifier.registerAttestation(investor1, TOPIC_KYC, attestationUID);
 
         // Initially verified
@@ -166,14 +148,16 @@ contract AttestationRevocationTest is Test {
      */
     function test_trustedAttesterRemoved_attestationsInvalid() public {
         // Create attestations for multiple investors from same provider
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0
-        );
-        bytes32 uid2 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor2, investor2, 1, 0, 826, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0);
+        bytes32 uid2 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor2, investor2, 1, 0, 826, 0);
         bytes32 uid3 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor3, investor3, 1, 0, 276, 0 // Germany
+            SCHEMA_KYC,
+            investor3,
+            investor3,
+            1,
+            0,
+            276,
+            0 // Germany
         );
 
         verifier.registerAttestation(investor1, TOPIC_KYC, uid1);
@@ -200,12 +184,8 @@ contract AttestationRevocationTest is Test {
      */
     function test_attesterReAdded_attestationsValidAgain() public {
         // Create attestations
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0
-        );
-        bytes32 uid2 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor2, investor2, 1, 0, 826, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0);
+        bytes32 uid2 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor2, investor2, 1, 0, 826, 0);
 
         verifier.registerAttestation(investor1, TOPIC_KYC, uid1);
         verifier.registerAttestation(investor2, TOPIC_KYC, uid2);
@@ -240,22 +220,16 @@ contract AttestationRevocationTest is Test {
         vm.warp(1000);
 
         // Investor1: will be revoked
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0);
         verifier.registerAttestation(investor1, TOPIC_KYC, uid1);
 
         // Investor2: will expire
         uint64 expiration = uint64(block.timestamp + 100);
-        bytes32 uid2 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor2, investor2, 1, 0, 826, expiration
-        );
+        bytes32 uid2 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor2, investor2, 1, 0, 826, expiration);
         verifier.registerAttestation(investor2, TOPIC_KYC, uid2);
 
         // Investor3: normal attestation
-        bytes32 uid3 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor3, investor3, 1, 0, 276, 0
-        );
+        bytes32 uid3 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor3, investor3, 1, 0, 276, 0);
         verifier.registerAttestation(investor3, TOPIC_KYC, uid3);
 
         // All verified initially
@@ -265,12 +239,7 @@ contract AttestationRevocationTest is Test {
 
         // Revoke investor1's attestation
         vm.prank(kycProviderAddr);
-        mockEAS.revoke(
-            RevocationRequest({
-                schema: SCHEMA_KYC,
-                data: RevocationRequestData({uid: uid1, value: 0})
-            })
-        );
+        mockEAS.revoke(RevocationRequest({schema: SCHEMA_KYC, data: RevocationRequestData({uid: uid1, value: 0})}));
 
         // Investor1 loses verification
         assertFalse(verifier.isVerified(investor1));
@@ -307,12 +276,8 @@ contract AttestationRevocationTest is Test {
         trustedIssuers.addTrustedAttester(address(secondProvider), topics);
 
         // Investor has attestations from both providers
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0
-        );
-        bytes32 uid2 = secondProvider.attestInvestorEligibility(
-            SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0);
+        bytes32 uid2 = secondProvider.attestInvestorEligibility(SCHEMA_KYC, investor1, investor1, 1, 0, 840, 0);
 
         verifier.registerAttestation(investor1, TOPIC_KYC, uid1);
         verifier.registerAttestation(investor1, TOPIC_KYC, uid2);

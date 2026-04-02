@@ -97,10 +97,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
     /**
      * @inheritdoc IEASClaimVerifier
      */
-    function setTopicSchemaMapping(
-        uint256 claimTopic,
-        bytes32 schemaUID
-    ) external override onlyOwner {
+    function setTopicSchemaMapping(uint256 claimTopic, bytes32 schemaUID) external override onlyOwner {
         _topicToSchema[claimTopic] = schemaUID;
         emit TopicSchemaMappingSet(claimTopic, schemaUID);
     }
@@ -152,11 +149,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
      * @param claimTopic The claim topic this attestation covers
      * @param attestationUID The EAS attestation UID
      */
-    function registerAttestation(
-        address identity,
-        uint256 claimTopic,
-        bytes32 attestationUID
-    ) external {
+    function registerAttestation(address identity, uint256 claimTopic, bytes32 attestationUID) external {
         if (address(_eas) == address(0)) revert EASNotConfigured();
         if (address(_trustedIssuersAdapter) == address(0)) revert TrustedIssuersAdapterNotConfigured();
 
@@ -170,10 +163,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
         require(attestation.uid != bytes32(0), "Attestation not found");
         require(attestation.schema == schemaUID, "Schema mismatch");
         require(attestation.recipient == identity, "Recipient mismatch");
-        require(
-            _trustedIssuersAdapter.isAttesterTrusted(attestation.attester, claimTopic),
-            "Attester not trusted"
-        );
+        require(_trustedIssuersAdapter.isAttesterTrusted(attestation.attester, claimTopic), "Attester not trusted");
 
         // Register the attestation
         _registeredAttestations[identity][claimTopic][attestation.attester] = attestationUID;
@@ -188,11 +178,11 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
      * @param attester The attester address
      * @return The registered attestation UID (bytes32(0) if not registered)
      */
-    function getRegisteredAttestation(
-        address identity,
-        uint256 claimTopic,
-        address attester
-    ) external view returns (bytes32) {
+    function getRegisteredAttestation(address identity, uint256 claimTopic, address attester)
+        external
+        view
+        returns (bytes32)
+    {
         return _registeredAttestations[identity][claimTopic][attester];
     }
 
@@ -253,10 +243,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
      * @param claimTopic The claim topic to verify
      * @return True if a valid attestation exists from a trusted attester
      */
-    function _verifyTopic(
-        address identity,
-        uint256 claimTopic
-    ) internal view returns (bool) {
+    function _verifyTopic(address identity, uint256 claimTopic) internal view returns (bool) {
         // Get schema UID for this topic
         bytes32 schemaUID = _topicToSchema[claimTopic];
         if (schemaUID == bytes32(0)) {
@@ -291,10 +278,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
      * @param expectedSchemaUID The expected schema UID
      * @return True if the attestation is valid (exists, correct schema, not revoked, not expired)
      */
-    function _isAttestationValid(
-        bytes32 attestationUID,
-        bytes32 expectedSchemaUID
-    ) internal view returns (bool) {
+    function _isAttestationValid(bytes32 attestationUID, bytes32 expectedSchemaUID) internal view returns (bool) {
         Attestation memory attestation = _eas.getAttestation(attestationUID);
 
         // Check attestation exists
@@ -321,10 +305,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
         // Schema: address identity, uint8 kycStatus, uint8 accreditationType, uint16 countryCode, uint64 expirationTimestamp
         // abi.encode packs each value to 32 bytes: 32 + 32 + 32 + 32 + 32 = 160 bytes
         if (attestation.data.length >= 160) {
-            (, , , , uint64 expirationTimestamp) = abi.decode(
-                attestation.data,
-                (address, uint8, uint8, uint16, uint64)
-            );
+            (,,,, uint64 expirationTimestamp) = abi.decode(attestation.data, (address, uint8, uint8, uint16, uint64));
 
             if (expirationTimestamp != 0 && expirationTimestamp <= block.timestamp) {
                 return false;
@@ -344,9 +325,6 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
      * @param attestationUID The registered attestation UID
      */
     event AttestationRegistered(
-        address indexed identity,
-        uint256 indexed claimTopic,
-        address indexed attester,
-        bytes32 attestationUID
+        address indexed identity, uint256 indexed claimTopic, address indexed attester, bytes32 attestationUID
     );
 }

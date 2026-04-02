@@ -51,10 +51,7 @@ contract EASTrustedIssuersAdapter is IEASTrustedIssuersAdapter, Ownable {
     /**
      * @inheritdoc IEASTrustedIssuersAdapter
      */
-    function addTrustedAttester(
-        address attester,
-        uint256[] calldata claimTopics
-    ) external override onlyOwner {
+    function addTrustedAttester(address attester, uint256[] calldata claimTopics) external override onlyOwner {
         if (attester == address(0)) revert ZeroAddressNotAllowed();
         if (_isTrusted[attester]) revert AttesterAlreadyTrusted(attester);
         if (claimTopics.length == 0) revert EmptyClaimTopics();
@@ -105,10 +102,7 @@ contract EASTrustedIssuersAdapter is IEASTrustedIssuersAdapter, Ownable {
     /**
      * @inheritdoc IEASTrustedIssuersAdapter
      */
-    function updateAttesterTopics(
-        address attester,
-        uint256[] calldata claimTopics
-    ) external override onlyOwner {
+    function updateAttesterTopics(address attester, uint256[] calldata claimTopics) external override onlyOwner {
         if (!_isTrusted[attester]) revert AttesterNotTrusted(attester);
         if (claimTopics.length == 0) revert EmptyClaimTopics();
         if (claimTopics.length > MAX_TOPICS_PER_ATTESTER) {
@@ -139,28 +133,21 @@ contract EASTrustedIssuersAdapter is IEASTrustedIssuersAdapter, Ownable {
     /**
      * @inheritdoc IEASTrustedIssuersAdapter
      */
-    function isAttesterTrusted(
-        address attester,
-        uint256 claimTopic
-    ) external view override returns (bool) {
+    function isAttesterTrusted(address attester, uint256 claimTopic) external view override returns (bool) {
         return _attesterTrustedForTopic[attester][claimTopic];
     }
 
     /**
      * @inheritdoc IEASTrustedIssuersAdapter
      */
-    function getTrustedAttestersForTopic(
-        uint256 claimTopic
-    ) external view override returns (address[] memory) {
+    function getTrustedAttestersForTopic(uint256 claimTopic) external view override returns (address[] memory) {
         return _claimTopicToAttesters[claimTopic];
     }
 
     /**
      * @inheritdoc IEASTrustedIssuersAdapter
      */
-    function getAttesterTopics(
-        address attester
-    ) external view override returns (uint256[] memory) {
+    function getAttesterTopics(address attester) external view override returns (uint256[] memory) {
         return _attesterClaimTopics[attester];
     }
 

@@ -1,7 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {IEAS, AttestationRequest, AttestationRequestData, MultiAttestationRequest, DelegatedAttestationRequest, MultiDelegatedAttestationRequest, RevocationRequest, RevocationRequestData, MultiRevocationRequest, DelegatedRevocationRequest, MultiDelegatedRevocationRequest} from "@eas/IEAS.sol";
+import {
+    IEAS,
+    AttestationRequest,
+    AttestationRequestData,
+    MultiAttestationRequest,
+    DelegatedAttestationRequest,
+    MultiDelegatedAttestationRequest,
+    RevocationRequest,
+    RevocationRequestData,
+    MultiRevocationRequest,
+    DelegatedRevocationRequest,
+    MultiDelegatedRevocationRequest
+} from "@eas/IEAS.sol";
 import {Attestation, EMPTY_UID} from "@eas/Common.sol";
 import {ISchemaRegistry} from "@eas/ISchemaRegistry.sol";
 
@@ -52,9 +64,7 @@ contract MockEAS is IEAS {
     /**
      * @inheritdoc IEAS
      */
-    function attest(
-        AttestationRequest calldata request
-    ) external payable override returns (bytes32) {
+    function attest(AttestationRequest calldata request) external payable override returns (bytes32) {
         bytes32 uid = _generateUID();
 
         _attestations[uid] = Attestation({
@@ -81,10 +91,7 @@ contract MockEAS is IEAS {
      * @param attester The attester address to use
      * @return The attestation UID
      */
-    function attestFrom(
-        AttestationRequest calldata request,
-        address attester
-    ) external returns (bytes32) {
+    function attestFrom(AttestationRequest calldata request, address attester) external returns (bytes32) {
         bytes32 uid = _generateUID();
 
         _attestations[uid] = Attestation({
@@ -108,9 +115,12 @@ contract MockEAS is IEAS {
     /**
      * @inheritdoc IEAS
      */
-    function attestByDelegation(
-        DelegatedAttestationRequest calldata delegatedRequest
-    ) external payable override returns (bytes32) {
+    function attestByDelegation(DelegatedAttestationRequest calldata delegatedRequest)
+        external
+        payable
+        override
+        returns (bytes32)
+    {
         bytes32 uid = _generateUID();
 
         _attestations[uid] = Attestation({
@@ -134,9 +144,12 @@ contract MockEAS is IEAS {
     /**
      * @inheritdoc IEAS
      */
-    function multiAttest(
-        MultiAttestationRequest[] calldata multiRequests
-    ) external payable override returns (bytes32[] memory) {
+    function multiAttest(MultiAttestationRequest[] calldata multiRequests)
+        external
+        payable
+        override
+        returns (bytes32[] memory)
+    {
         uint256 totalCount = 0;
         for (uint256 i = 0; i < multiRequests.length; i++) {
             totalCount += multiRequests[i].data.length;
@@ -175,9 +188,12 @@ contract MockEAS is IEAS {
     /**
      * @inheritdoc IEAS
      */
-    function multiAttestByDelegation(
-        MultiDelegatedAttestationRequest[] calldata multiDelegatedRequests
-    ) external payable override returns (bytes32[] memory) {
+    function multiAttestByDelegation(MultiDelegatedAttestationRequest[] calldata multiDelegatedRequests)
+        external
+        payable
+        override
+        returns (bytes32[] memory)
+    {
         uint256 totalCount = 0;
         for (uint256 i = 0; i < multiDelegatedRequests.length; i++) {
             totalCount += multiDelegatedRequests[i].data.length;
@@ -234,9 +250,7 @@ contract MockEAS is IEAS {
     /**
      * @inheritdoc IEAS
      */
-    function revokeByDelegation(
-        DelegatedRevocationRequest calldata delegatedRequest
-    ) external payable override {
+    function revokeByDelegation(DelegatedRevocationRequest calldata delegatedRequest) external payable override {
         Attestation storage attestation = _attestations[delegatedRequest.data.uid];
         require(attestation.uid != EMPTY_UID, "Attestation not found");
         require(attestation.attester == delegatedRequest.revoker, "Only attester can revoke");
@@ -251,19 +265,15 @@ contract MockEAS is IEAS {
     /**
      * @inheritdoc IEAS
      */
-    function multiRevoke(
-        MultiRevocationRequest[] calldata multiRequests
-    ) external payable override {
+    function multiRevoke(MultiRevocationRequest[] calldata multiRequests) external payable override {
         for (uint256 i = 0; i < multiRequests.length; i++) {
             for (uint256 j = 0; j < multiRequests[i].data.length; j++) {
                 bytes32 uid = multiRequests[i].data[j].uid;
                 Attestation storage attestation = _attestations[uid];
 
                 if (
-                    attestation.uid != EMPTY_UID &&
-                    attestation.attester == msg.sender &&
-                    attestation.revocable &&
-                    attestation.revocationTime == 0
+                    attestation.uid != EMPTY_UID && attestation.attester == msg.sender && attestation.revocable
+                        && attestation.revocationTime == 0
                 ) {
                     attestation.revocationTime = uint64(block.timestamp);
                     emit Revoked(attestation.recipient, msg.sender, uid, attestation.schema);
@@ -275,9 +285,11 @@ contract MockEAS is IEAS {
     /**
      * @inheritdoc IEAS
      */
-    function multiRevokeByDelegation(
-        MultiDelegatedRevocationRequest[] calldata multiDelegatedRequests
-    ) external payable override {
+    function multiRevokeByDelegation(MultiDelegatedRevocationRequest[] calldata multiDelegatedRequests)
+        external
+        payable
+        override
+    {
         for (uint256 i = 0; i < multiDelegatedRequests.length; i++) {
             address revoker = multiDelegatedRequests[i].revoker;
             for (uint256 j = 0; j < multiDelegatedRequests[i].data.length; j++) {
@@ -285,10 +297,8 @@ contract MockEAS is IEAS {
                 Attestation storage attestation = _attestations[uid];
 
                 if (
-                    attestation.uid != EMPTY_UID &&
-                    attestation.attester == revoker &&
-                    attestation.revocable &&
-                    attestation.revocationTime == 0
+                    attestation.uid != EMPTY_UID && attestation.attester == revoker && attestation.revocable
+                        && attestation.revocationTime == 0
                 ) {
                     attestation.revocationTime = uint64(block.timestamp);
                     emit Revoked(attestation.recipient, revoker, uid, attestation.schema);

@@ -123,10 +123,7 @@ contract UseCase_STO_Test is Test {
         return uid;
     }
 
-    function _canReceiveTokens(
-        address investor,
-        uint16 countryCode
-    ) internal view returns (bool) {
+    function _canReceiveTokens(address investor, uint16 countryCode) internal view returns (bool) {
         // Check 1: EAS identity verification
         if (!verifier.isVerified(investor)) {
             return false;

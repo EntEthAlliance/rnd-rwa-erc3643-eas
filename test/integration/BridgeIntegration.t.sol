@@ -126,12 +126,7 @@ contract BridgeIntegrationTest is Test {
         AttestationRequest memory request = AttestationRequest({
             schema: schemaKYC,
             data: AttestationRequestData({
-                recipient: investor1,
-                expirationTime: 0,
-                revocable: true,
-                refUID: bytes32(0),
-                data: data,
-                value: 0
+                recipient: investor1, expirationTime: 0, revocable: true, refUID: bytes32(0), data: data, value: 0
             })
         });
 
@@ -143,15 +138,7 @@ contract BridgeIntegrationTest is Test {
 
         // 2. Revoke attestation
         vm.prank(kycProviderAddr);
-        eas.revoke(
-            RevocationRequest({
-                schema: schemaKYC,
-                data: RevocationRequestData({
-                    uid: uid,
-                    value: 0
-                })
-            })
-        );
+        eas.revoke(RevocationRequest({schema: schemaKYC, data: RevocationRequestData({uid: uid, value: 0})}));
 
         // 3. Investor is no longer verified
         assertFalse(verifier.isVerified(investor1));
@@ -198,14 +185,18 @@ contract BridgeIntegrationTest is Test {
         adapter.addTrustedAttester(kycProvider2Addr, topics);
 
         // Investor1 uses provider1
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor1, investor1, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(schemaKYC, investor1, investor1, 1, 0, 840, 0);
         verifier.registerAttestation(investor1, TOPIC_KYC, uid1);
 
         // Investor2 uses provider2
         bytes32 uid2 = kycProvider2.attestInvestorEligibility(
-            schemaKYC, investor2, investor2, 1, 0, 826, 0 // UK
+            schemaKYC,
+            investor2,
+            investor2,
+            1,
+            0,
+            826,
+            0 // UK
         );
         verifier.registerAttestation(investor2, TOPIC_KYC, uid2);
 
@@ -225,9 +216,7 @@ contract BridgeIntegrationTest is Test {
 
     function test_completeFlow_changeTopicRequirements() public {
         // Initially only KYC required
-        bytes32 uid1 = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor1, investor1, 1, 0, 840, 0
-        );
+        bytes32 uid1 = kycProvider.attestInvestorEligibility(schemaKYC, investor1, investor1, 1, 0, 840, 0);
         verifier.registerAttestation(investor1, TOPIC_KYC, uid1);
 
         assertTrue(verifier.isVerified(investor1));
@@ -252,9 +241,7 @@ contract BridgeIntegrationTest is Test {
         identityProxy.batchRegisterWallets(wallets, investor1);
 
         // Create attestation for identity
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor1, investor1, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(schemaKYC, investor1, investor1, 1, 0, 840, 0);
         verifier.registerAttestation(investor1, TOPIC_KYC, uid);
 
         // All wallets verified
@@ -268,9 +255,7 @@ contract BridgeIntegrationTest is Test {
         identityProxy.registerWallet(wallet1a, investor1);
         identityProxy.registerWallet(wallet1b, investor1);
 
-        bytes32 uid = kycProvider.attestInvestorEligibility(
-            schemaKYC, investor1, investor1, 1, 0, 840, 0
-        );
+        bytes32 uid = kycProvider.attestInvestorEligibility(schemaKYC, investor1, investor1, 1, 0, 840, 0);
         verifier.registerAttestation(investor1, TOPIC_KYC, uid);
 
         assertTrue(verifier.isVerified(wallet1a));

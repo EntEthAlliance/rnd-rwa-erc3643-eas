@@ -45,11 +45,7 @@ contract EASIdentityProxy is IEASIdentityProxy, Ownable {
      * @param identity The identity address to check against
      */
     modifier onlyAuthorized(address identity) {
-        if (
-            msg.sender != owner() &&
-            !_agents[msg.sender] &&
-            msg.sender != identity
-        ) {
+        if (msg.sender != owner() && !_agents[msg.sender] && msg.sender != identity) {
             revert NotAuthorized();
         }
         _;
@@ -100,10 +96,7 @@ contract EASIdentityProxy is IEASIdentityProxy, Ownable {
     /**
      * @inheritdoc IEASIdentityProxy
      */
-    function registerWallet(
-        address wallet,
-        address identity
-    ) external override onlyAuthorized(identity) {
+    function registerWallet(address wallet, address identity) external override onlyAuthorized(identity) {
         if (wallet == address(0) || identity == address(0)) {
             revert ZeroAddressNotAllowed();
         }
@@ -135,11 +128,7 @@ contract EASIdentityProxy is IEASIdentityProxy, Ownable {
         }
 
         // Check authorization: must be owner, agent, or the identity itself
-        if (
-            msg.sender != owner() &&
-            !_agents[msg.sender] &&
-            msg.sender != identity
-        ) {
+        if (msg.sender != owner() && !_agents[msg.sender] && msg.sender != identity) {
             revert NotAuthorized();
         }
 
@@ -174,9 +163,7 @@ contract EASIdentityProxy is IEASIdentityProxy, Ownable {
     /**
      * @inheritdoc IEASIdentityProxy
      */
-    function getWallets(
-        address identity
-    ) external view override returns (address[] memory) {
+    function getWallets(address identity) external view override returns (address[] memory) {
         return _identityWallets[identity];
     }
 
@@ -190,10 +177,11 @@ contract EASIdentityProxy is IEASIdentityProxy, Ownable {
     /**
      * @inheritdoc IEASIdentityProxy
      */
-    function batchRegisterWallets(
-        address[] calldata wallets,
-        address identity
-    ) external override onlyAuthorized(identity) {
+    function batchRegisterWallets(address[] calldata wallets, address identity)
+        external
+        override
+        onlyAuthorized(identity)
+    {
         if (identity == address(0)) revert ZeroAddressNotAllowed();
 
         for (uint256 i = 0; i < wallets.length; i++) {
