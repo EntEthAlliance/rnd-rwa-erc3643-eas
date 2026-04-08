@@ -34,7 +34,11 @@ contract ValenceEASKernelAdapter {
         trustedAttestersOrbital = new TrustedAttestersOrbital(owner_);
         identityMappingOrbital = new IdentityMappingOrbital(owner_);
         verificationOrbital = new VerificationOrbital(
-            owner_, address(0), address(registryOrbital), address(trustedAttestersOrbital), address(identityMappingOrbital)
+            owner_,
+            address(0),
+            address(registryOrbital),
+            address(trustedAttestersOrbital),
+            address(identityMappingOrbital)
         );
     }
 

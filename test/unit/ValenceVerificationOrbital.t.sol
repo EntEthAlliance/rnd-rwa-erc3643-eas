@@ -29,7 +29,8 @@ contract ValenceVerificationOrbitalTest is Test {
         registry = new RegistryOrbital(owner);
         trusted = new TrustedAttestersOrbital(owner);
         identityMap = new IdentityMappingOrbital(owner);
-        verification = new VerificationOrbital(owner, address(eas), address(registry), address(trusted), address(identityMap));
+        verification =
+            new VerificationOrbital(owner, address(eas), address(registry), address(trusted), address(identityMap));
 
         registry.setTopicSchemaMapping(TOPIC_KYC, SCHEMA_KYC);
         trusted.setTrustedAttester(TOPIC_KYC, trustedAttester, true);
