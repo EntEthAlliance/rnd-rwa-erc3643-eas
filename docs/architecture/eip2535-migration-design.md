@@ -44,6 +44,31 @@ Current architectural gaps vs EIP-2535:
 
 ## Target Architecture (Diamond)
 
+### Raw EIP-2535 vs Valence Kernel (Migration Position)
+
+| Dimension | Raw EIP-2535 Diamond | Valence Kernel + Orbitals (Target Spike Direction) |
+|---|---|---|
+| Routing model | Diamond fallback + selector table | Kernel-mediated selector/module routing |
+| Module shape | Facets | Orbitals (domain modules) |
+| Storage discipline | Diamond storage libraries | Per-orbital storage slot conventions |
+| Upgrade operations | `diamondCut` directly | Kernel-governed module registration / selector binding |
+| Team ergonomics | Low-level selector management | Higher-level module semantics and ownership boundaries |
+| Current repo status | Design documented | **Spike scaffold implemented** (`contracts/valence/*`) |
+
+**Decision:** keep current production verifier contracts as-is; run Valence migration as an additive spike path first, then evaluate cutover once selector and storage compatibility are proven.
+
+### Target Module Mapping (Current Contracts → Valence Orbitals)
+
+| Current responsibility | Existing contract | Valence target module |
+|---|---|---|
+| Topic-level verification (`isVerified`, topic checks) | `EASClaimVerifier.sol` | `VerificationOrbital.sol` |
+| Topic-schema + attestation registry | `EASClaimVerifier.sol` | `RegistryOrbital.sol` |
+| Trusted attester administration | `EASTrustedIssuersAdapter.sol` | Future `AttesterOrbital` (TODO) |
+| Wallet→identity mapping | `EASIdentityProxy.sol` | Future `IdentityOrbital` (TODO) |
+| Compatibility wrapper | `EASClaimVerifierIdentityWrapper.sol` | Adapter layer retained during spike |
+
+The initial spike implements the first two modules and a `ValenceEASKernelAdapter` that exposes module metadata/bindings without touching production flow.
+
 ### Diamond contracts
 - `EASVerifierDiamond.sol` (proxy + fallback)
 - `DiamondCutFacet.sol`
