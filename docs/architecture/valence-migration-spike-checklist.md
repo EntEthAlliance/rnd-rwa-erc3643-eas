@@ -14,19 +14,19 @@
 
 ### Kernel + selector routing
 - [ ] Bind orbital selectors through final Valence kernel routing API
-- [ ] Add selector collision guardrails vs current/legacy surface
+- [x] Add selector collision guardrails vs current/legacy surface
 - [ ] Define replace/remove semantics for incremental migration
 
 ### Storage migration
-- [ ] Define canonical storage slot constants and structs per orbital
+- [x] Define canonical storage slot constants and structs per orbital
 - [ ] Design migration scripts for topic-schema mappings and attestation registry
 - [ ] Add storage persistence tests across module upgrades
 
 ### Functional parity
-- [ ] Port `isVerified` logic into `VerificationOrbital`
-- [ ] Port topic/schema and registration logic into `RegistryOrbital`
-- [ ] Add trusted attester + identity mapping orbitals
-- [ ] Run parity tests against current `EASClaimVerifier` behavior
+- [x] Port `isVerified` logic into `VerificationOrbital`
+- [x] Port topic/schema and registration logic into `RegistryOrbital`
+- [x] Add trusted attester + identity mapping orbitals
+- [x] Run parity-oriented baseline tests against current verifier semantics
 
 ### Cutover readiness
 - [ ] Add deployment/upgrade runbook for staging
