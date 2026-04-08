@@ -16,6 +16,38 @@ This ships as an open-source reference implementation on GitHub under the EEA or
 
 ---
 
+## Demo + Validation (How to prove this works)
+
+This project is designed to be verifiable at three levels:
+
+### A) Local validation (developer machine)
+
+**Prereqs:** Foundry (`forge`, `cast`), an RPC URL, and a funded deployer key for the target network.
+
+**Run (keep it short):**
+- `forge test`
+- `forge test --match-path test/integration/*`
+- `forge test --gas-report`
+- (optional) `forge coverage`
+
+### B) Testnet pilot (Sepolia) — end-to-end
+
+Run scripts in order:
+- `script/DeployTestnet.s.sol`
+- `script/RegisterSchemas.s.sol`
+- `script/SetupPilot.s.sol`
+
+**Expected outcome:** transfers to verified identities succeed; transfers to unverified identities revert at identity verification.
+
+### C) Demo UI
+
+A separate demo front-end lives here:
+- https://github.com/claudyfaucant/eas-erc3643-bridge-demo
+
+It connects to deployed contracts (addresses + chain config) and demonstrates schema registration + attestation-driven eligibility checks for ERC-3643 flows.
+
+---
+
 ## Repository Structure
 
 Fork the ERC-3643 T-REX contracts from https://github.com/TokenySolutions/T-REX as a dependency. Fork or reference the EAS contracts from https://github.com/ethereum-attestation-service/eas-contracts as a dependency.
@@ -519,14 +551,22 @@ Documentation: Every public and external function must have NatSpec comments. Ev
 
 ## Definition of Done
 
+### Functional completion
 - All contracts compile with zero warnings
-- 100% branch coverage on unit tests
-- All integration tests pass
-- All scenario tests pass
+- All unit, integration, and scenario tests pass
 - Gas benchmarks documented
-- All five Mermaid diagrams render correctly
-- Integration guide tested by someone who did not write it
+- All Mermaid diagrams render correctly
 - All NatSpec comments complete
-- README.md explains the project, links to all documentation, and includes quickstart instructions
-- Repository has CI/CD pipeline running tests on every PR
+
+### Verifiable evidence (reviewer checklist)
+- CI must be green on PRs (Build/Lint/Test/Coverage/Gas Report)
+- Docs must include exact commands to reproduce CI locally (see **Demo + Validation**)
+- Testnet pilot must be reproducible via the documented script sequence on Sepolia
+- Demo UI must be reproducible via a minimal config (contract addresses + chain)
+
+### Usability / handoff
+- Integration guide validated by someone who did not write it
+- README.md explains the project, links to all documentation, and includes quickstart + validation steps
+
+### Security
 - External audit completed with all critical/high findings resolved
