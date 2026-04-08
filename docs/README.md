@@ -17,6 +17,7 @@ This directory contains the documentation for the EAS-to-ERC-3643 Identity Bridg
 docs/
 ├── README.md                              # This index
 ├── erc3643-eas-implementation-guide.md    # GitHub-friendly implementation guide
+├── alerts-webhook.md                      # Issue/comment alerts to EEA agent channel
 ├── integration-guide.md                   # How to integrate (step by step)
 ├── gas-benchmarks.md                      # Gas costs and optimization
 ├── architecture/
