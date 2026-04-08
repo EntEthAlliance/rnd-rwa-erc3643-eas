@@ -7,6 +7,7 @@ This directory contains the documentation for the EAS-to-ERC-3643 Identity Bridg
 | Goal | Start Here |
 |------|------------|
 | **Understand the architecture** | [Identity Architecture Explained](architecture/identity-architecture-explained.md) — Full story of how ERC-3643 identity works, what EAS brings, and how the bridge connects them |
+| **Understand implementation quickly (GitHub-ready)** | [ERC-3643 + EAS Implementation Guide](erc3643-eas-implementation-guide.md) — Practical architecture + validation + review checklist |
 | **Integrate the bridge** | [Integration Guide](integration-guide.md) — Step-by-step integration instructions with code examples |
 | **Estimate gas costs** | [Gas Benchmarks](gas-benchmarks.md) — Gas costs for all operations with USD estimates |
 
@@ -15,6 +16,7 @@ This directory contains the documentation for the EAS-to-ERC-3643 Identity Bridg
 ```
 docs/
 ├── README.md                              # This index
+├── erc3643-eas-implementation-guide.md    # GitHub-friendly implementation guide
 ├── integration-guide.md                   # How to integrate (step by step)
 ├── gas-benchmarks.md                      # Gas costs and optimization
 ├── architecture/
@@ -35,6 +37,7 @@ docs/
 
 | Document | Description |
 |----------|-------------|
+| [ERC-3643 + EAS Implementation Guide](erc3643-eas-implementation-guide.md) | Fast, GitHub-friendly guide for reviewers and integrators: architecture, validation path, production readiness, and checklist. |
 | [Identity Architecture Explained](architecture/identity-architecture-explained.md) | The main architecture document. Explains how ERC-3643 identity works today, what EAS brings, how the bridge works, integration paths, compliance/revocation, multi-chain vision, and stakeholder perspectives. |
 | [System Architecture](architecture/system-architecture.md) | Technical component inventory: contracts, dependencies, integration paths, trust boundaries, upgrade paths, data flow. |
 | [Contract Interaction Diagrams](architecture/contract-interaction-diagrams.md) | Catalog of all Mermaid diagrams with descriptions of what each shows and when to reference it. |

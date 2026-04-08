@@ -102,6 +102,13 @@ This project provides smart contracts and tooling to integrate EAS attestations 
 - **Trusted attester management**: Control which KYC providers can issue valid attestations
 - **Zero-modification integration**: Drop-in wrapper for existing deployments (Path B)
 
+### Documentation Quick Links
+
+- **GitHub implementation guide:** `docs/erc3643-eas-implementation-guide.md`
+- **Integration walkthrough:** `docs/integration-guide.md`
+- **Architecture deep dive:** `docs/architecture/identity-architecture-explained.md`
+- **PRD + execution report:** `PRD.md`, `docs/PRD_EXECUTION_REPORT_2026-04-08.md`
+
 ## Architecture
 
 ```
