@@ -1,46 +1,49 @@
 sequenceDiagram
+    %% Mirrors OpenZeppelin RWA vocabulary: token → compliance → identity verifier module
     participant User
-    participant Token
-    participant Compliance
-    participant IR as IdentityRegistry
-    participant ECV as EASClaimVerifier
-    participant EIP as EASIdentityProxy
-    participant CTR as ClaimTopicsRegistry
-    participant TIA as TrustedIssuersAdapter
+    participant Token as Token Core (ERC-3643)
+    participant Compliance as Compliance Module(s)
+    participant IR as Identity Registry
+    participant Verifier as Identity Verifier (EASClaimVerifier)
+    participant EIP as Wallet→Identity Mapping (EASIdentityProxy)
+    participant CTR as Claim Topics Registry
+    participant TIA as Trusted Attesters Adapter
     participant EAS as EAS.sol
 
     User->>Token: transfer(to, amount)
     Token->>Compliance: canTransfer(from, to, amount)
+
+    %% ERC-3643: compliance gates call into identity checks (via Identity Registry)
     Compliance->>IR: isVerified(to)
 
-    Note over IR,ECV: Path A: EAS Verification
-    IR->>ECV: isVerified(userAddress)
+    Note over IR,Verifier: Identity Verifier Module — EAS backend (pluggable)
+    IR->>Verifier: isVerified(userAddress)
 
-    ECV->>EIP: getIdentity(userAddress)
-    EIP-->>ECV: identityAddress
+    Verifier->>EIP: getIdentity(userAddress)
+    EIP-->>Verifier: identityAddress
 
-    ECV->>CTR: getClaimTopics()
-    CTR-->>ECV: [topic1, topic2, ...]
+    Verifier->>CTR: getClaimTopics()
+    CTR-->>Verifier: [topic1, topic2, ...]
 
-    loop For each required topic
-        ECV->>ECV: getSchemaUID(topic)
-        ECV->>TIA: getTrustedAttestersForTopic(topic)
-        TIA-->>ECV: [attester1, attester2, ...]
+    loop For each required claim topic
+        Verifier->>Verifier: topic→schemaUID mapping
+        Verifier->>TIA: getTrustedAttestersForTopic(topic)
+        TIA-->>Verifier: [attester1, attester2, ...]
 
         loop For each trusted attester
-            ECV->>ECV: getRegisteredAttestation(identity, topic, attester)
-            alt Attestation registered
-                ECV->>EAS: getAttestation(uid)
-                EAS-->>ECV: Attestation{uid, schema, revocationTime, expirationTime, data}
-                ECV->>ECV: validate(notRevoked, notExpired, schemaMatch)
+            Verifier->>Verifier: find registered attestation UID
+            alt Attestation UID exists
+                Verifier->>EAS: getAttestation(uid)
+                EAS-->>Verifier: Attestation{uid, schema, revocationTime, expirationTime, data}
+                Verifier->>Verifier: validate(notRevoked, notExpired, schemaMatch, attesterTrusted)
                 alt Valid attestation found
-                    Note over ECV: Topic satisfied, continue
+                    Note over Verifier: Topic satisfied
                 end
             end
         end
     end
 
-    ECV-->>IR: true/false
+    Verifier-->>IR: true/false
     IR-->>Compliance: verified/not verified
     Compliance-->>Token: canTransfer result
 
@@ -48,5 +51,5 @@ sequenceDiagram
         Token->>Token: Execute transfer
         Token-->>User: Transfer success
     else Transfer blocked
-        Token-->>User: Transfer failed: compliance check
+        Token-->>User: Transfer failed (identity/compliance)
     end
