@@ -180,7 +180,9 @@ contract SetupPilot is Script {
                 expirationTime: uint64(block.timestamp + 365 days),
                 revocable: true,
                 refUID: bytes32(0),
-                data: abi.encode(identity, kycStatus, accreditationType, countryCode, uint64(block.timestamp + 365 days)),
+                data: abi.encode(
+                    identity, kycStatus, accreditationType, countryCode, uint64(block.timestamp + 365 days)
+                ),
                 value: 0
             })
         });
