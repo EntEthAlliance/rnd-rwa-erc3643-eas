@@ -141,6 +141,21 @@ Token Transfer Request
 | `EASIdentityProxy` | Maps wallet addresses to identity addresses for multi-wallet support |
 | `EASClaimVerifierIdentityWrapper` | IIdentity-compatible wrapper for zero-modification integration |
 
+### Valence Migration Spike (Non-Production)
+
+This repo now includes an **additive Valence spike path** under `contracts/valence/`:
+
+- `ValenceEASKernelAdapter.sol`
+- `modules/VerificationOrbital.sol`
+- `modules/RegistryOrbital.sol`
+
+Important caveats:
+- This is a **migration scaffold**, not a production cutover.
+- Existing production-path contracts and integration flow remain unchanged.
+- Orbitals currently expose metadata/selector skeletons with explicit TODOs for final selector registry and storage-slot migration.
+
+Use this spike to evaluate module boundaries and upgrade mechanics before replacing the current verifier architecture.
+
 ## Basic Implementation Example
 
 This shows the minimal steps to deploy the bridge, configure a KYC provider, and verify an investor — end to end.

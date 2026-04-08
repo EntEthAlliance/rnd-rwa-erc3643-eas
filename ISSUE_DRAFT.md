@@ -33,6 +33,17 @@ We've built a working implementation: **[eas-erc3643-bridge](https://github.com/
 
 **Key numbers:** EAS attestation costs ~218K gas vs ~1.5M for ONCHAINID identity deployment. On L2s, 97-99% cheaper.
 
+## Valence Migration Spike Checklist (Implementation Tracking)
+
+- [x] Add Valence scaffold contracts (`contracts/valence/*`)
+- [x] Add compile/deploy + selector metadata tests
+- [x] Add architecture comparison: raw EIP-2535 vs Valence kernel approach
+- [x] Document coexistence with existing production path
+- [ ] Complete selector routing integration with real kernel API
+- [ ] Complete storage migration plan + replay tooling
+- [ ] Port trusted attester and identity mapping responsibilities into dedicated orbitals
+- [ ] Validate parity + upgrade safety before any cutover decision
+
 ## Questions for Discussion
 
 1. Should ERC-3643 evolve toward a **pluggable identity interface** rather than mandating ONCHAINID?
