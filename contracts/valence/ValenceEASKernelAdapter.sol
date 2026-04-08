@@ -40,6 +40,23 @@ contract ValenceEASKernelAdapter {
         bytes32 orbitalStorageSlot;
     }
 
+    enum SelectorChangeKind {
+        Add,
+        Replace,
+        Remove
+    }
+
+    enum CutPath {
+        Standard,
+        Emergency
+    }
+
+    struct SelectorChange {
+        bytes4 selector;
+        address module;
+        SelectorChangeKind kind;
+    }
+
     error Unauthorized();
     error GovernanceInvariantViolation(string reason);
 
@@ -160,6 +177,23 @@ contract ValenceEASKernelAdapter {
         emit KernelRoutesApplied(kernel, routes.length);
     }
 
+    function validateSelectorChanges(
+        SelectorChange[] calldata changes,
+        CutPath path,
+        uint48 queuedDelay,
+        bool incidentDeclared
+    ) external view returns (bool) {
+        for (uint256 i = 0; i < changes.length; i++) {
+            _validateSelectorChange(changes[i].kind, path, queuedDelay, incidentDeclared);
+
+            if (changes[i].kind != SelectorChangeKind.Remove && changes[i].module == address(0)) {
+                revert GovernanceInvariantViolation("module=0");
+            }
+        }
+
+        return true;
+    }
+
     function hasSelectorCollisions() external view returns (bool) {
         bytes4[] memory selectors = this.exportedSelectors();
         for (uint256 i = 0; i < selectors.length; i++) {
@@ -191,6 +225,28 @@ contract ValenceEASKernelAdapter {
         }
         if (profile_.emergencyCutTimelock > profile_.standardCutTimelock) {
             revert GovernanceInvariantViolation("emergency>standard");
+        }
+    }
+
+    function _validateSelectorChange(SelectorChangeKind kind, CutPath path, uint48 queuedDelay, bool incidentDeclared)
+        internal
+        view
+    {
+        uint48 requiredDelay =
+            path == CutPath.Standard ? _governanceProfile.standardCutTimelock : _governanceProfile.emergencyCutTimelock;
+
+        if (queuedDelay < requiredDelay) {
+            revert GovernanceInvariantViolation("queuedDelay<required");
+        }
+
+        if (kind == SelectorChangeKind.Remove && path != CutPath.Emergency) {
+            revert GovernanceInvariantViolation("remove=emergency-only");
+        }
+
+        if ((kind == SelectorChangeKind.Replace || kind == SelectorChangeKind.Remove) && path == CutPath.Emergency) {
+            if (!incidentDeclared) {
+                revert GovernanceInvariantViolation("incident-required");
+            }
         }
     }
 

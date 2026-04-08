@@ -133,4 +133,58 @@ contract ValenceEASKernelAdapterTest is Test {
     function test_hasSelectorCollisions_returnsFalse() public view {
         assertFalse(adapter.hasSelectorCollisions());
     }
+
+    function test_selectorChangePolicy_allowsStandardReplaceWithTimelock() public view {
+        ValenceEASKernelAdapter.SelectorChange[] memory changes = new ValenceEASKernelAdapter.SelectorChange[](1);
+        changes[0] = ValenceEASKernelAdapter.SelectorChange({
+            selector: VerificationOrbital.isVerified.selector,
+            module: address(adapter.verificationOrbital()),
+            kind: ValenceEASKernelAdapter.SelectorChangeKind.Replace
+        });
+
+        bool ok = adapter.validateSelectorChanges(changes, ValenceEASKernelAdapter.CutPath.Standard, 24 hours, false);
+        assertTrue(ok);
+    }
+
+    function test_selectorChangePolicy_blocksStandardRemove() public {
+        ValenceEASKernelAdapter.SelectorChange[] memory changes = new ValenceEASKernelAdapter.SelectorChange[](1);
+        changes[0] = ValenceEASKernelAdapter.SelectorChange({
+            selector: VerificationOrbital.isVerified.selector,
+            module: address(0),
+            kind: ValenceEASKernelAdapter.SelectorChangeKind.Remove
+        });
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                ValenceEASKernelAdapter.GovernanceInvariantViolation.selector, "remove=emergency-only"
+            )
+        );
+        adapter.validateSelectorChanges(changes, ValenceEASKernelAdapter.CutPath.Standard, 24 hours, false);
+    }
+
+    function test_selectorChangePolicy_blocksEmergencyReplaceWithoutIncident() public {
+        ValenceEASKernelAdapter.SelectorChange[] memory changes = new ValenceEASKernelAdapter.SelectorChange[](1);
+        changes[0] = ValenceEASKernelAdapter.SelectorChange({
+            selector: VerificationOrbital.isVerified.selector,
+            module: address(adapter.verificationOrbital()),
+            kind: ValenceEASKernelAdapter.SelectorChangeKind.Replace
+        });
+
+        vm.expectRevert(
+            abi.encodeWithSelector(ValenceEASKernelAdapter.GovernanceInvariantViolation.selector, "incident-required")
+        );
+        adapter.validateSelectorChanges(changes, ValenceEASKernelAdapter.CutPath.Emergency, 1 hours, false);
+    }
+
+    function test_selectorChangePolicy_allowsEmergencyRemoveWithIncident() public view {
+        ValenceEASKernelAdapter.SelectorChange[] memory changes = new ValenceEASKernelAdapter.SelectorChange[](1);
+        changes[0] = ValenceEASKernelAdapter.SelectorChange({
+            selector: VerificationOrbital.isVerified.selector,
+            module: address(0),
+            kind: ValenceEASKernelAdapter.SelectorChangeKind.Remove
+        });
+
+        bool ok = adapter.validateSelectorChanges(changes, ValenceEASKernelAdapter.CutPath.Emergency, 1 hours, true);
+        assertTrue(ok);
+    }
 }
