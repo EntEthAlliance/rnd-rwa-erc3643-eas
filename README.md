@@ -144,18 +144,25 @@ Token Transfer Request
 
 ### Valence Migration Spike (Non-Production)
 
-This repo now includes an **additive Valence spike path** under `contracts/valence/`:
+This repo now includes an **additive Valence Phase 0/1 path** under `contracts/valence/`:
 
 - `ValenceEASKernelAdapter.sol`
 - `modules/VerificationOrbital.sol`
 - `modules/RegistryOrbital.sol`
+- `modules/TrustedAttestersOrbital.sol`
+- `modules/IdentityMappingOrbital.sol`
+
+Implemented in this phase:
+- frozen architecture artifacts (selector map, storage map, orbital boundaries)
+- kernel adapter selector inventory + collision guard
+- functional verification flow scaffold using orbital composition
 
 Important caveats:
-- This is a **migration scaffold**, not a production cutover.
+- This is **not** a production cutover.
 - Existing production-path contracts and integration flow remain unchanged.
-- Orbitals currently expose metadata/selector skeletons with explicit TODOs for final selector registry and storage-slot migration.
+- Final kernel routing API integration and migration tooling are Phase 2/3 backlog.
 
-Use this spike to evaluate module boundaries and upgrade mechanics before replacing the current verifier architecture.
+Use this path to validate modular boundaries and parity before any cutover decision.
 
 ## Basic Implementation Example
 
