@@ -58,8 +58,10 @@ contract ValenceEASKernelAdapter {
     bytes32 public constant ADAPTER_STORAGE_SLOT = keccak256("eea.valence.adapter.storage.v1");
     bytes32 public constant VERIFICATION_STORAGE_SLOT = keccak256("eea.valence.orbital.verification.storage.v1");
     bytes32 public constant REGISTRY_STORAGE_SLOT = keccak256("eea.valence.orbital.registry.storage.v1");
-    bytes32 public constant TRUSTED_ATTESTERS_STORAGE_SLOT = keccak256("eea.valence.orbital.trusted-attesters.storage.v1");
-    bytes32 public constant IDENTITY_MAPPING_STORAGE_SLOT = keccak256("eea.valence.orbital.identity-mapping.storage.v1");
+    bytes32 public constant TRUSTED_ATTESTERS_STORAGE_SLOT =
+        keccak256("eea.valence.orbital.trusted-attesters.storage.v1");
+    bytes32 public constant IDENTITY_MAPPING_STORAGE_SLOT =
+        keccak256("eea.valence.orbital.identity-mapping.storage.v1");
 
     event GovernanceProfileConfigured(
         address indexed cutMultisig, uint8 minApprovals, uint48 standardCutTimelock, uint48 emergencyCutTimelock
@@ -96,14 +98,10 @@ contract ValenceEASKernelAdapter {
     function getOrbitalBindings() external view returns (OrbitalBinding[] memory bindings) {
         bindings = new OrbitalBinding[](4);
         bindings[0] = OrbitalBinding({
-            orbitalId: "verification",
-            orbital: address(verificationOrbital),
-            storageSlot: VERIFICATION_STORAGE_SLOT
+            orbitalId: "verification", orbital: address(verificationOrbital), storageSlot: VERIFICATION_STORAGE_SLOT
         });
         bindings[1] = OrbitalBinding({
-            orbitalId: "registry",
-            orbital: address(registryOrbital),
-            storageSlot: REGISTRY_STORAGE_SLOT
+            orbitalId: "registry", orbital: address(registryOrbital), storageSlot: REGISTRY_STORAGE_SLOT
         });
         bindings[2] = OrbitalBinding({
             orbitalId: "trusted-attesters",
@@ -147,7 +145,8 @@ contract ValenceEASKernelAdapter {
         routes = new IValenceKernelRouting.SelectorRoute[](bindings.length);
 
         for (uint256 i = 0; i < bindings.length; i++) {
-            routes[i] = IValenceKernelRouting.SelectorRoute({selector: bindings[i].selector, module: bindings[i].orbital});
+            routes[i] =
+                IValenceKernelRouting.SelectorRoute({selector: bindings[i].selector, module: bindings[i].orbital});
         }
     }
 
@@ -203,8 +202,9 @@ contract ValenceEASKernelAdapter {
         bytes32 orbitalStorageSlot
     ) internal pure returns (uint256) {
         for (uint256 i = 0; i < selectors.length; i++) {
-            output[idx++] =
-                RouteBinding({selector: selectors[i], orbital: orbital, orbitalStorageSlot: orbitalStorageSlot});
+            output[idx++] = RouteBinding({
+                selector: selectors[i], orbital: orbital, orbitalStorageSlot: orbitalStorageSlot
+            });
         }
         return idx;
     }

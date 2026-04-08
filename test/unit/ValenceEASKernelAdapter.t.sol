@@ -16,10 +16,7 @@ contract ValenceEASKernelAdapterTest is Test {
 
     function setUp() public {
         ValenceEASKernelAdapter.GovernanceProfile memory profile = ValenceEASKernelAdapter.GovernanceProfile({
-            cutMultisig: cutMultisig,
-            minApprovals: 2,
-            standardCutTimelock: 24 hours,
-            emergencyCutTimelock: 1 hours
+            cutMultisig: cutMultisig, minApprovals: 2, standardCutTimelock: 24 hours, emergencyCutTimelock: 1 hours
         });
 
         adapter = new ValenceEASKernelAdapter(address(this), profile);
@@ -44,10 +41,7 @@ contract ValenceEASKernelAdapterTest is Test {
 
     function test_constructor_revertsWhenGovernanceAssumptionsInvalid() public {
         ValenceEASKernelAdapter.GovernanceProfile memory badProfile = ValenceEASKernelAdapter.GovernanceProfile({
-            cutMultisig: address(0),
-            minApprovals: 1,
-            standardCutTimelock: 1 hours,
-            emergencyCutTimelock: 2 hours
+            cutMultisig: address(0), minApprovals: 1, standardCutTimelock: 1 hours, emergencyCutTimelock: 2 hours
         });
 
         vm.expectRevert(
