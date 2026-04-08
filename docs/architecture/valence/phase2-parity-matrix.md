@@ -15,13 +15,13 @@ Status date: 2026-04-08
 | Kernel route binding API | N/A | ✅ (assumed final API binding scaffold) | In progress | `exportedRouteBindings`, `applyRoutesToKernel`, `ValenceEASKernelAdapterTest` |
 | Governance cut assumptions (multisig/timelock) | Process-only | ✅ (enforced constructor assumptions) | In progress | `getGovernanceProfile`, constructor invariants, tests |
 | Compatibility wrapper zero-mod path | ✅ | ⚠️ not yet bound through kernel | Pending | wrapper tests exist; no kernel wrapper routing yet |
-| Replace/remove semantics | N/A | ❌ | Pending | policy/docs + tests not implemented |
-| Storage persistence across upgrades | N/A | ❌ | Pending | upgrade simulation tests not implemented |
-| End-to-end parity suite vs legacy full matrix | ✅ | ⚠️ partial | In progress | baseline orbital tests only |
+| Replace/remove semantics | N/A | ✅ | Done | `ValenceEASKernelAdapter.validateSelectorChanges` + `ValenceEASKernelAdapterTest` policy tests (standard/emergency) |
+| Storage persistence across upgrades | N/A | ✅ | Done | `ValenceUpgradePersistenceTest` (selector replace/remove then restore with state survival) |
+| End-to-end parity suite vs legacy full matrix | ✅ | ✅ (Phase 2 baseline executable) | Done | `LegacyValenceParityTest` (valid/revoked/expired/multi-topic/identity-remap parity) |
 
 ## Immediate next execution items
 
-1. Add selector **replace/remove** governance policy tests (standard vs emergency cut constraints).
-2. Add upgrade persistence tests proving orbital state survives route updates.
-3. Extend parity suite to compare legacy verifier and orbital path across the full scenario matrix (revocation, expiration, multi-topic, identity remap).
-4. Bind compatibility wrapper path to kernel routing once final wrapper orbital strategy is frozen.
+1. Extend parity matrix Phase 2 with negative-path permutations (schema mismatch, untrusted attester drift, mixed-validity attestations).
+2. Add compatibility-wrapper parity tests once wrapper orbital routing is finalized.
+3. Integrate selector diff artifacts into governance runbook templates for real cut proposals.
+4. Prepare Phase 3 migration gate criteria for staged production activation.
