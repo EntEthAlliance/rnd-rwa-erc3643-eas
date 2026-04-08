@@ -153,4 +153,241 @@ contract LegacyValenceParityTest is Test {
         assertEq(legacyResult, expected, "legacy mismatch");
         assertEq(valenceResult, expected, "valence mismatch");
     }
+
+    // ============ Edge-case Negative Parity Tests ============
+
+    /**
+     * @notice Test parity: schema mismatch rejection
+     * @dev Both paths should reject attestations registered against the wrong schema
+     */
+    function test_parity_schemaMismatch() public {
+        bytes32 WRONG_SCHEMA = keccak256("WRONG_SCHEMA");
+
+        // Create attestation with wrong schema
+        bytes32 uid = kycAttester.attestInvestorEligibility(WRONG_SCHEMA, identity, identity, 1, 0, 840, 0);
+
+        // Attempting to register with wrong schema should fail on legacy
+        vm.expectRevert("Schema mismatch");
+        legacy.registerAttestation(identity, TOPIC_KYC, uid);
+
+        // For Valence, registry doesn't validate schema at registration time,
+        // but verification will fail because the attestation schema doesn't match
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester), uid);
+
+        // Legacy has no registered attestation, Valence has one but it's invalid
+        // Both should return false for verification
+        assertFalse(legacy.isVerified(wallet), "legacy should reject schema mismatch");
+        assertFalse(valence.verificationOrbital().isVerified(wallet), "valence should reject schema mismatch");
+    }
+
+    /**
+     * @notice Test parity: trust drift (attester removed after attesting)
+     * @dev Both paths should reject attestations from attesters no longer trusted
+     */
+    function test_parity_trustDrift_attesterRemoved() public {
+        // Create and register valid attestation
+        bytes32 uid = kycAttester.attestInvestorEligibility(SCHEMA_KYC, identity, identity, 1, 0, 840, 0);
+        legacy.registerAttestation(identity, TOPIC_KYC, uid);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester), uid);
+
+        // Verify initially passes
+        _assertParity(wallet, true);
+
+        // Remove the attester from trusted list
+        trustedIssuers.removeTrustedAttester(address(kycAttester));
+        valence.trustedAttestersOrbital().setTrustedAttester(TOPIC_KYC, address(kycAttester), false);
+
+        // Both should now reject - attester is no longer trusted
+        _assertParity(wallet, false);
+    }
+
+    /**
+     * @notice Test parity: trust drift with re-trust
+     * @dev Both paths should accept attestations again once attester is re-trusted
+     */
+    function test_parity_trustDrift_attesterRetrused() public {
+        // Create and register valid attestation
+        bytes32 uid = kycAttester.attestInvestorEligibility(SCHEMA_KYC, identity, identity, 1, 0, 840, 0);
+        legacy.registerAttestation(identity, TOPIC_KYC, uid);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester), uid);
+
+        _assertParity(wallet, true);
+
+        // Remove attester
+        trustedIssuers.removeTrustedAttester(address(kycAttester));
+        valence.trustedAttestersOrbital().setTrustedAttester(TOPIC_KYC, address(kycAttester), false);
+
+        _assertParity(wallet, false);
+
+        // Re-add attester
+        uint256[] memory kycTopic = new uint256[](1);
+        kycTopic[0] = TOPIC_KYC;
+        trustedIssuers.addTrustedAttester(address(kycAttester), kycTopic);
+        valence.trustedAttestersOrbital().setTrustedAttester(TOPIC_KYC, address(kycAttester), true);
+
+        // Both should pass again
+        _assertParity(wallet, true);
+    }
+
+    /**
+     * @notice Test parity: mixed-validity attestations for same identity (one valid, one revoked)
+     * @dev Both paths should pass if at least one attestation from a trusted attester is valid
+     */
+    function test_parity_mixedValidity_oneValidOneRevoked() public {
+        // Create second attester
+        MockAttester kycAttester2 = new MockAttester(address(eas), "KYC2");
+
+        // Add second attester as trusted for KYC topic
+        uint256[] memory kycTopic = new uint256[](1);
+        kycTopic[0] = TOPIC_KYC;
+        trustedIssuers.addTrustedAttester(address(kycAttester2), kycTopic);
+        valence.trustedAttestersOrbital().setTrustedAttester(TOPIC_KYC, address(kycAttester2), true);
+
+        // Create attestations from both attesters
+        bytes32 uid1 = kycAttester.attestInvestorEligibility(SCHEMA_KYC, identity, identity, 1, 0, 840, 0);
+        bytes32 uid2 = kycAttester2.attestInvestorEligibility(SCHEMA_KYC, identity, identity, 1, 0, 840, 0);
+
+        // Register both
+        legacy.registerAttestation(identity, TOPIC_KYC, uid1);
+        legacy.registerAttestation(identity, TOPIC_KYC, uid2);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester), uid1);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester2), uid2);
+
+        // Both should pass with two valid attestations
+        _assertParity(wallet, true);
+
+        // Revoke first attestation
+        eas.forceRevoke(uid1);
+
+        // Should still pass - second attestation is valid
+        _assertParity(wallet, true);
+
+        // Revoke second attestation
+        eas.forceRevoke(uid2);
+
+        // Now both should fail - no valid attestations
+        _assertParity(wallet, false);
+    }
+
+    /**
+     * @notice Test parity: mixed-validity with one expired attestation
+     * @dev Both paths should pass if at least one attestation is not expired
+     */
+    function test_parity_mixedValidity_oneValidOneExpired() public {
+        // Create second attester
+        MockAttester kycAttester2 = new MockAttester(address(eas), "KYC2");
+
+        uint256[] memory kycTopic = new uint256[](1);
+        kycTopic[0] = TOPIC_KYC;
+        trustedIssuers.addTrustedAttester(address(kycAttester2), kycTopic);
+        valence.trustedAttestersOrbital().setTrustedAttester(TOPIC_KYC, address(kycAttester2), true);
+
+        // Create attestation with expiration
+        bytes32 uid1 = kycAttester.attestInvestorEligibility(
+            SCHEMA_KYC, identity, identity, 1, 0, 840, uint64(block.timestamp + 100)
+        );
+        // Create attestation without expiration
+        bytes32 uid2 = kycAttester2.attestInvestorEligibility(SCHEMA_KYC, identity, identity, 1, 0, 840, 0);
+
+        legacy.registerAttestation(identity, TOPIC_KYC, uid1);
+        legacy.registerAttestation(identity, TOPIC_KYC, uid2);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester), uid1);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester2), uid2);
+
+        _assertParity(wallet, true);
+
+        // Expire the first attestation
+        vm.warp(block.timestamp + 101);
+
+        // Should still pass - second attestation has no expiration
+        _assertParity(wallet, true);
+    }
+
+    /**
+     * @notice Test parity: all attestations from multiple attesters are invalid
+     * @dev Both paths should fail when all attestations are invalid (mixed reasons)
+     */
+    function test_parity_mixedValidity_allInvalid() public {
+        MockAttester kycAttester2 = new MockAttester(address(eas), "KYC2");
+
+        uint256[] memory kycTopic = new uint256[](1);
+        kycTopic[0] = TOPIC_KYC;
+        trustedIssuers.addTrustedAttester(address(kycAttester2), kycTopic);
+        valence.trustedAttestersOrbital().setTrustedAttester(TOPIC_KYC, address(kycAttester2), true);
+
+        // First attestation will be revoked
+        bytes32 uid1 = kycAttester.attestInvestorEligibility(SCHEMA_KYC, identity, identity, 1, 0, 840, 0);
+        // Second attestation will expire
+        bytes32 uid2 = kycAttester2.attestInvestorEligibility(
+            SCHEMA_KYC, identity, identity, 1, 0, 840, uint64(block.timestamp + 50)
+        );
+
+        legacy.registerAttestation(identity, TOPIC_KYC, uid1);
+        legacy.registerAttestation(identity, TOPIC_KYC, uid2);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester), uid1);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester2), uid2);
+
+        _assertParity(wallet, true);
+
+        // Revoke first
+        eas.forceRevoke(uid1);
+        _assertParity(wallet, true); // Second still valid
+
+        // Expire second
+        vm.warp(block.timestamp + 51);
+
+        // Now both should fail - one revoked, one expired
+        _assertParity(wallet, false);
+    }
+
+    /**
+     * @notice Test parity: no schema mapped for required topic
+     * @dev Both paths should fail when a required topic has no schema mapping
+     */
+    function test_parity_noSchemaMapped() public {
+        uint256 TOPIC_UNMAPPED = 999;
+
+        // Set a new required topic that has no schema mapping
+        uint256[] memory requiredTopics = new uint256[](2);
+        requiredTopics[0] = TOPIC_KYC;
+        requiredTopics[1] = TOPIC_UNMAPPED;
+        claimTopics.setClaimTopics(requiredTopics);
+        valence.verificationOrbital().setRequiredClaimTopics(requiredTopics);
+
+        // Create valid KYC attestation
+        bytes32 uid = kycAttester.attestInvestorEligibility(SCHEMA_KYC, identity, identity, 1, 0, 840, 0);
+        legacy.registerAttestation(identity, TOPIC_KYC, uid);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester), uid);
+
+        // Both should fail - TOPIC_UNMAPPED has no schema
+        _assertParity(wallet, false);
+    }
+
+    /**
+     * @notice Test parity: no trusted attesters for a required topic
+     * @dev Both paths should fail when a required topic has no trusted attesters
+     */
+    function test_parity_noTrustedAttesters() public {
+        uint256 TOPIC_NO_ATTESTERS = 888;
+        bytes32 SCHEMA_NO_ATTESTERS = keccak256("NO_ATTESTERS_SCHEMA");
+
+        // Map schema but don't add any trusted attesters
+        legacy.setTopicSchemaMapping(TOPIC_NO_ATTESTERS, SCHEMA_NO_ATTESTERS);
+        valence.registryOrbital().setTopicSchemaMapping(TOPIC_NO_ATTESTERS, SCHEMA_NO_ATTESTERS);
+
+        // Set required topics to include topic with no attesters
+        uint256[] memory requiredTopics = new uint256[](2);
+        requiredTopics[0] = TOPIC_KYC;
+        requiredTopics[1] = TOPIC_NO_ATTESTERS;
+        claimTopics.setClaimTopics(requiredTopics);
+        valence.verificationOrbital().setRequiredClaimTopics(requiredTopics);
+
+        // Create valid KYC attestation
+        bytes32 uid = kycAttester.attestInvestorEligibility(SCHEMA_KYC, identity, identity, 1, 0, 840, 0);
+        legacy.registerAttestation(identity, TOPIC_KYC, uid);
+        valence.registryOrbital().registerAttestation(identity, TOPIC_KYC, address(kycAttester), uid);
+
+        // Both should fail - no trusted attesters for TOPIC_NO_ATTESTERS
+        _assertParity(wallet, false);
+    }
 }
