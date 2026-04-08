@@ -13,7 +13,7 @@
 ## Next implementation steps
 
 ### Kernel + selector routing
-- [ ] Bind orbital selectors through final Valence kernel routing API
+- [~] Bind orbital selectors through final Valence kernel routing API (assumed `applySelectorRoutes` API scaffolded in adapter)
 - [x] Add selector collision guardrails vs current/legacy surface
 - [ ] Define replace/remove semantics for incremental migration
 
