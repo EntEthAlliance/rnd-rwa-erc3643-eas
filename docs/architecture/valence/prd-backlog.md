@@ -2,6 +2,12 @@
 
 Source of truth: `PRD.md` + GitHub EPIC #32.
 
+Progress note (2026-04-08, EPIC #32 Phase 2 run):
+- [x] Implemented and parity-tested `CompatibilityWrapperOrbital` for Path B (`IIdentity`) compatibility.
+- [x] Added negative parity edge-case coverage in `LegacyValenceParityTest` (schema mismatch, trust drift, mixed-validity).
+- [x] Added governance selector-diff generation artifacts (`GovernanceSelectorDiff.s.sol` + docs).
+- [x] Ran quality gates during implementation (`forge build`, `forge test`, `forge coverage`, `forge test --gas-report`).
+
 ## Phase 0 — Architecture Freeze
 - [x] Freeze selector map (`phase0-selector-map.md`)
 - [x] Freeze storage map + version policy (`phase0-storage-map.md`)

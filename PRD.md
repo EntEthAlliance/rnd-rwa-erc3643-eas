@@ -188,9 +188,11 @@ Exit:
 
 ## Deliverables Checklist
 
+Progress note (2026-04-08): EPIC #32 Phase 2 parity expansion completed on branch `feat/epic32-phase2-parity-wrapper` with new negative parity tests, Path B compatibility wrapper parity suite, and governance selector-diff artifacts.
+
 - [ ] Valence-native architecture spec approved
-- [ ] Orbitals implemented (verification/registry/trusted-attesters/identity-mapping)
-- [ ] Compatibility path documented and tested
-- [ ] CI quality gates green
+- [x] Orbitals implemented (verification/registry/trusted-attesters/identity-mapping)
+- [x] Compatibility path documented and tested
+- [x] CI quality gates green
 - [ ] Pilot scripts + evidence published
 - [ ] Production go/no-go decision documented

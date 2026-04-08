@@ -1,6 +1,13 @@
 # Phase 2 Parity Matrix — Compatibility Path (EPIC #32)
 
-Status date: 2026-04-08
+Status date: 2026-04-08 (updated after EPIC #32 Phase 2 implementation run)
+
+## Progress log (implemented along the way)
+
+- [x] Added and validated negative-path parity suite expansion in `LegacyValenceParity.t.sol`.
+- [x] Added `CompatibilityWrapperOrbital` and full wrapper-routing parity integration tests (`WrapperRoutingParity.t.sol`).
+- [x] Added governance selector/route artifact generation script and docs (`GovernanceSelectorDiff.s.sol`, `governance-selector-diff.md`).
+- [x] Re-ran matrix validation commands successfully: `forge test`, `forge coverage`, `forge test --gas-report`.
 
 ## Matrix
 
