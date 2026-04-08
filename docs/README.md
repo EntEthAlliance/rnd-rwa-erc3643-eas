@@ -27,7 +27,9 @@ docs/
 │   ├── valence/
 │   │   ├── phase0-selector-map.md         # Frozen selector inventory
 │   │   ├── phase0-storage-map.md          # Frozen storage namespaces
-│   │   └── phase0-orbital-boundaries.md   # Frozen module boundaries
+│   │   ├── phase0-orbital-boundaries.md   # Frozen module boundaries
+│   │   ├── governance-profile-runbook.md  # Multisig/timelock/cut policy + runbook
+│   │   └── phase2-parity-matrix.md        # Compatibility parity status matrix
 │   ├── system-architecture.md             # Technical component reference
 │   ├── contract-interaction-diagrams.md   # Diagram catalog
 │   └── data-flow.md                       # Operation-by-operation data flows
@@ -51,6 +53,8 @@ docs/
 | [Valence Phase 0 Selector Map](architecture/valence/phase0-selector-map.md) | Frozen selector inventory and collision policy for orbitals. |
 | [Valence Phase 0 Storage Map](architecture/valence/phase0-storage-map.md) | Frozen storage namespaces and versioning policy for orbitals. |
 | [Valence Phase 0 Orbital Boundaries](architecture/valence/phase0-orbital-boundaries.md) | Ownership boundaries and responsibility split across kernel + orbitals. |
+| [Valence Governance Profile + Runbook](architecture/valence/governance-profile-runbook.md) | Concrete multisig/timelock cut profile and operator runbook for kernel route changes. |
+| [Valence Phase 2 Parity Matrix](architecture/valence/phase2-parity-matrix.md) | Status table for compatibility parity execution and pending gaps. |
 | [System Architecture](architecture/system-architecture.md) | Technical component inventory: contracts, dependencies, integration paths, trust boundaries, upgrade paths, data flow. |
 | [Contract Interaction Diagrams](architecture/contract-interaction-diagrams.md) | Catalog of all Mermaid diagrams with descriptions of what each shows and when to reference it. |
 | [Data Flow](architecture/data-flow.md) | Operation-by-operation data flow documentation for each major operation (register identity, issue attestation, verify transfer, revoke, etc.). |
