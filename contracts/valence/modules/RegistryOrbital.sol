@@ -40,7 +40,13 @@ contract RegistryOrbital {
         emit TopicSchemaMapped(topic, schemaUID);
     }
 
-    function getSchemaUID(uint256 /*topic*/ ) external pure returns (bytes32) {
+    function getSchemaUID(
+        uint256 /*topic*/
+    )
+        external
+        pure
+        returns (bytes32)
+    {
         // TODO(valence): return schema from migrated storage slot.
         return bytes32(0);
     }

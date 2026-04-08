@@ -11,8 +11,7 @@ contract VerificationOrbital {
     string public constant ORBITAL_VERSION = "0.1.0-spike";
 
     /// @notice TODO(valence): migrate legacy topic/schema state into canonical Valence storage slot.
-    bytes32 internal constant VERIFICATION_STORAGE_SLOT =
-        keccak256("eea.valence.orbital.verification.storage.v1");
+    bytes32 internal constant VERIFICATION_STORAGE_SLOT = keccak256("eea.valence.orbital.verification.storage.v1");
 
     struct ModuleMetadata {
         string id;
@@ -32,12 +31,26 @@ contract VerificationOrbital {
         // TODO(valence): finalize selector exports once Valence kernel selector registry is wired.
     }
 
-    function isVerified(address /*wallet*/ ) external pure returns (bool) {
+    function isVerified(
+        address /*wallet*/
+    )
+        external
+        pure
+        returns (bool)
+    {
         // TODO(valence): route through migrated EAS verification graph.
         return false;
     }
 
-    function verifyTopic(address /*identity*/, uint256 /*claimTopic*/ ) external pure returns (bool) {
+    function verifyTopic(
+        address,
+        /*identity*/
+        uint256 /*claimTopic*/
+    )
+        external
+        pure
+        returns (bool)
+    {
         // TODO(valence): implement topic-level checks using migrated attestation index.
         return false;
     }
