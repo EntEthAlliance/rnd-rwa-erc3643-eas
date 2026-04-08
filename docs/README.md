@@ -22,6 +22,8 @@ docs/
 ├── gas-benchmarks.md                      # Gas costs and optimization
 ├── architecture/
 │   ├── identity-architecture-explained.md # START HERE — full architecture story
+│   ├── eip2535-migration-design.md        # EIP-2535/Valence migration plan
+│   ├── valence-migration-spike-checklist.md # Spike execution checklist
 │   ├── system-architecture.md             # Technical component reference
 │   ├── contract-interaction-diagrams.md   # Diagram catalog
 │   └── data-flow.md                       # Operation-by-operation data flows
@@ -40,7 +42,8 @@ docs/
 |----------|-------------|
 | [ERC-3643 + EAS Implementation Guide](erc3643-eas-implementation-guide.md) | Fast, GitHub-friendly guide for reviewers and integrators: architecture, validation path, production readiness, and checklist. |
 | [Identity Architecture Explained](architecture/identity-architecture-explained.md) | The main architecture document. Explains how ERC-3643 identity works today, what EAS brings, how the bridge works, integration paths, compliance/revocation, multi-chain vision, and stakeholder perspectives. |
-| [EIP-2535 Migration Design](architecture/eip2535-migration-design.md) | Product migration plan from monolithic contracts to Diamond facets, with rollout phases, compatibility policy, and test/security checklist. |
+| [EIP-2535 Migration Design](architecture/eip2535-migration-design.md) | Product migration plan from monolithic contracts to Diamond facets, with Valence evolution path, rollout phases, compatibility policy, and test/security checklist. |
+| [Valence Migration Spike Checklist](architecture/valence-migration-spike-checklist.md) | Concrete implementation checklist for the current Valence spike stream and next milestones. |
 | [System Architecture](architecture/system-architecture.md) | Technical component inventory: contracts, dependencies, integration paths, trust boundaries, upgrade paths, data flow. |
 | [Contract Interaction Diagrams](architecture/contract-interaction-diagrams.md) | Catalog of all Mermaid diagrams with descriptions of what each shows and when to reference it. |
 | [Data Flow](architecture/data-flow.md) | Operation-by-operation data flow documentation for each major operation (register identity, issue attestation, verify transfer, revoke, etc.). |

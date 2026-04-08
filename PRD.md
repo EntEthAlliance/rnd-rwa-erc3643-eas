@@ -14,6 +14,16 @@ The key product goal is interoperability and reduced lock-in:
 
 This ships as an open-source reference implementation on GitHub under the EEA organization.
 
+### Architecture Evolution Note (Updated)
+
+The current verifier implementation is production-oriented but monolithic. The target productization path is now:
+
+- **Valence (kernel-orchestrated Diamond architecture)** as the preferred evolution model
+- with EIP-2535 compatibility through Valence’s kernel/module lifecycle pattern
+- while preserving ERC-3643 integration semantics and dual-mode identity support
+
+A migration spike has been added in-repo (`contracts/valence/*`) and tracked as a phased implementation stream.
+
 ---
 
 ## Demo + Validation (How to prove this works)
@@ -47,6 +57,26 @@ A separate demo front-end lives here:
 It connects to deployed contracts (addresses + chain config) and demonstrates schema registration + attestation-driven eligibility checks for ERC-3643 flows.
 
 ---
+
+## Valence Migration Track (Preferred Productization Path)
+
+To align upgradeability and modularity goals, this PRD now treats **Valence** as the primary architecture evolution path over a hand-rolled Diamond implementation.
+
+Target mapping:
+- Current `EASClaimVerifier` logic → `VerificationOrbital`
+- Current attestation registration + topic/schema functions → `RegistryOrbital`
+- Current config/control surface → `ValenceEASKernelAdapter` + kernel-managed module lifecycle
+- Future trusted-attester and identity-mapping functionality → dedicated orbitals
+
+Delivery policy:
+1. Keep current path operational (no breaking cutover)
+2. Build Valence modules in parallel
+3. Prove parity via tests + pilot scripts
+4. Only then execute production migration
+
+Reference docs:
+- `docs/architecture/eip2535-migration-design.md`
+- `docs/architecture/valence-migration-spike-checklist.md`
 
 ## Repository Structure
 

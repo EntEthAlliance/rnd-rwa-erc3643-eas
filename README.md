@@ -107,6 +107,7 @@ This project provides smart contracts and tooling to integrate EAS attestations 
 - **GitHub implementation guide:** `docs/erc3643-eas-implementation-guide.md`
 - **Integration walkthrough:** `docs/integration-guide.md`
 - **Architecture deep dive:** `docs/architecture/identity-architecture-explained.md`
+- **Valence migration docs:** `docs/architecture/eip2535-migration-design.md`, `docs/architecture/valence-migration-spike-checklist.md`
 - **PRD + execution report:** `PRD.md`, `docs/PRD_EXECUTION_REPORT_2026-04-08.md`
 
 ## Architecture
