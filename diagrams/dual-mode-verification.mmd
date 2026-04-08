@@ -1,22 +1,22 @@
 flowchart TD
     Start([Token Transfer Request])
-    IR{Identity Registry\nisVerified}
+    IR{"Identity Registry\n(uses a pluggable Identity Verifier module)"}
 
-    subgraph OnchainIDPath["ONCHAINID Path"]
-        OCID_Check{Has ONCHAINID\nIdentity?}
-        IRS[IdentityRegistryStorage]
-        OCID[IIdentity Contract]
-        CI[IClaimIssuer]
-        OCID_Valid{Claims Valid?}
+    subgraph OnchainIDPath["Identity Verifier Module — ONCHAINID"]
+        OCID_Check{"Has ONCHAINID\nIdentity?"}
+        IRS["IdentityRegistryStorage"]
+        OCID["IIdentity Contract (ONCHAINID)"]
+        CI["IClaimIssuer"]
+        OCID_Valid{"Claims Valid?"}
     end
 
-    subgraph EASPath["EAS Path"]
-        EAS_Enabled{EAS Bridge\nEnabled?}
-        ECV[EASClaimVerifier]
-        EIP[EASIdentityProxy]
-        TIA[TrustedIssuersAdapter]
-        EAS[EAS.sol]
-        EAS_Valid{Attestations\nValid?}
+    subgraph EASPath["Identity Verifier Module — EAS"]
+        EAS_Enabled{"EAS verifier\nenabled?"}
+        ECV["EASClaimVerifier\n(EAS Identity Verifier)"]
+        EIP["EASIdentityProxy\n(wallet→identity)"]
+        TIA["EASTrustedIssuersAdapter\n(trusted attesters)"]
+        EAS["EAS.sol"]
+        EAS_Valid{"Attestations\nValid?"}
     end
 
     Verified([Verification Passed])

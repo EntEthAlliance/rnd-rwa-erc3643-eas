@@ -1,45 +1,64 @@
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f0f0f0', 'primaryTextColor': '#333', 'primaryBorderColor': '#666', 'lineColor': '#666', 'secondaryColor': '#e0e0e0', 'tertiaryColor': '#fff'}}}%%
 flowchart TB
-    subgraph TokenLayer["ERC-3643 Token Layer"]
-        Token[Token Contract]
-        Compliance[Compliance Module]
-        IR[Identity Registry]
+    %% This diagram mirrors OpenZeppelin RWA vocabulary:
+    %% - Token core calls into a separate Identity Verifier module
+    %% - Compliance is modular and remains independent from identity proof format
+
+    subgraph TokenLayer["ERC-3643 Token Layer (Token Core + Compliance)"]
+        Token["Token Contract (ERC-3643)"]
+        Compliance["Compliance Module(s)"]
+        IR["Identity Registry"]
     end
 
-    subgraph BridgeLayer["EAS Bridge Layer"]
-        ECV[EASClaimVerifier]
-        TIA[EASTrustedIssuersAdapter]
-        EIP[EASIdentityProxy]
-        CTR[ClaimTopicsRegistry]
+    subgraph IdentityVerifierLayer["Identity Verifier Module (pluggable)"]
+        ECV["Identity Verifier (EAS)\nEASClaimVerifier"]
+        TIA["Trusted Attesters Adapter\nEASTrustedIssuersAdapter"]
+        EIP["Wallet→Identity Mapping\nEASIdentityProxy"]
+        CTR["Claim Topics Registry\n(ERC-3643)"]
     end
 
     subgraph EASLayer["EAS Protocol Layer"]
-        EAS[EAS.sol]
-        SR[Schema Registry]
+        EAS["EAS.sol"]
+        SR["Schema Registry"]
     end
 
-    subgraph OnchainIDLayer["ONCHAINID Layer (Optional)"]
-        OCID[ONCHAINID Contract]
-        TIR[TrustedIssuersRegistry]
-        IRS[IdentityRegistryStorage]
+    subgraph OnchainIDLayer["ONCHAINID Verifier Module (optional)"]
+        OCID["ONCHAINID Contract"]
+        TIR["TrustedIssuersRegistry"]
+        IRS["IdentityRegistryStorage"]
     end
 
     Token -->|canTransfer| Compliance
     Compliance -->|isVerified| IR
 
-    IR -->|Path A: EAS| ECV
-    IR -.->|Path B: ONCHAINID| IRS
+    %% ERC-3643 Identity Registry delegates identity checks to a verifier module.
+    IR -->|EAS Identity Verifier| ECV
+
+    %% Optional dual-mode: keep ONCHAINID as an alternative verifier.
+    IR -.->|ONCHAINID Verifier| IRS
     IRS -.-> OCID
     OCID -.-> TIR
 
-    ECV -->|getIdentity| EIP
-    ECV -->|getClaimTopics| CTR
-    ECV -->|getTrustedAttesters| TIA
-    ECV -->|getAttestation| EAS
+    %% Internals of the EAS Identity Verifier module
+    ECV -->|resolve identity| EIP
+    ECV -->|required topics| CTR
+    ECV -->|trusted attesters| TIA
+    ECV -->|read attestations| EAS
 
     EAS --> SR
 
     style Token fill:#e3f2fd
+    style Compliance fill:#e3f2fd
+    style IR fill:#e3f2fd
+
     style ECV fill:#c8e6c9
+    style TIA fill:#c8e6c9
+    style EIP fill:#c8e6c9
+    style CTR fill:#c8e6c9
+
     style EAS fill:#fff3e0
+    style SR fill:#fff3e0
+
     style OCID fill:#f3e5f5
+    style IRS fill:#f3e5f5
+    style TIR fill:#f3e5f5

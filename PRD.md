@@ -2,7 +2,15 @@
 
 ## Project Summary
 
-Build an adapter that lets ERC-3643 security tokens accept Ethereum Attestation Service (EAS) attestations as an alternative identity backend to ONCHAINID. The adapter plugs into ERC-3643's existing Identity Registry without modifying the token contract or compliance modules. The result: token issuers choose ONCHAINID, EAS, or both at deployment time.
+Build an **Identity Verifier module** (in OpenZeppelin’s vocabulary) for ERC-3643 security tokens that accepts **Ethereum Attestation Service (EAS)** attestations as an alternative identity backend to **ONCHAINID**.
+
+Architecturally, this is a clean separation of concerns:
+- **Token + Compliance stay standard ERC-3643 / T-REX** (no reinvention of compliance logic).
+- **Identity verification becomes a pluggable module**: issuers can choose **ONCHAINID, EAS, or both** at deployment time.
+
+The key product goal is interoperability and reduced lock-in:
+- A single EAS-based Identity Verifier can be **reused across many ERC-3643 deployments** (or deployed once per issuer), instead of bundling identity logic into each token.
+- EAS becomes the “identity proof format” layer, enabling issuers and KYC/AML providers to integrate without relying on Tokeny-specific tooling.
 
 This ships as an open-source reference implementation on GitHub under the EEA organization.
 
