@@ -6,6 +6,8 @@ import {EASClaimVerifier} from "../contracts/EASClaimVerifier.sol";
 import {EASTrustedIssuersAdapter} from "../contracts/EASTrustedIssuersAdapter.sol";
 import {EASIdentityProxy} from "../contracts/EASIdentityProxy.sol";
 import {MockClaimTopicsRegistry} from "../contracts/mocks/MockClaimTopicsRegistry.sol";
+import {MockEAS} from "../contracts/mocks/MockEAS.sol";
+import {IEAS, AttestationRequest, AttestationRequestData} from "@eas/IEAS.sol";
 
 /**
  * @title SetupPilot
@@ -44,13 +46,15 @@ contract SetupPilot is Script {
     EASTrustedIssuersAdapter public adapter;
     EASIdentityProxy public identityProxy;
     MockClaimTopicsRegistry public topicsRegistry;
+    MockEAS public localMockEAS;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
         address easAddress = vm.envOr("EAS_ADDRESS", address(0));
+        bool isLocal = block.chainid == 31337;
 
-        if (easAddress == address(0)) {
+        if (easAddress == address(0) && !isLocal) {
             easAddress = _getEasAddress();
         }
 
@@ -61,6 +65,12 @@ contract SetupPilot is Script {
         console2.log("");
 
         vm.startBroadcast(deployerPrivateKey);
+
+        if (isLocal && easAddress == address(0)) {
+            localMockEAS = new MockEAS();
+            easAddress = address(localMockEAS);
+            console2.log("Local mode: deployed MockEAS at", easAddress);
+        }
 
         // 1. Deploy core bridge contracts
         console2.log("Step 1: Deploying bridge contracts...");
@@ -107,13 +117,26 @@ contract SetupPilot is Script {
         adapter.addTrustedAttester(deployer, topics);
         console2.log("  KYC Provider (deployer) added as trusted attester");
 
-        // 7. Create 5 test investor identities
-        console2.log("Step 7: Creating test investor wallets...");
+        // 7. Create 5 test investor identities + attestations
+        console2.log("Step 7: Creating test investor wallets and attestations...");
         address[5] memory investors;
+        address[5] memory identities;
         for (uint256 i = 0; i < 5; i++) {
             // Generate deterministic addresses for testing
             investors[i] = address(uint160(uint256(keccak256(abi.encodePacked("pilot_investor_", i)))));
-            console2.log("  Investor", i + 1, ":", investors[i]);
+            identities[i] = address(uint160(uint256(keccak256(abi.encodePacked("pilot_identity_", i)))));
+
+            identityProxy.registerWallet(investors[i], identities[i]);
+
+            bytes32 kycUID = _createAttestation(easAddress, identities[i], 1, 2, 840);
+            verifier.registerAttestation(identities[i], TOPIC_KYC, kycUID);
+
+            bytes32 accUID = _createAttestation(easAddress, identities[i], 1, 2, 840);
+            verifier.registerAttestation(identities[i], TOPIC_ACCREDITATION, accUID);
+
+            console2.log("  Investor", i + 1);
+            console2.log("    wallet:", investors[i]);
+            console2.log("    identity:", identities[i]);
         }
 
         vm.stopBroadcast();
@@ -134,13 +157,35 @@ contract SetupPilot is Script {
         }
         console2.log("");
         console2.log("Next Steps:");
-        console2.log("1. Create EAS attestations for test investors");
-        console2.log("2. Register attestations: verifier.registerAttestation(investor, topic, uid)");
-        console2.log("3. Verify eligibility: verifier.isVerified(investor)");
+        console2.log("1. Verify seeded investors: verifier.isVerified(investor)");
+        console2.log("2. Fund investor wallets with test tokens");
+        console2.log("3. Execute demo transfers through Identity Registry");
         console2.log("");
         console2.log("Demo Transfer:");
         console2.log("1. Fund investor wallets with test tokens");
         console2.log("2. Perform transfer - Identity Registry will call verifier.isVerified()");
+    }
+
+    function _createAttestation(
+        address easAddress,
+        address identity,
+        uint8 kycStatus,
+        uint8 accreditationType,
+        uint16 countryCode
+    ) internal returns (bytes32) {
+        AttestationRequest memory request = AttestationRequest({
+            schema: DEMO_SCHEMA_UID,
+            data: AttestationRequestData({
+                recipient: identity,
+                expirationTime: uint64(block.timestamp + 365 days),
+                revocable: true,
+                refUID: bytes32(0),
+                data: abi.encode(identity, kycStatus, accreditationType, countryCode, uint64(block.timestamp + 365 days)),
+                value: 0
+            })
+        });
+
+        return IEAS(easAddress).attest(request);
     }
 
     function _getEasAddress() internal view returns (address) {
@@ -148,9 +193,6 @@ contract SetupPilot is Script {
 
         if (chainId == 11155111) return EAS_SEPOLIA;
         if (chainId == 84532) return EAS_BASE_SEPOLIA;
-
-        // For local testing, return a placeholder
-        if (chainId == 31337) return address(0xEA5);
 
         revert("EAS_ADDRESS required for this network");
     }
