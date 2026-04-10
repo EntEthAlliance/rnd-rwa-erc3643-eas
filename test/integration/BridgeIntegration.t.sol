@@ -64,6 +64,9 @@ contract BridgeIntegrationTest is Test {
         topics[0] = TOPIC_KYC;
         adapter.addTrustedAttester(kycProviderAddr, topics);
 
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
+
         // Set required topics
         topicsRegistry.addClaimTopic(TOPIC_KYC);
     }

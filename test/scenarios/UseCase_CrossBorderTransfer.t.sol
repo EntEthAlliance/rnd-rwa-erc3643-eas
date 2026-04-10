@@ -95,6 +95,9 @@ contract UseCase_CrossBorderTransfer_Test is Test {
         taxTopics[0] = TOPIC_TAX_TREATY;
         trustedIssuers.addTrustedAttester(address(taxTreatyProvider), taxTopics);
 
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
+
         vm.stopPrank();
 
         // Cross-border requires both KYC and tax treaty attestations

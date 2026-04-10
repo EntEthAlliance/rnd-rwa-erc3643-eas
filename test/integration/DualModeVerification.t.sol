@@ -81,6 +81,9 @@ contract DualModeVerificationTest is Test {
         trustedIssuers.addTrustedAttester(address(kycProviderPrimary), topics);
         trustedIssuers.addTrustedAttester(address(kycProviderSecondary), topics);
 
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
+
         vm.stopPrank();
 
         // Set required topics

@@ -1,19 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import {IEAS, Attestation} from "@eas/IEAS.sol";
-import {IEASClaimVerifier} from "./interfaces/IEASClaimVerifier.sol";
-import {IEASTrustedIssuersAdapter} from "./interfaces/IEASTrustedIssuersAdapter.sol";
-import {IEASIdentityProxy} from "./interfaces/IEASIdentityProxy.sol";
-import {IClaimTopicsRegistry} from "./interfaces/IClaimTopicsRegistry.sol";
+import {IEASClaimVerifier} from "../interfaces/IEASClaimVerifier.sol";
+import {IEASTrustedIssuersAdapter} from "../interfaces/IEASTrustedIssuersAdapter.sol";
+import {IEASIdentityProxy} from "../interfaces/IEASIdentityProxy.sol";
+import {IClaimTopicsRegistry} from "../interfaces/IClaimTopicsRegistry.sol";
 
 /**
- * @title EASClaimVerifier
+ * @title EASClaimVerifierUpgradeable
  * @author EEA Working Group
- * @notice Core adapter that enables ERC-3643 security tokens to accept EAS attestations
- * @dev This contract implements the verification logic that the Identity Registry calls
- *      to check if a wallet holder has valid EAS attestations matching required claim topics.
+ * @notice UUPS-upgradeable version of EASClaimVerifier
+ * @dev Core adapter that enables ERC-3643 security tokens to accept EAS attestations.
+ *      This upgradeable version uses UUPS pattern for proxy-based deployment.
  *
  *      The verification flow:
  *      1. Resolve wallet address to identity address via EASIdentityProxy
@@ -22,12 +24,8 @@ import {IClaimTopicsRegistry} from "./interfaces/IClaimTopicsRegistry.sol";
  *      4. Query registered attestations for (identity, schema, trustedAttester)
  *      5. Validate attestation: not revoked, not expired
  *      6. If all topics have valid attestations, return true
- *
- *      Integration Paths:
- *      - Path A (Pluggable Verifier): Deploy as a module called by a modified Identity Registry
- *      - Path B (Zero-Modification): Use EASClaimVerifierIdentityWrapper for IIdentity compatibility
  */
-contract EASClaimVerifier is IEASClaimVerifier, Ownable {
+contract EASClaimVerifierUpgradeable is Initializable, OwnableUpgradeable, UUPSUpgradeable, IEASClaimVerifier {
     // ============ Storage ============
 
     /// @notice The EAS contract address
@@ -45,20 +43,36 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
     /// @notice Mapping from claim topic to EAS schema UID
     mapping(uint256 => bytes32) private _topicToSchema;
 
-    /// @notice Active attestation UID per identity/topic (last valid registration wins)
-    mapping(address => mapping(uint256 => bytes32)) private _activeAttestations;
-
     /// @notice Registered attestation UIDs: identity => topic => attester => attestationUID
-    /// @dev Kept for backward-compatibility reads; active verification uses _activeAttestations.
     mapping(address => mapping(uint256 => mapping(address => bytes32))) private _registeredAttestations;
 
+    /// @dev Reserved storage gap for future upgrades
+    uint256[44] private __gap;
+
     // ============ Constructor ============
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    // ============ Initializer ============
 
     /**
      * @notice Initializes the verifier with an owner
      * @param initialOwner The initial owner address
      */
-    constructor(address initialOwner) Ownable(initialOwner) {}
+    function initialize(address initialOwner) external initializer {
+        __Ownable_init(initialOwner);
+    }
+
+    // ============ UUPS Authorization ============
+
+    /**
+     * @notice Authorizes contract upgrades
+     * @dev Only owner can upgrade
+     */
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     // ============ Configuration Functions ============
 
@@ -147,9 +161,8 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
 
     /**
      * @notice Registers an attestation UID for efficient lookup during verification
-     * @dev Caller must be the attester, the identity, or an authorized identity-proxy agent.
-     *      The function validates that the attestation exists, matches the expected schema,
-     *      and is from a trusted attester.
+     * @dev Anyone can call this to register valid attestations. The function validates
+     *      that the attestation exists, matches the expected schema, and is from a trusted attester.
      * @param identity The identity address the attestation is for
      * @param claimTopic The claim topic this attestation covers
      * @param attestationUID The EAS attestation UID
@@ -176,8 +189,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
         bool callerIsAuthorizedAgent = address(_identityProxy) != address(0) && _identityProxy.isAgent(msg.sender);
         require(callerIsAttester || callerIsIdentity || callerIsAuthorizedAgent, "Caller not authorized");
 
-        // Register the attestation (single active UID per topic)
-        _activeAttestations[identity][claimTopic] = attestationUID;
+        // Register the attestation
         _registeredAttestations[identity][claimTopic][attestation.attester] = attestationUID;
 
         emit AttestationRegistered(identity, claimTopic, attestation.attester, attestationUID);
@@ -195,17 +207,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
         view
         returns (bytes32)
     {
-        bytes32 activeUid = _activeAttestations[identity][claimTopic];
-        if (activeUid == bytes32(0)) {
-            return bytes32(0);
-        }
-
-        Attestation memory activeAttestation = _eas.getAttestation(activeUid);
-        if (activeAttestation.attester != attester) {
-            return bytes32(0);
-        }
-
-        return activeUid;
+        return _registeredAttestations[identity][claimTopic][attester];
     }
 
     // ============ Verification ============
@@ -273,24 +275,25 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
             return false;
         }
 
-        // Single attestation lookup per topic (O(topics))
-        bytes32 activeUid = _activeAttestations[identity][claimTopic];
-        if (activeUid == bytes32(0)) {
+        // Get trusted attesters for this topic
+        address[] memory trustedAttesters = _trustedIssuersAdapter.getTrustedAttestersForTopic(claimTopic);
+        if (trustedAttesters.length == 0) {
+            // No trusted attesters for this topic
             return false;
         }
 
-        Attestation memory attestation = _eas.getAttestation(activeUid);
-        if (attestation.uid == bytes32(0)) {
-            return false;
-        }
-        if (attestation.attester == address(0)) {
-            return false;
-        }
-        if (!_trustedIssuersAdapter.isAttesterTrusted(attestation.attester, claimTopic)) {
-            return false;
+        // Check each trusted attester for a valid attestation
+        for (uint256 i = 0; i < trustedAttesters.length; i++) {
+            bytes32 attestationUID = _registeredAttestations[identity][claimTopic][trustedAttesters[i]];
+
+            if (attestationUID != bytes32(0)) {
+                if (_isAttestationValid(attestationUID, schemaUID)) {
+                    return true;
+                }
+            }
         }
 
-        return _isAttestationValid(activeUid, schemaUID);
+        return false;
     }
 
     /**

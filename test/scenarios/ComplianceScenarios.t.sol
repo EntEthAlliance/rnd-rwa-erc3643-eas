@@ -52,6 +52,9 @@ contract ComplianceScenariosTest is Test {
         topics[0] = TOPIC_KYC;
         topics[1] = TOPIC_ACCREDITATION;
         adapter.addTrustedAttester(address(kycProvider), topics);
+
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
     }
 
     // ============ Scenario 1: US Accredited Investor ============
@@ -281,6 +284,8 @@ contract ComplianceScenariosTest is Test {
         topicsRegistry.addClaimTopic(TOPIC_KYC);
 
         bytes32 uid = kycProvider.attestInvestorEligibility(schemaUID, wallet, wallet, 1, 0, 840, 0);
+        // In direct wallet mode (no identity proxy), caller must be attester or identity itself
+        vm.prank(address(kycProvider));
         verifier.registerAttestation(wallet, TOPIC_KYC, uid);
 
         assertTrue(verifier.isVerified(wallet));
