@@ -9,6 +9,7 @@ This directory contains the documentation for the EAS-to-ERC-3643 Identity Bridg
 | **Understand the architecture** | [Identity Architecture Explained](architecture/identity-architecture-explained.md) — Full story of how ERC-3643 identity works, what EAS brings, and how the bridge connects them |
 | **Understand implementation quickly (GitHub-ready)** | [ERC-3643 + EAS Implementation Guide](erc3643-eas-implementation-guide.md) — Practical architecture + validation + review checklist |
 | **Integrate the bridge** | [Integration Guide](integration-guide.md) — Step-by-step integration instructions with code examples |
+| **Validate/demo MVP quickly** | [MVP Validation + Demo Guide](mvp-validation-and-demo.md) — Fast commands + presenter-ready demo flow |
 | **Estimate gas costs** | [Gas Benchmarks](gas-benchmarks.md) — Gas costs for all operations with USD estimates |
 
 ## Documentation Structure
