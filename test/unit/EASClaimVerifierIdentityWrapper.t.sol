@@ -25,7 +25,6 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
     EASIdentityProxy public identityProxy;
     MockClaimTopicsRegistry public topicsRegistry;
     MockAttester public kycProvider;
-    EASIdentityProxy public identityProxy;
 
     address public owner = address(this);
     address public identityAddress = address(0x1D01);
@@ -44,7 +43,6 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         topicsRegistry = new MockClaimTopicsRegistry();
         verifier = new EASClaimVerifier(owner);
         kycProvider = new MockAttester(address(eas), "Acme KYC");
-        identityProxy = new EASIdentityProxy(owner);
 
         kycProviderAddr = address(kycProvider);
 
@@ -53,19 +51,15 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         verifier.setTrustedIssuersAdapter(address(adapter));
         verifier.setIdentityProxy(address(identityProxy));
         verifier.setClaimTopicsRegistry(address(topicsRegistry));
-        verifier.setIdentityProxy(address(identityProxy));
         verifier.setTopicSchemaMapping(TOPIC_KYC, schemaKYC);
 
-        // Authorize this test contract for registration flows
+        // Authorize test contract as agent for registerAttestation calls
         identityProxy.addAgent(address(this));
 
         // Add KYC provider as trusted attester
         uint256[] memory topics = new uint256[](1);
         topics[0] = TOPIC_KYC;
         adapter.addTrustedAttester(kycProviderAddr, topics);
-
-        // Authorize test contract as agent for registerAttestation calls
-        identityProxy.addAgent(address(this));
 
         // Deploy wrapper for identity
         wrapper =

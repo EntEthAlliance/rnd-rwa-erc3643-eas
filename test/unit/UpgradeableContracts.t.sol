@@ -131,12 +131,7 @@ contract UpgradeableContractsTest is Test {
         AttestationRequest memory request = AttestationRequest({
             schema: schemaKYC,
             data: AttestationRequestData({
-                recipient: user1,
-                expirationTime: 0,
-                revocable: true,
-                refUID: bytes32(0),
-                data: data,
-                value: 0
+                recipient: user1, expirationTime: 0, revocable: true, refUID: bytes32(0), data: data, value: 0
             })
         });
         bytes32 uid = eas.attestFrom(request, attester1);
@@ -338,12 +333,7 @@ contract UpgradeableContractsTest is Test {
         AttestationRequest memory request = AttestationRequest({
             schema: schemaKYC,
             data: AttestationRequestData({
-                recipient: user1,
-                expirationTime: 0,
-                revocable: true,
-                refUID: bytes32(0),
-                data: data,
-                value: 0
+                recipient: user1, expirationTime: 0, revocable: true, refUID: bytes32(0), data: data, value: 0
             })
         });
         bytes32 uid = eas.attestFrom(request, attester1);
