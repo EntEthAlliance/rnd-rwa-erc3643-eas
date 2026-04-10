@@ -25,9 +25,9 @@ forge test
 
 Optional focused checks (recommended for review confidence):
 ```bash
-# run parity-related test slices (adjust match pattern to current suite naming)
-forge test --match-path "test/valence/*"
+# run parity/integration slices (adjust match pattern to current suite naming)
 forge test --match-test "*Parity*"
+forge test --match-path "test/integration/*"
 ```
 
 ## What “good” looks like
