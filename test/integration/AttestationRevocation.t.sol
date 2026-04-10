@@ -66,6 +66,9 @@ contract AttestationRevocationTest is Test {
         topics[0] = TOPIC_KYC;
         trustedIssuers.addTrustedAttester(kycProviderAddr, topics);
 
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
+
         vm.stopPrank();
 
         claimTopicsRegistry.addClaimTopic(TOPIC_KYC);

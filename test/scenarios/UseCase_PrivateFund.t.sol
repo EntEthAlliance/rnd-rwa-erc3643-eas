@@ -99,6 +99,9 @@ contract UseCase_PrivateFund_Test is Test {
         accredTopics[0] = TOPIC_ACCREDITATION;
         trustedIssuers.addTrustedAttester(accreditationVerifierAddr, accredTopics);
 
+        // Authorize test contract as an agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
+
         vm.stopPrank();
 
         // Private fund requires both KYC AND accreditation

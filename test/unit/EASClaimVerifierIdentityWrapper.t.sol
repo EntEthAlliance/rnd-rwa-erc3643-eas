@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import {EASClaimVerifierIdentityWrapper} from "../../contracts/EASClaimVerifierIdentityWrapper.sol";
 import {EASClaimVerifier} from "../../contracts/EASClaimVerifier.sol";
 import {EASTrustedIssuersAdapter} from "../../contracts/EASTrustedIssuersAdapter.sol";
+import {EASIdentityProxy} from "../../contracts/EASIdentityProxy.sol";
 import {MockEAS} from "../../contracts/mocks/MockEAS.sol";
 import {MockClaimTopicsRegistry} from "../../contracts/mocks/MockClaimTopicsRegistry.sol";
 import {MockAttester} from "../../contracts/mocks/MockAttester.sol";
@@ -21,6 +22,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
     EASClaimVerifier public verifier;
     MockEAS public eas;
     EASTrustedIssuersAdapter public adapter;
+    EASIdentityProxy public identityProxy;
     MockClaimTopicsRegistry public topicsRegistry;
     MockAttester public kycProvider;
     EASIdentityProxy public identityProxy;
@@ -38,6 +40,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         // Deploy infrastructure
         eas = new MockEAS();
         adapter = new EASTrustedIssuersAdapter(owner);
+        identityProxy = new EASIdentityProxy(owner);
         topicsRegistry = new MockClaimTopicsRegistry();
         verifier = new EASClaimVerifier(owner);
         kycProvider = new MockAttester(address(eas), "Acme KYC");
@@ -48,6 +51,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         // Configure verifier
         verifier.setEASAddress(address(eas));
         verifier.setTrustedIssuersAdapter(address(adapter));
+        verifier.setIdentityProxy(address(identityProxy));
         verifier.setClaimTopicsRegistry(address(topicsRegistry));
         verifier.setIdentityProxy(address(identityProxy));
         verifier.setTopicSchemaMapping(TOPIC_KYC, schemaKYC);
@@ -59,6 +63,9 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         uint256[] memory topics = new uint256[](1);
         topics[0] = TOPIC_KYC;
         adapter.addTrustedAttester(kycProviderAddr, topics);
+
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
 
         // Deploy wrapper for identity
         wrapper =

@@ -75,6 +75,9 @@ contract InvestorLifecycleTest is Test {
         accredTopics[0] = TOPIC_ACCREDITATION;
         adapter.addTrustedAttester(address(accreditationProvider), accredTopics);
 
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
+
         vm.stopPrank();
 
         // Set required topics for the token (test contract is owner of topicsRegistry)
