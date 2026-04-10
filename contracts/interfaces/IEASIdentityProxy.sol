@@ -66,6 +66,13 @@ interface IEASIdentityProxy {
     function isRegistered(address wallet) external view returns (bool);
 
     /**
+     * @notice Checks whether an address is an authorized agent
+     * @param agent The address to check
+     * @return True if the address is an authorized agent
+     */
+    function isAgent(address agent) external view returns (bool);
+
+    /**
      * @notice Registers multiple wallets under an identity in a single transaction
      * @dev Only callable by an agent or by the identity address itself
      * @param wallets Array of wallet addresses to register

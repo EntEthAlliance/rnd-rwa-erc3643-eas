@@ -62,6 +62,9 @@ contract EASClaimVerifierTest is Test {
         verifier.setTopicSchemaMapping(TOPIC_KYC, schemaKYC);
         verifier.setTopicSchemaMapping(TOPIC_ACCREDITATION, schemaAccreditation);
 
+        // Authorize this test contract as an identity-proxy agent for registration calls
+        identityProxy.addAgent(address(this));
+
         // Add trusted attester
         uint256[] memory topics = new uint256[](2);
         topics[0] = TOPIC_KYC;
@@ -263,6 +266,7 @@ contract EASClaimVerifierTest is Test {
 
         bytes memory data = _encodeInvestorEligibility(user1, 1, 0, 840, 0);
         bytes32 uid = _createAttestation(schemaKYC, user1, attester1, data, 0);
+        vm.prank(attester1);
         verifier.registerAttestation(user1, TOPIC_KYC, uid);
 
         assertTrue(verifier.isVerified(user1));
@@ -292,6 +296,7 @@ contract EASClaimVerifierTest is Test {
         vm.expectEmit(true, true, true, true);
         emit AttestationRegistered(user1, TOPIC_KYC, attester1, uid);
 
+        vm.prank(attester1);
         verifier.registerAttestation(user1, TOPIC_KYC, uid);
 
         assertEq(verifier.getRegisteredAttestation(user1, TOPIC_KYC, attester1), uid);
@@ -351,6 +356,28 @@ contract EASClaimVerifierTest is Test {
 
         vm.expectRevert("Attester not trusted");
         verifier.registerAttestation(user1, TOPIC_KYC, uid);
+    }
+
+    function test_registerAttestation_revertsIfCallerNotAuthorized() public {
+        bytes memory data = _encodeInvestorEligibility(user1, 1, 0, 840, 0);
+        bytes32 uid = _createAttestation(schemaKYC, user1, attester1, data, 0);
+
+        vm.prank(user2);
+        vm.expectRevert("Caller not authorized");
+        verifier.registerAttestation(user1, TOPIC_KYC, uid);
+    }
+
+    function test_registerAttestation_allowsAuthorizedAgent() public {
+        bytes memory data = _encodeInvestorEligibility(user1, 1, 0, 840, 0);
+        bytes32 uid = _createAttestation(schemaKYC, user1, attester1, data, 0);
+
+        address relayer = makeAddr("relayer");
+        identityProxy.addAgent(relayer);
+
+        vm.prank(relayer);
+        verifier.registerAttestation(user1, TOPIC_KYC, uid);
+
+        assertEq(verifier.getRegisteredAttestation(user1, TOPIC_KYC, attester1), uid);
     }
 
     // ============ Error State Tests ============

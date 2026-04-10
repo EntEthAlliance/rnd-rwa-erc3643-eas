@@ -87,7 +87,7 @@ contract EASIdentityProxy is IEASIdentityProxy, Ownable {
      * @param agent The address to check
      * @return True if the address is an agent
      */
-    function isAgent(address agent) external view returns (bool) {
+    function isAgent(address agent) external view override returns (bool) {
         return _agents[agent];
     }
 
