@@ -45,7 +45,11 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
     /// @notice Mapping from claim topic to EAS schema UID
     mapping(uint256 => bytes32) private _topicToSchema;
 
+    /// @notice Active attestation UID per identity/topic (last valid registration wins)
+    mapping(address => mapping(uint256 => bytes32)) private _activeAttestations;
+
     /// @notice Registered attestation UIDs: identity => topic => attester => attestationUID
+    /// @dev Kept for backward-compatibility reads; active verification uses _activeAttestations.
     mapping(address => mapping(uint256 => mapping(address => bytes32))) private _registeredAttestations;
 
     // ============ Constructor ============
@@ -143,8 +147,9 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
 
     /**
      * @notice Registers an attestation UID for efficient lookup during verification
-     * @dev Anyone can call this to register valid attestations. The function validates
-     *      that the attestation exists, matches the expected schema, and is from a trusted attester.
+     * @dev Caller must be the attester, the identity, or an authorized identity-proxy agent.
+     *      The function validates that the attestation exists, matches the expected schema,
+     *      and is from a trusted attester.
      * @param identity The identity address the attestation is for
      * @param claimTopic The claim topic this attestation covers
      * @param attestationUID The EAS attestation UID
@@ -172,7 +177,8 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
             address(_identityProxy) != address(0) && _identityProxy.isAgent(msg.sender);
         require(callerIsAttester || callerIsIdentity || callerIsAuthorizedAgent, "Caller not authorized");
 
-        // Register the attestation
+        // Register the attestation (single active UID per topic)
+        _activeAttestations[identity][claimTopic] = attestationUID;
         _registeredAttestations[identity][claimTopic][attestation.attester] = attestationUID;
 
         emit AttestationRegistered(identity, claimTopic, attestation.attester, attestationUID);
@@ -190,7 +196,17 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
         view
         returns (bytes32)
     {
-        return _registeredAttestations[identity][claimTopic][attester];
+        bytes32 activeUid = _activeAttestations[identity][claimTopic];
+        if (activeUid == bytes32(0)) {
+            return bytes32(0);
+        }
+
+        Attestation memory activeAttestation = _eas.getAttestation(activeUid);
+        if (activeAttestation.attester != attester) {
+            return bytes32(0);
+        }
+
+        return activeUid;
     }
 
     // ============ Verification ============
@@ -258,25 +274,24 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
             return false;
         }
 
-        // Get trusted attesters for this topic
-        address[] memory trustedAttesters = _trustedIssuersAdapter.getTrustedAttestersForTopic(claimTopic);
-        if (trustedAttesters.length == 0) {
-            // No trusted attesters for this topic
+        // Single attestation lookup per topic (O(topics))
+        bytes32 activeUid = _activeAttestations[identity][claimTopic];
+        if (activeUid == bytes32(0)) {
             return false;
         }
 
-        // Check each trusted attester for a valid attestation
-        for (uint256 i = 0; i < trustedAttesters.length; i++) {
-            bytes32 attestationUID = _registeredAttestations[identity][claimTopic][trustedAttesters[i]];
-
-            if (attestationUID != bytes32(0)) {
-                if (_isAttestationValid(attestationUID, schemaUID)) {
-                    return true;
-                }
-            }
+        Attestation memory attestation = _eas.getAttestation(activeUid);
+        if (attestation.uid == bytes32(0)) {
+            return false;
+        }
+        if (attestation.attester == address(0)) {
+            return false;
+        }
+        if (!_trustedIssuersAdapter.isAttesterTrusted(attestation.attester, claimTopic)) {
+            return false;
         }
 
-        return false;
+        return _isAttestationValid(activeUid, schemaUID);
     }
 
     /**

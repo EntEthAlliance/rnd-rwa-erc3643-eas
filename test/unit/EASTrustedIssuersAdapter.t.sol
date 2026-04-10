@@ -90,17 +90,19 @@ contract EASTrustedIssuersAdapterTest is Test {
     }
 
     function test_addTrustedAttester_maxAttesters() public {
-        uint256[] memory topics = new uint256[](1);
-        topics[0] = TOPIC_KYC;
-
-        // Add 50 attesters (max) using makeAddr for safe address generation
+        // Add 50 attesters (global max), each on a unique topic to avoid per-topic cap
         for (uint256 i = 0; i < 50; i++) {
+            uint256[] memory topics = new uint256[](1);
+            topics[0] = i + 100;
             adapter.addTrustedAttester(makeAddr(string(abi.encodePacked("attester", i))), topics);
         }
 
-        // 51st should fail
+        uint256[] memory newTopics = new uint256[](1);
+        newTopics[0] = 999;
+
+        // 51st should fail on global cap
         vm.expectRevert("MaxAttestersReached");
-        adapter.addTrustedAttester(makeAddr("attester50"), topics);
+        adapter.addTrustedAttester(makeAddr("attester50"), newTopics);
     }
 
     function test_addTrustedAttester_maxTopicsPerAttester() public {
@@ -297,5 +299,36 @@ contract EASTrustedIssuersAdapterTest is Test {
         // Last element moved to removed position
         assertTrue(attesters[0] == attester1 || attesters[0] == attester3);
         assertTrue(attesters[1] == attester1 || attesters[1] == attester3);
+    }
+
+    function test_addTrustedAttester_revertsIfMaxAttestersPerTopicReached() public {
+        uint256[] memory topics = new uint256[](1);
+        topics[0] = TOPIC_KYC;
+
+        for (uint256 i = 0; i < 5; i++) {
+            adapter.addTrustedAttester(makeAddr(string(abi.encodePacked("topicAttester", i))), topics);
+        }
+
+        vm.expectRevert("MaxAttestersPerTopicReached");
+        adapter.addTrustedAttester(makeAddr("topicAttesterOverflow"), topics);
+    }
+
+    function test_updateAttesterTopics_revertsIfMaxAttestersPerTopicReached() public {
+        uint256[] memory topics = new uint256[](1);
+        topics[0] = TOPIC_KYC;
+
+        // Fill topic cap with 5 attesters
+        for (uint256 i = 0; i < 5; i++) {
+            adapter.addTrustedAttester(makeAddr(string(abi.encodePacked("capAttester", i))), topics);
+        }
+
+        // Add a separate attester on a different topic
+        uint256[] memory otherTopics = new uint256[](1);
+        otherTopics[0] = TOPIC_ACCREDITATION;
+        adapter.addTrustedAttester(attester1, otherTopics);
+
+        // Updating into capped topic should fail
+        vm.expectRevert("MaxAttestersPerTopicReached");
+        adapter.updateAttesterTopics(attester1, topics);
     }
 }

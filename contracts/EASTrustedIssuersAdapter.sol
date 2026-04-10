@@ -21,6 +21,9 @@ contract EASTrustedIssuersAdapter is IEASTrustedIssuersAdapter, Ownable {
     /// @notice Maximum number of topics per attester (matching ERC-3643's limit of 15)
     uint256 public constant MAX_TOPICS_PER_ATTESTER = 15;
 
+    /// @notice Maximum number of trusted attesters allowed per topic
+    uint256 public constant MAX_ATTESTERS_PER_TOPIC = 5;
+
     // ============ Storage ============
 
     /// @notice Array of all trusted attester addresses
@@ -68,6 +71,9 @@ contract EASTrustedIssuersAdapter is IEASTrustedIssuersAdapter, Ownable {
 
         for (uint256 i = 0; i < claimTopics.length; i++) {
             uint256 topic = claimTopics[i];
+            if (_claimTopicToAttesters[topic].length >= MAX_ATTESTERS_PER_TOPIC) {
+                revert("MaxAttestersPerTopicReached");
+            }
             _claimTopicToAttesters[topic].push(attester);
             _attesterTrustedForTopic[attester][topic] = true;
         }
@@ -121,6 +127,9 @@ contract EASTrustedIssuersAdapter is IEASTrustedIssuersAdapter, Ownable {
         _attesterClaimTopics[attester] = claimTopics;
         for (uint256 i = 0; i < claimTopics.length; i++) {
             uint256 topic = claimTopics[i];
+            if (_claimTopicToAttesters[topic].length >= MAX_ATTESTERS_PER_TOPIC) {
+                revert("MaxAttestersPerTopicReached");
+            }
             _claimTopicToAttesters[topic].push(attester);
             _attesterTrustedForTopic[attester][topic] = true;
         }
