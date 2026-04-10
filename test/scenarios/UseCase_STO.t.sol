@@ -101,6 +101,9 @@ contract UseCase_STO_Test is Test {
         topics[1] = TOPIC_COUNTRY;
         trustedIssuers.addTrustedAttester(kycProviderAddr, topics);
 
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
+
         vm.stopPrank();
 
         // Set required topics (KYC only for now)

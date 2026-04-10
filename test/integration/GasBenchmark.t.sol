@@ -83,6 +83,9 @@ contract GasBenchmarkTest is Test {
         topics[4] = TOPIC_5;
         trustedIssuers.addTrustedAttester(kycProviderAddr, topics);
 
+        // Authorize test contract as agent for registerAttestation calls
+        identityProxy.addAgent(address(this));
+
         vm.stopPrank();
     }
 
