@@ -27,6 +27,7 @@ import {EASIdentityProxy} from "../contracts/EASIdentityProxy.sol";
  *      - MULTISIG_ADDRESS: Multi-sig wallet for ownership (REQUIRED)
  *      - CLAIM_TOPICS_REGISTRY: Existing registry address (REQUIRED)
  *      - ETHERSCAN_API_KEY: For contract verification
+ *      - AUDIT_ACKNOWLEDGED: Must be true to pass audit deployment gate
  */
 contract DeployMainnet is Script {
     // Mainnet EAS addresses
@@ -61,6 +62,13 @@ contract DeployMainnet is Script {
         // Production checks
         require(block.chainid != 31337, "Cannot deploy to local network");
         require(_isMainnet(), "Use DeployTestnet.s.sol for testnets");
+
+        // Audit gate: blocks unaudited mainnet deployment unless explicitly acknowledged
+        bool auditAcknowledged = vm.envBool("AUDIT_ACKNOWLEDGED");
+        require(
+            auditAcknowledged,
+            "AUDIT GATE: set AUDIT_ACKNOWLEDGED=true only after audit scope/review is complete (see AUDIT.md)"
+        );
 
         console2.log("=== EAS-ERC3643 Bridge PRODUCTION Deployment ===");
         console2.log("");
