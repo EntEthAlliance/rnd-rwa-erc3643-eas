@@ -8,6 +8,7 @@ import {EASTrustedIssuersAdapter} from "../../contracts/EASTrustedIssuersAdapter
 import {MockEAS} from "../../contracts/mocks/MockEAS.sol";
 import {MockClaimTopicsRegistry} from "../../contracts/mocks/MockClaimTopicsRegistry.sol";
 import {MockAttester} from "../../contracts/mocks/MockAttester.sol";
+import {EASIdentityProxy} from "../../contracts/EASIdentityProxy.sol";
 import {IIdentity} from "../../contracts/interfaces/IIdentity.sol";
 import {AttestationRequest, AttestationRequestData} from "@eas/IEAS.sol";
 
@@ -22,6 +23,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
     EASTrustedIssuersAdapter public adapter;
     MockClaimTopicsRegistry public topicsRegistry;
     MockAttester public kycProvider;
+    EASIdentityProxy public identityProxy;
 
     address public owner = address(this);
     address public identityAddress = address(0x1D01);
@@ -39,6 +41,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         topicsRegistry = new MockClaimTopicsRegistry();
         verifier = new EASClaimVerifier(owner);
         kycProvider = new MockAttester(address(eas), "Acme KYC");
+        identityProxy = new EASIdentityProxy(owner);
 
         kycProviderAddr = address(kycProvider);
 
@@ -46,7 +49,11 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         verifier.setEASAddress(address(eas));
         verifier.setTrustedIssuersAdapter(address(adapter));
         verifier.setClaimTopicsRegistry(address(topicsRegistry));
+        verifier.setIdentityProxy(address(identityProxy));
         verifier.setTopicSchemaMapping(TOPIC_KYC, schemaKYC);
+
+        // Authorize this test contract for registration flows
+        identityProxy.addAgent(address(this));
 
         // Add KYC provider as trusted attester
         uint256[] memory topics = new uint256[](1);
@@ -149,7 +156,7 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         assertEq(claimIds.length, 0);
     }
 
-    function test_getClaimIdsByTopic_returnsMultipleClaimIds() public {
+    function test_getClaimIdsByTopic_returnsLatestActiveClaimId() public {
         // Add second attester
         MockAttester kycProvider2 = new MockAttester(address(eas), "Better KYC");
         address kycProvider2Addr = address(kycProvider2);
@@ -163,11 +170,12 @@ contract EASClaimVerifierIdentityWrapperTest is Test {
         bytes32 uid2 = kycProvider2.attestInvestorEligibility(schemaKYC, identityAddress, identityAddress, 1, 0, 826, 0);
 
         verifier.registerAttestation(identityAddress, TOPIC_KYC, uid1);
-        verifier.registerAttestation(identityAddress, TOPIC_KYC, uid2);
+        verifier.registerAttestation(identityAddress, TOPIC_KYC, uid2); // last registration wins
 
         bytes32[] memory claimIds = wrapper.getClaimIdsByTopic(TOPIC_KYC);
 
-        assertEq(claimIds.length, 2);
+        assertEq(claimIds.length, 1);
+        assertEq(claimIds[0], keccak256(abi.encode(kycProvider2Addr, TOPIC_KYC)));
     }
 
     // ============ isClaimValid Tests ============

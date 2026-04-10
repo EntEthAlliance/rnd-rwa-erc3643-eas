@@ -173,8 +173,7 @@ contract EASClaimVerifier is IEASClaimVerifier, Ownable {
         // Authorization gate: attester, identity itself, or authorized identity-proxy agent
         bool callerIsAttester = attestation.attester == msg.sender;
         bool callerIsIdentity = msg.sender == identity;
-        bool callerIsAuthorizedAgent =
-            address(_identityProxy) != address(0) && _identityProxy.isAgent(msg.sender);
+        bool callerIsAuthorizedAgent = address(_identityProxy) != address(0) && _identityProxy.isAgent(msg.sender);
         require(callerIsAttester || callerIsIdentity || callerIsAuthorizedAgent, "Caller not authorized");
 
         // Register the attestation (single active UID per topic)
