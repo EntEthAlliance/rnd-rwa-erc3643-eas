@@ -321,6 +321,85 @@ tbody th{font-weight:750}
   .endcap-inner{flex-direction:row;align-items:center}
 }
 
+/* Print (PDF export) */
+@page{margin:12mm}
+@media print{
+  html,body{height:auto}
+  body{
+    background:#fff !important;
+    color:#000 !important;
+    font-size:11pt;
+    line-height:1.35;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide UI chrome / navigation */
+  .topbar,
+  .skip,
+  .hero-actions,
+  .topbar-cta,
+  .nav,
+  .endcap-actions,
+  .fineprint-links{display:none !important}
+
+  /* Remove sticky/backdrop effects */
+  .topbar{position:static !important; backdrop-filter:none !important}
+
+  /* Layout: single column for predictable pagination */
+  .container,
+  .hero-inner{max-width:none !important}
+  .hero-inner,
+  .grid.two,
+  .grid.three,
+  .compound{grid-template-columns:1fr !important}
+
+  /* Make reveal animations inert */
+  [data-reveal]{opacity:1 !important; transform:none !important; transition:none !important}
+
+  /* Cards: printable */
+  .card,
+  .beat,
+  .quote-block,
+  .appendix,
+  .endcap-inner,
+  .metric,
+  .stack-card,
+  .compound-col,
+  .table-wrap{
+    box-shadow:none !important;
+    background:#fff !important;
+    border:1px solid #d0d0d0 !important;
+  }
+
+  .hl{color:#000 !important; -webkit-text-fill-color:#000 !important}
+  .muted,
+  .section-head p,
+  .card p,
+  .beat p,
+  .bullets,
+  .mini,
+  .steps,
+  .label,
+  .metric-v,
+  .quote-meta,
+  .quote-attrib,
+  .fineprint-sub{color:#222 !important}
+
+  a{color:#000 !important; text-decoration:underline}
+
+  /* Avoid awkward cut-offs */
+  .section,
+  .card,
+  .beat,
+  .quote-block,
+  table,
+  .table-wrap{break-inside: avoid; page-break-inside: avoid}
+
+  h1,h2,h3{break-after: avoid-page}
+  .footer{border-top:1px solid #ddd !important; background:#fff !important}
+}
+
 @media (prefers-reduced-motion: no-preference){
   [data-reveal]{
     opacity:0; transform: translateY(10px);

@@ -29,6 +29,18 @@ python3 -m http.server 8000
 ```
 Then open <http://127.0.0.1:8000/>.
 
+## Export to PDF
+
+This page includes **print styles** (A4/Letter friendly) for clean PDF export.
+
+1. Open the page (directly or via the local server)
+2. Browser menu → **Print…**
+3. Destination → **Save as PDF**
+4. Recommended settings:
+   - Paper: **Letter** or **A4**
+   - Margins: **Default** (or **None** if you want tighter spacing)
+   - Background graphics: **On** (keeps subtle borders)
+
 ## Notes
 
 - No wallet connection
