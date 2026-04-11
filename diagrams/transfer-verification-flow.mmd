@@ -1,5 +1,5 @@
 sequenceDiagram
-    %% Mirrors OpenZeppelin RWA vocabulary: token → compliance → identity verifier module
+    %% Mirrors OpenZeppelin RWA vocabulary: token → compliance → Shibui identity layer
     participant User
     participant Token as Token Core (ERC-3643)
     participant Compliance as Compliance Module(s)
@@ -16,7 +16,7 @@ sequenceDiagram
     %% ERC-3643: compliance gates call into identity checks (via Identity Registry)
     Compliance->>IR: isVerified(to)
 
-    Note over IR,Verifier: Identity Verifier Module — EAS backend (pluggable)
+    Note over IR,Verifier: Shibui Identity Layer — EAS backend (pluggable)
     IR->>Verifier: isVerified(userAddress)
 
     Verifier->>EIP: getIdentity(userAddress)
