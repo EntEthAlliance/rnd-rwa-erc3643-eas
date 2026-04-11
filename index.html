@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Shibui MVP — ERC-3643 × EAS (Static Demo)</title>
+  <title>Shibui — Business Story Demo (ERC-3643 × EAS)</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -12,13 +12,13 @@
       <div class="brand">
         <div class="dot"></div>
         <div>
-          <div class="brand-title">Shibui MVP Demo</div>
-          <div class="brand-sub">ERC-3643 semantics • EAS credentials • No-chain simulation</div>
+          <div class="brand-title">Shibui — Story-First Demo</div>
+          <div class="brand-sub">Tokenized private credit • reusable identity • instant enforcement (simulation)</div>
         </div>
       </div>
 
       <div class="controls">
-        <button class="btn" id="btnStart">Start</button>
+        <button class="btn" id="btnStart">Start over</button>
         <button class="btn" id="btnBack" disabled>Back</button>
         <button class="btn primary" id="btnNext" disabled>Next</button>
       </div>
@@ -28,34 +28,29 @@
       <section class="content">
         <div class="screen-meta">
           <div class="screen-title" id="screenTitle">Ready</div>
-          <div class="screen-step" id="screenStep">14 screens • interactive walkthrough</div>
+          <div class="screen-step" id="screenStep">14 scenes • executive-friendly walkthrough</div>
         </div>
 
-        <div class="narrative" id="narrative"></div>
-
-        <div class="calls">
-          <div class="panel-title">Displayed Solidity calls (illustrative)</div>
-          <pre class="code" id="calls"></pre>
-        </div>
+        <div class="story" id="story"></div>
 
         <div class="callouts" id="callouts"></div>
       </section>
 
       <aside class="sidebar">
         <div class="panel">
-          <div class="panel-title">Persistent State</div>
+          <div class="panel-title">Live State (simplified)</div>
           <div class="state" id="state"></div>
         </div>
 
         <div class="panel log">
-          <div class="panel-title">Action / Event Log</div>
+          <div class="panel-title">Action Log</div>
           <div class="log-body" id="log"></div>
         </div>
       </aside>
     </main>
 
     <footer class="footer">
-      <div class="hint">Tip: use ← / → keys for Back/Next</div>
+      <div class="hint">Tip: use <span class="kbd">←</span> / <span class="kbd">→</span> for Back/Next</div>
       <div class="hint">This page is a UI simulation — no wallet, no RPC, no chain writes.</div>
     </footer>
   </div>
