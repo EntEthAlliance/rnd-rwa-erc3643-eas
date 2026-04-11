@@ -1,8 +1,8 @@
 # PRD — MVP Package: Monolithic ERC-3643 + EAS Bridge (UUPS Proxy Path)
 
 **Version:** v3 (single-architecture)
-**Status:** PR-ready
-**Primary tracker:** EPIC #32 (consolidated)
+**Status:** Active
+**Tracker:** GitHub Issues/PRs (MVP scope)
 
 ---
 
@@ -96,7 +96,9 @@ Design goals:
 4. Run pilot setup script
 5. Demonstrate one allow + one block scenario
 
-See: `docs/mvp-validation-and-demo.md`
+See:
+- `docs/shibui-mvp-test-plan.md`
+- `docs/shibui-mvp-demo-script.md`
 
 ---
 
