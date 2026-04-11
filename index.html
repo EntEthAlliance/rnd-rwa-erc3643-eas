@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shibui MVP — ERC-3643 × EAS (Static Demo)</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="dot"></div>
+        <div>
+          <div class="brand-title">Shibui MVP Demo</div>
+          <div class="brand-sub">ERC-3643 semantics • EAS credentials • No-chain simulation</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="btnStart">Start</button>
+        <button class="btn" id="btnBack" disabled>Back</button>
+        <button class="btn primary" id="btnNext" disabled>Next</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="content">
+        <div class="screen-meta">
+          <div class="screen-title" id="screenTitle">Ready</div>
+          <div class="screen-step" id="screenStep">14 screens • interactive walkthrough</div>
+        </div>
+
+        <div class="narrative" id="narrative"></div>
+
+        <div class="calls">
+          <div class="panel-title">Displayed Solidity calls (illustrative)</div>
+          <pre class="code" id="calls"></pre>
+        </div>
+
+        <div class="callouts" id="callouts"></div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panel-title">Persistent State</div>
+          <div class="state" id="state"></div>
+        </div>
+
+        <div class="panel log">
+          <div class="panel-title">Action / Event Log</div>
+          <div class="log-body" id="log"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <div class="hint">Tip: use ← / → keys for Back/Next</div>
+      <div class="hint">This page is a UI simulation — no wallet, no RPC, no chain writes.</div>
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
