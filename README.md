@@ -7,6 +7,15 @@ This folder contains a **single-page, presentation-ready site** for Shibui.
 
 It is written for a **broad bank / TradFi audience** (institutional, concise, low-jargon), with a primary CTA to **join the working group**.
 
+## Visual components (built-in)
+
+The page includes lightweight, responsive diagrams (inline SVG/CSS — no external libraries):
+- Compounding network effect timeline
+- “Babel of verification” (duplicated onboarding)
+- Before/after operational flow
+- Working-group governance map
+- What vs How architecture separation (standards vs implementations)
+
 ## Run
 
 ### Option A — open directly
