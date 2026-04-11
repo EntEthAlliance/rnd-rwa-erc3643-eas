@@ -2,7 +2,7 @@ flowchart TD
     Start([Token Transfer Request])
     IR{"Identity Registry\n(uses a pluggable Identity Verifier module)"}
 
-    subgraph OnchainIDPath["Identity Verifier Module — ONCHAINID"]
+    subgraph OnchainIDPath["Legacy verifier path (optional) — ONCHAINID"]
         OCID_Check{"Has ONCHAINID\nIdentity?"}
         IRS["IdentityRegistryStorage"]
         OCID["IIdentity Contract (ONCHAINID)"]
@@ -10,7 +10,7 @@ flowchart TD
         OCID_Valid{"Claims Valid?"}
     end
 
-    subgraph EASPath["Identity Verifier Module — EAS"]
+    subgraph EASPath["Shibui Identity Layer — EAS"]
         EAS_Enabled{"EAS verifier\nenabled?"}
         ECV["EASClaimVerifier\n(EAS Identity Verifier)"]
         EIP["EASIdentityProxy\n(wallet→identity)"]
