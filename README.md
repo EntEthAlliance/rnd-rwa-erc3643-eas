@@ -1,10 +1,21 @@
-# Shibui — Story-First Static Demo (ERC-3643 × EAS)
+# Shibui — Static Story Page
 
-This folder contains a **single-page static demo** designed to be readable by **executives, compliance teams, and regulators**.
+This folder contains a **single-page, presentation-ready narrative**:
+**“Shibui — A Shared Identity Language for Tokenized Assets.”**
 
-- It tells the Shibui story as **14 business-first scenes**.
-- **Technical details are available per scene** under a collapsible “Show technical details”.
-- The right panel keeps a **live simplified state** (Trusted/Not trusted; Eligible/Blocked) plus an action log.
+It is designed for **banks, asset managers, transfer agents, and regulators**.
+
+## What changed (vs the earlier demo UI)
+
+- Replaced the step-by-step “scene” walkthrough UI with a **highly visual story page**.
+- Structure is now:
+  - **Problem**
+  - **Act I–V**
+  - **The Ask**
+  - **Specifications**
+  - Optional, collapsed **Appendix** (minimal technical notes)
+- Removed the “live state” simulation panel and action log to keep the page **business-first**.
+- Kept everything **static HTML/CSS/JS** for GitHub Pages.
 
 ## Run
 
@@ -18,27 +29,9 @@ python3 -m http.server 8000
 ```
 Then open <http://127.0.0.1:8000/>.
 
-## Story arc (14 scenes)
+## Notes
 
-1. The business problem
-2. Bring the compliance rails online
-3. Define the policy (KYC + ACCRED)
-4. Set who you trust (by topic)
-5. Alice invests (Meridian client)
-6. Bob: partial → eligible
-7. Diana blocked (no evidence)
-8. Cross-bank trust (add Vega) + Carlos eligible
-9. Reuse across products (Token B)
-10. Instant enforcement (revoke Eve)
-11. Trust is reversible (remove Alpine)
-12. Recovery (re-attest Bob + Eve)
-13. Audit view
-14. What this enables
-
-## Characteristics
-
-- Static HTML/CSS/JS only
 - No wallet connection
 - No RPC / chain calls
-- Pure visual state machine simulation
-- Designed for non-engineers by default (with optional technical details)
+- No build step
+- Safe to host on GitHub Pages (static assets only)
