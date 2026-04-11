@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark light" />
-  <title>Shibui — A Shared Identity Language for Tokenized Assets</title>
-  <meta name="description" content="A story-first positioning page: reusable identity, instant enforcement, shared standards for tokenized assets." />
+  <title>Shibui — Interoperable Investor Eligibility for Tokenized Assets</title>
+  <meta name="description" content="Shibui is an open-source identity standard built on Ethereum Attestation Service (EAS), designed to give tokenized assets a shared, interoperable language for investor eligibility." />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -17,20 +17,20 @@
         <div class="brand-mark" aria-hidden="true"></div>
         <div class="brand-text">
           <div class="brand-title">Shibui</div>
-          <div class="brand-sub">A shared identity language for tokenized assets</div>
+          <div class="brand-sub">A shared identity standard for tokenized markets</div>
         </div>
       </div>
 
       <nav class="nav" aria-label="Page">
         <a href="#problem">Problem</a>
-        <a href="#acts">Act I–V</a>
-        <a href="#ask">The Ask</a>
-        <a href="#specs">Specifications</a>
+        <a href="#approach">Approach</a>
+        <a href="#working-group">Working group</a>
+        <a href="#details">Details</a>
       </nav>
 
       <div class="topbar-cta">
-        <a class="btn" href="#specs">View spec</a>
-        <a class="btn primary" href="#ask">Join the pilot</a>
+        <a class="btn" href="#details">View details</a>
+        <a class="btn primary" href="#working-group">Join the working group</a>
       </div>
     </div>
   </header>
@@ -40,77 +40,76 @@
     <section class="hero" aria-label="Hero">
       <div class="hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Positioning narrative • for institutions & regulators</p>
+          <p class="eyebrow">Institution-ready positioning • for banks, venues, and supervisors</p>
           <h1>
-            Tokenized assets need <span class="hl">reusable identity</span> —
-            not issuer-by-issuer onboarding.
+            A shared standard for <span class="hl">investor eligibility</span>
+            in tokenized markets.
           </h1>
           <p class="lede">
-            Shibui is a shared identity language: express eligibility once, verify it across tokens,
-            and enforce changes instantly.
+            <strong>Shibui is an open-source identity standard built on Ethereum Attestation Service (EAS), designed to give tokenized assets a shared, interoperable language for investor eligibility.</strong>
           </p>
 
-          <div class="hero-metrics" role="list">
+          <div class="hero-metrics" role="list" aria-label="What Shibui provides">
             <div class="metric" role="listitem">
-              <div class="metric-k">Reusable identity</div>
-              <div class="metric-v">Across issuers & venues</div>
+              <div class="metric-k">Reusable investor evidence</div>
+              <div class="metric-v">Reduce repeat onboarding across issuers and venues</div>
             </div>
             <div class="metric" role="listitem">
-              <div class="metric-k">Instant enforcement</div>
-              <div class="metric-v">Revocation & expiry propagate</div>
+              <div class="metric-k">Consistent enforcement</div>
+              <div class="metric-v">Eligibility can be updated quickly and uniformly</div>
             </div>
             <div class="metric" role="listitem">
-              <div class="metric-k">Standards-aligned</div>
-              <div class="metric-v">ERC‑3643 semantics + EAS attestations</div>
+              <div class="metric-k">Shared definitions</div>
+              <div class="metric-v">A common language regulators and auditors can review</div>
             </div>
           </div>
 
           <div class="hero-actions">
-            <a class="btn primary" href="#acts">Read the story</a>
-            <a class="btn" href="#specs">Jump to specifications</a>
+            <a class="btn primary" href="#working-group">Join the working group</a>
+            <a class="btn" href="#approach">How it works</a>
           </div>
 
           <div class="hero-quote">
             <blockquote>
-              “Identity is not a feature of a token. It is shared market infrastructure.”
+              “Tokenization scales settlement. Shared identity standards scale distribution.”
             </blockquote>
-            <div class="quote-meta">Shibui — shared identity language for tokenized assets</div>
+            <div class="quote-meta">Shibui — shared eligibility language for tokenized assets</div>
           </div>
         </div>
 
-        <div class="hero-visual" aria-label="Compound effect graphic">
+        <div class="hero-visual" aria-label="Network effect graphic">
           <div class="card visual">
-            <div class="visual-title">The compound effect</div>
+            <div class="visual-title">Interoperability compounds</div>
             <p class="visual-sub">
-              Each new trusted issuer and each new token using the same language increases value for everyone.
+              Each additional trusted issuer and each additional token using the same language increases reuse for everyone.
             </p>
 
             <div class="compound">
               <div class="compound-col">
-                <div class="pill">Attesters</div>
+                <div class="pill">Trusted issuers</div>
                 <div class="nodes">
                   <span class="node"></span><span class="node"></span><span class="node"></span>
                   <span class="node"></span><span class="node"></span>
                 </div>
-                <div class="label">Banks / KYC providers / agents</div>
+                <div class="label">Banks • KYC providers • transfer agents</div>
               </div>
               <div class="compound-mid" aria-hidden="true">
                 <div class="arrow"></div>
               </div>
               <div class="compound-col">
-                <div class="pill">Tokens</div>
+                <div class="pill">Tokenized assets</div>
                 <div class="nodes">
                   <span class="node"></span><span class="node"></span><span class="node"></span>
                   <span class="node"></span><span class="node"></span><span class="node"></span>
                 </div>
-                <div class="label">Funds / credit / deposits / MMFs</div>
+                <div class="label">Funds • credit • deposits • MMFs</div>
               </div>
             </div>
 
             <div class="visual-footer">
-              <div class="tag">Shared semantics</div>
-              <div class="tag">Portable credentials</div>
-              <div class="tag">Immediate policy updates</div>
+              <div class="tag">Portable evidence</div>
+              <div class="tag">Issuer choice</div>
+              <div class="tag">Audit-friendly</div>
             </div>
           </div>
         </div>
@@ -123,27 +122,27 @@
         <div class="section-head">
           <h2>Problem</h2>
           <p>
-            Tokenization modernizes settlement — but distribution still breaks on one question:
+            Tokenization modernizes issuance and settlement, but distribution still breaks on one question:
             <strong>who can hold the asset, and when?</strong>
           </p>
         </div>
 
         <div class="grid two">
           <div class="card">
-            <h3>Today: identity is siloed</h3>
+            <h3>Today: eligibility is fragmented</h3>
             <ul class="bullets">
-              <li>Each issuer builds its own onboarding, eligibility rules, and operator workflows.</li>
-              <li>Investors repeat KYC/accreditation across tokens and venues.</li>
-              <li>Revocations, expiries, and sanctions don’t propagate cleanly.</li>
+              <li>Every issuer defines “KYC”, “accredited”, “qualified purchaser”, etc. differently.</li>
+              <li>Investors repeat the same checks across tokens and venues.</li>
+              <li>Updates (expiry, revocation, sanctions) are operationally heavy to apply consistently.</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Result: friction + risk</h3>
+            <h3>Result: cost + risk</h3>
             <ul class="bullets">
-              <li>High onboarding cost, slow distribution, fragmented liquidity.</li>
-              <li>Inconsistent audit evidence across participants.</li>
-              <li>Operational burden lands on issuers and transfer agents — the least scalable place.</li>
+              <li>Slower onboarding, slower distribution, higher servicing cost.</li>
+              <li>Inconsistent evidence across participants and jurisdictions.</li>
+              <li>Compliance posture depends on manual reconciliation.</li>
             </ul>
           </div>
         </div>
@@ -152,7 +151,7 @@
           <div class="quote-mark" aria-hidden="true">“</div>
           <div>
             <p class="quote-text">
-              A token can express restrictions — but the market needs a shared way to express and verify identity claims.
+              Markets need shared identity semantics the same way they need shared messaging standards.
             </p>
             <div class="quote-attrib">Why Shibui exists</div>
           </div>
@@ -165,30 +164,30 @@
               <thead>
                 <tr>
                   <th scope="col">Capability</th>
-                  <th scope="col">Issuer-by-issuer identity</th>
-                  <th scope="col">Shibui shared identity language</th>
+                  <th scope="col">Issuer-by-issuer approach</th>
+                  <th scope="col">Shibui shared standard</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row">Investor onboarding</th>
-                  <td>Repeated, duplicative</td>
-                  <td>Reusable credentials across tokens</td>
+                  <th scope="row">Onboarding</th>
+                  <td>Repeated checks and integrations</td>
+                  <td>Reusable evidence recognized across assets</td>
                 </tr>
                 <tr>
-                  <th scope="row">Eligibility enforcement</th>
-                  <td>Slow and inconsistent updates</td>
-                  <td>Instant revocation/expiry propagation</td>
+                  <th scope="row">Eligibility updates</th>
+                  <td>Manual, slow propagation</td>
+                  <td>Clear semantics for expiry and revocation</td>
                 </tr>
                 <tr>
-                  <th scope="row">Interoperability</th>
-                  <td>Custom integrations everywhere</td>
-                  <td>Shared semantics + pluggable verifiers</td>
-                </tr>
-                <tr>
-                  <th scope="row">Audit & oversight</th>
+                  <th scope="row">Oversight</th>
                   <td>Fragmented evidence trails</td>
-                  <td>Standardized claim types and governance</td>
+                  <td>Common definitions supervisors can review</td>
+                </tr>
+                <tr>
+                  <th scope="row">Market interoperability</th>
+                  <td>Bespoke everywhere</td>
+                  <td>A shared language with competitive implementations</td>
                 </tr>
               </tbody>
             </table>
@@ -197,336 +196,195 @@
       </div>
     </section>
 
-    <!-- ACTS -->
-    <section class="section" id="acts">
+    <!-- APPROACH -->
+    <section class="section" id="approach">
       <div class="container">
         <div class="section-head">
-          <h2>Act I–V</h2>
-          <p>A five‑act story: from fragmentation to shared infrastructure.</p>
+          <h2>Approach</h2>
+          <p>Shibui focuses on a small, practical core: definitions, trusted issuers, and how change is handled.</p>
         </div>
 
-        <div class="timeline" aria-label="Acts timeline">
-          <article class="beat" id="act1">
-            <div class="beat-num">Act I</div>
-            <h3>Define eligibility as shared language</h3>
+        <div class="timeline" aria-label="Approach timeline">
+          <article class="beat" id="step1">
+            <div class="beat-num">Step 1</div>
+            <h3>Standardize what “eligibility” means</h3>
             <p>
-              Shibui frames eligibility as <strong>claims</strong> (KYC, accreditation, residency, sanctions)
-              with consistent meaning across tokens.
+              Define common claim topics (e.g., KYC, residency, investor type) so different assets evaluate eligibility in the same way.
             </p>
             <div class="chips">
-              <span class="chip">Topics</span>
-              <span class="chip">Schemas</span>
-              <span class="chip">Minimum semantics</span>
+              <span class="chip">Shared definitions</span>
+              <span class="chip">Comparable evidence</span>
+              <span class="chip">Jurisdiction-aware</span>
             </div>
           </article>
 
-          <article class="beat" id="act2">
-            <div class="beat-num">Act II</div>
-            <h3>Separate trust policy from token logic</h3>
+          <article class="beat" id="step2">
+            <div class="beat-num">Step 2</div>
+            <h3>Let issuers choose who they trust</h3>
             <p>
-              Issuers choose who they trust for each claim topic.
-              Trust can evolve without rewriting token contracts.
+              Each asset can recognize a set of trusted issuers for each claim topic—without forcing a single vendor or monopoly.
             </p>
             <div class="chips">
-              <span class="chip">Per-topic trust</span>
               <span class="chip">Issuer control</span>
-              <span class="chip">Operator workflow</span>
+              <span class="chip">Multiple providers</span>
+              <span class="chip">Clear governance</span>
             </div>
           </article>
 
-          <article class="beat" id="act3">
-            <div class="beat-num">Act III</div>
-            <h3>Make credentials portable</h3>
+          <article class="beat" id="step3">
+            <div class="beat-num">Step 3</div>
+            <h3>Make updates predictable</h3>
             <p>
-              Investors present attestations once, then reuse them across tokens
-              that recognize the same topics and trusted attesters.
+              Expiry and revocation are first‑class, so eligibility can change quickly across assets when risk changes.
             </p>
             <div class="chips">
-              <span class="chip">Reuse</span>
-              <span class="chip">Reduced onboarding</span>
-              <span class="chip">Faster distribution</span>
-            </div>
-          </article>
-
-          <article class="beat" id="act4">
-            <div class="beat-num">Act IV</div>
-            <h3>Enforce change instantly</h3>
-            <p>
-              When a credential expires or is revoked, enforcement updates immediately across tokens
-              — without manual reconciliation.
-            </p>
-            <div class="chips">
-              <span class="chip">Revocation</span>
               <span class="chip">Expiry</span>
-              <span class="chip">Real-time compliance posture</span>
-            </div>
-          </article>
-
-          <article class="beat" id="act5">
-            <div class="beat-num">Act V</div>
-            <h3>Scale with standards, not bespoke integrations</h3>
-            <p>
-              Shibui aligns with token standards (ERC‑3643) and uses a verifiable credential substrate (EAS)
-              — a pragmatic path for institutions.
-            </p>
-            <div class="chips">
-              <span class="chip">ERC‑3643 semantics</span>
-              <span class="chip">EAS attestations</span>
-              <span class="chip">Pluggable verifiers</span>
+              <span class="chip">Revocation</span>
+              <span class="chip">Audit trail</span>
             </div>
           </article>
         </div>
 
         <div class="grid two">
           <div class="card">
-            <h3>What this unlocks</h3>
+            <h3>What this enables</h3>
             <ul class="bullets">
               <li><strong>Lower onboarding cost</strong> and faster distribution.</li>
-              <li><strong>Consistent oversight</strong> via shared claim definitions and governance.</li>
-              <li><strong>Composable market structure</strong>: multiple attesters, multiple venues, one language.</li>
+              <li><strong>More consistent controls</strong> across venues and issuers.</li>
+              <li><strong>Better audit readiness</strong> with standard claim types and evidence expectations.</li>
             </ul>
           </div>
           <div class="card">
             <h3>What Shibui is not</h3>
             <ul class="bullets">
-              <li>Not an identity monopoly — issuers choose trusted parties per topic.</li>
-              <li>Not a single vendor stack — interfaces are pluggable.</li>
-              <li>Not a “trust us” black box — attestations are verifiable and auditable.</li>
+              <li>Not a single identity provider.</li>
+              <li>Not a required tech stack.</li>
+              <li>Not “trust us” compliance—definitions and policies are inspectable.</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- THE ASK -->
-    <section class="section" id="ask">
+    <!-- WORKING GROUP -->
+    <section class="section" id="working-group">
       <div class="container">
         <div class="section-head">
-          <h2>The Ask</h2>
+          <h2>Working group</h2>
           <p>
-            To make shared identity real, the market needs to converge on a small set of definitions and operating rules.
+            Shibui is being shaped as a market standard. We’re convening institutions to align on a small, usable first release.
           </p>
         </div>
 
         <div class="grid three">
           <div class="card">
-            <h3>1) Adopt the language</h3>
-            <p>
-              Align on topic definitions (what “KYC” means, what “Accredited” means, what evidence is acceptable)
-              so tokens verify consistently.
-            </p>
-            <div class="pill-inline">Outcome: interoperable eligibility</div>
+            <h3>Who should join</h3>
+            <p>Banks, asset managers, venues, transfer agents, KYC/accreditation providers, and supervisors.</p>
+            <div class="pill-inline">Outcome: shared requirements</div>
           </div>
           <div class="card">
-            <h3>2) Participate as a trusted issuer</h3>
-            <p>
-              Banks, KYC providers, transfer agents, and intermediaries issue attestations
-              under clear governance and audit expectations.
-            </p>
-            <div class="pill-inline">Outcome: portable credentials</div>
+            <h3>What you’ll do</h3>
+            <p>Agree on claim definitions, evidence expectations, and operating rules for updates (expiry/revocation).</p>
+            <div class="pill-inline">Outcome: reusable eligibility</div>
           </div>
           <div class="card">
-            <h3>3) Join the pilot</h3>
-            <p>
-              Launch a pilot with 1–2 claim topics (e.g., KYC + Accreditation),
-              defined revocation semantics, and shared reporting.
-            </p>
-            <div class="pill-inline">Outcome: measurable time/cost reduction</div>
+            <h3>What you’ll get</h3>
+            <p>A neutral standard you can implement with your existing systems—and use across multiple assets.</p>
+            <div class="pill-inline">Outcome: lower integration burden</div>
           </div>
         </div>
 
-        <div class="callout">
-          <div class="callout-title">Pilot success criteria</div>
+        <div class="callout" aria-label="Call to action">
+          <div class="callout-title">Interested in joining?</div>
           <div class="callout-body">
-            <ul class="bullets compact">
-              <li>Onboarding time reduced by reusing attestations across at least two tokens or venues.</li>
-              <li>Revocation/expiry demonstrated with immediate enforcement.</li>
-              <li>Operator controls for trusted issuers per topic.</li>
-              <li>Audit‑ready evidence trail for compliance and oversight.</li>
-            </ul>
+            <p class="muted" style="margin:0 0 10px">
+              Send a note and we’ll share the working-group brief and meeting cadence.
+            </p>
+            <div class="cta-actions">
+              <a class="btn primary" href="mailto:shibui-working-group@yourdomain.tld?subject=Shibui%20Working%20Group%20Interest">Request a working‑group invite</a>
+              <a class="btn" href="#details">Review the details first</a>
+            </div>
+            <p class="muted" style="margin:10px 0 0;font-size:12px">
+              (Maintainers: update the email address in <span style="font-family:var(--mono)">index.html</span> for production use.)
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SPECIFICATIONS -->
-    <section class="section" id="specs">
+    <!-- DETAILS -->
+    <section class="section" id="details">
       <div class="container">
         <div class="section-head">
-          <h2>Specifications</h2>
+          <h2>Details</h2>
           <p>
-            A business‑first view: what’s standardized, what stays flexible, and how governance works.
+            A business‑first view of what’s standardized, what stays flexible, and where the technology fits.
           </p>
         </div>
 
         <div class="grid two">
           <div class="card">
-            <h3>Design principles</h3>
+            <h3>What’s standardized</h3>
             <ul class="bullets">
-              <li><strong>Small core</strong>: standardize only what must be shared.</li>
-              <li><strong>Issuer control</strong>: each issuer defines trusted attesters per topic.</li>
-              <li><strong>Portable credentials</strong>: investors reuse attestations across tokens.</li>
-              <li><strong>Immediate enforcement</strong>: revocation and expiry are first‑class.</li>
-              <li><strong>Auditability</strong>: claims are verifiable; policies are inspectable.</li>
+              <li><strong>Claim topics</strong> (shared definitions for common eligibility requirements).</li>
+              <li><strong>Evidence expectations</strong> (what is acceptable and comparable across participants).</li>
+              <li><strong>Update semantics</strong> (expiry and revocation rules, plus an audit trail).</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Standards stack</h3>
-            <div class="stack" aria-label="Standards stack visual cards">
-              <div class="stack-card">
-                <div class="stack-k">Asset compliance semantics</div>
-                <div class="stack-v">ERC‑3643 claim topics & eligibility checks</div>
-              </div>
-              <div class="stack-card">
-                <div class="stack-k">Credential substrate</div>
-                <div class="stack-v">EAS attestations (issuance, revocation, expiry)</div>
-              </div>
-              <div class="stack-card">
-                <div class="stack-k">Identity mapping</div>
-                <div class="stack-v">Wallet ↔ identity ownership & delegation</div>
-              </div>
-              <div class="stack-card">
-                <div class="stack-k">Governance</div>
-                <div class="stack-v">Topics, schemas, trust policy, operator controls</div>
-              </div>
-            </div>
-            <p class="muted">Goal: institutional compatibility — stable semantics, pluggable implementations.</p>
+            <h3>What stays flexible</h3>
+            <ul class="bullets">
+              <li><strong>Issuer choice</strong>: who you trust for each topic.</li>
+              <li><strong>Implementation</strong>: integrate with your existing onboarding and compliance stack.</li>
+              <li><strong>Operating model</strong>: governance can evolve as participation grows.</li>
+            </ul>
           </div>
         </div>
 
         <div class="card">
-          <h3>Governance model (proposed)</h3>
-          <p class="muted">
-            Governance is where “shared language” becomes credible: who defines topics, who can issue, and how disputes are handled.
-          </p>
-          <div class="table-wrap" role="region" aria-label="Governance table" tabindex="0">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Element</th>
-                  <th scope="col">What is governed</th>
-                  <th scope="col">Why it matters</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">Topic definitions</th>
-                  <td>Meaning of claims (e.g., KYC, accreditation)</td>
-                  <td>Interoperability across issuers and venues</td>
-                </tr>
-                <tr>
-                  <th scope="row">Schemas</th>
-                  <td>Required fields & constraints for an attestation</td>
-                  <td>Auditability and comparable evidence</td>
-                </tr>
-                <tr>
-                  <th scope="row">Trusted issuer policy</th>
-                  <td>Who an issuer recognizes per topic</td>
-                  <td>Issuer control + risk management</td>
-                </tr>
-                <tr>
-                  <th scope="row">Revocation/expiry semantics</th>
-                  <td>How changes propagate and are enforced</td>
-                  <td>Real‑time compliance posture</td>
-                </tr>
-                <tr>
-                  <th scope="row">Operator controls</th>
-                  <td>Admin, reporting, and dispute workflows</td>
-                  <td>Institutional operational readiness</td>
-                </tr>
-              </tbody>
-            </table>
+          <h3>Standards alignment (high level)</h3>
+          <div class="stack" aria-label="Standards alignment">
+            <div class="stack-card">
+              <div class="stack-k">Identity standard</div>
+              <div class="stack-v">Shibui defines claim topics, trust policies, and update semantics</div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-k">Attestation backend</div>
+              <div class="stack-v">Ethereum Attestation Service (EAS) for issuance, expiry, and revocation</div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-k">Token compliance semantics</div>
+              <div class="stack-v">Designed to interoperate with ERC‑3643-style eligibility checks</div>
+            </div>
           </div>
-        </div>
-
-        <div class="section-subhead">
-          <h3>Schema cards</h3>
-          <p class="muted">A compact mental model of the language.</p>
-        </div>
-
-        <div class="grid three">
-          <div class="card schema">
-            <div class="schema-title">Identity</div>
-            <p>How a wallet maps to a reusable identity (ownership + delegation).</p>
-            <ul class="mini">
-              <li>Identity owner</li>
-              <li>Authorized agent / delegate</li>
-              <li>Wallet-to-identity resolution</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Claim topic</div>
-            <p>A standard claim type the market can share (KYC, accreditation, residency…)</p>
-            <ul class="mini">
-              <li>Topic id / name</li>
-              <li>Required evidence schema</li>
-              <li>Issuer policies</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Attestation</div>
-            <p>A verifiable statement from a trusted issuer about an identity.</p>
-            <ul class="mini">
-              <li>Issuer (attester)</li>
-              <li>Schema-conform data</li>
-              <li>Expiry + revocation</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Trust policy</div>
-            <p>Issuer-by-issuer control over who is recognized for each topic.</p>
-            <ul class="mini">
-              <li>Per-topic allowlist</li>
-              <li>Change management</li>
-              <li>Immediate effect on verification</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Verification</div>
-            <p>Resolve identity → evaluate topics → return eligible / ineligible.</p>
-            <ul class="mini">
-              <li>Missing / revoked / expired fails</li>
-              <li>Untrusted issuer fails</li>
-              <li>Multiple topics supported</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Evidence trail</div>
-            <p>What compliance teams and supervisors can inspect.</p>
-            <ul class="mini">
-              <li>Which topic(s) passed/failed</li>
-              <li>Which issuer was trusted</li>
-              <li>Timestamped revocations/expiries</li>
-            </ul>
-          </div>
+          <p class="muted">Goal: institutional compatibility — stable semantics, pluggable implementations.</p>
         </div>
 
         <details class="appendix" id="appendix">
           <summary>
-            Optional appendix: technical notes
-            <span class="summary-sub">For engineers who want a minimal implementation view.</span>
+            Optional appendix: minimal technical notes
+            <span class="summary-sub">Only if you want an implementation mental model.</span>
           </summary>
           <div class="appendix-body">
             <div class="grid two">
               <div class="card">
                 <h3>Minimal implementation (one possible path)</h3>
                 <ul class="bullets compact">
-                  <li>Use <strong>EAS</strong> as the attestation backend (issue/revoke/expire).</li>
-                  <li>Keep <strong>ERC‑3643</strong> claim semantics intact (topics define what must be checked).</li>
-                  <li>Implement a pluggable verifier: resolve identity → validate attestations per topic.</li>
-                  <li>Maintain per‑topic trusted issuer sets (configurable by the token issuer).</li>
+                  <li>Use <strong>EAS</strong> for attestations (issue/revoke/expire).</li>
+                  <li>Use a standard set of <strong>claim topics</strong> to evaluate eligibility.</li>
+                  <li>Let issuers configure trusted attesters per topic.</li>
+                  <li>Expose an auditable result (which topics passed/failed and why).</li>
                 </ul>
-                <p class="muted">This page is static and communication-first. The repo includes an MVP implementation for evaluation.</p>
+                <p class="muted">This page is static and communication-first. The broader repo contains an MVP implementation for evaluation.</p>
               </div>
 
               <div class="card">
-                <h3>What to show in a pilot demo</h3>
+                <h3>What to prove in a pilot</h3>
                 <ol class="steps">
-                  <li>Issue a KYC attestation from a trusted issuer.</li>
-                  <li>Show <em>eligible</em> for Token A and Token B.</li>
-                  <li>Revoke or expire the attestation.</li>
-                  <li>Show enforcement flips immediately across both tokens.</li>
+                  <li>Reuse a single eligibility credential across two assets or venues.</li>
+                  <li>Demonstrate expiry or revocation and show consistent enforcement.</li>
+                  <li>Confirm issuer control over which parties are trusted for each topic.</li>
                 </ol>
                 <p class="muted">Technical artifacts live in the repo root (tests, docs, scripts).</p>
               </div>
@@ -537,12 +395,12 @@
         <div class="endcap">
           <div class="endcap-inner">
             <div>
-              <div class="endcap-title">Shibui is a language — not a gatekeeper.</div>
+              <div class="endcap-title">Shibui is a shared language — not a gatekeeper.</div>
               <div class="endcap-sub">Standardize semantics. Keep implementations competitive.</div>
             </div>
             <div class="endcap-actions">
               <a class="btn" href="#top">Back to top</a>
-              <a class="btn primary" href="#ask">Discuss the pilot</a>
+              <a class="btn primary" href="#working-group">Join the working group</a>
             </div>
           </div>
         </div>
@@ -554,15 +412,15 @@
   <footer class="footer">
     <div class="container footer-inner">
       <div class="fineprint">
-        <div class="fineprint-title">Shibui — Shared Identity Language for Tokenized Assets</div>
-        <div class="fineprint-sub">Static story page • GitHub Pages friendly • no wallets, no RPC, no chain writes.</div>
+        <div class="fineprint-title">Shibui — Interoperable Investor Eligibility for Tokenized Assets</div>
+        <div class="fineprint-sub">Static page • GitHub Pages friendly • no wallets, no RPC, no chain writes.</div>
       </div>
       <div class="fineprint-links">
+        <a href="#working-group">Working group</a>
+        <span class="sep">•</span>
+        <a href="#details">Details</a>
+        <span class="sep">•</span>
         <a href="#appendix">Appendix</a>
-        <span class="sep">•</span>
-        <a href="#specs">Specifications</a>
-        <span class="sep">•</span>
-        <a href="#ask">The Ask</a>
       </div>
     </div>
   </footer>

@@ -116,6 +116,7 @@ a:hover{text-decoration:underline}
 .lede{font-size:16px;line-height:1.55;margin:0 0 18px;color:var(--muted)}
 
 .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 12px}
+.cta-actions{display:flex;flex-wrap:wrap;gap:10px;margin:0}
 
 .hero-metrics{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
 .metric{padding:14px 14px;border-radius:var(--radius);border:1px solid var(--stroke);background:rgba(255,255,255,.04)}
