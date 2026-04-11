@@ -1,7 +1,7 @@
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f0f0f0', 'primaryTextColor': '#333', 'primaryBorderColor': '#666', 'lineColor': '#666', 'secondaryColor': '#e0e0e0', 'tertiaryColor': '#fff'}}}%%
 flowchart TB
     %% This diagram mirrors OpenZeppelin RWA vocabulary:
-    %% - Token core calls into a separate Identity Verifier module
+    %% - Token core calls into a separate Shibui Identity Layer module
     %% - Compliance is modular and remains independent from identity proof format
 
     subgraph TokenLayer["ERC-3643 Token Layer (Token Core + Compliance)"]
@@ -10,8 +10,8 @@ flowchart TB
         IR["Identity Registry"]
     end
 
-    subgraph IdentityVerifierLayer["Identity Verifier Module (pluggable)"]
-        ECV["Identity Verifier (EAS)\nEASClaimVerifier"]
+    subgraph IdentityVerifierLayer["Shibui Identity Layer (pluggable)"]
+        ECV["Shibui Verifier (EAS)\nEASClaimVerifier"]
         TIA["Trusted Attesters Adapter\nEASTrustedIssuersAdapter"]
         EIP["Wallet→Identity Mapping\nEASIdentityProxy"]
         CTR["Claim Topics Registry\n(ERC-3643)"]
@@ -31,7 +31,7 @@ flowchart TB
     Token -->|canTransfer| Compliance
     Compliance -->|isVerified| IR
 
-    %% ERC-3643 Identity Registry delegates identity checks to a verifier module.
+    %% ERC-3643 Identity Registry delegates identity checks to the Shibui verifier module.
     IR -->|EAS Identity Verifier| ECV
 
     %% Optional dual-mode: keep ONCHAINID as an alternative verifier.
