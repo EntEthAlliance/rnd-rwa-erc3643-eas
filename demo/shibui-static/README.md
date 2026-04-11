@@ -1,21 +1,20 @@
-# Shibui — Static Story Page
+# Shibui — Static Positioning Page
 
-This folder contains a **single-page, presentation-ready narrative**:
-**“Shibui — A Shared Identity Language for Tokenized Assets.”**
+This folder contains a **single-page, presentation-ready site** for Shibui.
 
-It is designed for **banks, asset managers, transfer agents, and regulators**.
+**Canonical intro (used on the page):**
+> "Shibui is an open-source identity standard built on Ethereum Attestation Service (EAS), designed to give tokenized assets a shared, interoperable language for investor eligibility."
 
-## What changed (vs the earlier demo UI)
+It is written for a **broad bank / TradFi audience** (institutional, concise, low-jargon), with a primary CTA to **join the working group**.
 
-- Replaced the step-by-step “scene” walkthrough UI with a **highly visual story page**.
-- Structure is now:
-  - **Problem**
-  - **Act I–V**
-  - **The Ask**
-  - **Specifications**
-  - Optional, collapsed **Appendix** (minimal technical notes)
-- Removed the “live state” simulation panel and action log to keep the page **business-first**.
-- Kept everything **static HTML/CSS/JS** for GitHub Pages.
+## Visual components (built-in)
+
+The page includes lightweight, responsive diagrams (inline SVG/CSS — no external libraries):
+- Compounding network effect timeline
+- “Babel of verification” (duplicated onboarding)
+- Before/after operational flow
+- Working-group governance map
+- What vs How architecture separation (standards vs implementations)
 
 ## Run
 
@@ -29,9 +28,27 @@ python3 -m http.server 8000
 ```
 Then open <http://127.0.0.1:8000/>.
 
+## Customize the working-group CTA
+
+The page includes a mailto CTA:
+- `mailto:shibui-working-group@yourdomain.tld`
+
+Before publishing externally, replace this with the real working-group contact.
+
+## Export to PDF
+
+This page includes **print styles** (A4/Letter friendly) for clean PDF export.
+
+1. Open the page
+2. Browser menu → **Print…**
+3. Destination → **Save as PDF**
+4. Recommended settings:
+   - Paper: **Letter** or **A4**
+   - Background graphics: **On** (keeps subtle borders)
+
 ## Notes
 
+- Static HTML/CSS/JS (GitHub Pages friendly)
 - No wallet connection
 - No RPC / chain calls
 - No build step
-- Safe to host on GitHub Pages (static assets only)

@@ -116,6 +116,7 @@ a:hover{text-decoration:underline}
 .lede{font-size:16px;line-height:1.55;margin:0 0 18px;color:var(--muted)}
 
 .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 12px}
+.cta-actions{display:flex;flex-wrap:wrap;gap:10px;margin:0}
 
 .hero-metrics{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
 .metric{padding:14px 14px;border-radius:var(--radius);border:1px solid var(--stroke);background:rgba(255,255,255,.04)}
@@ -201,9 +202,26 @@ tbody th{font-weight:750}
   border-radius:999px;
 }
 
-/* Visual: compound */
+/* Visual: compound + diagrams */
 .visual-title{font-size:16px;font-weight:800;letter-spacing:.2px;margin:0 0 8px}
 .visual-sub{margin:0 0 12px;color:var(--muted);line-height:1.6}
+
+.divider{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+
+.card-head-inline{display:flex;flex-direction:column;gap:10px;align-items:flex-start;justify-content:space-between}
+
+.diagram{
+  width:100%;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.14);
+  overflow:hidden;
+}
+.diagram svg{display:block;width:100%;height:auto}
+
+.flow-compare{display:grid;grid-template-columns:1fr;gap:12px}
+.flow-side{border:1px solid rgba(255,255,255,.10);border-radius:18px;background:rgba(255,255,255,.03);padding:12px}
+.flow-title{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted2);font-weight:850;margin:0 0 10px}
 
 .compound{display:grid;grid-template-columns:1fr;gap:12px;margin-top:10px}
 .compound-col{
@@ -319,6 +337,87 @@ tbody th{font-weight:750}
   .compound-mid{display:block;padding:0 4px}
   .footer-inner{flex-direction:row;align-items:center}
   .endcap-inner{flex-direction:row;align-items:center}
+  .card-head-inline{flex-direction:row;align-items:center}
+  .flow-compare{grid-template-columns:1fr 1fr;align-items:stretch}
+}
+
+/* Print (PDF export) */
+@page{margin:12mm}
+@media print{
+  html,body{height:auto}
+  body{
+    background:#fff !important;
+    color:#000 !important;
+    font-size:11pt;
+    line-height:1.35;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide UI chrome / navigation */
+  .topbar,
+  .skip,
+  .hero-actions,
+  .topbar-cta,
+  .nav,
+  .endcap-actions,
+  .fineprint-links{display:none !important}
+
+  /* Remove sticky/backdrop effects */
+  .topbar{position:static !important; backdrop-filter:none !important}
+
+  /* Layout: single column for predictable pagination */
+  .container,
+  .hero-inner{max-width:none !important}
+  .hero-inner,
+  .grid.two,
+  .grid.three,
+  .compound{grid-template-columns:1fr !important}
+
+  /* Make reveal animations inert */
+  [data-reveal]{opacity:1 !important; transform:none !important; transition:none !important}
+
+  /* Cards: printable */
+  .card,
+  .beat,
+  .quote-block,
+  .appendix,
+  .endcap-inner,
+  .metric,
+  .stack-card,
+  .compound-col,
+  .table-wrap{
+    box-shadow:none !important;
+    background:#fff !important;
+    border:1px solid #d0d0d0 !important;
+  }
+
+  .hl{color:#000 !important; -webkit-text-fill-color:#000 !important}
+  .muted,
+  .section-head p,
+  .card p,
+  .beat p,
+  .bullets,
+  .mini,
+  .steps,
+  .label,
+  .metric-v,
+  .quote-meta,
+  .quote-attrib,
+  .fineprint-sub{color:#222 !important}
+
+  a{color:#000 !important; text-decoration:underline}
+
+  /* Avoid awkward cut-offs */
+  .section,
+  .card,
+  .beat,
+  .quote-block,
+  table,
+  .table-wrap{break-inside: avoid; page-break-inside: avoid}
+
+  h1,h2,h3{break-after: avoid-page}
+  .footer{border-top:1px solid #ddd !important; background:#fff !important}
 }
 
 @media (prefers-reduced-motion: no-preference){

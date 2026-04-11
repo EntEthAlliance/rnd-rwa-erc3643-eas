@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark light" />
-  <title>Shibui — A Shared Identity Language for Tokenized Assets</title>
-  <meta name="description" content="A story-first positioning page: reusable identity, instant enforcement, shared standards for tokenized assets." />
+  <title>Shibui — Interoperable Investor Eligibility for Tokenized Assets</title>
+  <meta name="description" content="Shibui is an open-source identity standard built on Ethereum Attestation Service (EAS), designed to give tokenized assets a shared, interoperable language for investor eligibility." />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -17,20 +17,20 @@
         <div class="brand-mark" aria-hidden="true"></div>
         <div class="brand-text">
           <div class="brand-title">Shibui</div>
-          <div class="brand-sub">A shared identity language for tokenized assets</div>
+          <div class="brand-sub">A shared identity standard for tokenized markets</div>
         </div>
       </div>
 
       <nav class="nav" aria-label="Page">
         <a href="#problem">Problem</a>
-        <a href="#acts">Act I–V</a>
-        <a href="#ask">The Ask</a>
-        <a href="#specs">Specifications</a>
+        <a href="#approach">Approach</a>
+        <a href="#working-group">Working group</a>
+        <a href="#details">Details</a>
       </nav>
 
       <div class="topbar-cta">
-        <a class="btn" href="#specs">View spec</a>
-        <a class="btn primary" href="#ask">Join the pilot</a>
+        <a class="btn" href="#details">View details</a>
+        <a class="btn primary" href="#working-group">Join the working group</a>
       </div>
     </div>
   </header>
@@ -40,77 +40,135 @@
     <section class="hero" aria-label="Hero">
       <div class="hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Positioning narrative • for banks, asset managers, regulators</p>
+          <p class="eyebrow">Institution-ready positioning • for banks, venues, and supervisors</p>
           <h1>
-            Tokenized assets need <span class="hl">reusable identity</span> —
-            not issuer-by-issuer onboarding.
+            A shared standard for <span class="hl">investor eligibility</span>
+            in tokenized markets.
           </h1>
           <p class="lede">
-            Shibui is a shared identity language that lets markets express eligibility in the same way,
-            verify it across tokens, and enforce changes instantly.
+            <strong>Shibui is an open-source identity standard built on Ethereum Attestation Service (EAS), designed to give tokenized assets a shared, interoperable language for investor eligibility.</strong>
           </p>
 
-          <div class="hero-metrics" role="list">
+          <div class="hero-metrics" role="list" aria-label="What Shibui provides">
             <div class="metric" role="listitem">
-              <div class="metric-k">Reusable identity</div>
-              <div class="metric-v">Across issuers & venues</div>
+              <div class="metric-k">Reusable investor evidence</div>
+              <div class="metric-v">Reduce repeat onboarding across issuers and venues</div>
             </div>
             <div class="metric" role="listitem">
-              <div class="metric-k">Instant enforcement</div>
-              <div class="metric-v">Revocation & expiry propagate</div>
+              <div class="metric-k">Consistent enforcement</div>
+              <div class="metric-v">Eligibility can be updated quickly and uniformly</div>
             </div>
             <div class="metric" role="listitem">
-              <div class="metric-k">Standards-aligned</div>
-              <div class="metric-v">ERC‑3643 semantics + EAS attestations</div>
+              <div class="metric-k">Shared definitions</div>
+              <div class="metric-v">A common language regulators and auditors can review</div>
             </div>
           </div>
 
           <div class="hero-actions">
-            <a class="btn primary" href="#acts">Read the story</a>
-            <a class="btn" href="#specs">Jump to specifications</a>
+            <a class="btn primary" href="#working-group">Join the working group</a>
+            <a class="btn" href="#approach">How it works</a>
           </div>
 
           <div class="hero-quote">
             <blockquote>
-              “Identity is not a feature of a token. It is shared market infrastructure.”
+              “Tokenization scales settlement. Shared identity standards scale distribution.”
             </blockquote>
-            <div class="quote-meta">Shibui — shared identity language for tokenized assets</div>
+            <div class="quote-meta">Shibui — shared eligibility language for tokenized assets</div>
           </div>
         </div>
 
-        <div class="hero-visual" aria-label="Compound effect graphic">
+        <div class="hero-visual" aria-label="Network effect graphic">
           <div class="card visual">
-            <div class="visual-title">The compound effect</div>
+            <div class="visual-title">Interoperability compounds</div>
             <p class="visual-sub">
-              Every new trusted issuer and every new token that uses the same language increases the value for everyone.
+              Each additional trusted issuer and each additional token using the same language increases reuse for everyone.
             </p>
 
             <div class="compound">
               <div class="compound-col">
-                <div class="pill">Attesters</div>
+                <div class="pill">Trusted issuers</div>
                 <div class="nodes">
                   <span class="node"></span><span class="node"></span><span class="node"></span>
                   <span class="node"></span><span class="node"></span>
                 </div>
-                <div class="label">Banks / KYC providers / agents</div>
+                <div class="label">Banks • KYC providers • transfer agents</div>
               </div>
               <div class="compound-mid" aria-hidden="true">
                 <div class="arrow"></div>
               </div>
               <div class="compound-col">
-                <div class="pill">Tokens</div>
+                <div class="pill">Tokenized assets</div>
                 <div class="nodes">
                   <span class="node"></span><span class="node"></span><span class="node"></span>
                   <span class="node"></span><span class="node"></span><span class="node"></span>
                 </div>
-                <div class="label">Funds / credit / deposits / MMFs</div>
+                <div class="label">Funds • credit • deposits • MMFs</div>
               </div>
             </div>
 
             <div class="visual-footer">
-              <div class="tag">Shared semantics</div>
-              <div class="tag">Portable credentials</div>
-              <div class="tag">Immediate policy updates</div>
+              <div class="tag">Portable evidence</div>
+              <div class="tag">Issuer choice</div>
+              <div class="tag">Audit-friendly</div>
+            </div>
+
+            <div class="divider" aria-hidden="true"></div>
+
+            <!-- VISUAL 1: Compounding network effect timeline -->
+            <div class="visual-title" style="margin-top:2px">Compounding reuse (timeline)</div>
+            <p class="visual-sub" style="margin-bottom:10px">
+              One eligibility credential can unlock access across products, venues, and chains.
+            </p>
+            <div class="diagram" aria-label="Network effect timeline diagram">
+              <svg viewBox="0 0 920 220" role="img" aria-label="Timeline showing reuse of eligibility across products" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0" stop-color="rgba(97,168,255,.75)"/>
+                    <stop offset="1" stop-color="rgba(155,123,255,.75)"/>
+                  </linearGradient>
+                  <linearGradient id="g2" x1="0" x2="1">
+                    <stop offset="0" stop-color="rgba(96,242,194,.65)"/>
+                    <stop offset="1" stop-color="rgba(97,168,255,.55)"/>
+                  </linearGradient>
+                </defs>
+
+                <rect x="18" y="18" width="884" height="184" rx="20" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)" />
+
+                <!-- Axis -->
+                <path d="M90 168H840" stroke="rgba(234,240,255,.22)" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="160" cy="168" r="7" fill="url(#g1)"/>
+                <circle cx="340" cy="168" r="7" fill="url(#g1)"/>
+                <circle cx="520" cy="168" r="7" fill="url(#g1)"/>
+                <circle cx="700" cy="168" r="7" fill="url(#g1)"/>
+
+                <!-- One credential -->
+                <rect x="90" y="46" width="240" height="54" rx="14" fill="rgba(96,242,194,.12)" stroke="rgba(96,242,194,.26)"/>
+                <text x="110" y="74" fill="rgba(234,240,255,.92)" font-size="16" font-weight="700">Eligibility credential</text>
+                <text x="110" y="94" fill="rgba(234,240,255,.62)" font-size="13">KYC + investor type + residency</text>
+
+                <!-- Reuse blocks -->
+                <rect x="150" y="110" width="200" height="46" rx="14" fill="rgba(97,168,255,.10)" stroke="rgba(97,168,255,.22)"/>
+                <text x="168" y="139" fill="rgba(234,240,255,.86)" font-size="14" font-weight="650">Product 1 (Fund)</text>
+
+                <rect x="330" y="110" width="220" height="46" rx="14" fill="rgba(155,123,255,.10)" stroke="rgba(155,123,255,.22)"/>
+                <text x="348" y="139" fill="rgba(234,240,255,.86)" font-size="14" font-weight="650">Venue 2 (ATS / DLT)</text>
+
+                <rect x="510" y="110" width="220" height="46" rx="14" fill="rgba(97,168,255,.08)" stroke="rgba(234,240,255,.16)"/>
+                <text x="528" y="139" fill="rgba(234,240,255,.86)" font-size="14" font-weight="650">Chain 3 (L2)</text>
+
+                <rect x="690" y="110" width="200" height="46" rx="14" fill="rgba(96,242,194,.10)" stroke="rgba(96,242,194,.22)"/>
+                <text x="708" y="139" fill="rgba(234,240,255,.86)" font-size="14" font-weight="650">Product 4 (Credit)</text>
+
+                <!-- Connectors: credential -> reuse blocks -->
+                <path d="M330 73C390 75 430 90 450 118" fill="none" stroke="url(#g2)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M320 73C330 77 330 86 290 115" fill="none" stroke="url(#g2)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M330 73C520 76 620 96 620 118" fill="none" stroke="url(#g2)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M330 73C710 78 786 96 800 118" fill="none" stroke="url(#g2)" stroke-width="3" stroke-linecap="round"/>
+
+                <!-- Labels -->
+                <text x="92" y="190" fill="rgba(234,240,255,.50)" font-size="12">time →</text>
+                <text x="92" y="32" fill="rgba(234,240,255,.50)" font-size="12">Reuse grows with each adopter</text>
+              </svg>
             </div>
           </div>
         </div>
@@ -123,28 +181,100 @@
         <div class="section-head">
           <h2>Problem</h2>
           <p>
-            Tokenization modernizes settlement — but distribution still breaks on the same obstacle:
-            <strong>who is allowed to hold the asset, and when?</strong>
+            Tokenization modernizes issuance and settlement, but distribution still breaks on one question:
+            <strong>who can hold the asset, and when?</strong>
           </p>
         </div>
 
         <div class="grid two">
           <div class="card">
-            <h3>Today: identity is siloed</h3>
+            <h3>Today: eligibility is fragmented</h3>
             <ul class="bullets">
-              <li>Each issuer builds its own onboarding, eligibility rules, and operator workflows.</li>
-              <li>Investors repeat KYC/accreditation across tokens and venues.</li>
-              <li>Policy changes (revocation, expiry, sanctions) don’t propagate cleanly across market infrastructure.</li>
+              <li>Every issuer defines “KYC”, “accredited”, “qualified purchaser”, etc. differently.</li>
+              <li>Investors repeat the same checks across tokens and venues.</li>
+              <li>Updates (expiry, revocation, sanctions) are operationally heavy to apply consistently.</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Result: friction + risk</h3>
+            <h3>Result: cost + risk</h3>
             <ul class="bullets">
-              <li>High onboarding cost; slow distribution; fragmented liquidity.</li>
-              <li>Inconsistent audit evidence across participants.</li>
-              <li>Operational burden shifts to issuers and transfer agents — the least scalable place to put it.</li>
+              <li>Slower onboarding, slower distribution, higher servicing cost.</li>
+              <li>Inconsistent evidence across participants and jurisdictions.</li>
+              <li>Compliance posture depends on manual reconciliation.</li>
             </ul>
+          </div>
+        </div>
+
+        <!-- VISUAL 2: Babel problem diagram -->
+        <div class="card" style="margin-top:14px" aria-label="Babel problem diagram">
+          <div class="card-head-inline">
+            <h3 style="margin:0">Babel of verification</h3>
+            <div class="pill-inline" style="margin:0">Same investor • same checks • repeated</div>
+          </div>
+          <p class="muted" style="margin:10px 0 12px">
+            Each institution rebuilds eligibility logic and evidence pipelines—then reconciles them manually.
+          </p>
+          <div class="diagram" aria-label="Institutions duplicating verification diagram">
+            <svg viewBox="0 0 980 360" role="img" aria-label="A central investor with multiple institutions around it duplicating checks" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <linearGradient id="babel" x1="0" x2="1">
+                  <stop offset="0" stop-color="rgba(97,168,255,.75)"/>
+                  <stop offset="1" stop-color="rgba(155,123,255,.75)"/>
+                </linearGradient>
+                <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="8" result="b" />
+                  <feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .55 0" result="c"/>
+                  <feMerge>
+                    <feMergeNode in="c"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <rect x="18" y="18" width="944" height="324" rx="22" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)" />
+
+              <!-- Center investor -->
+              <circle cx="490" cy="178" r="66" fill="rgba(234,240,255,.06)" stroke="rgba(255,255,255,.14)" filter="url(#soft)" />
+              <circle cx="490" cy="165" r="18" fill="url(#babel)" opacity=".9" />
+              <path d="M450 235c14-28 66-28 80 0" fill="none" stroke="rgba(234,240,255,.58)" stroke-width="3" stroke-linecap="round" />
+              <text x="490" y="286" text-anchor="middle" fill="rgba(234,240,255,.85)" font-size="15" font-weight="750">Investor</text>
+              <text x="490" y="306" text-anchor="middle" fill="rgba(234,240,255,.55)" font-size="12">Provides evidence repeatedly</text>
+
+              <!-- Institution nodes -->
+              <g>
+                <rect x="70" y="64" width="240" height="64" rx="16" fill="rgba(97,168,255,.08)" stroke="rgba(97,168,255,.20)" />
+                <text x="92" y="94" fill="rgba(234,240,255,.86)" font-size="14" font-weight="700">Issuer A</text>
+                <text x="92" y="114" fill="rgba(234,240,255,.56)" font-size="12">KYC + accreditation checks</text>
+              </g>
+              <g>
+                <rect x="670" y="54" width="250" height="74" rx="16" fill="rgba(155,123,255,.08)" stroke="rgba(155,123,255,.20)" />
+                <text x="692" y="86" fill="rgba(234,240,255,.86)" font-size="14" font-weight="700">Venue B</text>
+                <text x="692" y="106" fill="rgba(234,240,255,.56)" font-size="12">Builds its own eligibility rules</text>
+              </g>
+              <g>
+                <rect x="700" y="240" width="220" height="74" rx="16" fill="rgba(97,168,255,.06)" stroke="rgba(234,240,255,.14)" />
+                <text x="722" y="272" fill="rgba(234,240,255,.86)" font-size="14" font-weight="700">Issuer C</text>
+                <text x="722" y="292" fill="rgba(234,240,255,.56)" font-size="12">Manual exceptions + audits</text>
+              </g>
+              <g>
+                <rect x="70" y="246" width="250" height="74" rx="16" fill="rgba(96,242,194,.06)" stroke="rgba(96,242,194,.18)" />
+                <text x="92" y="278" fill="rgba(234,240,255,.86)" font-size="14" font-weight="700">KYC Provider D</text>
+                <text x="92" y="298" fill="rgba(234,240,255,.56)" font-size="12">Different schema + evidence format</text>
+              </g>
+
+              <!-- Connections -->
+              <path d="M310 96C360 122 398 140 430 156" fill="none" stroke="rgba(234,240,255,.20)" stroke-width="3" stroke-linecap="round" />
+              <path d="M670 90C620 116 584 138 548 156" fill="none" stroke="rgba(234,240,255,.20)" stroke-width="3" stroke-linecap="round" />
+              <path d="M700 276C646 252 592 224 548 206" fill="none" stroke="rgba(234,240,255,.20)" stroke-width="3" stroke-linecap="round" />
+              <path d="M320 283C372 262 404 236 432 208" fill="none" stroke="rgba(234,240,255,.20)" stroke-width="3" stroke-linecap="round" />
+
+              <!-- Duplicate badge -->
+              <g>
+                <rect x="418" y="36" width="144" height="32" rx="999" fill="rgba(255,212,106,.10)" stroke="rgba(255,212,106,.22)" />
+                <text x="490" y="57" text-anchor="middle" fill="rgba(255,212,106,.92)" font-size="12" font-weight="800">Duplicated work</text>
+              </g>
+            </svg>
           </div>
         </div>
 
@@ -152,7 +282,7 @@
           <div class="quote-mark" aria-hidden="true">“</div>
           <div>
             <p class="quote-text">
-              A token can express restrictions — but the market still needs a shared way to express and verify identity claims.
+              Markets need shared identity semantics the same way they need shared messaging standards.
             </p>
             <div class="quote-attrib">Why Shibui exists</div>
           </div>
@@ -165,30 +295,30 @@
               <thead>
                 <tr>
                   <th scope="col">Capability</th>
-                  <th scope="col">Issuer-by-issuer identity</th>
-                  <th scope="col">Shibui shared identity language</th>
+                  <th scope="col">Issuer-by-issuer approach</th>
+                  <th scope="col">Shibui shared standard</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row">Investor onboarding</th>
-                  <td>Repeated, duplicative</td>
-                  <td>Reusable credentials across tokens</td>
+                  <th scope="row">Onboarding</th>
+                  <td>Repeated checks and integrations</td>
+                  <td>Reusable evidence recognized across assets</td>
                 </tr>
                 <tr>
-                  <th scope="row">Eligibility enforcement</th>
-                  <td>Slow and inconsistent updates</td>
-                  <td>Instant revocation/expiry propagation</td>
+                  <th scope="row">Eligibility updates</th>
+                  <td>Manual, slow propagation</td>
+                  <td>Clear semantics for expiry and revocation</td>
                 </tr>
                 <tr>
-                  <th scope="row">Interoperability</th>
-                  <td>Custom integrations everywhere</td>
-                  <td>Shared semantics + pluggable verifiers</td>
-                </tr>
-                <tr>
-                  <th scope="row">Audit & oversight</th>
+                  <th scope="row">Oversight</th>
                   <td>Fragmented evidence trails</td>
-                  <td>Standardized claim types and governance</td>
+                  <td>Common definitions supervisors can review</td>
+                </tr>
+                <tr>
+                  <th scope="row">Market interoperability</th>
+                  <td>Bespoke everywhere</td>
+                  <td>A shared language with competitive implementations</td>
                 </tr>
               </tbody>
             </table>
@@ -197,339 +327,396 @@
       </div>
     </section>
 
-    <!-- ACTS -->
-    <section class="section" id="acts">
+    <!-- APPROACH -->
+    <section class="section" id="approach">
       <div class="container">
         <div class="section-head">
-          <h2>Act I–V</h2>
-          <p>A five‑act story: from fragmentation to shared market infrastructure.</p>
+          <h2>Approach</h2>
+          <p>Shibui focuses on a small, practical core: definitions, trusted issuers, and how change is handled.</p>
         </div>
 
-        <div class="timeline" aria-label="Acts timeline">
-          <article class="beat" id="act1">
-            <div class="beat-num">Act I</div>
-            <h3>Define eligibility as shared language</h3>
+        <div class="timeline" aria-label="Approach timeline">
+          <article class="beat" id="step1">
+            <div class="beat-num">Step 1</div>
+            <h3>Standardize what “eligibility” means</h3>
             <p>
-              Shibui frames eligibility as <strong>claims</strong> (KYC, accreditation, residency, sanctions checks)
-              with consistent meaning across tokens.
+              Define common claim topics (e.g., KYC, residency, investor type) so different assets evaluate eligibility in the same way.
             </p>
             <div class="chips">
-              <span class="chip">Topics</span>
-              <span class="chip">Schemas</span>
-              <span class="chip">Minimum semantics</span>
+              <span class="chip">Shared definitions</span>
+              <span class="chip">Comparable evidence</span>
+              <span class="chip">Jurisdiction-aware</span>
             </div>
           </article>
 
-          <article class="beat" id="act2">
-            <div class="beat-num">Act II</div>
-            <h3>Separate trust policy from token logic</h3>
+          <article class="beat" id="step2">
+            <div class="beat-num">Step 2</div>
+            <h3>Let issuers choose who they trust</h3>
             <p>
-              Issuers choose who they trust for each claim topic.
-              Trust can evolve without rewriting token contracts.
+              Each asset can recognize a set of trusted issuers for each claim topic—without forcing a single vendor or monopoly.
             </p>
             <div class="chips">
-              <span class="chip">Per-topic trust</span>
               <span class="chip">Issuer control</span>
-              <span class="chip">Operator workflow</span>
+              <span class="chip">Multiple providers</span>
+              <span class="chip">Clear governance</span>
             </div>
           </article>
 
-          <article class="beat" id="act3">
-            <div class="beat-num">Act III</div>
-            <h3>Make credentials portable</h3>
+          <article class="beat" id="step3">
+            <div class="beat-num">Step 3</div>
+            <h3>Make updates predictable</h3>
             <p>
-              Investors present attestations once, then reuse them across compliant tokens
-              that recognize the same topic definitions and trusted attesters.
+              Expiry and revocation are first‑class, so eligibility can change quickly across assets when risk changes.
             </p>
             <div class="chips">
-              <span class="chip">Reuse</span>
-              <span class="chip">Reduced onboarding</span>
-              <span class="chip">Faster distribution</span>
-            </div>
-          </article>
-
-          <article class="beat" id="act4">
-            <div class="beat-num">Act IV</div>
-            <h3>Enforce change instantly</h3>
-            <p>
-              When a credential expires or is revoked, enforcement changes immediately across tokens
-              — without manual reconciliation.
-            </p>
-            <div class="chips">
-              <span class="chip">Revocation</span>
               <span class="chip">Expiry</span>
-              <span class="chip">Real-time compliance posture</span>
+              <span class="chip">Revocation</span>
+              <span class="chip">Audit trail</span>
             </div>
           </article>
+        </div>
 
-          <article class="beat" id="act5">
-            <div class="beat-num">Act V</div>
-            <h3>Scale with standards, not bespoke integrations</h3>
-            <p>
-              Shibui aligns with existing token standards (ERC‑3643) and uses a verifiable credential substrate (EAS)
-              — enabling a pragmatic path for institutions.
-            </p>
-            <div class="chips">
-              <span class="chip">ERC‑3643 semantics</span>
-              <span class="chip">EAS attestations</span>
-              <span class="chip">Pluggable verifiers</span>
+        <!-- VISUAL 3: Current vs Shibui process (before/after) -->
+        <div class="card" style="margin-top:14px" aria-label="Before and after flow">
+          <h3 style="margin-bottom:8px">Before / After (operational view)</h3>
+          <p class="muted" style="margin:0 0 12px">Same risk controls—less duplication, faster updates.</p>
+
+          <div class="flow-compare" aria-label="Before and after comparison diagrams">
+            <div class="flow-side" aria-label="Current process">
+              <div class="flow-title">Current</div>
+              <div class="diagram" aria-label="Current process flow diagram">
+                <svg viewBox="0 0 460 270" role="img" aria-label="Current process flow" preserveAspectRatio="xMidYMid meet">
+                  <rect x="14" y="14" width="432" height="242" rx="20" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)" />
+
+                  <rect x="34" y="38" width="168" height="46" rx="14" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+                  <text x="50" y="66" fill="rgba(234,240,255,.86)" font-size="13" font-weight="750">Investor submits docs</text>
+
+                  <rect x="34" y="112" width="180" height="46" rx="14" fill="rgba(97,168,255,.08)" stroke="rgba(97,168,255,.20)" />
+                  <text x="50" y="140" fill="rgba(234,240,255,.86)" font-size="13" font-weight="750">Issuer A onboarding</text>
+
+                  <rect x="246" y="112" width="180" height="46" rx="14" fill="rgba(155,123,255,.08)" stroke="rgba(155,123,255,.20)" />
+                  <text x="262" y="140" fill="rgba(234,240,255,.86)" font-size="13" font-weight="750">Issuer B onboarding</text>
+
+                  <rect x="34" y="186" width="392" height="46" rx="14" fill="rgba(255,212,106,.08)" stroke="rgba(255,212,106,.20)" />
+                  <text x="50" y="214" fill="rgba(234,240,255,.86)" font-size="13" font-weight="750">Manual reconciliation for updates (expiry / revocation)</text>
+
+                  <path d="M120 84V112" stroke="rgba(234,240,255,.24)" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M120 158V186" stroke="rgba(234,240,255,.24)" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M336 158V186" stroke="rgba(234,240,255,.24)" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M214 135H246" stroke="rgba(234,240,255,.24)" stroke-width="3" stroke-linecap="round"/>
+
+                  <text x="230" y="246" text-anchor="middle" fill="rgba(234,240,255,.54)" font-size="12">Duplicated checks + slow propagation</text>
+                </svg>
+              </div>
             </div>
-          </article>
+
+            <div class="flow-side" aria-label="Shibui process">
+              <div class="flow-title">With Shibui</div>
+              <div class="diagram" aria-label="Shibui process flow diagram">
+                <svg viewBox="0 0 460 270" role="img" aria-label="Shibui process flow" preserveAspectRatio="xMidYMid meet">
+                  <defs>
+                    <linearGradient id="sh" x1="0" x2="1">
+                      <stop offset="0" stop-color="rgba(97,168,255,.75)"/>
+                      <stop offset="1" stop-color="rgba(155,123,255,.75)"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="14" y="14" width="432" height="242" rx="20" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)" />
+
+                  <rect x="34" y="38" width="186" height="46" rx="14" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+                  <text x="50" y="66" fill="rgba(234,240,255,.86)" font-size="13" font-weight="750">Investor gets verified</text>
+
+                  <rect x="246" y="38" width="180" height="46" rx="14" fill="rgba(96,242,194,.08)" stroke="rgba(96,242,194,.20)" />
+                  <text x="262" y="66" fill="rgba(234,240,255,.86)" font-size="13" font-weight="750">Trusted issuer</text>
+
+                  <rect x="34" y="112" width="392" height="56" rx="16" fill="rgba(97,168,255,.10)" stroke="rgba(97,168,255,.22)" />
+                  <text x="50" y="141" fill="rgba(234,240,255,.92)" font-size="13" font-weight="800">Shibui credential (standard semantics)</text>
+                  <text x="50" y="159" fill="rgba(234,240,255,.56)" font-size="12">claim topics • evidence profile • expiry/revocation</text>
+
+                  <rect x="34" y="192" width="180" height="46" rx="14" fill="rgba(155,123,255,.08)" stroke="rgba(155,123,255,.20)" />
+                  <text x="50" y="220" fill="rgba(234,240,255,.86)" font-size="13" font-weight="750">Issuer / venue A</text>
+
+                  <rect x="246" y="192" width="180" height="46" rx="14" fill="rgba(155,123,255,.08)" stroke="rgba(155,123,255,.20)" />
+                  <text x="262" y="220" fill="rgba(234,240,255,.86)" font-size="13" font-weight="750">Issuer / venue B</text>
+
+                  <path d="M220 61H246" stroke="rgba(234,240,255,.24)" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M130 84V112" stroke="rgba(234,240,255,.24)" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M336 84V112" stroke="rgba(234,240,255,.24)" stroke-width="3" stroke-linecap="round"/>
+
+                  <path d="M230 168V192" stroke="url(#sh)" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M230 168C230 176 156 178 124 192" fill="none" stroke="url(#sh)" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M230 168C230 176 304 178 336 192" fill="none" stroke="url(#sh)" stroke-width="4" stroke-linecap="round"/>
+
+                  <text x="230" y="246" text-anchor="middle" fill="rgba(96,242,194,.75)" font-size="12" font-weight="750">One credential • many assets • predictable updates</text>
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="grid two">
           <div class="card">
-            <h3>What this unlocks</h3>
+            <h3>What this enables</h3>
             <ul class="bullets">
-              <li><strong>Lower onboarding cost</strong> and shorter time‑to‑distribution.</li>
-              <li><strong>Consistent oversight</strong> via shared claim definitions and governance.</li>
-              <li><strong>Composable market structure</strong>: multiple attesters, multiple venues, one language.</li>
+              <li><strong>Lower onboarding cost</strong> and faster distribution.</li>
+              <li><strong>More consistent controls</strong> across venues and issuers.</li>
+              <li><strong>Better audit readiness</strong> with standard claim types and evidence expectations.</li>
             </ul>
           </div>
           <div class="card">
             <h3>What Shibui is not</h3>
             <ul class="bullets">
-              <li>Not a new identity monopoly — issuers choose trusted parties per topic.</li>
-              <li>Not a single vendor stack — interfaces are designed to be pluggable.</li>
-              <li>Not a “trust us” black box — attestations are verifiable and auditable.</li>
+              <li>Not a single identity provider.</li>
+              <li>Not a required tech stack.</li>
+              <li>Not “trust us” compliance—definitions and policies are inspectable.</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- THE ASK -->
-    <section class="section" id="ask">
+    <!-- WORKING GROUP -->
+    <section class="section" id="working-group">
       <div class="container">
         <div class="section-head">
-          <h2>The Ask</h2>
+          <h2>Working group</h2>
           <p>
-            To make shared identity real, we need the market to converge on a small set of definitions and operating rules.
+            Shibui is being shaped as a market standard. We’re convening institutions to align on a small, usable first release.
           </p>
         </div>
 
         <div class="grid three">
           <div class="card">
-            <h3>1) Adopt the language</h3>
-            <p>
-              Align on topic definitions (what “KYC” means; what “Accredited” means; what evidence is acceptable)
-              so tokens can verify consistently.
-            </p>
-            <div class="pill-inline">Outcome: interoperable eligibility</div>
+            <h3>Who should join</h3>
+            <p>Banks, asset managers, venues, transfer agents, KYC/accreditation providers, and supervisors.</p>
+            <div class="pill-inline">Outcome: shared requirements</div>
           </div>
           <div class="card">
-            <h3>2) Participate as a trusted issuer</h3>
-            <p>
-              Banks, KYC providers, transfer agents, and regulated intermediaries issue attestations
-              under clear governance and audit expectations.
-            </p>
-            <div class="pill-inline">Outcome: portable credentials</div>
+            <h3>What you’ll do</h3>
+            <p>Agree on claim definitions, evidence expectations, and operating rules for updates (expiry/revocation).</p>
+            <div class="pill-inline">Outcome: reusable eligibility</div>
           </div>
           <div class="card">
-            <h3>3) Join the pilot</h3>
-            <p>
-              Launch a limited pilot with 1–2 claim topics (e.g., KYC + Accreditation),
-              defined revocation semantics, and shared reporting.
-            </p>
-            <div class="pill-inline">Outcome: measurable time/cost reduction</div>
+            <h3>What you’ll get</h3>
+            <p>A neutral standard you can implement with your existing systems—and use across multiple assets.</p>
+            <div class="pill-inline">Outcome: lower integration burden</div>
           </div>
         </div>
 
-        <div class="callout">
-          <div class="callout-title">Pilot success criteria</div>
+        <!-- VISUAL 4: Working-group governance map -->
+        <div class="card" style="margin-top:14px" aria-label="Governance map">
+          <div class="card-head-inline">
+            <h3 style="margin:0">Governance map (lightweight)</h3>
+            <div class="pill-inline" style="margin:0">Neutral standard • competitive implementations</div>
+          </div>
+          <p class="muted" style="margin:10px 0 12px">Participants converge on a small set of shared outputs.</p>
+          <div class="diagram" aria-label="Working group governance map diagram">
+            <svg viewBox="0 0 980 320" role="img" aria-label="Working group with contributors and standardized outputs" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <linearGradient id="gov" x1="0" x2="1">
+                  <stop offset="0" stop-color="rgba(97,168,255,.75)"/>
+                  <stop offset="1" stop-color="rgba(155,123,255,.75)"/>
+                </linearGradient>
+              </defs>
+              <rect x="18" y="18" width="944" height="284" rx="22" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)" />
+
+              <!-- Center -->
+              <circle cx="490" cy="160" r="62" fill="rgba(234,240,255,.06)" stroke="rgba(255,255,255,.14)" />
+              <text x="490" y="156" text-anchor="middle" fill="rgba(234,240,255,.92)" font-size="15" font-weight="850">Working group</text>
+              <text x="490" y="176" text-anchor="middle" fill="rgba(234,240,255,.56)" font-size="12">requirements + review</text>
+
+              <!-- Left: contributors -->
+              <g>
+                <rect x="64" y="58" width="260" height="56" rx="16" fill="rgba(97,168,255,.08)" stroke="rgba(97,168,255,.20)" />
+                <text x="86" y="90" fill="rgba(234,240,255,.86)" font-size="14" font-weight="750">Issuers + asset managers</text>
+                <text x="86" y="108" fill="rgba(234,240,255,.56)" font-size="12">real onboarding + distribution needs</text>
+              </g>
+              <g>
+                <rect x="64" y="128" width="260" height="56" rx="16" fill="rgba(155,123,255,.08)" stroke="rgba(155,123,255,.20)" />
+                <text x="86" y="160" fill="rgba(234,240,255,.86)" font-size="14" font-weight="750">Venues + transfer agents</text>
+                <text x="86" y="178" fill="rgba(234,240,255,.56)" font-size="12">enforcement + operations</text>
+              </g>
+              <g>
+                <rect x="64" y="198" width="260" height="56" rx="16" fill="rgba(96,242,194,.06)" stroke="rgba(96,242,194,.18)" />
+                <text x="86" y="230" fill="rgba(234,240,255,.86)" font-size="14" font-weight="750">KYC / accreditation providers</text>
+                <text x="86" y="248" fill="rgba(234,240,255,.56)" font-size="12">evidence formats + workflows</text>
+              </g>
+
+              <!-- Right: outputs -->
+              <g>
+                <rect x="656" y="56" width="260" height="56" rx="16" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+                <text x="678" y="88" fill="rgba(234,240,255,.86)" font-size="14" font-weight="800">Claim topics</text>
+                <text x="678" y="106" fill="rgba(234,240,255,.56)" font-size="12">shared semantics + identifiers</text>
+              </g>
+              <g>
+                <rect x="656" y="126" width="260" height="56" rx="16" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+                <text x="678" y="158" fill="rgba(234,240,255,.86)" font-size="14" font-weight="800">Evidence profiles</text>
+                <text x="678" y="176" fill="rgba(234,240,255,.56)" font-size="12">what “good” looks like</text>
+              </g>
+              <g>
+                <rect x="656" y="196" width="260" height="56" rx="16" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+                <text x="678" y="228" fill="rgba(234,240,255,.86)" font-size="14" font-weight="800">Update semantics</text>
+                <text x="678" y="246" fill="rgba(234,240,255,.56)" font-size="12">expiry + revocation + audit trail</text>
+              </g>
+
+              <!-- Connectors -->
+              <path d="M324 86C400 96 420 120 428 144" fill="none" stroke="rgba(234,240,255,.22)" stroke-width="3" stroke-linecap="round" />
+              <path d="M324 156C392 156 416 156 428 156" fill="none" stroke="rgba(234,240,255,.22)" stroke-width="3" stroke-linecap="round" />
+              <path d="M324 226C400 216 420 196 428 176" fill="none" stroke="rgba(234,240,255,.22)" stroke-width="3" stroke-linecap="round" />
+
+              <path d="M552 144C564 120 590 98 656 84" fill="none" stroke="url(#gov)" stroke-width="4" stroke-linecap="round" />
+              <path d="M552 160H656" fill="none" stroke="url(#gov)" stroke-width="4" stroke-linecap="round" />
+              <path d="M552 176C570 206 600 222 656 224" fill="none" stroke="url(#gov)" stroke-width="4" stroke-linecap="round" />
+
+              <!-- Footer label -->
+              <text x="490" y="286" text-anchor="middle" fill="rgba(234,240,255,.54)" font-size="12">Standard outputs become stable inputs for many implementations</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="callout" aria-label="Call to action">
+          <div class="callout-title">Interested in joining?</div>
           <div class="callout-body">
-            <ul class="bullets compact">
-              <li>Onboarding time reduced by reusing attestations across at least two tokens or venues.</li>
-              <li>Revocation/expiry demonstrated with immediate enforcement.</li>
-              <li>Clear operator controls for trusted issuers per topic.</li>
-              <li>Audit‑ready evidence trail for compliance and oversight teams.</li>
-            </ul>
+            <p class="muted" style="margin:0 0 10px">
+              Send a note and we’ll share the working-group brief and meeting cadence.
+            </p>
+            <div class="cta-actions">
+              <a class="btn primary" href="mailto:shibui-working-group@yourdomain.tld?subject=Shibui%20Working%20Group%20Interest">Request a working‑group invite</a>
+              <a class="btn" href="#details">Review the details first</a>
+            </div>
+            <p class="muted" style="margin:10px 0 0;font-size:12px">
+              (Maintainers: update the email address in <span style="font-family:var(--mono)">index.html</span> for production use.)
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SPECIFICATIONS -->
-    <section class="section" id="specs">
+    <!-- DETAILS -->
+    <section class="section" id="details">
       <div class="container">
         <div class="section-head">
-          <h2>Specifications</h2>
+          <h2>Details</h2>
           <p>
-            A business‑first view of the spec: what is standardized, what remains flexible, and how governance works.
+            A business‑first view of what’s standardized, what stays flexible, and where the technology fits.
           </p>
         </div>
 
         <div class="grid two">
           <div class="card">
-            <h3>Design principles</h3>
+            <h3>What’s standardized</h3>
             <ul class="bullets">
-              <li><strong>Small core</strong>: standardize only what must be shared.</li>
-              <li><strong>Issuer control</strong>: each issuer defines trusted attesters per topic.</li>
-              <li><strong>Portable credentials</strong>: investors reuse attestations across tokens that share the language.</li>
-              <li><strong>Immediate enforcement</strong>: revocation and expiry are first‑class behaviors.</li>
-              <li><strong>Auditability</strong>: claims are verifiable; policies are inspectable.</li>
+              <li><strong>Claim topics</strong> (shared definitions for common eligibility requirements).</li>
+              <li><strong>Evidence expectations</strong> (what is acceptable and comparable across participants).</li>
+              <li><strong>Update semantics</strong> (expiry and revocation rules, plus an audit trail).</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Standards stack</h3>
-            <div class="stack" aria-label="Standards stack visual cards">
-              <div class="stack-card">
-                <div class="stack-k">Asset compliance semantics</div>
-                <div class="stack-v">ERC‑3643 claim topics & eligibility checks</div>
-              </div>
-              <div class="stack-card">
-                <div class="stack-k">Credential substrate</div>
-                <div class="stack-v">EAS attestations (issuance, revocation, expiry)</div>
-              </div>
-              <div class="stack-card">
-                <div class="stack-k">Identity mapping</div>
-                <div class="stack-v">Wallet ↔ identity ownership & delegation</div>
-              </div>
-              <div class="stack-card">
-                <div class="stack-k">Governance</div>
-                <div class="stack-v">Topics, schemas, trust policy, operator controls</div>
-              </div>
+            <h3>What stays flexible</h3>
+            <ul class="bullets">
+              <li><strong>Issuer choice</strong>: who you trust for each topic.</li>
+              <li><strong>Implementation</strong>: integrate with your existing onboarding and compliance stack.</li>
+              <li><strong>Operating model</strong>: governance can evolve as participation grows.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- VISUAL 5: What vs How separation architecture graphic -->
+        <div class="card" style="margin-top:14px" aria-label="What vs How architecture">
+          <h3 style="margin-bottom:8px">What vs How (separation)</h3>
+          <p class="muted" style="margin:0 0 12px">Shibui standardizes the language; implementations compete on execution.</p>
+
+          <div class="diagram" aria-label="Architecture diagram separating standardized semantics from implementations">
+            <svg viewBox="0 0 980 320" role="img" aria-label="What versus How separation diagram" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <linearGradient id="wh" x1="0" x2="1">
+                  <stop offset="0" stop-color="rgba(97,168,255,.75)"/>
+                  <stop offset="1" stop-color="rgba(155,123,255,.75)"/>
+                </linearGradient>
+              </defs>
+              <rect x="18" y="18" width="944" height="284" rx="22" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)" />
+
+              <!-- WHAT -->
+              <rect x="54" y="56" width="400" height="196" rx="20" fill="rgba(97,168,255,.08)" stroke="rgba(97,168,255,.22)" />
+              <text x="74" y="86" fill="rgba(234,240,255,.90)" font-size="13" font-weight="900">WHAT (standard)</text>
+
+              <rect x="80" y="106" width="348" height="44" rx="14" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+              <text x="98" y="134" fill="rgba(234,240,255,.86)" font-size="13" font-weight="800">Shibui claim topics</text>
+
+              <rect x="80" y="162" width="348" height="44" rx="14" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+              <text x="98" y="190" fill="rgba(234,240,255,.86)" font-size="13" font-weight="800">Evidence + update semantics</text>
+
+              <text x="80" y="232" fill="rgba(234,240,255,.58)" font-size="12">expiry • revocation • audit trail • trust policy</text>
+
+              <!-- Divider arrow -->
+              <path d="M470 156H522" stroke="url(#wh)" stroke-width="6" stroke-linecap="round"/>
+              <path d="M518 156l-12-10m12 10l-12 10" stroke="rgba(155,123,255,.75)" stroke-width="4" stroke-linecap="round"/>
+
+              <!-- HOW -->
+              <rect x="532" y="56" width="394" height="196" rx="20" fill="rgba(155,123,255,.06)" stroke="rgba(155,123,255,.20)" />
+              <text x="552" y="86" fill="rgba(234,240,255,.90)" font-size="13" font-weight="900">HOW (competitive implementations)</text>
+
+              <rect x="558" y="106" width="342" height="44" rx="14" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+              <text x="576" y="134" fill="rgba(234,240,255,.86)" font-size="13" font-weight="800">Identity / KYC backends</text>
+
+              <rect x="558" y="162" width="342" height="44" rx="14" fill="rgba(234,240,255,.05)" stroke="rgba(234,240,255,.14)" />
+              <text x="576" y="190" fill="rgba(234,240,255,.86)" font-size="13" font-weight="800">Wallet / custodian flows</text>
+
+              <text x="558" y="232" fill="rgba(234,240,255,.58)" font-size="12">any vendor • any stack • any integration</text>
+
+              <!-- Bottom: token enforcement semantics -->
+              <rect x="54" y="262" width="872" height="34" rx="14" fill="rgba(0,0,0,.16)" stroke="rgba(234,240,255,.12)" />
+              <text x="74" y="284" fill="rgba(234,240,255,.78)" font-size="12" font-weight="800">Token enforcement target:</text>
+              <text x="230" y="284" fill="rgba(234,240,255,.62)" font-size="12">ERC‑3643-style rules evaluate Shibui topics consistently</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <h3>Standards alignment (high level)</h3>
+          <div class="stack" aria-label="Standards alignment">
+            <div class="stack-card">
+              <div class="stack-k">Identity standard</div>
+              <div class="stack-v">Shibui defines claim topics, trust policies, and update semantics</div>
             </div>
-            <p class="muted">The goal is institutional compatibility: stable semantics with pluggable implementations.</p>
+            <div class="stack-card">
+              <div class="stack-k">Attestation backend</div>
+              <div class="stack-v">Ethereum Attestation Service (EAS) for issuance, expiry, and revocation</div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-k">Token compliance semantics</div>
+              <div class="stack-v">Designed to interoperate with ERC‑3643-style eligibility checks</div>
+            </div>
           </div>
-        </div>
-
-        <div class="card">
-          <h3>Governance model (proposed)</h3>
-          <p class="muted">
-            Governance is where “shared language” becomes credible. The market needs clarity on who can define topics,
-            who can issue for a topic, and how disputes are handled.
-          </p>
-          <div class="table-wrap" role="region" aria-label="Governance table" tabindex="0">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Element</th>
-                  <th scope="col">What is governed</th>
-                  <th scope="col">Why it matters</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">Topic definitions</th>
-                  <td>Meaning of claims (e.g., KYC, accreditation)</td>
-                  <td>Interoperability across issuers and venues</td>
-                </tr>
-                <tr>
-                  <th scope="row">Schemas</th>
-                  <td>Required fields & constraints for an attestation</td>
-                  <td>Auditability and comparable evidence</td>
-                </tr>
-                <tr>
-                  <th scope="row">Trusted issuer policy</th>
-                  <td>Who an issuer recognizes per topic</td>
-                  <td>Issuer control + risk management</td>
-                </tr>
-                <tr>
-                  <th scope="row">Revocation/expiry semantics</th>
-                  <td>How changes propagate and are enforced</td>
-                  <td>Real‑time compliance posture</td>
-                </tr>
-                <tr>
-                  <th scope="row">Operator controls</th>
-                  <td>Admin, reporting, and dispute workflows</td>
-                  <td>Institutional operational readiness</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="section-subhead">
-          <h3>Schema cards</h3>
-          <p class="muted">A compact mental model of the shared language.</p>
-        </div>
-
-        <div class="grid three">
-          <div class="card schema">
-            <div class="schema-title">Identity</div>
-            <p>How a wallet is mapped to a reusable identity (ownership + delegation).</p>
-            <ul class="mini">
-              <li>Identity owner</li>
-              <li>Authorized agent / delegate</li>
-              <li>Wallet-to-identity resolution</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Claim topic</div>
-            <p>A standard claim type the market can share (KYC, accreditation, residency…)</p>
-            <ul class="mini">
-              <li>Topic id / name</li>
-              <li>Required evidence schema</li>
-              <li>Issuer policies</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Attestation</div>
-            <p>A verifiable statement from a trusted issuer about an identity for a topic.</p>
-            <ul class="mini">
-              <li>Issuer (attester)</li>
-              <li>Schema-conform data</li>
-              <li>Expiry + revocation</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Trust policy</div>
-            <p>Issuer-by-issuer control over who is recognized for each topic.</p>
-            <ul class="mini">
-              <li>Per-topic allowlist</li>
-              <li>Change management</li>
-              <li>Immediate effect on verification</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Verification</div>
-            <p>Resolve identity → evaluate required topics → return eligible / ineligible.</p>
-            <ul class="mini">
-              <li>Missing / revoked / expired fails</li>
-              <li>Untrusted issuer fails</li>
-              <li>Multiple topics supported</li>
-            </ul>
-          </div>
-          <div class="card schema">
-            <div class="schema-title">Evidence trail</div>
-            <p>What compliance teams and supervisors can inspect and report on.</p>
-            <ul class="mini">
-              <li>Which topic(s) passed/failed</li>
-              <li>Which issuer was trusted</li>
-              <li>Timestamped revocations/expiries</li>
-            </ul>
-          </div>
+          <p class="muted">Goal: institutional compatibility — stable semantics, pluggable implementations.</p>
         </div>
 
         <details class="appendix" id="appendix">
           <summary>
-            Optional appendix: technical notes (collapsed)
-            <span class="summary-sub">For engineers who want a minimal implementation view.</span>
+            Optional appendix: minimal technical notes
+            <span class="summary-sub">Only if you want an implementation mental model.</span>
           </summary>
           <div class="appendix-body">
             <div class="grid two">
               <div class="card">
                 <h3>Minimal implementation (one possible path)</h3>
                 <ul class="bullets compact">
-                  <li>Use <strong>EAS</strong> as the attestation backend (issue/revoke/expire).</li>
-                  <li>Keep <strong>ERC‑3643</strong> claim semantics intact (topics define what must be checked).</li>
-                  <li>Implement a pluggable verifier: resolve identity → validate attestations per topic.</li>
-                  <li>Maintain per‑topic trusted issuer sets (configurable by the token issuer).</li>
+                  <li>Use <strong>EAS</strong> for attestations (issue/revoke/expire).</li>
+                  <li>Use a standard set of <strong>claim topics</strong> to evaluate eligibility.</li>
+                  <li>Let issuers configure trusted attesters per topic.</li>
+                  <li>Expose an auditable result (which topics passed/failed and why).</li>
                 </ul>
-                <p class="muted">This demo page is static and intended for communication. The repo contains an MVP implementation for evaluation.</p>
+                <p class="muted">This page is static and communication-first. The broader repo contains an MVP implementation for evaluation.</p>
               </div>
 
               <div class="card">
-                <h3>What to show in a pilot demo</h3>
+                <h3>What to prove in a pilot</h3>
                 <ol class="steps">
-                  <li>Issue a KYC attestation from a trusted issuer.</li>
-                  <li>Show <em>eligible</em> for Token A and Token B.</li>
-                  <li>Revoke or expire the attestation.</li>
-                  <li>Show enforcement flips immediately across both tokens.</li>
+                  <li>Reuse a single eligibility credential across two assets or venues.</li>
+                  <li>Demonstrate expiry or revocation and show consistent enforcement.</li>
+                  <li>Confirm issuer control over which parties are trusted for each topic.</li>
                 </ol>
-                <p class="muted">Technical artifacts live in the repo root (tests, docs, scripts). This page is the executive story.</p>
+                <p class="muted">Technical artifacts live in the repo root (tests, docs, scripts).</p>
               </div>
             </div>
           </div>
@@ -538,12 +725,12 @@
         <div class="endcap">
           <div class="endcap-inner">
             <div>
-              <div class="endcap-title">Shibui is a language — not a gatekeeper.</div>
-              <div class="endcap-sub">Standardize the semantics. Keep the market competitive on implementations.</div>
+              <div class="endcap-title">Shibui is a shared language — not a gatekeeper.</div>
+              <div class="endcap-sub">Standardize semantics. Keep implementations competitive.</div>
             </div>
             <div class="endcap-actions">
               <a class="btn" href="#top">Back to top</a>
-              <a class="btn primary" href="#ask">Discuss the pilot</a>
+              <a class="btn primary" href="#working-group">Join the working group</a>
             </div>
           </div>
         </div>
@@ -555,15 +742,15 @@
   <footer class="footer">
     <div class="container footer-inner">
       <div class="fineprint">
-        <div class="fineprint-title">Shibui — Shared Identity Language for Tokenized Assets</div>
-        <div class="fineprint-sub">Static story page • built for GitHub Pages • no wallets, no RPC, no chain writes.</div>
+        <div class="fineprint-title">Shibui — Interoperable Investor Eligibility for Tokenized Assets</div>
+        <div class="fineprint-sub">Static page • GitHub Pages friendly • no wallets, no RPC, no chain writes.</div>
       </div>
       <div class="fineprint-links">
+        <a href="#working-group">Working group</a>
+        <span class="sep">•</span>
+        <a href="#details">Details</a>
+        <span class="sep">•</span>
         <a href="#appendix">Appendix</a>
-        <span class="sep">•</span>
-        <a href="#specs">Specifications</a>
-        <span class="sep">•</span>
-        <a href="#ask">The Ask</a>
       </div>
     </div>
   </footer>
