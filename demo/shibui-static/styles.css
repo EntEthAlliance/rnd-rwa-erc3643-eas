@@ -202,9 +202,26 @@ tbody th{font-weight:750}
   border-radius:999px;
 }
 
-/* Visual: compound */
+/* Visual: compound + diagrams */
 .visual-title{font-size:16px;font-weight:800;letter-spacing:.2px;margin:0 0 8px}
 .visual-sub{margin:0 0 12px;color:var(--muted);line-height:1.6}
+
+.divider{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+
+.card-head-inline{display:flex;flex-direction:column;gap:10px;align-items:flex-start;justify-content:space-between}
+
+.diagram{
+  width:100%;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.14);
+  overflow:hidden;
+}
+.diagram svg{display:block;width:100%;height:auto}
+
+.flow-compare{display:grid;grid-template-columns:1fr;gap:12px}
+.flow-side{border:1px solid rgba(255,255,255,.10);border-radius:18px;background:rgba(255,255,255,.03);padding:12px}
+.flow-title{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted2);font-weight:850;margin:0 0 10px}
 
 .compound{display:grid;grid-template-columns:1fr;gap:12px;margin-top:10px}
 .compound-col{
@@ -320,6 +337,8 @@ tbody th{font-weight:750}
   .compound-mid{display:block;padding:0 4px}
   .footer-inner{flex-direction:row;align-items:center}
   .endcap-inner{flex-direction:row;align-items:center}
+  .card-head-inline{flex-direction:row;align-items:center}
+  .flow-compare{grid-template-columns:1fr 1fr;align-items:stretch}
 }
 
 /* Print (PDF export) */
