@@ -1,81 +1,57 @@
-/* Shibui — static story page
-   Purpose: light progressive enhancement (no framework).
-
-   Features:
-   - Scroll-spy highlights the active nav item
-   - Optional reveal-on-scroll animation (respects reduced motion)
+/* Shibui — Minimal JS
+   - Scroll-spy for nav highlighting
+   - Smooth scroll for anchor links
+   No external dependencies.
 */
 
 (function () {
   'use strict';
 
   const nav = document.querySelector('.nav');
-  const links = nav ? Array.from(nav.querySelectorAll('a[href^="#"]')) : [];
+  if (!nav) return;
+
+  const links = Array.from(nav.querySelectorAll('a[href^="#"]'));
   const sections = links
     .map(a => document.querySelector(a.getAttribute('href')))
     .filter(Boolean);
 
-  // Mark elements for reveal animation
-  const revealables = Array.from(document.querySelectorAll('.card, .beat, .quote-block, .callout, .endcap-inner'));
-  revealables.forEach(el => el.setAttribute('data-reveal', ''));
-
+  // Set active nav link
   function setActive(id) {
     links.forEach(a => {
-      const href = a.getAttribute('href');
-      const on = href === `#${id}`;
-      a.setAttribute('aria-current', on ? 'true' : 'false');
+      const isActive = a.getAttribute('href') === '#' + id;
+      a.setAttribute('aria-current', isActive ? 'true' : 'false');
     });
   }
 
-  // Scroll spy
+  // Scroll spy with IntersectionObserver
   if ('IntersectionObserver' in window && sections.length) {
-    const spy = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
-        // Choose the most visible intersecting section.
         const visible = entries
           .filter(e => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
-        if (visible[0] && visible[0].target && visible[0].target.id) {
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible.length && visible[0].target.id) {
           setActive(visible[0].target.id);
         }
       },
       {
-        root: null,
-        threshold: [0.15, 0.25, 0.4, 0.6],
-        rootMargin: '-20% 0px -70% 0px'
+        threshold: [0.2, 0.4, 0.6],
+        rootMargin: '-10% 0px -60% 0px'
       }
     );
 
-    sections.forEach(s => spy.observe(s));
+    sections.forEach(s => observer.observe(s));
   }
 
-  // Reveal on scroll
-  if ('IntersectionObserver' in window) {
-    const reveal = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-visible');
-            reveal.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
-
-    revealables.forEach(el => reveal.observe(el));
-  } else {
-    // No IO support: just show everything.
-    revealables.forEach(el => el.classList.add('is-visible'));
-  }
-
-  // Smooth scroll (native where supported)
+  // Smooth scroll on click (for browsers without native support)
   links.forEach(a => {
-    a.addEventListener('click', (ev) => {
+    a.addEventListener('click', (e) => {
       const href = a.getAttribute('href');
-      const target = href ? document.querySelector(href) : null;
+      const target = document.querySelector(href);
       if (!target) return;
-      ev.preventDefault();
+
+      e.preventDefault();
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       history.pushState(null, '', href);
     });
