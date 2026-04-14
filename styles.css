@@ -91,10 +91,22 @@ a:hover { text-decoration: underline; }
   background: linear-gradient(135deg, var(--brand), var(--brand2));
 }
 
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
 .brand-name {
   font-weight: 700;
   font-size: 18px;
   letter-spacing: 0.3px;
+}
+
+.brand-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
 }
 
 .nav {
@@ -380,6 +392,8 @@ a:hover { text-decoration: underline; }
   border-radius: 4px;
   font-size: 12px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .story-divider {
