@@ -28,26 +28,44 @@ It replaces ONCHAINID with [Ethereum Attestation Service (EAS)](https://attest.o
 
 ---
 
-## How It Works
+## How Verification Works
 
-A token transfer triggers `isVerified(wallet)`. Shibui intercepts that call and resolves it through EAS instead of ONCHAINID:
+When a token transfer is attempted, Shibui intercepts the `isVerified(wallet)` call and resolves it against EAS attestations instead of ONCHAINID contracts. Here is the full sequence:
 
 ```
-Transfer requested
-      │
-      ▼
-EASClaimVerifier.isVerified(wallet)
-      │
-      ├─ Resolve wallet → identity (via EASIdentityProxy)
-      ├─ Check required claim topics (via ClaimTopicsRegistry)
-      ├─ For each topic: fetch EAS attestation
-      └─ Validate: exists? correct schema? trusted attester? not revoked? not expired?
-            │
-            ├─ All pass → transfer proceeds
-            └─ Any fail → transfer blocked
+User
+  │  transfer(to, amount)
+  ▼
+ERC-3643 Token
+  │  isVerified(to)
+  ▼
+EASClaimVerifier                              [Shibui]
+  │  getIdentity(wallet) ──────────────────▶ EASIdentityProxy
+  │  identityAddress ◀────────────────────── EASIdentityProxy
+  │
+  │  getClaimTopics() ─────────────────────▶ ClaimTopicsRegistry
+  │  [topic1, topic2, ...] ◀─────────────── ClaimTopicsRegistry
+  │
+  │  for each topic:
+  │    getTrustedAttesters(topic) ─────────▶ EASTrustedIssuersAdapter
+  │    [attester1, ...] ◀──────────────────── EASTrustedIssuersAdapter
+  │
+  │    getAttestation(uid) ────────────────▶ EAS.sol (on-chain)
+  │    Attestation{schema, revoked, expiry} ◀ EAS.sol
+  │
+  │    validate: not revoked, not expired, schema match, attester trusted
+  │
+  ├── all topics pass → true
+  └── any topic fails → false
+  ▼
+ERC-3643 Token
+  ├── true  → transfer executes
+  └── false → transfer reverts
 ```
 
-Nothing changes in the ERC-3643 token contract. The compliance interface is the same. Only the backend is different.
+The full Mermaid source for this diagram is in [`diagrams/transfer-verification-flow.mmd`](diagrams/transfer-verification-flow.mmd). Render it at [mermaid.live](https://mermaid.live) or directly in GitHub.
+
+Nothing changes in the ERC-3643 token contract. The compliance interface is identical. Only the backend is different.
 
 ---
 
@@ -78,6 +96,71 @@ ERC-3643 TOKEN
               IDENTITY AUTHORITIES
               (banks, KYC providers, compliance services)
 ```
+
+---
+
+## EAS Schemas
+
+Shibui uses three EAS schemas, registered on-chain via [`script/RegisterSchemas.s.sol`](script/RegisterSchemas.s.sol). These are the data structures that KYC providers and token issuers write to and read from.
+
+### 1. Investor eligibility
+
+```solidity
+address identity,
+uint8   kycStatus,
+uint8   accreditationType,
+uint16  countryCode,
+uint64  expirationTimestamp
+```
+
+The core compliance attestation. A KYC provider attests this to an investor's identity address. It encodes whether the investor has passed KYC (`kycStatus`), what type of accreditation they hold (`accreditationType`), their jurisdiction (`countryCode`), and when the attestation expires.
+
+This is the schema most tokens will require for claim topic 1 (KYC). It is revocable — the attesting provider can invalidate it at any time, which immediately blocks the investor's ability to transfer tokens.
+
+### 2. Issuer authorization
+
+```solidity
+address   issuerAddress,
+uint256[] authorizedTopics,
+string    issuerName
+```
+
+Authorizes an attestation provider (a KYC service, a custodian, a regulator) to issue attestations for specific claim topics. A token issuer registers an attester using this schema, scoping exactly which topics that attester is trusted for.
+
+This schema is what makes the system composable: a bank trusted for KYC (topic 1) is not automatically trusted for accreditation (topic 2). Trust is granular and explicit.
+
+### 3. Wallet-identity link
+
+```solidity
+address walletAddress,
+address identityAddress,
+uint64  linkedTimestamp
+```
+
+Maps a wallet address to an identity address. A single investor can have multiple wallets — hardware wallets, cold wallets, exchange wallets — all linked to one identity. An attestation made to the identity applies to all linked wallets.
+
+This is what enables multi-wallet support without re-running KYC per wallet.
+
+---
+
+### Schema registration
+
+Schemas are registered idempotently. Running the script multiple times is safe — UIDs are deterministic based on the schema string, resolver, and revocable flag.
+
+```bash
+forge script script/RegisterSchemas.s.sol:RegisterSchemas \
+  --rpc-url $RPC_URL \
+  --broadcast
+```
+
+Known EAS Schema Registry addresses (auto-detected by chain ID):
+
+| Network | Registry address |
+|---|---|
+| Ethereum mainnet | `0xA7b39296258348C78294F95B872b282326A97BDF` |
+| Sepolia | `0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0` |
+| Base / Optimism | `0x4200000000000000000000000000000000000020` |
+| Arbitrum | `0xA310da9c5B885E7fb3fbA9D66E9Ba6Df512b78eB` |
 
 ---
 
@@ -142,7 +225,17 @@ forge script script/DeployMainnet.s.sol:DeployMainnet \
   --verify
 ```
 
-### Run a Full Pilot (5 seeded investors)
+### Register schemas
+
+```bash
+forge script script/RegisterSchemas.s.sol:RegisterSchemas \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --broadcast
+```
+
+Save the emitted UIDs — you'll need them to configure `EASClaimVerifier`.
+
+### Run a full pilot (5 seeded investors)
 
 ```bash
 forge script script/SetupPilot.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast
@@ -156,17 +249,18 @@ forge script script/SetupPilot.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast
 
 ```
 1. Token issuer deploys Shibui contracts
-2. Configures required claim topics (e.g., topic 1 = KYC, topic 2 = accreditation)
-3. Adds trusted attesters (e.g., a licensed KYC provider's address)
-4. KYC provider attests investor wallet via EAS
-5. Issuer registers attestation UID → verifier.registerAttestation(wallet, topic, uid)
-6. verifier.isVerified(wallet) → true ✓  → investor can receive/transfer tokens
+2. Registers schemas (RegisterSchemas.s.sol)
+3. Configures required claim topics (e.g., topic 1 = KYC, topic 2 = accreditation)
+4. Adds trusted attesters via IssuerAuthorization schema
+5. KYC provider creates EAS attestation using InvestorEligibility schema
+6. Issuer registers attestation UID → verifier.registerAttestation(wallet, topic, uid)
+7. verifier.isVerified(wallet) → true ✓  → investor can receive/transfer tokens
 ```
 
 ### Revocation (real-time compliance)
 
 ```
-1. KYC provider revokes the EAS attestation
+1. KYC provider revokes the EAS attestation on-chain
 2. verifier.isVerified(wallet) → false ✗  → transfers blocked immediately
 3. Re-attest when investor re-qualifies
 4. verifier.isVerified(wallet) → true ✓  → access restored
@@ -175,9 +269,9 @@ forge script script/SetupPilot.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast
 ### Multi-wallet identity
 
 ```
-1. Investor registers multiple wallets to one identity
-2. Attestation is issued to the identity, not per-wallet
-3. All registered wallets inherit verification status
+1. Investor registers multiple wallets using the WalletIdentityLink schema
+2. Attestation is issued to the identity address, not per-wallet
+3. All linked wallets inherit verification status automatically
 ```
 
 ---
@@ -196,6 +290,23 @@ forge script script/SetupPilot.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast
 
 ---
 
+## Diagrams
+
+All diagrams are Mermaid source files in [`diagrams/`](diagrams/). Render at [mermaid.live](https://mermaid.live) or directly in GitHub.
+
+| File | What It Shows |
+|------|---------------|
+| [`transfer-verification-flow.mmd`](diagrams/transfer-verification-flow.mmd) | Full sequence: user → token → Shibui → EAS → result |
+| [`architecture-overview.mmd`](diagrams/architecture-overview.mmd) | Contract relationships |
+| [`bridge-before-after.mmd`](diagrams/bridge-before-after.mmd) | Before (ONCHAINID) vs after (Shibui) |
+| [`attestation-lifecycle.mmd`](diagrams/attestation-lifecycle.mmd) | Attestation states: issued → valid → revoked → renewed |
+| [`dual-mode-verification.mmd`](diagrams/dual-mode-verification.mmd) | Direct wallet mode vs identity proxy mode |
+| [`multi-chain-reuse.mmd`](diagrams/multi-chain-reuse.mmd) | One KYC attestation used across multiple chains |
+| [`revocation-flow.mmd`](diagrams/revocation-flow.mmd) | Real-time revocation sequence |
+| [`stakeholder-interactions.mmd`](diagrams/stakeholder-interactions.mmd) | Who does what: issuer, provider, investor, compliance |
+
+---
+
 ## Documentation
 
 | Document | Description |
@@ -207,7 +318,6 @@ forge script script/SetupPilot.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast
 | [`research/gap-analysis.md`](research/gap-analysis.md) | ONCHAINID vs EAS: detailed capability comparison |
 | [`research/claim-topic-analysis.md`](research/claim-topic-analysis.md) | ERC-3643 claim topics in production, mapping to EAS |
 | [`research/minimal-identity-structure.md`](research/minimal-identity-structure.md) | How `isVerified()` works and what Shibui replaces |
-| [`diagrams/`](diagrams/) | Mermaid source files — render at [mermaid.live](https://mermaid.live) |
 
 ---
 
@@ -259,4 +369,4 @@ Schema governance runs through an EEA working group open to member organizations
 
 ---
 
-*Built by the EEA.*
+*Built by the EEA Working Group on Real-World Assets and Tokenization.*
