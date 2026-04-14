@@ -259,4 +259,4 @@ Schema governance runs through an EEA working group open to member organizations
 
 ---
 
-*Built by the EEA Working Group on Real-World Assets and Tokenization.*
+*Built by the EEA.*
