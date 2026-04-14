@@ -19,7 +19,7 @@
       </div>
       <nav class="nav">
         <a href="#why">Why</a>
-        <a href="#stories">Stories</a>
+        <a href="#story">Story</a>
         <a href="#how">How it works</a>
       </nav>
     </div>
@@ -40,159 +40,206 @@
       </div>
     </section>
 
-    <!-- STORIES -->
-    <section class="stories" id="stories">
-      <h2 class="section-title">Two ways to understand Shibui</h2>
+    <!-- STORY -->
+    <section class="story-section" id="story">
+      <h2 class="section-title">The Passport System for Tokenized Assets</h2>
 
-      <!-- Story 1 -->
-      <article class="story-card">
-        <h3>The Medical Records Problem</h3>
-        <p class="story-summary">
-          Every hospital has its own patient file system. You get tests at Quest, an MRI at Mount Sinai, a specialist visit at Mayo.
-          Each one verifies you're you. Each one stores results differently. When you show up somewhere new, you start over.
-        </p>
-        <p class="story-summary">
-          Now imagine a universal format. Each institution still owns their process, their standards, their liability.
-          But the proof — "this patient was tested, here's the result, here's who verified it" — gets published in one format any hospital can read.
-        </p>
-        <p class="story-summary"><strong>That's Shibui for tokenized finance.</strong></p>
+      <p class="story-intro">
+        Five roles make the global passport system work. The same five roles make Shibui work.
+        Every one maps directly — from sovereign authorities who verify, to the scanner network that reads it all.
+      </p>
 
-        <details class="story-expand">
-          <summary>Read full story</summary>
-          <div class="story-full">
-            <p>Every hospital has its own patient file system. You get bloodwork at Quest, an MRI at Mount Sinai, a specialist visit at Mayo. Each one verifies you're you. Each one stores results in their own format. When you show up somewhere new, you start over — not because the tests weren't done, but because there's no shared language between systems.</p>
-            <p>Now imagine a universal medical record format. Quest still does the bloodwork. Mayo still does the diagnosis. Each institution owns their process, their standards, their liability. But the proof — "this patient was tested, here's the result, here's who verified it" — gets published in one format that any hospital can read.</p>
-            <p>That's Shibui. GLEIF does LEI verification. Your compliance team runs KYC. A regulator checks accreditation. Each entity owns its process entirely. Shibui doesn't replace any of them — it gives them a shared primitive to publish standardized, verifiable proof on-chain using EAS, which already runs on Base, Optimism, Arbitrum, and mainnet.</p>
-            <p>The result: an investor verified by Fidelity's KYC process carries that proof into a DTCC-issued token, a BlackRock fund, a tokenized treasury on Base — without re-verification, without new infrastructure, without anyone giving up control of their own compliance process.</p>
-            <p><strong>One verification. One format. Every chain. Every token. Each institution sovereign.</strong></p>
+      <p class="story-intro">
+        Just as ICAO standardized passport formats so any scanner in Narita can read a document printed in Brasilia,
+        Shibui standardizes compliance attestations so any token on any chain can verify any investor — without
+        custom integration, without re-verification, without anyone giving up sovereignty.
+      </p>
+
+      <!-- CAST -->
+      <div class="cast-grid">
+        <div class="cast-card">
+          <div class="cast-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
           </div>
-        </details>
-
-        <!-- Diagram -->
-        <div class="diagram">
-          <svg viewBox="0 0 600 200" class="flow-diagram" aria-label="Shibui flow diagram showing sovereign verifiers connecting through standard proof to multiple tokens and chains">
-            <defs>
-              <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#61A8FF;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#9B7BFF;stop-opacity:1" />
-              </linearGradient>
-              <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#60F2C2;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#61A8FF;stop-opacity:1" />
-              </linearGradient>
-            </defs>
-
-            <!-- Left: Sovereign Verifiers -->
-            <g class="verifiers">
-              <rect x="20" y="30" width="140" height="140" rx="12" fill="rgba(97,168,255,0.1)" stroke="rgba(97,168,255,0.4)" stroke-width="2"/>
-              <text x="90" y="55" text-anchor="middle" fill="#61A8FF" font-weight="700" font-size="13">SOVEREIGN VERIFIERS</text>
-              <circle cx="55" cy="90" r="18" fill="rgba(97,168,255,0.2)" stroke="rgba(97,168,255,0.5)" stroke-width="2"/>
-              <text x="55" y="95" text-anchor="middle" fill="#EAF0FF" font-size="10">KYC</text>
-              <circle cx="125" cy="90" r="18" fill="rgba(97,168,255,0.2)" stroke="rgba(97,168,255,0.5)" stroke-width="2"/>
-              <text x="125" y="95" text-anchor="middle" fill="#EAF0FF" font-size="10">GLEIF</text>
-              <circle cx="90" cy="140" r="18" fill="rgba(97,168,255,0.2)" stroke="rgba(97,168,255,0.5)" stroke-width="2"/>
-              <text x="90" y="145" text-anchor="middle" fill="#EAF0FF" font-size="10">Accred</text>
-            </g>
-
-            <!-- Center: Standard Proof (EAS) -->
-            <g class="proof">
-              <path d="M180 100 L260 100" stroke="url(#grad1)" stroke-width="3" stroke-dasharray="8,4"/>
-              <polygon points="255,95 270,100 255,105" fill="#9B7BFF"/>
-
-              <rect x="270" y="60" width="100" height="80" rx="12" fill="rgba(155,123,255,0.15)" stroke="url(#grad1)" stroke-width="2"/>
-              <text x="320" y="90" text-anchor="middle" fill="#EAF0FF" font-weight="800" font-size="14">STANDARD</text>
-              <text x="320" y="108" text-anchor="middle" fill="#EAF0FF" font-weight="800" font-size="14">PROOF</text>
-              <text x="320" y="128" text-anchor="middle" fill="#9B7BFF" font-size="11">(EAS)</text>
-
-              <path d="M390 100 L440 100" stroke="url(#grad2)" stroke-width="3" stroke-dasharray="8,4"/>
-              <polygon points="435,95 450,100 435,105" fill="#60F2C2"/>
-            </g>
-
-            <!-- Right: Tokens/Chains -->
-            <g class="tokens">
-              <rect x="460" y="30" width="120" height="140" rx="12" fill="rgba(96,242,194,0.08)" stroke="rgba(96,242,194,0.35)" stroke-width="2"/>
-              <text x="520" y="55" text-anchor="middle" fill="#60F2C2" font-weight="700" font-size="13">TOKENS & CHAINS</text>
-              <rect x="475" y="70" width="90" height="22" rx="6" fill="rgba(96,242,194,0.15)" stroke="rgba(96,242,194,0.3)" stroke-width="1"/>
-              <text x="520" y="85" text-anchor="middle" fill="#EAF0FF" font-size="10">Base</text>
-              <rect x="475" y="98" width="90" height="22" rx="6" fill="rgba(96,242,194,0.15)" stroke="rgba(96,242,194,0.3)" stroke-width="1"/>
-              <text x="520" y="113" text-anchor="middle" fill="#EAF0FF" font-size="10">Optimism</text>
-              <rect x="475" y="126" width="90" height="22" rx="6" fill="rgba(96,242,194,0.15)" stroke="rgba(96,242,194,0.3)" stroke-width="1"/>
-              <text x="520" y="141" text-anchor="middle" fill="#EAF0FF" font-size="10">Arbitrum / Mainnet</text>
-            </g>
-          </svg>
+          <h4>Sovereign Authority</h4>
+          <p>Who verifies (GLEIF, KYC providers, compliance teams)</p>
         </div>
-      </article>
-
-      <!-- Story 2 -->
-      <article class="story-card">
-        <h3>DNS for Identity</h3>
-        <p class="story-summary">
-          Before DNS, visiting a website meant knowing the exact IP address. Every network had its own address book. Nothing was interoperable.
-          The internet existed but couldn't scale because there was no shared naming layer.
-        </p>
-        <p class="story-summary">
-          DNS didn't replace anyone's servers or tell anyone what content to host. It just created one shared primitive:
-          "this name resolves to this address, and here's who vouched for it."
-        </p>
-        <p class="story-summary"><strong>Shibui is DNS for institutional identity in tokenized markets.</strong></p>
-
-        <details class="story-expand">
-          <summary>Read full story</summary>
-          <div class="story-full">
-            <p>Before DNS, if you wanted to visit a website you needed the exact IP address. Every network maintained its own address book. Nothing was interoperable. The internet existed but couldn't scale because there was no shared naming layer.</p>
-            <p>DNS didn't replace anyone's servers. It didn't tell anyone what content to host. It just created one shared primitive: "this name resolves to this address, and here's who vouched for it."</p>
-            <p>Shibui is DNS for institutional identity in tokenized markets. GLEIF still issues LEIs. Your compliance desk still runs KYC and AML. Regulators still set the rules. What Shibui adds is the shared publication layer — a way to take those verified facts and express them as on-chain attestations using EAS, a technical standard already live across Ethereum's major networks.</p>
-            <p>Three things that matter: every institution keeps full ownership of their identity and compliance process, the proof format is open and already adopted by Coinbase, Optimism, and the broader Ethereum ecosystem, and any tokenized asset on any supported chain can read that proof without custom integration.</p>
-            <p><strong>Not a product. A primitive. The layer that makes institutional identity composable.</strong></p>
+        <div class="cast-card">
+          <div class="cast-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="16" rx="2"/>
+              <path d="M7 8h10M7 12h6"/>
+            </svg>
           </div>
-        </details>
-
-        <!-- Diagram (same structure) -->
-        <div class="diagram">
-          <svg viewBox="0 0 600 200" class="flow-diagram" aria-label="Shibui as DNS for identity diagram">
-            <use href="#grad1"/>
-            <use href="#grad2"/>
-
-            <!-- Left: Sovereign Verifiers -->
-            <g class="verifiers">
-              <rect x="20" y="30" width="140" height="140" rx="12" fill="rgba(97,168,255,0.1)" stroke="rgba(97,168,255,0.4)" stroke-width="2"/>
-              <text x="90" y="55" text-anchor="middle" fill="#61A8FF" font-weight="700" font-size="13">SOVEREIGN VERIFIERS</text>
-              <circle cx="55" cy="90" r="18" fill="rgba(97,168,255,0.2)" stroke="rgba(97,168,255,0.5)" stroke-width="2"/>
-              <text x="55" y="95" text-anchor="middle" fill="#EAF0FF" font-size="10">KYC</text>
-              <circle cx="125" cy="90" r="18" fill="rgba(97,168,255,0.2)" stroke="rgba(97,168,255,0.5)" stroke-width="2"/>
-              <text x="125" y="95" text-anchor="middle" fill="#EAF0FF" font-size="10">GLEIF</text>
-              <circle cx="90" cy="140" r="18" fill="rgba(97,168,255,0.2)" stroke="rgba(97,168,255,0.5)" stroke-width="2"/>
-              <text x="90" y="145" text-anchor="middle" fill="#EAF0FF" font-size="10">Accred</text>
-            </g>
-
-            <!-- Center: Standard Proof (EAS) -->
-            <g class="proof">
-              <path d="M180 100 L260 100" stroke="url(#grad1)" stroke-width="3" stroke-dasharray="8,4"/>
-              <polygon points="255,95 270,100 255,105" fill="#9B7BFF"/>
-
-              <rect x="270" y="60" width="100" height="80" rx="12" fill="rgba(155,123,255,0.15)" stroke="url(#grad1)" stroke-width="2"/>
-              <text x="320" y="90" text-anchor="middle" fill="#EAF0FF" font-weight="800" font-size="14">STANDARD</text>
-              <text x="320" y="108" text-anchor="middle" fill="#EAF0FF" font-weight="800" font-size="14">PROOF</text>
-              <text x="320" y="128" text-anchor="middle" fill="#9B7BFF" font-size="11">(EAS)</text>
-
-              <path d="M390 100 L440 100" stroke="url(#grad2)" stroke-width="3" stroke-dasharray="8,4"/>
-              <polygon points="435,95 450,100 435,105" fill="#60F2C2"/>
-            </g>
-
-            <!-- Right: Tokens/Chains -->
-            <g class="tokens">
-              <rect x="460" y="30" width="120" height="140" rx="12" fill="rgba(96,242,194,0.08)" stroke="rgba(96,242,194,0.35)" stroke-width="2"/>
-              <text x="520" y="55" text-anchor="middle" fill="#60F2C2" font-weight="700" font-size="13">TOKENS & CHAINS</text>
-              <rect x="475" y="70" width="90" height="22" rx="6" fill="rgba(96,242,194,0.15)" stroke="rgba(96,242,194,0.3)" stroke-width="1"/>
-              <text x="520" y="85" text-anchor="middle" fill="#EAF0FF" font-size="10">Base</text>
-              <rect x="475" y="98" width="90" height="22" rx="6" fill="rgba(96,242,194,0.15)" stroke="rgba(96,242,194,0.3)" stroke-width="1"/>
-              <text x="520" y="113" text-anchor="middle" fill="#EAF0FF" font-size="10">Optimism</text>
-              <rect x="475" y="126" width="90" height="22" rx="6" fill="rgba(96,242,194,0.15)" stroke="rgba(96,242,194,0.3)" stroke-width="1"/>
-              <text x="520" y="141" text-anchor="middle" fill="#EAF0FF" font-size="10">Arbitrum / Mainnet</text>
-            </g>
-          </svg>
+          <h4>Document Format</h4>
+          <p>What gets stamped (3 EAS schemas)</p>
         </div>
-      </article>
+        <div class="cast-card">
+          <div class="cast-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+          </div>
+          <h4>Border Control</h4>
+          <p>Who accepts whose passport (token issuers)</p>
+        </div>
+        <div class="cast-card">
+          <div class="cast-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <h4>Interpol</h4>
+          <p>Who enforces across borders (revocation)</p>
+        </div>
+        <div class="cast-card">
+          <div class="cast-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="6" width="20" height="12" rx="2"/>
+              <path d="M6 12h.01M12 12h.01M18 12h.01"/>
+            </svg>
+          </div>
+          <h4>Scanner Network</h4>
+          <p>What reads it all (EAS on 15+ chains)</p>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="timeline">
+        <div class="timeline-step">
+          <div class="timeline-marker">1</div>
+          <div class="timeline-content">
+            <h5>Sovereign Authority</h5>
+            <p>Institution verifies investor using their own process</p>
+          </div>
+        </div>
+        <div class="timeline-connector"></div>
+        <div class="timeline-step">
+          <div class="timeline-marker">2</div>
+          <div class="timeline-content">
+            <h5>Document Format</h5>
+            <p>Proof published as standardized EAS attestation</p>
+          </div>
+        </div>
+        <div class="timeline-connector"></div>
+        <div class="timeline-step">
+          <div class="timeline-marker">3</div>
+          <div class="timeline-content">
+            <h5>Border Control</h5>
+            <p>Token issuer configures which attesters to trust</p>
+          </div>
+        </div>
+        <div class="timeline-connector"></div>
+        <div class="timeline-step">
+          <div class="timeline-marker">4</div>
+          <div class="timeline-content">
+            <h5>Interpol</h5>
+            <p>One revocation blocks investor across all tokens</p>
+          </div>
+        </div>
+        <div class="timeline-connector"></div>
+        <div class="timeline-step">
+          <div class="timeline-marker">5</div>
+          <div class="timeline-content">
+            <h5>Scanner Network</h5>
+            <p>EAS reads attestations on any supported chain</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FULL STORY ACCORDION -->
+      <details class="story-expand">
+        <summary>Read full story</summary>
+        <div class="story-full">
+          <p><strong>"The Passport System for Tokenized Assets"</strong></p>
+
+          <p><strong>The cast.</strong> Five roles make the global passport system work. The same five roles make Shibui work. Every one maps directly.</p>
+
+          <hr class="story-divider"/>
+
+          <p><strong>Act 1: The Sovereign Authority — who verifies</strong></p>
+
+          <p>In the passport world, the US State Department verifies American citizens. France's Ministère de l'Intérieur verifies French citizens. Each country runs its own process — background checks, biometrics, document review. No country dictates another's process.</p>
+
+          <p>GLEIF works the same way for legal entities. GLEIF doesn't verify companies directly. It accredits Local Operating Units — Deutsche Börse, Bloomberg, SWIFT — who each issue LEIs under GLEIF's quality framework.</p>
+
+          <p>In Shibui, the sovereign authority is any institution that performs compliance work. DTCC runs KYC on its participants. Fidelity verifies accredited investors. A Frankfurt bank classifies clients under MiFID II. Each institution runs its own process, uses its own tools — Refinitiv for AML screening, Jumio for document verification, internal compliance engines. Shibui never touches the verification. The institution publishes a conclusion, not the underlying data. "This investor is KYC-verified, accredited, US-based, valid until January 2027." Not the passport photos, not the bank statements, not the tax returns — just the stamped result.</p>
+
+          <p>The institution's on-chain wallet address becomes a <strong>trusted attester</strong>. That's the digital equivalent of being an accredited passport-issuing authority.</p>
+
+          <hr class="story-divider"/>
+
+          <p><strong>Act 2: The Document Format — what gets stamped</strong></p>
+
+          <p>Every passport in the world follows ICAO Doc 9303. Same field layout. Same machine-readable zone. Same biometric data structure. That's why a scanner in Narita reads a passport printed in Brasilia. The countries didn't agree on a printer. They agreed on a format.</p>
+
+          <p>Shibui has three document formats — three EAS schemas, each with a defined purpose:</p>
+
+          <p><strong>Schema 1: Investor Eligibility</strong> — the passport itself. Five fields: <code>address identity</code>, <code>uint8 kycStatus</code>, <code>uint8 accreditationType</code>, <code>uint16 countryCode</code>, <code>uint64 expirationTimestamp</code>. This single schema covers 80%+ of real-world compliance. The <code>kycStatus</code> field carries values 0 through 4 (not verified, verified, expired, revoked, pending). The <code>accreditationType</code> maps to actual regulatory categories: 0 for none, 1 for EU retail qualified, 2 for US Reg D accredited, 3 for US qualified purchaser ($5M+ threshold), 4 for institutional. Country codes are ISO 3166-1 numeric — 840 for US, 276 for Germany, 826 for UK — the same encoding ERC-3643 already uses. One attestation can satisfy KYC (topic 1), country (topic 3), and accreditation (topic 7) simultaneously.</p>
+
+          <p><strong>Schema 2: Issuer Authorization</strong> — the accreditation certificate of the issuing authority. Fields: <code>address issuerAddress</code>, <code>uint256[] authorizedTopics</code>, <code>string issuerName</code>. This is the on-chain record that says "Fidelity is authorized to attest KYC and accreditation." It's the equivalent of ICAO recognizing a country's passport office, or GLEIF accrediting an LOU. It creates an audit trail of who was trusted, for what topics, and when.</p>
+
+          <p><strong>Schema 3: Wallet-Identity Link</strong> — the visa page connecting a person to their travel documents. Fields: <code>address walletAddress</code>, <code>address identityAddress</code>, <code>uint64 linkedTimestamp</code>. A hedge fund has a trading wallet, a custody wallet, and a settlement wallet. All three link to one identity. One KYC attestation covers all three. Revoke the identity's attestation and all three wallets are blocked in the same transaction.</p>
+
+          <p>These schemas are to Shibui what ICAO 9303 is to passports. The data standard that makes every scanner — every token on every chain — able to read every stamp.</p>
+
+          <p>Now, where do existing standards like ISO 20022 and GLEIF's LEI system fit? They don't compete. They feed in. ISO 20022 is the messaging standard banks use internally to communicate compliance decisions between systems. GLEIF's vLEI is the digital credential for legal entities. These are the internal wires — how institutions talk to each other and manage identity off-chain. Shibui is where those conclusions get published as verifiable on-chain proof. ISO 20022 is the internal dispatch. The EAS attestation is the public stamp in the passport.</p>
+
+          <hr class="story-divider"/>
+
+          <p><strong>Act 3: The Border Control — who accepts whose passport</strong></p>
+
+          <p>Japan doesn't accept every country's passport equally. Visa-waiver agreements, bilateral treaties, risk tiers. Each country decides which passports it honors and for which purposes — tourism yes, work no. This is sovereignty at the acceptance layer.</p>
+
+          <p>In Shibui, the token issuer is the country at the border. They control trust through one function: <code>addTrustedAttester(address, topics[])</code>. A tokenized US Treasury fund on Base might configure it like this: trust Fidelity for KYC and accreditation, trust DTCC for KYC only, trust a European bank for MiFID II professional classification. Trust is granular per compliance topic, not all-or-nothing — exactly like how a visa waiver covers tourism but not employment.</p>
+
+          <p>The governance behind that call mirrors correspondent banking, the process institutions already run. Board approves the counterparty relationship — off-chain business decision. Legal signs an agreement — off-chain contract. Compliance evaluates the counterparty's AML program — off-chain due diligence. Then operations executes one on-chain transaction. No new process. Same institutional governance, new execution layer.</p>
+
+          <p>Schema governance — who gets to define what a valid passport format looks like — sits with the EEA working group. Core schemas (Investor Eligibility, Issuer Authorization, Wallet-Identity Link) follow a 90-day standardization track. Extension schemas for jurisdiction-specific needs (AML, sanctions, source of funds) follow a lighter community track. Individual issuers can create private schemas for internal requirements. Same tiered governance as ICAO: the core spec is slow and deliberate, extensions are faster, private supplements are sovereign.</p>
+
+          <hr class="story-divider"/>
+
+          <p><strong>Act 4: Interpol — who enforces across borders</strong></p>
+
+          <p>Here's where the passport analogy gets most powerful. When Interpol issues a red notice, it propagates to every member country's border system. Not manually. Not airport by airport. One alert, global enforcement.</p>
+
+          <p>Today, tokenized assets have no Interpol. If an investor fails an AML check, someone has to notify each token issuer separately. Each issuer has to act independently. There's no shared enforcement layer.</p>
+
+          <p>Shibui creates it. Two mechanisms, two scopes:</p>
+
+          <p><strong>Individual revocation</strong> — the red notice. An investor fails ongoing AML screening. The compliance officer at the attesting institution calls <code>EAS.revoke(attestationUID)</code>. One transaction. EAS records a <code>revocationTime</code> on the attestation. The next time any token calls <code>isVerified()</code> on that investor, the EASClaimVerifier sees the revocation and returns false. The investor is blocked from buying, selling, or receiving every token that relied on that attestation. Across Base, Arbitrum, Optimism, mainnet. Across every token from every issuer who trusted that attester. Immediate. Automated. No manual propagation.</p>
+
+          <p>Because the investor's wallets are linked through the Wallet-Identity Link schema, revoking the attestation against the identity blocks the trading wallet, the custody wallet, and the settlement wallet simultaneously. You cancel the passport, not individual boarding passes.</p>
+
+          <p><strong>Institutional revocation</strong> — sanctions on an entire country's passport authority. A KYC provider is compromised, loses its license, or is found issuing attestations without proper verification. The token issuer calls <code>removeTrustedAttester(address)</code>. One transaction. Every attestation from that provider becomes invalid for that token — instantly. Every investor verified only by that provider is blocked until re-verified by another trusted attester. This is the equivalent of a country revoking recognition of another country's passport office.</p>
+
+          <p>Who governs this? The attesting institution governs individual revocations — they own the compliance relationship with the investor. The token issuer governs institutional trust — they decide which attesters to accept or remove. The EEA working group governs the schema standards and dispute resolution. Three tiers, same as the real system: Interpol acts on individuals, countries act on bilateral trust, ICAO governs the format.</p>
+
+          <hr class="story-divider"/>
+
+          <p><strong>Act 5: The Scanner Network — what reads it all</strong></p>
+
+          <p>ICAO didn't ask every airport to build its own scanner technology. It defined the machine-readable zone format, and manufacturers built scanners to that spec. The infrastructure became universal because the standard was open.</p>
+
+          <p>EAS is the scanner network. Already deployed on Ethereum mainnet, Base, Arbitrum, Optimism — 15+ chains. The Schema Registry contract lives at <code>0x4200000000000000000000000000000000000020</code> on Base and Optimism, at <code>0xA7b39296258348C78294F95B872b282326A97BDF</code> on mainnet. Same interface everywhere. When a token calls <code>isVerified()</code>, the EASClaimVerifier queries these contracts — fetches the attestation, checks the schema matches, confirms the attester is trusted, verifies not revoked, verifies not expired. Five checks, one call, ~28,000 gas for a single topic.</p>
+
+          <p>Shibui didn't build a new scanner. It built the adapter — the EASClaimVerifier — that teaches ERC-3643 security tokens how to read attestations from scanners already installed in every airport. Publishing an attestation costs ~$0.07 on an L2. The institution absorbs that as infrastructure cost, same way an airline doesn't charge passengers for the scanner at the gate.</p>
+
+          <hr class="story-divider"/>
+
+          <p><strong>The full system, one frame:</strong></p>
+
+          <p>GLEIF accredits identity authorities — the sovereign layer. ISO 3166-1 and EAS schemas define the document format — the standard layer. Correspondent banking governs bilateral trust — the acceptance layer. The attesting institution and the token issuer govern revocation — the enforcement layer. EAS provides the on-chain infrastructure already live on 15+ chains — the reader network.</p>
+
+          <p>Shibui is the system architecture that connects them. Five roles, five layers, each with clear governance, all already operating independently. The missing piece was the wiring.</p>
+
+          <p><strong>One passport. Every airport. Every airline. Every country still sovereign.</strong></p>
+        </div>
+      </details>
     </section>
 
     <!-- HOW IT WORKS -->
@@ -222,10 +269,10 @@
         <summary>For builders</summary>
         <div class="builders-content">
           <ul>
-            <li><strong>EAS attestations</strong> — Uses Ethereum Attestation Service for on-chain proofs with built-in revocation and expiry</li>
-            <li><strong>ERC-3643 token enforcement</strong> — Pluggable verifiers check attestations before token transfers</li>
+            <li><strong>3 document formats (EAS schemas)</strong> — Investor Eligibility (the passport), Issuer Authorization (accreditation certificate), Wallet-Identity Link (visa pages)</li>
+            <li><strong>Scanner network (EAS)</strong> — Ethereum Attestation Service already deployed on 15+ chains with built-in revocation and expiry</li>
+            <li><strong>Border enforcement (ERC-3643)</strong> — Token issuers control trust via <code>addTrustedAttester()</code> — granular per compliance topic</li>
             <li><strong>Multi-chain support</strong> — Works on Base, Optimism, Arbitrum, and Ethereum mainnet</li>
-            <li><strong>Open standard</strong> — Already adopted by Coinbase, Optimism, and the broader Ethereum ecosystem</li>
           </ul>
         </div>
       </details>
