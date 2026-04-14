@@ -1,64 +1,262 @@
-# Shibui (EAS ↔ ERC-3643)
+# Shibui — Pluggable Identity for ERC-3643 Security Tokens
 
-Shibui is an open-source identity layer for ERC-3643 security tokens using EAS attestations.
+> An open-source project by the [Enterprise Ethereum Alliance](https://entethalliance.org)
 
-It keeps ERC-3643 compliance semantics intact (topics like KYC / accreditation), while making the **verification backend pluggable**.
+---
 
-## Architecture Decision (Frozen)
+## What This Is
 
-This repository ships a **single production architecture**:
-- Monolithic bridge contracts (no competing Valence/Diamond code in mainline)
-- UUPS proxy deployment path
-- One integration guide and one deployable stack
+ERC-3643 is the standard for compliant security tokens (KYC, accreditation, jurisdiction checks). By default, it is hardwired to ONCHAINID as its identity backend — meaning every token issuer, every KYC provider, and every investor is locked into one implementation.
 
-Valence/Diamond exploratory work is archived on branch **`research/valence-spike`** and is not part of production implementation.
+**Shibui breaks that lock.**
 
-## Core Contracts
+It replaces ONCHAINID with [Ethereum Attestation Service (EAS)](https://attest.org) as a pluggable identity backend — without touching the ERC-3643 token contract itself. The result: compliance work done once by a regulated institution (a bank, a KYC provider, a custodian) is reusable across every token that trusts that institution, on any chain where EAS is deployed.
 
-| Contract | Role |
+**Analogy:** ERC-3643 defines *what* must be verified before a transfer. Shibui defines *how* that verification is sourced — and makes the "how" swappable.
+
+---
+
+## The Problem It Solves
+
+| Without Shibui | With Shibui |
 |---|---|
-| `EASClaimVerifier` | Topic-based verification against EAS attestations |
-| `EASTrustedIssuersAdapter` | Per-topic trusted attester management |
-| `EASIdentityProxy` | Wallet↔identity mapping and agent support |
-| `EASClaimVerifierIdentityWrapper` | Zero-modification compatibility wrapper |
+| KYC done per-token, per-provider | KYC attested once, reused across tokens |
+| Identity locked to ONCHAINID | Any EAS-compatible attester is pluggable |
+| No cross-chain portability | EAS runs on 15+ chains |
+| Vendor dependency on a single provider | Open infrastructure, no single point of control |
+| Compliance work siloed per issuer | Shared registry; attestations are institution-portable |
 
-## Validate (MVP)
+---
 
-Prereq: Foundry installed (`forge`, `anvil`).
+## How It Works
 
-```bash
-forge install
-forge build
-forge test
+A token transfer triggers `isVerified(wallet)`. Shibui intercepts that call and resolves it through EAS instead of ONCHAINID:
+
+```
+Transfer requested
+      │
+      ▼
+EASClaimVerifier.isVerified(wallet)
+      │
+      ├─ Resolve wallet → identity (via EASIdentityProxy)
+      ├─ Check required claim topics (via ClaimTopicsRegistry)
+      ├─ For each topic: fetch EAS attestation
+      └─ Validate: exists? correct schema? trusted attester? not revoked? not expired?
+            │
+            ├─ All pass → transfer proceeds
+            └─ Any fail → transfer blocked
 ```
 
-Expected: **all tests pass** (current baseline: 229 tests, 0 failures).
+Nothing changes in the ERC-3643 token contract. The compliance interface is the same. Only the backend is different.
 
-## Demo (MVP, 8–12 min)
+---
+
+## Architecture
+
+```
+TOKEN ISSUERS
+  │ deploy + configure
+  ▼
+ERC-3643 TOKEN
+  transfer() → isVerified()
+                  │
+                  ▼
+         ┌─────────────────────────────┐
+         │    SHIBUI IDENTITY LAYER    │
+         │                             │
+         │  EASClaimVerifier           │  ← core verification logic
+         │  EASIdentityProxy           │  ← wallet → identity mapping
+         │  EASTrustedIssuersAdapter   │  ← attester trust per topic
+         │  ClaimTopicsRegistry        │  ← required topics per token
+         └──────────────┬──────────────┘
+                        │ queries
+                        ▼
+              EAS PROTOCOL (attest.org)
+              deployed on 15+ chains
+                        ▲
+                        │ attest / revoke
+              IDENTITY AUTHORITIES
+              (banks, KYC providers, compliance services)
+```
+
+---
+
+## Quickstart
+
+### Prerequisites
+
+- [Foundry](https://book.getfoundry.sh/getting-started/installation) installed
+- Git
+
+### Install
 
 ```bash
-anvil
-# in another terminal
-forge script script/SetupPilot.s.sol:SetupPilot \
-  --rpc-url http://127.0.0.1:8545 \
+git clone https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas
+cd rnd-rwa-erc3643-eas
+forge install
+```
+
+### Build
+
+```bash
+forge build
+```
+
+### Test
+
+```bash
+# Run all tests
+forge test
+
+# With verbose output
+forge test -vvv
+
+# Run a specific test
+forge test --match-test test_isVerified_withValidAttestation
+
+# Coverage report
+forge coverage
+```
+
+### Deploy to Testnet (Sepolia)
+
+```bash
+export PRIVATE_KEY=<your-private-key>
+export SEPOLIA_RPC_URL=<your-rpc-url>
+
+forge script script/DeployTestnet.s.sol:DeployTestnet \
+  --rpc-url $SEPOLIA_RPC_URL \
   --broadcast
 ```
 
-Presenter guide: `docs/shibui-mvp-demo-script.md`
+### Deploy to Mainnet
 
-## Documentation (Start Here)
+```bash
+export PRIVATE_KEY=<your-private-key>
+export MULTISIG_ADDRESS=<gnosis-safe-address>
+export CLAIM_TOPICS_REGISTRY=<existing-registry-address>
 
-- `PRD.md` — MVP scope + acceptance criteria
-- `docs/shibui-mvp-test-plan.md` — simple MVP test plan + commands
-- `docs/shibui-mvp-demo-script.md` — presenter-ready demo script
-- `docs/integration-guide.md` — integration paths (pluggable verifier vs wrapper)
-- `docs/gas-benchmarks.md` — gas behavior
-- `docs/erc3643-eas-implementation-guide.md` — implementation summary
+forge script script/DeployMainnet.s.sol:DeployMainnet \
+  --rpc-url $MAINNET_RPC_URL \
+  --broadcast \
+  --verify
+```
 
-## Security Note
+### Run a Full Pilot (5 seeded investors)
 
-Mainnet usage must be gated by explicit audit readiness controls (see `AUDIT.md`).
+```bash
+forge script script/SetupPilot.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast
+```
+
+---
+
+## Key Flows
+
+### Investor onboarding
+
+```
+1. Token issuer deploys Shibui contracts
+2. Configures required claim topics (e.g., topic 1 = KYC, topic 2 = accreditation)
+3. Adds trusted attesters (e.g., a licensed KYC provider's address)
+4. KYC provider attests investor wallet via EAS
+5. Issuer registers attestation UID → verifier.registerAttestation(wallet, topic, uid)
+6. verifier.isVerified(wallet) → true ✓  → investor can receive/transfer tokens
+```
+
+### Revocation (real-time compliance)
+
+```
+1. KYC provider revokes the EAS attestation
+2. verifier.isVerified(wallet) → false ✗  → transfers blocked immediately
+3. Re-attest when investor re-qualifies
+4. verifier.isVerified(wallet) → true ✓  → access restored
+```
+
+### Multi-wallet identity
+
+```
+1. Investor registers multiple wallets to one identity
+2. Attestation is issued to the identity, not per-wallet
+3. All registered wallets inherit verification status
+```
+
+---
+
+## Test Coverage
+
+| File | What It Covers |
+|------|----------------|
+| `test/integration/FullTransferLifecycle.t.sol` | End-to-end: deploy → attest → transfer → revoke → block |
+| `test/scenarios/InvestorLifecycle.t.sol` | Onboarding, expiration, renewal, multi-wallet |
+| `test/scenarios/UseCase_PrivateFund.t.sol` | Multi-topic, accreditation, provider management |
+| `test/scenarios/UseCase_STO.t.sol` | Multi-country, holder limits, compliance enforcement |
+| `test/unit/EASClaimVerifier.t.sol` | Verification correctness at unit level |
+| `test/unit/NegativeParity.t.sol` | Failure paths: revoked, expired, wrong schema, untrusted |
+| `test/gas/GasBenchmark.t.sol` | Gas cost measurement for all operations |
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [`docs/integration-guide.md`](docs/integration-guide.md) | Step-by-step integration for token issuers |
+| [`docs/architecture.md`](docs/architecture.md) | Contract design and component relationships |
+| [`schemas/schema-definitions.md`](schemas/schema-definitions.md) | EAS schema specs, field definitions, encoding |
+| [`schemas/schema-governance.md`](schemas/schema-governance.md) | How schemas are proposed, reviewed, and versioned |
+| [`research/gap-analysis.md`](research/gap-analysis.md) | ONCHAINID vs EAS: detailed capability comparison |
+| [`research/claim-topic-analysis.md`](research/claim-topic-analysis.md) | ERC-3643 claim topics in production, mapping to EAS |
+| [`research/minimal-identity-structure.md`](research/minimal-identity-structure.md) | How `isVerified()` works and what Shibui replaces |
+| [`diagrams/`](diagrams/) | Mermaid source files — render at [mermaid.live](https://mermaid.live) |
+
+---
+
+## Standards Alignment
+
+Shibui is composed entirely of existing open standards:
+
+- **[ERC-3643 / T-REX](https://github.com/TokenySolutions/T-REX)** — token compliance standard, kept intact
+- **[EAS](https://attest.org)** — attestation protocol, deployed on 15+ chains, used by Coinbase, Base, Optimism, Gitcoin Passport
+- **[ERC-7943](https://eips.ethereum.org/EIPS/eip-7943)** — interface pattern for identity abstraction (future compatibility)
+- **W3C DID / Verifiable Credentials** — identity portability (roadmap)
+
+No proprietary protocols. No vendor lock-in. No EEA token.
+
+---
+
+## Who This Is For
+
+**Token issuers** who want compliance flexibility — accept investor credentials from multiple KYC providers without changing your token contract.
+
+**KYC providers and identity services** who want their attestations to be portable across any ERC-3643 token that trusts them.
+
+**Regulators and observers** who want an auditable, standards-based compliance layer that is readable on-chain.
+
+**Developers** building on ERC-3643 who need an identity backend that is not tied to a single vendor.
+
+---
+
+## Governance
+
+Shibui is maintained by the [Enterprise Ethereum Alliance](https://entethalliance.org) — a membership organization with no token, no equity stake in adoption, and no revenue from usage.
+
+Schema governance runs through an EEA working group open to member organizations, token issuers, KYC providers, and regulators (observer status). Core schemas follow a 90-day standardization track. Extension schemas follow a lighter community track.
+
+---
+
+## Related Resources
+
+- [EAS Documentation](https://docs.attest.org)
+- [ERC-3643 Specification](https://github.com/TokenySolutions/T-REX)
+- [Enterprise Ethereum Alliance](https://entethalliance.org)
+- [EEA Working Group — RWA & Tokenization](https://entethalliance.org/working-groups)
+
+---
 
 ## License
 
-MIT
+[MIT](LICENSE)
+
+---
+
+*Built by the EEA Working Group on Real-World Assets and Tokenization.*
