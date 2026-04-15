@@ -158,6 +158,54 @@
       <details class="story-expand">
         <summary>Read full story</summary>
         <div class="story-full">
+          <div class="story-workflow">
+            <h4>Workflow (visual)</h4>
+            <div class="workflow">
+              <div class="workflow-step">
+                <div class="wf-title">1) Sovereign Authority</div>
+                <div class="wf-desc">An institution verifies (KYC / accreditation / jurisdiction).</div>
+              </div>
+              <div class="workflow-arrow" aria-hidden="true">→</div>
+              <div class="workflow-step">
+                <div class="wf-title">2) Document Format</div>
+                <div class="wf-desc">Result is stamped into open <strong>EAS schemas</strong> (3 formats).</div>
+              </div>
+              <div class="workflow-arrow" aria-hidden="true">→</div>
+              <div class="workflow-step">
+                <div class="wf-title">3) Border Control</div>
+                <div class="wf-desc">Each token issuer chooses which attesters &amp; topics to accept.</div>
+              </div>
+              <div class="workflow-arrow" aria-hidden="true">→</div>
+              <div class="workflow-step">
+                <div class="wf-title">4) Interpol</div>
+                <div class="wf-desc">Revocations propagate automatically across tokens/chains.</div>
+              </div>
+              <div class="workflow-arrow" aria-hidden="true">→</div>
+              <div class="workflow-step">
+                <div class="wf-title">5) Scanner Network</div>
+                <div class="wf-desc">EAS is the shared reader network (mainnet + L2s).</div>
+              </div>
+            </div>
+
+            <div class="schema-diagram" role="group" aria-label="Three EAS schemas used as document formats">
+              <div class="schema-card">
+                <div class="schema-name">Schema 1</div>
+                <div class="schema-title">Investor Eligibility</div>
+                <div class="schema-sub">“The passport stamp”</div>
+              </div>
+              <div class="schema-card">
+                <div class="schema-name">Schema 2</div>
+                <div class="schema-title">Issuer Authorization</div>
+                <div class="schema-sub">“Who can stamp what”</div>
+              </div>
+              <div class="schema-card">
+                <div class="schema-name">Schema 3</div>
+                <div class="schema-title">Wallet ↔ Identity Link</div>
+                <div class="schema-sub">“Visa pages for wallets”</div>
+              </div>
+            </div>
+          </div>
+
           <p><strong>"The Passport System for Tokenized Assets"</strong></p>
 
           <p><strong>The cast.</strong> Five roles make the global passport system work. The same five roles make Shibui work. Every one maps directly.</p>
@@ -286,6 +334,12 @@
     <div class="footer-inner">
       <span class="footer-brand">Shibui</span>
       <span class="footer-tagline">A shared identity primitive for tokenized assets</span>
+
+      <div class="footer-links">
+        <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/" target="_blank" rel="noopener noreferrer">GitHub repo</a>
+        <span class="dot">•</span>
+        <a href="#top">Back to top</a>
+      </div>
     </div>
   </footer>
 
