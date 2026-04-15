@@ -419,11 +419,54 @@
 
           <p>Shibui has three document formats — three EAS schemas, each with a defined purpose:</p>
 
-          <p><strong>Schema 1: Investor Eligibility</strong> — the passport itself. Five fields: <code>address identity</code>, <code>uint8 kycStatus</code>, <code>uint8 accreditationType</code>, <code>uint16 countryCode</code>, <code>uint64 expirationTimestamp</code>. This single schema covers 80%+ of real-world compliance. The <code>kycStatus</code> field carries values 0 through 4 (not verified, verified, expired, revoked, pending). The <code>accreditationType</code> maps to actual regulatory categories: 0 for none, 1 for EU retail qualified, 2 for US Reg D accredited, 3 for US qualified purchaser ($5M+ threshold), 4 for institutional. Country codes are ISO 3166-1 numeric — 840 for US, 276 for Germany, 826 for UK — the same encoding ERC-3643 already uses. One attestation can satisfy KYC (topic 1), country (topic 3), and accreditation (topic 7) simultaneously.</p>
+          <div class="story-schemas schema-visual" aria-label="Shibui schemas">
+            <div class="schema-card">
+              <div class="schema-top">
+                <div class="schema-name">Schema 1</div>
+                <div class="schema-icon" aria-hidden="true">🛂</div>
+              </div>
+              <div class="schema-title">Investor Eligibility</div>
+              <div class="schema-sub">“The passport stamp”</div>
+              <div class="schema-fields">
+                <span class="field-pill">address identity</span>
+                <span class="field-pill">uint8 kycStatus</span>
+                <span class="field-pill">uint8 accreditationType</span>
+                <span class="field-pill">uint16 countryCode</span>
+                <span class="field-pill">uint64 expirationTimestamp</span>
+              </div>
+              <div class="schema-foot">One attestation can cover KYC + country + accreditation.</div>
+            </div>
 
-          <p><strong>Schema 2: Issuer Authorization</strong> — the accreditation certificate of the issuing authority. Fields: <code>address issuerAddress</code>, <code>uint256[] authorizedTopics</code>, <code>string issuerName</code>. This is the on-chain record that says "Fidelity is authorized to attest KYC and accreditation." It's the equivalent of ICAO recognizing a country's passport office, or GLEIF accrediting an LOU. It creates an audit trail of who was trusted, for what topics, and when.</p>
+            <div class="schema-card">
+              <div class="schema-top">
+                <div class="schema-name">Schema 2</div>
+                <div class="schema-icon" aria-hidden="true">🏛️</div>
+              </div>
+              <div class="schema-title">Issuer Authorization</div>
+              <div class="schema-sub">“Accreditation certificate”</div>
+              <div class="schema-fields">
+                <span class="field-pill">address issuerAddress</span>
+                <span class="field-pill">uint256[] authorizedTopics</span>
+                <span class="field-pill">string issuerName</span>
+              </div>
+              <div class="schema-foot">Audit trail for who is trusted to attest what.</div>
+            </div>
 
-          <p><strong>Schema 3: Wallet-Identity Link</strong> — the visa page connecting a person to their travel documents. Fields: <code>address walletAddress</code>, <code>address identityAddress</code>, <code>uint64 linkedTimestamp</code>. A hedge fund has a trading wallet, a custody wallet, and a settlement wallet. All three link to one identity. One KYC attestation covers all three. Revoke the identity's attestation and all three wallets are blocked in the same transaction.</p>
+            <div class="schema-card">
+              <div class="schema-top">
+                <div class="schema-name">Schema 3</div>
+                <div class="schema-icon" aria-hidden="true">🔗</div>
+              </div>
+              <div class="schema-title">Wallet ↔ Identity Link</div>
+              <div class="schema-sub">“Visa pages for wallets”</div>
+              <div class="schema-fields">
+                <span class="field-pill">address walletAddress</span>
+                <span class="field-pill">address identityAddress</span>
+                <span class="field-pill">uint64 linkedTimestamp</span>
+              </div>
+              <div class="schema-foot">One identity → many wallets (trading, custody, settlement).</div>
+            </div>
+          </div>
 
           <p>These schemas are to Shibui what ICAO 9303 is to passports. The data standard that makes every scanner — every token on every chain — able to read every stamp.</p>
 
