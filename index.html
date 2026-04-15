@@ -32,6 +32,70 @@
     <!-- HERO -->
     <section class="hero" id="why">
       <div class="hero-content">
+        <!-- Hero Passport Illustration -->
+        <div class="hero-illustration" aria-hidden="true">
+          <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Passport booklet (closed, angled) -->
+            <defs>
+              <linearGradient id="passportGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1a365d"/>
+                <stop offset="100%" stop-color="#0f2847"/>
+              </linearGradient>
+              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#d4af37"/>
+                <stop offset="50%" stop-color="#f4d03f"/>
+                <stop offset="100%" stop-color="#c9a227"/>
+              </linearGradient>
+              <linearGradient id="stampGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#61A8FF"/>
+                <stop offset="100%" stop-color="#9B7BFF"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Shadow -->
+            <ellipse cx="160" cy="185" rx="100" ry="12" fill="rgba(0,0,0,0.3)"/>
+
+            <!-- Passport body -->
+            <rect x="70" y="30" width="180" height="130" rx="4" fill="url(#passportGrad)" stroke="url(#goldGrad)" stroke-width="2"/>
+
+            <!-- Passport spine -->
+            <rect x="70" y="30" width="12" height="130" fill="rgba(0,0,0,0.2)"/>
+
+            <!-- Gold emblem circle -->
+            <circle cx="160" cy="75" r="28" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+            <circle cx="160" cy="75" r="22" fill="none" stroke="url(#goldGrad)" stroke-width="1"/>
+
+            <!-- Globe/network icon inside emblem -->
+            <circle cx="160" cy="75" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="1"/>
+            <ellipse cx="160" cy="75" rx="6" ry="14" fill="none" stroke="url(#goldGrad)" stroke-width="0.75"/>
+            <line x1="146" y1="75" x2="174" y2="75" stroke="url(#goldGrad)" stroke-width="0.75"/>
+            <line x1="160" y1="61" x2="160" y2="89" stroke="url(#goldGrad)" stroke-width="0.75"/>
+
+            <!-- Text on passport -->
+            <text x="160" y="118" text-anchor="middle" fill="url(#goldGrad)" font-size="8" font-weight="600" letter-spacing="3">IDENTITY</text>
+            <text x="160" y="130" text-anchor="middle" fill="url(#goldGrad)" font-size="6" letter-spacing="2">PASSPORT</text>
+
+            <!-- Verification stamps floating -->
+            <g transform="translate(220, 50) rotate(15)">
+              <rect x="0" y="0" width="50" height="30" rx="3" fill="none" stroke="url(#stampGrad)" stroke-width="1.5" stroke-dasharray="3 2"/>
+              <text x="25" y="12" text-anchor="middle" fill="url(#stampGrad)" font-size="5" font-weight="700">VERIFIED</text>
+              <text x="25" y="22" text-anchor="middle" fill="url(#stampGrad)" font-size="4">KYC ✓</text>
+            </g>
+
+            <g transform="translate(40, 85) rotate(-10)">
+              <circle cx="20" cy="20" r="18" fill="none" stroke="#60F2C2" stroke-width="1.5"/>
+              <text x="20" y="18" text-anchor="middle" fill="#60F2C2" font-size="5" font-weight="700">MULTI</text>
+              <text x="20" y="25" text-anchor="middle" fill="#60F2C2" font-size="5" font-weight="700">CHAIN</text>
+            </g>
+
+            <g transform="translate(230, 110) rotate(5)">
+              <rect x="0" y="0" width="40" height="24" rx="2" fill="none" stroke="#9B7BFF" stroke-width="1.5"/>
+              <text x="20" y="10" text-anchor="middle" fill="#9B7BFF" font-size="4" font-weight="700">BASE</text>
+              <text x="20" y="18" text-anchor="middle" fill="#9B7BFF" font-size="4">ARB • OP</text>
+            </g>
+          </svg>
+        </div>
+
         <h1>One verification.<br/>Every chain. Every token.</h1>
         <p class="tagline">Shibui is a shared identity primitive that lets institutions verify once and enforce everywhere.</p>
 
@@ -47,110 +111,249 @@
     <section class="story-section" id="story">
       <h2 class="section-title">The Passport System for Tokenized Assets</h2>
 
-      <p class="story-intro">
-        Five roles make the global passport system work. The same five roles make Shibui work.
-        Every one maps directly — from sovereign authorities who verify, to the scanner network that reads it all.
+      <p class="story-lead">
+        Five roles make global passports work. The same five make Shibui work.
       </p>
 
-      <p class="story-intro">
-        Just as ICAO standardized passport formats so any scanner in Narita can read a document printed in Brasilia,
-        Shibui standardizes compliance attestations so any token on any chain can verify any investor — without
-        custom integration, without re-verification, without anyone giving up sovereignty.
-      </p>
+      <!-- MAIN WORKFLOW INFOGRAPHIC -->
+      <div class="workflow-infographic" role="img" aria-label="Shibui workflow: Verify, Stamp, Border, Revoke, Scan">
+        <svg viewBox="0 0 900 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="workflow-svg desktop">
+          <defs>
+            <linearGradient id="stepGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgba(97,168,255,0.15)"/>
+              <stop offset="100%" stop-color="rgba(97,168,255,0.05)"/>
+            </linearGradient>
+            <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#61A8FF"/>
+              <stop offset="100%" stop-color="#9B7BFF"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
 
-      <!-- CAST -->
-      <div class="cast-grid">
-        <div class="cast-card">
-          <div class="cast-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
+          <!-- Step 1: Verify -->
+          <g class="wf-step" transform="translate(20, 20)">
+            <rect x="0" y="0" width="140" height="160" rx="12" fill="url(#stepGrad1)" stroke="rgba(97,168,255,0.3)" stroke-width="1"/>
+            <circle cx="70" cy="50" r="28" fill="rgba(97,168,255,0.1)" stroke="#61A8FF" stroke-width="1.5"/>
+            <!-- Shield/verify icon -->
+            <path d="M70 30 L88 38 L88 54 C88 66 79 74 70 78 C61 74 52 66 52 54 L52 38 Z" fill="none" stroke="#61A8FF" stroke-width="2"/>
+            <polyline points="62,52 68,58 78,48" fill="none" stroke="#61A8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="70" y="100" text-anchor="middle" fill="#EAF0FF" font-size="14" font-weight="700">Verify</text>
+            <text x="70" y="118" text-anchor="middle" fill="rgba(234,240,255,0.6)" font-size="10">Sovereign Authority</text>
+            <text x="70" y="134" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">GLEIF, KYC providers</text>
+            <text x="70" y="148" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">compliance teams</text>
+          </g>
+
+          <!-- Arrow 1 -->
+          <g transform="translate(165, 90)">
+            <line x1="0" y1="0" x2="35" y2="0" stroke="url(#arrowGrad)" stroke-width="2"/>
+            <polygon points="35,-5 45,0 35,5" fill="url(#arrowGrad)"/>
+          </g>
+
+          <!-- Step 2: Stamp -->
+          <g class="wf-step" transform="translate(200, 20)">
+            <rect x="0" y="0" width="140" height="160" rx="12" fill="url(#stepGrad1)" stroke="rgba(97,168,255,0.3)" stroke-width="1"/>
+            <circle cx="70" cy="50" r="28" fill="rgba(155,123,255,0.1)" stroke="#9B7BFF" stroke-width="1.5"/>
+            <!-- Stamp/document icon -->
+            <rect x="54" y="34" width="32" height="36" rx="2" fill="none" stroke="#9B7BFF" stroke-width="2"/>
+            <line x1="60" y1="44" x2="80" y2="44" stroke="#9B7BFF" stroke-width="1.5"/>
+            <line x1="60" y1="52" x2="75" y2="52" stroke="#9B7BFF" stroke-width="1.5"/>
+            <line x1="60" y1="60" x2="78" y2="60" stroke="#9B7BFF" stroke-width="1.5"/>
+            <text x="70" y="100" text-anchor="middle" fill="#EAF0FF" font-size="14" font-weight="700">Stamp</text>
+            <text x="70" y="118" text-anchor="middle" fill="rgba(234,240,255,0.6)" font-size="10">EAS Schemas</text>
+            <text x="70" y="134" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">3 standard formats</text>
+            <text x="70" y="148" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">like ICAO passports</text>
+          </g>
+
+          <!-- Arrow 2 -->
+          <g transform="translate(345, 90)">
+            <line x1="0" y1="0" x2="35" y2="0" stroke="url(#arrowGrad)" stroke-width="2"/>
+            <polygon points="35,-5 45,0 35,5" fill="url(#arrowGrad)"/>
+          </g>
+
+          <!-- Step 3: Border -->
+          <g class="wf-step" transform="translate(380, 20)">
+            <rect x="0" y="0" width="140" height="160" rx="12" fill="url(#stepGrad1)" stroke="rgba(97,168,255,0.3)" stroke-width="1"/>
+            <circle cx="70" cy="50" r="28" fill="rgba(96,242,194,0.1)" stroke="#60F2C2" stroke-width="1.5"/>
+            <!-- Gate/border icon -->
+            <rect x="50" y="36" width="40" height="32" rx="2" fill="none" stroke="#60F2C2" stroke-width="2"/>
+            <line x1="70" y1="36" x2="70" y2="68" stroke="#60F2C2" stroke-width="2"/>
+            <path d="M56 52 L64 52 M76 52 L84 52" stroke="#60F2C2" stroke-width="1.5"/>
+            <circle cx="66" cy="52" r="2" fill="#60F2C2"/>
+            <circle cx="74" cy="52" r="2" fill="#60F2C2"/>
+            <text x="70" y="100" text-anchor="middle" fill="#EAF0FF" font-size="14" font-weight="700">Border</text>
+            <text x="70" y="118" text-anchor="middle" fill="rgba(234,240,255,0.6)" font-size="10">ERC-3643 Token</text>
+            <text x="70" y="134" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">Issuers choose</text>
+            <text x="70" y="148" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">trusted attesters</text>
+          </g>
+
+          <!-- Arrow 3 -->
+          <g transform="translate(525, 90)">
+            <line x1="0" y1="0" x2="35" y2="0" stroke="url(#arrowGrad)" stroke-width="2"/>
+            <polygon points="35,-5 45,0 35,5" fill="url(#arrowGrad)"/>
+          </g>
+
+          <!-- Step 4: Revoke -->
+          <g class="wf-step" transform="translate(560, 20)">
+            <rect x="0" y="0" width="140" height="160" rx="12" fill="url(#stepGrad1)" stroke="rgba(97,168,255,0.3)" stroke-width="1"/>
+            <circle cx="70" cy="50" r="28" fill="rgba(255,107,107,0.1)" stroke="#FF6B6B" stroke-width="1.5"/>
+            <!-- Alert/revoke icon -->
+            <path d="M70 34 L90 66 L50 66 Z" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linejoin="round"/>
+            <line x1="70" y1="46" x2="70" y2="54" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="70" cy="60" r="2" fill="#FF6B6B"/>
+            <text x="70" y="100" text-anchor="middle" fill="#EAF0FF" font-size="14" font-weight="700">Revoke</text>
+            <text x="70" y="118" text-anchor="middle" fill="rgba(234,240,255,0.6)" font-size="10">Global Enforcement</text>
+            <text x="70" y="134" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">One revocation</text>
+            <text x="70" y="148" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">blocks everywhere</text>
+          </g>
+
+          <!-- Arrow 4 -->
+          <g transform="translate(705, 90)">
+            <line x1="0" y1="0" x2="35" y2="0" stroke="url(#arrowGrad)" stroke-width="2"/>
+            <polygon points="35,-5 45,0 35,5" fill="url(#arrowGrad)"/>
+          </g>
+
+          <!-- Step 5: Scan -->
+          <g class="wf-step" transform="translate(740, 20)">
+            <rect x="0" y="0" width="140" height="160" rx="12" fill="url(#stepGrad1)" stroke="rgba(97,168,255,0.3)" stroke-width="1"/>
+            <circle cx="70" cy="50" r="28" fill="rgba(97,168,255,0.1)" stroke="#61A8FF" stroke-width="1.5"/>
+            <!-- Network/scanner icon -->
+            <circle cx="70" cy="50" r="6" fill="#61A8FF"/>
+            <circle cx="54" cy="38" r="4" fill="none" stroke="#61A8FF" stroke-width="1.5"/>
+            <circle cx="86" cy="38" r="4" fill="none" stroke="#61A8FF" stroke-width="1.5"/>
+            <circle cx="54" cy="62" r="4" fill="none" stroke="#61A8FF" stroke-width="1.5"/>
+            <circle cx="86" cy="62" r="4" fill="none" stroke="#61A8FF" stroke-width="1.5"/>
+            <line x1="64" y1="46" x2="57" y2="41" stroke="#61A8FF" stroke-width="1.5"/>
+            <line x1="76" y1="46" x2="83" y2="41" stroke="#61A8FF" stroke-width="1.5"/>
+            <line x1="64" y1="54" x2="57" y2="59" stroke="#61A8FF" stroke-width="1.5"/>
+            <line x1="76" y1="54" x2="83" y2="59" stroke="#61A8FF" stroke-width="1.5"/>
+            <text x="70" y="100" text-anchor="middle" fill="#EAF0FF" font-size="14" font-weight="700">Scan</text>
+            <text x="70" y="118" text-anchor="middle" fill="rgba(234,240,255,0.6)" font-size="10">EAS Network</text>
+            <text x="70" y="134" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">15+ chains read</text>
+            <text x="70" y="148" text-anchor="middle" fill="rgba(234,240,255,0.5)" font-size="9">every attestation</text>
+          </g>
+
+          <!-- Bottom connector line -->
+          <line x1="90" y1="195" x2="810" y2="195" stroke="rgba(97,168,255,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="450" y="212" text-anchor="middle" fill="rgba(234,240,255,0.4)" font-size="10">ICAO standardized passport formats → Shibui standardizes compliance attestations</text>
+        </svg>
+
+        <!-- Mobile stacked version -->
+        <div class="workflow-mobile" aria-hidden="true">
+          <div class="wf-mobile-step">
+            <div class="wf-mobile-icon" style="--step-color: #61A8FF;">
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M20 8 L32 14 L32 24 C32 32 26 37 20 40 C14 37 8 32 8 24 L8 14 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <polyline points="14,22 18,26 26,18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="wf-mobile-text">
+              <strong>Verify</strong>
+              <span>Sovereign Authority</span>
+            </div>
           </div>
-          <h4>Sovereign Authority</h4>
-          <p>Who verifies (GLEIF, KYC providers, compliance teams)</p>
-        </div>
-        <div class="cast-card">
-          <div class="cast-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="16" rx="2"/>
-              <path d="M7 8h10M7 12h6"/>
-            </svg>
+          <div class="wf-mobile-arrow">↓</div>
+
+          <div class="wf-mobile-step">
+            <div class="wf-mobile-icon" style="--step-color: #9B7BFF;">
+              <svg viewBox="0 0 40 40" fill="none">
+                <rect x="8" y="6" width="24" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="12" y1="14" x2="28" y2="14" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="12" y1="20" x2="24" y2="20" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="12" y1="26" x2="26" y2="26" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="wf-mobile-text">
+              <strong>Stamp</strong>
+              <span>EAS Schemas</span>
+            </div>
           </div>
-          <h4>Document Format</h4>
-          <p>What gets stamped (3 EAS schemas)</p>
-        </div>
-        <div class="cast-card">
-          <div class="cast-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 11l3 3L22 4"/>
-              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-            </svg>
+          <div class="wf-mobile-arrow">↓</div>
+
+          <div class="wf-mobile-step">
+            <div class="wf-mobile-icon" style="--step-color: #60F2C2;">
+              <svg viewBox="0 0 40 40" fill="none">
+                <rect x="6" y="10" width="28" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="20" y1="10" x2="20" y2="30" stroke="currentColor" stroke-width="2"/>
+                <circle cx="16" cy="20" r="2" fill="currentColor"/>
+                <circle cx="24" cy="20" r="2" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="wf-mobile-text">
+              <strong>Border</strong>
+              <span>ERC-3643 Token</span>
+            </div>
           </div>
-          <h4>Border Control</h4>
-          <p>Who accepts whose passport (token issuers)</p>
-        </div>
-        <div class="cast-card">
-          <div class="cast-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 6v6l4 2"/>
-            </svg>
+          <div class="wf-mobile-arrow">↓</div>
+
+          <div class="wf-mobile-step">
+            <div class="wf-mobile-icon" style="--step-color: #FF6B6B;">
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M20 8 L34 32 L6 32 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <line x1="20" y1="16" x2="20" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="20" cy="27" r="2" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="wf-mobile-text">
+              <strong>Revoke</strong>
+              <span>Global Enforcement</span>
+            </div>
           </div>
-          <h4>Interpol</h4>
-          <p>Who enforces across borders (revocation)</p>
-        </div>
-        <div class="cast-card">
-          <div class="cast-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="6" width="20" height="12" rx="2"/>
-              <path d="M6 12h.01M12 12h.01M18 12h.01"/>
-            </svg>
+          <div class="wf-mobile-arrow">↓</div>
+
+          <div class="wf-mobile-step">
+            <div class="wf-mobile-icon" style="--step-color: #61A8FF;">
+              <svg viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="5" fill="currentColor"/>
+                <circle cx="8" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="32" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="8" cy="30" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="32" cy="30" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="15" y1="17" x2="11" y2="13" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="25" y1="17" x2="29" y2="13" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="15" y1="23" x2="11" y2="27" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="25" y1="23" x2="29" y2="27" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="wf-mobile-text">
+              <strong>Scan</strong>
+              <span>EAS Network (15+ chains)</span>
+            </div>
           </div>
-          <h4>Scanner Network</h4>
-          <p>What reads it all (EAS on 15+ chains)</p>
         </div>
       </div>
 
-      <!-- TIMELINE -->
-      <div class="timeline">
-        <div class="timeline-step">
-          <div class="timeline-marker">1</div>
-          <div class="timeline-content">
-            <h5>Sovereign Authority</h5>
-            <p>Institution verifies investor using their own process</p>
-          </div>
+      <!-- Visual Acts (5 passport stamps style) -->
+      <div class="acts-visual">
+        <div class="act-stamp">
+          <div class="stamp-number">I</div>
+          <div class="stamp-title">Sovereign</div>
+          <div class="stamp-caption">Who verifies</div>
         </div>
-        <div class="timeline-connector"></div>
-        <div class="timeline-step">
-          <div class="timeline-marker">2</div>
-          <div class="timeline-content">
-            <h5>Document Format</h5>
-            <p>Proof published as standardized EAS attestation</p>
-          </div>
+        <div class="act-stamp">
+          <div class="stamp-number">II</div>
+          <div class="stamp-title">Document</div>
+          <div class="stamp-caption">What format</div>
         </div>
-        <div class="timeline-connector"></div>
-        <div class="timeline-step">
-          <div class="timeline-marker">3</div>
-          <div class="timeline-content">
-            <h5>Border Control</h5>
-            <p>Token issuer configures which attesters to trust</p>
-          </div>
+        <div class="act-stamp">
+          <div class="stamp-number">III</div>
+          <div class="stamp-title">Border</div>
+          <div class="stamp-caption">Who accepts</div>
         </div>
-        <div class="timeline-connector"></div>
-        <div class="timeline-step">
-          <div class="timeline-marker">4</div>
-          <div class="timeline-content">
-            <h5>Interpol</h5>
-            <p>One revocation blocks investor across all tokens</p>
-          </div>
+        <div class="act-stamp">
+          <div class="stamp-number">IV</div>
+          <div class="stamp-title">Interpol</div>
+          <div class="stamp-caption">Who revokes</div>
         </div>
-        <div class="timeline-connector"></div>
-        <div class="timeline-step">
-          <div class="timeline-marker">5</div>
-          <div class="timeline-content">
-            <h5>Scanner Network</h5>
-            <p>EAS reads attestations on any supported chain</p>
-          </div>
+        <div class="act-stamp">
+          <div class="stamp-number">V</div>
+          <div class="stamp-title">Scanner</div>
+          <div class="stamp-caption">What reads</div>
         </div>
       </div>
 
@@ -158,53 +361,38 @@
       <details class="story-expand">
         <summary>Read full story</summary>
         <div class="story-full">
-          <div class="story-workflow">
-            <h4>Workflow (visual)</h4>
-            <div class="workflow">
-              <div class="workflow-step">
-                <div class="wf-title">1) Sovereign Authority</div>
-                <div class="wf-desc">An institution verifies (KYC / accreditation / jurisdiction).</div>
-              </div>
-              <div class="workflow-arrow" aria-hidden="true">→</div>
-              <div class="workflow-step">
-                <div class="wf-title">2) Document Format</div>
-                <div class="wf-desc">Result is stamped into open <strong>EAS schemas</strong> (3 formats).</div>
-              </div>
-              <div class="workflow-arrow" aria-hidden="true">→</div>
-              <div class="workflow-step">
-                <div class="wf-title">3) Border Control</div>
-                <div class="wf-desc">Each token issuer chooses which attesters &amp; topics to accept.</div>
-              </div>
-              <div class="workflow-arrow" aria-hidden="true">→</div>
-              <div class="workflow-step">
-                <div class="wf-title">4) Interpol</div>
-                <div class="wf-desc">Revocations propagate automatically across tokens/chains.</div>
-              </div>
-              <div class="workflow-arrow" aria-hidden="true">→</div>
-              <div class="workflow-step">
-                <div class="wf-title">5) Scanner Network</div>
-                <div class="wf-desc">EAS is the shared reader network (mainnet + L2s).</div>
-              </div>
-            </div>
+          <!-- Mini infographic recap -->
+          <div class="story-recap">
+            <div class="recap-step"><span class="recap-icon">🛡</span> Verify</div>
+            <div class="recap-arrow">→</div>
+            <div class="recap-step"><span class="recap-icon">📄</span> Stamp</div>
+            <div class="recap-arrow">→</div>
+            <div class="recap-step"><span class="recap-icon">🚪</span> Border</div>
+            <div class="recap-arrow">→</div>
+            <div class="recap-step"><span class="recap-icon">⚠</span> Revoke</div>
+            <div class="recap-arrow">→</div>
+            <div class="recap-step"><span class="recap-icon">🔗</span> Scan</div>
+          </div>
 
-            <div class="schema-diagram" role="group" aria-label="Three EAS schemas used as document formats">
-              <div class="schema-card">
-                <div class="schema-name">Schema 1</div>
-                <div class="schema-title">Investor Eligibility</div>
-                <div class="schema-sub">“The passport stamp”</div>
-              </div>
-              <div class="schema-card">
-                <div class="schema-name">Schema 2</div>
-                <div class="schema-title">Issuer Authorization</div>
-                <div class="schema-sub">“Who can stamp what”</div>
-              </div>
-              <div class="schema-card">
-                <div class="schema-name">Schema 3</div>
-                <div class="schema-title">Wallet ↔ Identity Link</div>
-                <div class="schema-sub">“Visa pages for wallets”</div>
-              </div>
+          <div class="story-schemas">
+            <div class="schema-card">
+              <div class="schema-name">Schema 1</div>
+              <div class="schema-title">Investor Eligibility</div>
+              <div class="schema-sub">"The passport stamp"</div>
+            </div>
+            <div class="schema-card">
+              <div class="schema-name">Schema 2</div>
+              <div class="schema-title">Issuer Authorization</div>
+              <div class="schema-sub">"Who can stamp what"</div>
+            </div>
+            <div class="schema-card">
+              <div class="schema-name">Schema 3</div>
+              <div class="schema-title">Wallet ↔ Identity Link</div>
+              <div class="schema-sub">"Visa pages for wallets"</div>
             </div>
           </div>
+
+          <hr class="story-divider"/>
 
           <p><strong>"The Passport System for Tokenized Assets"</strong></p>
 
@@ -337,7 +525,7 @@
 
       <div class="footer-links">
         <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/" target="_blank" rel="noopener noreferrer">GitHub repo</a>
-        <span class="dot">•</span>
+        <span class="dot">·</span>
         <a href="#top">Back to top</a>
       </div>
     </div>
