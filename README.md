@@ -16,6 +16,13 @@ It replaces ONCHAINID with [Ethereum Attestation Service (EAS)](https://attest.o
 
 ---
 
+## Live website (GitHub Pages)
+
+- Landing page: https://entethalliance.github.io/rnd-rwa-erc3643-eas/
+- Identity Management Solutions — Reference map: https://entethalliance.github.io/rnd-rwa-erc3643-eas/identity-solutions-map.html
+
+---
+
 ## The Problem It Solves
 
 | Without Shibui | With Shibui |
