@@ -16,6 +16,9 @@ The page includes lightweight, responsive diagrams (inline SVG/CSS — no extern
 - Working-group governance map
 - What vs How architecture separation (standards vs implementations)
 
+It also includes a standalone companion page:
+- `identity-solutions-map.html` — "Identity Management Solutions — Reference map" (filterable landscape)
+
 ## Run
 
 ### Option A — open directly
