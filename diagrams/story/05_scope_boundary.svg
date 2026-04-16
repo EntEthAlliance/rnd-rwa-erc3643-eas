@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" width="100%" role="img" aria-label="Scope boundary: what Shibui standardizes vs what it does not">
+  <defs>
+    <style>
+      .bg{fill:#0a0c12}
+      .panel{fill:#0f1420;stroke:rgba(255,255,255,.12);stroke-width:1.5;rx:18}
+      .in{stroke:rgba(97,168,255,.45)}
+      .out{stroke:rgba(255,255,255,.10)}
+      .t{fill:rgba(232,240,248,.9);font:800 14px system-ui,-apple-system,Segoe UI,Roboto}
+      .s{fill:rgba(232,240,248,.62);font:500 12px system-ui,-apple-system,Segoe UI,Roboto}
+      .tag{fill:rgba(97,168,255,.14);stroke:rgba(97,168,255,.35);stroke-width:1;rx:999}
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="900" height="360" rx="18"/>
+  <text class="t" x="40" y="56">Scope boundary</text>
+  <text class="s" x="40" y="80">Shibui standardizes the passport format + verification — not the operational lifecycle.</text>
+
+  <rect class="panel in" x="40" y="120" width="400" height="200" rx="18"/>
+  <rect class="tag" x="64" y="140" width="160" height="28" rx="999"/>
+  <text class="s" x="78" y="159">Inside Shibui</text>
+  <text class="s" x="64" y="198">• Canonical EAS schemas (passport format)</text>
+  <text class="s" x="64" y="222">• Verification rules (scan logic)</text>
+  <text class="s" x="64" y="246">• Revocation/expiry checks</text>
+  <text class="s" x="64" y="270">• Portability across tokens/chains</text>
+
+  <rect class="panel out" x="460" y="120" width="400" height="200" rx="18"/>
+  <rect class="tag" x="484" y="140" width="200" height="28" rx="999"/>
+  <text class="s" x="498" y="159">Outside Shibui</text>
+  <text class="s" x="484" y="198">• How KYC/KYB is performed</text>
+  <text class="s" x="484" y="222">• Renewals / re-issuance / lost passport</text>
+  <text class="s" x="484" y="246">• Legal liability and dispute handling</text>
+  <text class="s" x="484" y="270">• Customer support / operations</text>
+</svg>

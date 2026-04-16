@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" width="100%" role="img" aria-label="Two passports: holder stamp + asset profile">
+  <defs>
+    <linearGradient id="b" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#00c8a0" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#61A8FF" stop-opacity="0.20"/>
+    </linearGradient>
+    <style>
+      .bg{fill:#0a0c12}
+      .card{fill:#0f1420;stroke:rgba(255,255,255,.12);stroke-width:1.5;rx:18}
+      .pill{fill:rgba(255,255,255,.06);stroke:rgba(255,255,255,.10);stroke-width:1;rx:999}
+      .t{fill:rgba(232,240,248,.9);font:800 14px system-ui,-apple-system,Segoe UI,Roboto}
+      .s{fill:rgba(232,240,248,.62);font:500 12px system-ui,-apple-system,Segoe UI,Roboto}
+      .a{fill:none;stroke:rgba(232,240,248,.18);stroke-width:2}
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="900" height="360" rx="18"/>
+  <rect x="18" y="18" width="864" height="324" rx="18" fill="url(#b)" opacity="0.5"/>
+
+  <text class="t" x="42" y="58">Passport format v0.1: two documents</text>
+  <text class="s" x="42" y="82">One about the holder, one about the asset’s border rules.</text>
+
+  <!-- Holder passport -->
+  <rect class="card" x="42" y="110" width="390" height="210" rx="18"/>
+  <text class="t" x="66" y="146">Holder Passport Stamp</text>
+  <text class="s" x="66" y="170">Portable across many assets</text>
+
+  <g>
+    <rect class="pill" x="66" y="194" width="140" height="28" rx="999"/>
+    <text class="s" x="78" y="213">KYC tier</text>
+
+    <rect class="pill" x="216" y="194" width="140" height="28" rx="999"/>
+    <text class="s" x="228" y="213">Jurisdiction</text>
+
+    <rect class="pill" x="66" y="232" width="170" height="28" rx="999"/>
+    <text class="s" x="78" y="251">Investor category</text>
+
+    <rect class="pill" x="246" y="232" width="110" height="28" rx="999"/>
+    <text class="s" x="258" y="251">Expiry</text>
+
+    <rect class="pill" x="66" y="270" width="150" height="28" rx="999"/>
+    <text class="s" x="78" y="289">Issuer</text>
+
+    <rect class="pill" x="226" y="270" width="130" height="28" rx="999"/>
+    <text class="s" x="238" y="289">Revocable</text>
+  </g>
+
+  <!-- Asset passport -->
+  <rect class="card" x="468" y="110" width="390" height="210" rx="18"/>
+  <text class="t" x="492" y="146">Asset Passport Profile</text>
+  <text class="s" x="492" y="170">Asset/regime-specific border rules</text>
+
+  <g>
+    <rect class="pill" x="492" y="194" width="170" height="28" rx="999"/>
+    <text class="s" x="504" y="213">Token + chain</text>
+
+    <rect class="pill" x="672" y="194" width="160" height="28" rx="999"/>
+    <text class="s" x="684" y="213">Regime code</text>
+
+    <rect class="pill" x="492" y="232" width="200" height="28" rx="999"/>
+    <text class="s" x="504" y="251">Required checks</text>
+
+    <rect class="pill" x="702" y="232" width="130" height="28" rx="999"/>
+    <text class="s" x="714" y="251">Issuer</text>
+
+    <rect class="pill" x="492" y="270" width="180" height="28" rx="999"/>
+    <text class="s" x="504" y="289">Allowed categories</text>
+
+    <rect class="pill" x="682" y="270" width="150" height="28" rx="999"/>
+    <text class="s" x="694" y="289">Revocable</text>
+  </g>
+
+  <!-- Arrow between them -->
+  <path class="a" d="M432 216 L468 216"/>
+  <text class="s" x="450" y="208" text-anchor="middle">scan</text>
+</svg>

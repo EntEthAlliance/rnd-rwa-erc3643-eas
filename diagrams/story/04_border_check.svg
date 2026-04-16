@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" width="100%" role="img" aria-label="Border check: token scans passport and decides allow/deny">
+  <defs>
+    <style>
+      .bg{fill:#0a0c12}
+      .box{fill:#0f1420;stroke:rgba(255,255,255,.12);stroke-width:1.5;rx:18}
+      .t{fill:rgba(232,240,248,.9);font:800 14px system-ui,-apple-system,Segoe UI,Roboto}
+      .s{fill:rgba(232,240,248,.62);font:500 12px system-ui,-apple-system,Segoe UI,Roboto}
+      .a{fill:none;stroke:rgba(232,240,248,.18);stroke-width:2}
+      .ok{fill:rgba(0,200,160,.14);stroke:rgba(0,200,160,.45)}
+      .no{fill:rgba(224,80,80,.14);stroke:rgba(224,80,80,.45)}
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="900" height="360" rx="18"/>
+
+  <text class="t" x="40" y="56">Border check (enforcement)</text>
+  <text class="s" x="40" y="80">Token/venue scans stamps → allow or deny transfers.</text>
+
+  <rect class="box" x="40" y="120" width="240" height="190" rx="18"/>
+  <text class="t" x="64" y="156">Inputs</text>
+  <text class="s" x="64" y="182">• Holder stamp</text>
+  <text class="s" x="64" y="204">• Asset profile</text>
+  <text class="s" x="64" y="226">• Trusted attesters</text>
+  <text class="s" x="64" y="248">• Revocation / expiry</text>
+
+  <path class="a" d="M280 215 L350 215"/>
+
+  <rect class="box" x="350" y="120" width="220" height="190" rx="18"/>
+  <text class="t" x="374" y="156">Scanner</text>
+  <text class="s" x="374" y="182">Check schema</text>
+  <text class="s" x="374" y="204">Check issuer trust</text>
+  <text class="s" x="374" y="226">Check expiry</text>
+  <text class="s" x="374" y="248">Check revocation</text>
+
+  <path class="a" d="M570 215 L640 215"/>
+
+  <rect class="box ok" x="640" y="120" width="220" height="82" rx="18"/>
+  <text class="t" x="664" y="156">ALLOW</text>
+  <text class="s" x="664" y="180">Transfer permitted</text>
+
+  <rect class="box no" x="640" y="228" width="220" height="82" rx="18"/>
+  <text class="t" x="664" y="264">DENY</text>
+  <text class="s" x="664" y="288">Reason code (optional)</text>
+
+  <path class="a" d="M570 215 C610 215, 610 166, 640 166"/>
+  <path class="a" d="M570 215 C610 215, 610 274, 640 274"/>
+</svg>

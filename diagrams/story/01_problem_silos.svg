@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" width="100%" role="img" aria-label="Identity silos vs shared passport">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#61A8FF" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#9B7BFF" stop-opacity="0.18"/>
+    </linearGradient>
+    <style>
+      .bg{fill:#0a0c12}
+      .box{fill:#0f1420;stroke:rgba(255,255,255,.12);stroke-width:1.5;rx:14}
+      .box2{fill:#0f1420;stroke:rgba(97,168,255,.35);stroke-width:1.7;rx:16}
+      .t{fill:rgba(232,240,248,.88);font:600 14px system-ui,-apple-system,Segoe UI,Roboto}
+      .s{fill:rgba(232,240,248,.62);font:500 12px system-ui,-apple-system,Segoe UI,Roboto}
+      .k{fill:rgba(0,200,160,.95)}
+      .a{fill:none;stroke:rgba(232,240,248,.18);stroke-width:2}
+      .dash{stroke-dasharray:6 6}
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="900" height="360" rx="18"/>
+  <rect x="18" y="18" width="864" height="324" rx="18" fill="url(#g)" opacity="0.55"/>
+
+  <text class="t" x="42" y="58">Today: verification is repeated</text>
+  <text class="s" x="42" y="80">Same investor, many institutions → duplicated KYC/KYB & inconsistent trust.</text>
+
+  <!-- Left: silos -->
+  <rect class="box" x="42" y="110" width="180" height="86" rx="14"/>
+  <text class="t" x="60" y="142">Bank A</text>
+  <text class="s" x="60" y="166">KYC / KYB</text>
+
+  <rect class="box" x="42" y="214" width="180" height="86" rx="14"/>
+  <text class="t" x="60" y="246">Broker B</text>
+  <text class="s" x="60" y="270">KYC / KYB</text>
+
+  <rect class="box" x="244" y="110" width="180" height="86" rx="14"/>
+  <text class="t" x="262" y="142">Exchange C</text>
+  <text class="s" x="262" y="166">KYC / KYB</text>
+
+  <rect class="box" x="244" y="214" width="180" height="86" rx="14"/>
+  <text class="t" x="262" y="246">Issuer D</text>
+  <text class="s" x="262" y="270">KYC / KYB</text>
+
+  <!-- arrows to the same investor -->
+  <circle cx="455" cy="178" r="22" fill="#0f1420" stroke="rgba(255,255,255,.15)" stroke-width="1.5"/>
+  <text class="t" x="455" y="182" text-anchor="middle">👤</text>
+  <path class="a dash" d="M222 152 L430 170"/>
+  <path class="a dash" d="M222 258 L430 190"/>
+  <path class="a dash" d="M424 152 L430 170"/>
+  <path class="a dash" d="M424 258 L430 190"/>
+
+  <!-- Divider -->
+  <path class="a" d="M510 110 L510 300"/>
+  <text class="t" x="534" y="142">Shibui: one passport format</text>
+  <text class="s" x="534" y="166">Institutions keep their process — but agree on the stamp format.</text>
+
+  <!-- Passport -->
+  <rect class="box2" x="534" y="190" width="320" height="110" rx="18"/>
+  <text class="t" x="560" y="222">Passport Stamp</text>
+  <text class="s" x="560" y="246">KYC ✓  Country ✓  Accreditation ✓</text>
+  <text class="s" x="560" y="270">Expires: 2027  •  Revocable</text>
+  <circle cx="820" cy="226" r="10" class="k" opacity="0.9"/>
+
+  <!-- Reuse arrows -->
+  <path class="a" d="M694 300 C694 318, 650 330, 610 330"/>
+  <text class="s" x="614" y="349">Reusable across tokens & chains</text>
+</svg>

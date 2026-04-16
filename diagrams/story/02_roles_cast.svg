@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" width="100%" role="img" aria-label="Passport roles mapped to Shibui">
+  <defs>
+    <style>
+      .bg{fill:#0a0c12}
+      .card{fill:#0f1420;stroke:rgba(255,255,255,.12);stroke-width:1.5;rx:16}
+      .t{fill:rgba(232,240,248,.88);font:700 14px system-ui,-apple-system,Segoe UI,Roboto}
+      .s{fill:rgba(232,240,248,.62);font:500 12px system-ui,-apple-system,Segoe UI,Roboto}
+      .a{fill:none;stroke:rgba(232,240,248,.18);stroke-width:2}
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="900" height="360" rx="18"/>
+
+  <text class="t" x="40" y="56">The cast (passport world → Shibui)</text>
+  <text class="s" x="40" y="80">Same five roles, same separation of responsibilities.</text>
+
+  <!-- 5 cards -->
+  <g transform="translate(40,110)">
+    <rect class="card" width="160" height="190" rx="16"/>
+    <text class="t" x="18" y="40">🛡 Verifier</text>
+    <text class="s" x="18" y="66">Institution does KYC/KYB</text>
+    <text class="s" x="18" y="88">Shibui never touches process</text>
+  </g>
+
+  <g transform="translate(220,110)">
+    <rect class="card" width="160" height="190" rx="16"/>
+    <text class="t" x="18" y="40">📄 Format</text>
+    <text class="s" x="18" y="66">Schemas define what a stamp</text>
+    <text class="s" x="18" y="88">looks like (ICAO-style core)</text>
+  </g>
+
+  <g transform="translate(400,110)">
+    <rect class="card" width="160" height="190" rx="16"/>
+    <text class="t" x="18" y="40">🚪 Border</text>
+    <text class="s" x="18" y="66">Token/venue chooses who</text>
+    <text class="s" x="18" y="88">it trusts to attest what</text>
+  </g>
+
+  <g transform="translate(580,110)">
+    <rect class="card" width="160" height="190" rx="16"/>
+    <text class="t" x="18" y="40">⚠ Revocation</text>
+    <text class="s" x="18" y="66">Issuer can revoke a stamp</text>
+    <text class="s" x="18" y="88">and it propagates everywhere</text>
+  </g>
+
+  <g transform="translate(760,110)">
+    <rect class="card" width="100" height="190" rx="16"/>
+    <text class="t" x="14" y="40">🔗 Scan</text>
+    <text class="s" x="14" y="66">Any token</text>
+    <text class="s" x="14" y="88">can read</text>
+  </g>
+
+  <!-- arrows -->
+  <path class="a" d="M200 205 L220 205"/>
+  <path class="a" d="M380 205 L400 205"/>
+  <path class="a" d="M560 205 L580 205"/>
+  <path class="a" d="M740 205 L760 205"/>
+</svg>

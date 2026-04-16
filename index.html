@@ -375,6 +375,11 @@
             <div class="recap-step"><span class="recap-icon">🔗</span> Scan</div>
           </div>
 
+          <div class="story-diagram">
+            <img src="./diagrams/story/01_problem_silos.svg" alt="Identity silos vs shared passport" loading="lazy"/>
+            <div class="story-diagram-caption">Today, the same investor is verified over and over. Shibui makes one verification portable.</div>
+          </div>
+
           <div class="story-schemas">
             <div class="schema-card">
               <div class="schema-name">Schema 1</div>
@@ -399,6 +404,11 @@
 
           <p><strong>The cast.</strong> Five roles make the global passport system work. The same five roles make Shibui work. Every one maps directly.</p>
 
+          <div class="story-diagram">
+            <img src="./diagrams/story/02_roles_cast.svg" alt="Passport roles mapped to Shibui" loading="lazy"/>
+            <div class="story-diagram-caption">Same five roles, same separation of responsibilities.</div>
+          </div>
+
           <hr class="story-divider"/>
 
           <p><strong>Act 1: The Sovereign Authority — who verifies</strong></p>
@@ -409,6 +419,11 @@
 
           <p>In Shibui, the sovereign authority is any institution that performs compliance work. DTCC runs KYC on its participants. Fidelity verifies accredited investors. A Frankfurt bank classifies clients under MiFID II. Each institution runs its own process, uses its own tools — Refinitiv for AML screening, Jumio for document verification, internal compliance engines. Shibui never touches the verification. The institution publishes a conclusion, not the underlying data. "This investor is KYC-verified, accredited, US-based, valid until January 2027." Not the passport photos, not the bank statements, not the tax returns — just the stamped result.</p>
 
+          <div class="story-diagram">
+            <img src="./diagrams/story/05_scope_boundary.svg" alt="Scope boundary: what Shibui standardizes vs what it does not" loading="lazy"/>
+            <div class="story-diagram-caption">Shibui standardizes the passport format and how to scan it — not the operational lifecycle.</div>
+          </div>
+
           <p>The institution's on-chain wallet address becomes a <strong>trusted attester</strong>. That's the digital equivalent of being an accredited passport-issuing authority.</p>
 
           <hr class="story-divider"/>
@@ -418,6 +433,11 @@
           <p>Every passport in the world follows ICAO Doc 9303. Same field layout. Same machine-readable zone. Same biometric data structure. That's why a scanner in Narita reads a passport printed in Brasilia. The countries didn't agree on a printer. They agreed on a format.</p>
 
           <p>Shibui has three document formats — three EAS schemas, each with a defined purpose:</p>
+
+          <div class="story-diagram">
+            <img src="./diagrams/story/03_two_passports.svg" alt="Two passports: holder stamp and asset profile" loading="lazy"/>
+            <div class="story-diagram-caption">Two standardized documents: one about the holder, one about the asset’s border rules.</div>
+          </div>
 
           <div class="story-schemas schema-visual" aria-label="Shibui schemas">
             <div class="schema-card">
@@ -479,6 +499,11 @@
           <p>Japan doesn't accept every country's passport equally. Visa-waiver agreements, bilateral treaties, risk tiers. Each country decides which passports it honors and for which purposes — tourism yes, work no. This is sovereignty at the acceptance layer.</p>
 
           <p>In Shibui, the token issuer is the country at the border. They control trust through one function: <code>addTrustedAttester(address, topics[])</code>. A tokenized US Treasury fund on Base might configure it like this: trust Fidelity for KYC and accreditation, trust DTCC for KYC only, trust a European bank for MiFID II professional classification. Trust is granular per compliance topic, not all-or-nothing — exactly like how a visa waiver covers tourism but not employment.</p>
+
+          <div class="story-diagram">
+            <img src="./diagrams/story/04_border_check.svg" alt="Border check decision: allow or deny" loading="lazy"/>
+            <div class="story-diagram-caption">Tokens enforce transfer rules deterministically by scanning the passport.</div>
+          </div>
 
           <p>The governance behind that call mirrors correspondent banking, the process institutions already run. Board approves the counterparty relationship — off-chain business decision. Legal signs an agreement — off-chain contract. Compliance evaluates the counterparty's AML program — off-chain due diligence. Then operations executes one on-chain transaction. No new process. Same institutional governance, new execution layer.</p>
 
