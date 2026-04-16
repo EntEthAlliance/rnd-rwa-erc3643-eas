@@ -409,6 +409,14 @@ a:hover { text-decoration: underline; }
   border-top: 1px solid rgba(255,255,255,0.08);
 }
 
+.story-one-liner {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid rgba(97,168,255,0.45);
+  background: rgba(97,168,255,0.06);
+  color: rgba(232,240,248,0.72);
+}
+
 /* Story schemas */
 .story-schemas {
   display: grid;

@@ -362,190 +362,46 @@
       <details class="story-expand">
         <summary>Read full story</summary>
         <div class="story-full">
-          <!-- Mini infographic recap -->
-          <div class="story-recap">
-            <div class="recap-step"><span class="recap-icon">🛡</span> Verify</div>
-            <div class="recap-arrow">→</div>
-            <div class="recap-step"><span class="recap-icon">📄</span> Stamp</div>
-            <div class="recap-arrow">→</div>
-            <div class="recap-step"><span class="recap-icon">🚪</span> Border</div>
-            <div class="recap-arrow">→</div>
-            <div class="recap-step"><span class="recap-icon">⚠</span> Revoke</div>
-            <div class="recap-arrow">→</div>
-            <div class="recap-step"><span class="recap-icon">🔗</span> Scan</div>
-          </div>
+          <p><strong>The Passport System for Tokenized Assets — simplified.</strong></p>
+          <p>Institutions keep their compliance process. Shibui standardizes the <em>passport format</em> and how tokens <em>scan</em> it.</p>
 
           <div class="story-diagram">
-            <img src="./diagrams/story/01_problem_silos.svg" alt="Identity silos vs shared passport" loading="lazy"/>
-            <div class="story-diagram-caption">Today, the same investor is verified over and over. Shibui makes one verification portable.</div>
-          </div>
-
-          <div class="story-schemas">
-            <div class="schema-card">
-              <div class="schema-name">Schema 1</div>
-              <div class="schema-title">Investor Eligibility</div>
-              <div class="schema-sub">"The passport stamp"</div>
-            </div>
-            <div class="schema-card">
-              <div class="schema-name">Schema 2</div>
-              <div class="schema-title">Issuer Authorization</div>
-              <div class="schema-sub">"Who can stamp what"</div>
-            </div>
-            <div class="schema-card">
-              <div class="schema-name">Schema 3</div>
-              <div class="schema-title">Wallet ↔ Identity Link</div>
-              <div class="schema-sub">"Visa pages for wallets"</div>
-            </div>
+            <img src="./diagrams/story/problem.svg" alt="Problem: identity and compliance proofs do not travel" loading="lazy"/>
+            <div class="story-diagram-caption">Problem: identity and compliance proofs don’t travel. The same investor is re-verified again and again.</div>
           </div>
 
           <hr class="story-divider"/>
 
-          <p><strong>"The Passport System for Tokenized Assets"</strong></p>
-
-          <p><strong>The cast.</strong> Five roles make the global passport system work. The same five roles make Shibui work. Every one maps directly.</p>
+          <p><strong>1) The stamp (what gets published).</strong> After an institution completes KYC/KYB, it publishes a compact result: “verified, category, jurisdiction, expiry, revocation.” Not the underlying documents — just the stamped conclusion.</p>
 
           <div class="story-diagram">
-            <img src="./diagrams/story/02_roles_cast.svg" alt="Passport roles mapped to Shibui" loading="lazy"/>
-            <div class="story-diagram-caption">Same five roles, same separation of responsibilities.</div>
+            <img src="./diagrams/story/attestation_anatomy.svg" alt="Attestation anatomy: the stamp structure" loading="lazy"/>
+            <div class="story-diagram-caption">The stamp is structured data (EAS schemas). This is the ICAO-like part: a shared, machine-readable core.</div>
           </div>
+
+          <p class="story-one-liner"><em>GLEIF, ISO 20022, and vLEI feed in. Shibui publishes the stamp.</em></p>
 
           <hr class="story-divider"/>
 
-          <p><strong>Act 1: The Sovereign Authority — who verifies</strong></p>
-
-          <p>In the passport world, the US State Department verifies American citizens. France's Ministère de l'Intérieur verifies French citizens. Each country runs its own process — background checks, biometrics, document review. No country dictates another's process.</p>
-
-          <p>GLEIF works the same way for legal entities. GLEIF doesn't verify companies directly. It accredits Local Operating Units — Deutsche Börse, Bloomberg, SWIFT — who each issue LEIs under GLEIF's quality framework.</p>
-
-          <p>In Shibui, the sovereign authority is any institution that performs compliance work. DTCC runs KYC on its participants. Fidelity verifies accredited investors. A Frankfurt bank classifies clients under MiFID II. Each institution runs its own process, uses its own tools — Refinitiv for AML screening, Jumio for document verification, internal compliance engines. Shibui never touches the verification. The institution publishes a conclusion, not the underlying data. "This investor is KYC-verified, accredited, US-based, valid until January 2027." Not the passport photos, not the bank statements, not the tax returns — just the stamped result.</p>
+          <p><strong>2) Two passports (holder + asset).</strong> One document is about the holder (who they are / what category they are). Another is about the asset (what border rules this token enforces).</p>
 
           <div class="story-diagram">
-            <img src="./diagrams/story/05_scope_boundary.svg" alt="Scope boundary: what Shibui standardizes vs what it does not" loading="lazy"/>
-            <div class="story-diagram-caption">Shibui standardizes the passport format and how to scan it — not the operational lifecycle.</div>
+            <img src="./diagrams/story/full_architecture.svg" alt="Full architecture: how stamps connect to token enforcement" loading="lazy"/>
+            <div class="story-diagram-caption">Same passport format → any token on any chain can scan the stamp and enforce border rules.</div>
           </div>
-
-          <p>The institution's on-chain wallet address becomes a <strong>trusted attester</strong>. That's the digital equivalent of being an accredited passport-issuing authority.</p>
 
           <hr class="story-divider"/>
 
-          <p><strong>Act 2: The Document Format — what gets stamped</strong></p>
-
-          <p>Every passport in the world follows ICAO Doc 9303. Same field layout. Same machine-readable zone. Same biometric data structure. That's why a scanner in Narita reads a passport printed in Brasilia. The countries didn't agree on a printer. They agreed on a format.</p>
-
-          <p>Shibui has three document formats — three EAS schemas, each with a defined purpose:</p>
+          <p><strong>3) The border check (who accepts whose stamp).</strong> Each token/issuer chooses which attesters it trusts for which topics. Enforcement is deterministic: allow/deny based on valid stamps.</p>
 
           <div class="story-diagram">
-            <img src="./diagrams/story/03_two_passports.svg" alt="Two passports: holder stamp and asset profile" loading="lazy"/>
-            <div class="story-diagram-caption">Two standardized documents: one about the holder, one about the asset’s border rules.</div>
+            <img src="./diagrams/story/scope_boundary.svg" alt="Scope boundary: what Shibui standardizes vs what it does not" loading="lazy"/>
+            <div class="story-diagram-caption">Scope: Shibui standardizes format + scanning + revocation. It does not run onboarding, renewals, lost-passport handling, or liability.</div>
           </div>
 
-          <div class="story-schemas schema-visual" aria-label="Shibui schemas">
-            <div class="schema-card">
-              <div class="schema-top">
-                <div class="schema-name">Schema 1</div>
-                <div class="schema-icon" aria-hidden="true">🛂</div>
-              </div>
-              <div class="schema-title">Investor Eligibility</div>
-              <div class="schema-sub">“The passport stamp”</div>
-              <div class="schema-fields">
-                <span class="field-pill">address identity</span>
-                <span class="field-pill">uint8 kycStatus</span>
-                <span class="field-pill">uint8 accreditationType</span>
-                <span class="field-pill">uint16 countryCode</span>
-                <span class="field-pill">uint64 expirationTimestamp</span>
-              </div>
-              <div class="schema-foot">One attestation can cover KYC + country + accreditation.</div>
-            </div>
-
-            <div class="schema-card">
-              <div class="schema-top">
-                <div class="schema-name">Schema 2</div>
-                <div class="schema-icon" aria-hidden="true">🏛️</div>
-              </div>
-              <div class="schema-title">Issuer Authorization</div>
-              <div class="schema-sub">“Accreditation certificate”</div>
-              <div class="schema-fields">
-                <span class="field-pill">address issuerAddress</span>
-                <span class="field-pill">uint256[] authorizedTopics</span>
-                <span class="field-pill">string issuerName</span>
-              </div>
-              <div class="schema-foot">Audit trail for who is trusted to attest what.</div>
-            </div>
-
-            <div class="schema-card">
-              <div class="schema-top">
-                <div class="schema-name">Schema 3</div>
-                <div class="schema-icon" aria-hidden="true">🔗</div>
-              </div>
-              <div class="schema-title">Wallet ↔ Identity Link</div>
-              <div class="schema-sub">“Visa pages for wallets”</div>
-              <div class="schema-fields">
-                <span class="field-pill">address walletAddress</span>
-                <span class="field-pill">address identityAddress</span>
-                <span class="field-pill">uint64 linkedTimestamp</span>
-              </div>
-              <div class="schema-foot">One identity → many wallets (trading, custody, settlement).</div>
-            </div>
-          </div>
-
-          <p>These schemas are to Shibui what ICAO 9303 is to passports. The data standard that makes every scanner — every token on every chain — able to read every stamp.</p>
-
-          <p>Now, where do existing standards like ISO 20022 and GLEIF's LEI system fit? They don't compete. They feed in. ISO 20022 is the messaging standard banks use internally to communicate compliance decisions between systems. GLEIF's vLEI is the digital credential for legal entities. These are the internal wires — how institutions talk to each other and manage identity off-chain. Shibui is where those conclusions get published as verifiable on-chain proof. ISO 20022 is the internal dispatch. The EAS attestation is the public stamp in the passport.</p>
-
           <hr class="story-divider"/>
 
-          <p><strong>Act 3: The Border Control — who accepts whose passport</strong></p>
-
-          <p>Japan doesn't accept every country's passport equally. Visa-waiver agreements, bilateral treaties, risk tiers. Each country decides which passports it honors and for which purposes — tourism yes, work no. This is sovereignty at the acceptance layer.</p>
-
-          <p>In Shibui, the token issuer is the country at the border. They control trust through one function: <code>addTrustedAttester(address, topics[])</code>. A tokenized US Treasury fund on Base might configure it like this: trust Fidelity for KYC and accreditation, trust DTCC for KYC only, trust a European bank for MiFID II professional classification. Trust is granular per compliance topic, not all-or-nothing — exactly like how a visa waiver covers tourism but not employment.</p>
-
-          <div class="story-diagram">
-            <img src="./diagrams/story/04_border_check.svg" alt="Border check decision: allow or deny" loading="lazy"/>
-            <div class="story-diagram-caption">Tokens enforce transfer rules deterministically by scanning the passport.</div>
-          </div>
-
-          <p>The governance behind that call mirrors correspondent banking, the process institutions already run. Board approves the counterparty relationship — off-chain business decision. Legal signs an agreement — off-chain contract. Compliance evaluates the counterparty's AML program — off-chain due diligence. Then operations executes one on-chain transaction. No new process. Same institutional governance, new execution layer.</p>
-
-          <p>Schema governance — who gets to define what a valid passport format looks like — sits with the EEA working group. Core schemas (Investor Eligibility, Issuer Authorization, Wallet-Identity Link) follow a 90-day standardization track. Extension schemas for jurisdiction-specific needs (AML, sanctions, source of funds) follow a lighter community track. Individual issuers can create private schemas for internal requirements. Same tiered governance as ICAO: the core spec is slow and deliberate, extensions are faster, private supplements are sovereign.</p>
-
-          <hr class="story-divider"/>
-
-          <p><strong>Act 4: Interpol — who enforces across borders</strong></p>
-
-          <p>Here's where the passport analogy gets most powerful. When Interpol issues a red notice, it propagates to every member country's border system. Not manually. Not airport by airport. One alert, global enforcement.</p>
-
-          <p>Today, tokenized assets have no Interpol. If an investor fails an AML check, someone has to notify each token issuer separately. Each issuer has to act independently. There's no shared enforcement layer.</p>
-
-          <p>Shibui creates it. Two mechanisms, two scopes:</p>
-
-          <p><strong>Individual revocation</strong> — the red notice. An investor fails ongoing AML screening. The compliance officer at the attesting institution calls <code>EAS.revoke(attestationUID)</code>. One transaction. EAS records a <code>revocationTime</code> on the attestation. The next time any token calls <code>isVerified()</code> on that investor, the EASClaimVerifier sees the revocation and returns false. The investor is blocked from buying, selling, or receiving every token that relied on that attestation. Across Base, Arbitrum, Optimism, mainnet. Across every token from every issuer who trusted that attester. Immediate. Automated. No manual propagation.</p>
-
-          <p>Because the investor's wallets are linked through the Wallet-Identity Link schema, revoking the attestation against the identity blocks the trading wallet, the custody wallet, and the settlement wallet simultaneously. You cancel the passport, not individual boarding passes.</p>
-
-          <p><strong>Institutional revocation</strong> — sanctions on an entire country's passport authority. A KYC provider is compromised, loses its license, or is found issuing attestations without proper verification. The token issuer calls <code>removeTrustedAttester(address)</code>. One transaction. Every attestation from that provider becomes invalid for that token — instantly. Every investor verified only by that provider is blocked until re-verified by another trusted attester. This is the equivalent of a country revoking recognition of another country's passport office.</p>
-
-          <p>Who governs this? The attesting institution governs individual revocations — they own the compliance relationship with the investor. The token issuer governs institutional trust — they decide which attesters to accept or remove. The EEA working group governs the schema standards and dispute resolution. Three tiers, same as the real system: Interpol acts on individuals, countries act on bilateral trust, ICAO governs the format.</p>
-
-          <hr class="story-divider"/>
-
-          <p><strong>Act 5: The Scanner Network — what reads it all</strong></p>
-
-          <p>ICAO didn't ask every airport to build its own scanner technology. It defined the machine-readable zone format, and manufacturers built scanners to that spec. The infrastructure became universal because the standard was open.</p>
-
-          <p>EAS is the scanner network. Already deployed on Ethereum mainnet, Base, Arbitrum, Optimism — 15+ chains. The Schema Registry contract lives at <code>0x4200000000000000000000000000000000000020</code> on Base and Optimism, at <code>0xA7b39296258348C78294F95B872b282326A97BDF</code> on mainnet. Same interface everywhere. When a token calls <code>isVerified()</code>, the EASClaimVerifier queries these contracts — fetches the attestation, checks the schema matches, confirms the attester is trusted, verifies not revoked, verifies not expired. Five checks, one call, ~28,000 gas for a single topic.</p>
-
-          <p>Shibui didn't build a new scanner. It built the adapter — the EASClaimVerifier — that teaches ERC-3643 security tokens how to read attestations from scanners already installed in every airport. Publishing an attestation costs ~$0.07 on an L2. The institution absorbs that as infrastructure cost, same way an airline doesn't charge passengers for the scanner at the gate.</p>
-
-          <hr class="story-divider"/>
-
-          <p><strong>The full system, one frame:</strong></p>
-
-          <p>GLEIF accredits identity authorities — the sovereign layer. ISO 3166-1 and EAS schemas define the document format — the standard layer. Correspondent banking governs bilateral trust — the acceptance layer. The attesting institution and the token issuer govern revocation — the enforcement layer. EAS provides the on-chain infrastructure already live on 15+ chains — the reader network.</p>
-
-          <p>Shibui is the system architecture that connects them. Five roles, five layers, each with clear governance, all already operating independently. The missing piece was the wiring.</p>
-
-          <p><strong>One passport. Every airport. Every airline. Every country still sovereign.</strong></p>
+          <p><strong>In one sentence:</strong> Shibui is the shared passport format for tokenized assets — so verification becomes portable, and enforcement becomes universal.</p>
         </div>
       </details>
     </section>
