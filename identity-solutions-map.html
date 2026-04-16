@@ -24,6 +24,13 @@
     --purple: #9a7ad4;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
+
+    /* Vars used by the main Shibui top panel */
+    --max-width: 1200px;
+    --stroke: rgba(255,255,255,0.10);
+    --muted: rgba(232,240,248,0.62);
+    --brand: #61A8FF;
+    --brand2: #9B7BFF;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,44 +44,99 @@
     min-height: 100vh;
   }
 
-  /* HEADER */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 20px 32px 18px;
-    display: flex;
-    align-items: baseline;
-    gap: 24px;
+  /* TOP PANEL (match main Shibui site) */
+  .topbar {
     position: sticky;
     top: 0;
-    background: var(--bg);
-    z-index: 100;
-    backdrop-filter: blur(8px);
+    z-index: 200;
+    background: rgba(7,10,18,0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--stroke);
   }
 
-  .logo {
-    font-family: var(--mono);
+  .topbar-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+  }
+
+  .brand-mark {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand), var(--brand2));
+    box-shadow: 0 0 12px rgba(97,168,255,0.4);
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .brand-name {
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.4px;
+    color: var(--text-bright);
+  }
+
+  .brand-sub {
+    margin-top: 2px;
     font-size: 11px;
-    font-weight: 600;
-    color: var(--accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 0.2px;
   }
 
-  .title {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--text-dim);
-    letter-spacing: 0.02em;
+  .nav {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
   }
 
-  .count-badge {
-    margin-left: auto;
+  .nav a {
+    color: rgba(232,240,248,0.82);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .nav a:hover {
+    color: var(--text-bright);
+    background: rgba(97,168,255,0.08);
+    border-color: rgba(97,168,255,0.18);
+  }
+
+  .nav a.active {
+    background: rgba(97,168,255,0.14);
+    border-color: rgba(97,168,255,0.28);
+    color: var(--text-bright);
+  }
+
+  .count-pill {
     font-family: var(--mono);
     font-size: 10px;
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    padding: 3px 8px;
-    border-radius: 2px;
+    color: rgba(232,240,248,0.72);
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
   }
 
   /* FILTERS */
@@ -365,10 +427,24 @@
 </head>
 <body>
 
-<header>
-  <span class="logo">Shibui</span>
-  <span class="title">Identity Management Solutions — Reference Map</span>
-  <span class="count-badge" id="countBadge">28 solutions</span>
+<header class="topbar" id="top">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div class="brand-text">
+        <span class="brand-name">Shibui</span>
+        <span class="brand-sub">Enterprise Ethereum Alliance (EEA)</span>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Shibui navigation">
+      <a href="./index.html#why">Why</a>
+      <a href="./index.html#story">Story</a>
+      <a href="./index.html#how">How it works</a>
+      <a class="active" href="./identity-solutions-map.html">Reference map</a>
+      <span class="count-pill" id="countBadge">28 solutions</span>
+    </nav>
+  </div>
 </header>
 
 <div class="filter-bar">
