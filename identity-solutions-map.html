@@ -225,6 +225,22 @@
   .cat-pilot .card-accent-bar { background: var(--red); }
   .cat-travelrule .card-accent-bar { background: #d47a4a; }
 
+  /* Make EAS pop (subtle, readable) */
+  .card.highlight-eas {
+    background: linear-gradient(135deg, rgba(97,168,255,0.09), rgba(0,200,160,0.05)) , var(--surface);
+    box-shadow: inset 0 0 0 1px rgba(97,168,255,0.22);
+  }
+
+  .card.highlight-eas:hover {
+    background: linear-gradient(135deg, rgba(97,168,255,0.13), rgba(0,200,160,0.07)) , #141a22;
+    box-shadow: inset 0 0 0 1px rgba(97,168,255,0.35);
+  }
+
+  .card.highlight-eas .card-accent-bar {
+    background: linear-gradient(90deg, #61A8FF, #9B7BFF, #00c8a0);
+    height: 3px;
+  }
+
   /* Card header */
   .card-head {
     display: flex;
@@ -524,7 +540,7 @@
   </div>
 </div>
 
-<div class="card cat-onchain" data-cat="onchain" data-text="EAS Ethereum Attestation Service schemas attest">
+<div class="card cat-onchain highlight-eas" data-cat="onchain" data-text="EAS Ethereum Attestation Service schemas attest">
   <div class="card-accent-bar"></div>
   <div class="card-head">
     <span class="card-name">Ethereum Attestation Service (EAS)</span>
