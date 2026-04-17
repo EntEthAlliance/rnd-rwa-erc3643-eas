@@ -1,90 +1,92 @@
 # Gas Benchmarks
 
-Measured on Foundry (Solidity 0.8.24, optimizer 200 runs).
+Measured on Foundry (Solidity 0.8.24, optimizer 200 runs, via_ir enabled) against
+`test/integration/GasBenchmark.t.sol`. Refreshed post-refactor (PR #54 + follow-ups).
 
-## Verification (isVerified)
+> Reproduce with `forge test --match-contract GasBenchmarkTest -vvvv | grep GasUsed`.
 
-The core verification function checks if a wallet has valid attestations for all required claim topics.
+## Verification (`isVerified`)
 
-| Operation | Gas Cost | Notes |
-|-----------|----------|-------|
-| `isVerified()` — 1 topic | ~27,878 | Single KYC attestation check |
-| `isVerified()` — 3 topics | ~57,309 | KYC + accreditation + country |
-| `isVerified()` — 5 topics | ~86,808 | Full compliance suite |
+The core verification function is the hot path: one call per token transfer that
+involves a wallet the issuer's compliance module wants to gate. Post-refactor,
+the verifier invokes an `ITopicPolicy` per required topic and iterates the
+trusted-attester list (capped at `MAX_ATTESTERS_PER_TOPIC = 5`).
 
-Gas scales linearly with the number of required topics (~15,000 gas per additional topic).
+| Operation | Gas | Notes |
+|---|---:|---|
+| `isVerified()` — 1 topic (KYC) | **31,539** | `KYCStatusPolicy.validate()` + one EAS read |
+| `isVerified()` — 3 topics (KYC + country + accreditation) | **80,083** | Three policy invocations, single attestation covers all three |
+| `isVerified()` — 5 topics (KYC + AML + country + accreditation + sanctions) | **122,090** | Five policies against one Schema-v2 payload |
 
-## Attestation Operations
+Linear scaling: ~22,500 gas per additional topic after the fixed setup. The
+payload-aware verifier adds overhead (the decode + predicate) vs. the
+pre-refactor "does the attestation exist" check, which is the cost of actually
+enforcing regulatory semantics on-chain.
 
-| Operation | Gas Cost | Notes |
-|-----------|----------|-------|
-| Create EAS attestation | ~217,853 | KYC provider creates attestation via EAS |
-| Register attestation | ~33,907 | Register attestation UID in EASClaimVerifier |
+## Administration
 
-## Identity Operations
+| Operation | Gas | Notes |
+|---|---:|---|
+| `registerAttestation` | **53,393** | Attester pushes a UID to the verifier after attesting on EAS |
+| `addTrustedAttester` (with `authUID`) | **201,533** | Includes Schema-2 attestation lookup + subset check (audit C-5) |
+| `registerWallet` (identity proxy) | **79,029** | Wallet → identity binding by an AGENT_ROLE holder |
 
-| Operation | Gas Cost | Notes |
-|-----------|----------|-------|
-| Register wallet | ~76,019 | Link wallet to identity in EASIdentityProxy |
+## Cost estimates at 30 gwei
 
-## Trusted Attester Management
+| Operation | Gas | L1 (30 gwei) | USD @ $3000 ETH |
+|---|---:|---:|---:|
+| `isVerified` (1 topic) | 31,539 | 0.00095 ETH | ~$2.84 |
+| `isVerified` (3 topics) | 80,083 | 0.00240 ETH | ~$7.21 |
+| `isVerified` (5 topics) | 122,090 | 0.00366 ETH | ~$10.99 |
+| `registerAttestation` | 53,393 | 0.00160 ETH | ~$4.81 |
+| `addTrustedAttester` | 201,533 | 0.00605 ETH | ~$18.14 |
+| `registerWallet` | 79,029 | 0.00237 ETH | ~$7.11 |
 
-| Operation | Gas Cost | Notes |
-|-----------|----------|-------|
-| Add trusted attester | ~151,711 | Add KYC provider to trusted list |
+L2 execution (Base, Arbitrum, Optimism) is typically 1-2 orders of magnitude
+cheaper per op; use these numbers as an upper bound.
 
-## Cost Estimates at 30 gwei
+## Pre- vs post-refactor
 
-| Operation | Gas | Cost (30 gwei) | Cost (USD @ $3000 ETH) |
-|-----------|-----|----------------|------------------------|
-| Verify (1 topic) | 27,878 | 0.00084 ETH | $2.51 |
-| Verify (3 topics) | 57,309 | 0.00172 ETH | $5.16 |
-| Verify (5 topics) | 86,808 | 0.00260 ETH | $7.81 |
-| Create attestation | 217,853 | 0.00654 ETH | $19.61 |
-| Register attestation | 33,907 | 0.00102 ETH | $3.05 |
-| Register wallet | 76,019 | 0.00228 ETH | $6.84 |
-| Add trusted attester | 151,711 | 0.00455 ETH | $13.65 |
+The pre-refactor verifier used a single-slot cache (`_activeAttestations`)
+and did not call any policy module, so it was cheaper per call but regulatorily
+incorrect (it could not distinguish `kycStatus = VERIFIED` from
+`kycStatus = PENDING`). The new hot-path cost buys you:
 
-**Note:** Costs are significantly lower on L2s (Base, Arbitrum, Optimism) — typically 10-100x cheaper.
+1. Per-topic policy evaluation (audit C-1)
+2. Multi-attester resilience: a revoked or untrusted attester no longer
+   disables the investor (audit C-2)
+3. Admin audit trail: every trusted-attester change references a live EAS
+   Schema-2 attestation (audit C-5)
 
-## EAS vs ONCHAINID Comparison
+| | Pre-refactor | Post-refactor | Delta |
+|---|---:|---:|---:|
+| `isVerified(1 topic)` | ~27,878 | 31,539 | +13% |
+| `isVerified(3 topics)` | ~57,309 | 80,083 | +40% |
+| `isVerified(5 topics)` | ~86,808 | 122,090 | +41% |
 
-| Operation | EAS Bridge | ONCHAINID | Notes |
-|-----------|------------|-----------|-------|
-| Deploy identity | Not required | ~500,000 | EAS attestations don't require per-user contracts |
-| Verification (1 topic) | ~27,878 | ~35,000 | Similar, slight EAS advantage |
-| Verification (3 topics) | ~57,309 | ~80,000 | EAS more efficient for multiple topics |
-| Create attestation | ~217,853 | ~150,000 | ONCHAINID simpler claim storage |
+The jump at 3+ topics reflects the per-topic policy invocation cost — expected
+and acceptable given that the pre-refactor numbers were achieved by skipping
+the checks that make the system regulatorily useful.
 
-**Key insight:** EAS eliminates the per-user identity contract deployment cost (~500,000 gas), making it significantly cheaper for onboarding new investors.
+## Optimisation opportunities (V2)
 
-## L2 Cost Comparison
+- **Policy result caching** — memoise decoded payloads across topics that share
+  Schema 1 v2 (every topic except AML/sanctions in the typical setup uses the
+  same attestation; decoding once per call instead of per topic would recover
+  ~20-30% of the gas at 3+ topics).
+- **Bitmap-packed trusted-attester set** — replace the `address[]` per-topic
+  list with a fixed-size slot; drops the SLOAD count at the cost of an upper
+  bound on attester count.
+- **Off-chain attestation verification** — move from "registered on-chain" to
+  "presented via signed proof", so verification reads a single proof instead of
+  N EAS attestations. Deferred to V2.
 
-At typical L2 gas prices (0.01-0.1 gwei effective):
-
-| Operation | L1 (30 gwei) | Base/Arbitrum | Savings |
-|-----------|--------------|---------------|---------|
-| Verify (3 topics) | $5.16 | $0.02-0.17 | 97-99% |
-| Create attestation | $19.61 | $0.07-0.65 | 97-99% |
-| Register wallet | $6.84 | $0.03-0.23 | 97-99% |
-
-## Optimization Opportunities (V2)
-
-The current implementation prioritizes simplicity and correctness. Future optimizations could include:
-
-- **Batch attestation queries** — Reduce external calls by batching EAS reads
-- **Attestation caching** — Configurable TTL cache for frequently-verified addresses
-- **Merkle proof verification** — For off-chain attestation batches
-- **Bitmap topic checking** — Pack multiple topic checks into single storage reads
-
-## Running Benchmarks
-
-To reproduce these benchmarks:
+## Running the benchmarks
 
 ```bash
-# Run gas benchmark tests
-forge test --match-contract GasBenchmark -vvv
+# Gas emitted by the GasBenchmark tests (cheap and targeted)
+forge test --match-contract GasBenchmarkTest -vvvv 2>&1 | grep 'emit GasUsed'
 
-# Generate gas report
+# Full gas report (slower; covers every public/external entry point)
 forge test --gas-report
 ```
