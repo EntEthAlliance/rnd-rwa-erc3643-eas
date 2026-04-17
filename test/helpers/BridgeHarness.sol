@@ -177,8 +177,7 @@ abstract contract BridgeHarness is Test {
      *         (e.g. an already-deployed MockAttester in a dual-provider test).
      */
     function _trustAttester(address attester, uint256[] memory topics, string memory nameLabel) internal {
-        bytes32 authUID =
-            authorizer.attestIssuerAuthorization(SCHEMA_ISSUER_AUTHORIZATION, attester, topics, nameLabel);
+        bytes32 authUID = authorizer.attestIssuerAuthorization(SCHEMA_ISSUER_AUTHORIZATION, attester, topics, nameLabel);
         vm.prank(tokenIssuer);
         adapter.addTrustedAttester(attester, topics, authUID);
     }
@@ -214,10 +213,12 @@ abstract contract BridgeHarness is Test {
      * @notice Attests an investor-eligibility record and registers it for all
      *         provided topics.
      */
-    function _attestAndRegister(MockAttester attester, address identity, uint256[] memory topics, EligibilityData memory e)
-        internal
-        returns (bytes32 uid)
-    {
+    function _attestAndRegister(
+        MockAttester attester,
+        address identity,
+        uint256[] memory topics,
+        EligibilityData memory e
+    ) internal returns (bytes32 uid) {
         uid = attester.attestInvestorEligibility(
             SCHEMA_INVESTOR_ELIGIBILITY,
             identity,
@@ -278,6 +279,7 @@ abstract contract BridgeHarness is Test {
 
     function _setRequiredTopics(uint256[] memory topics) internal {
         for (uint256 i = 0; i < topics.length; i++) {
+            vm.prank(tokenIssuer);
             claimTopicsRegistry.addClaimTopic(topics[i]);
         }
     }

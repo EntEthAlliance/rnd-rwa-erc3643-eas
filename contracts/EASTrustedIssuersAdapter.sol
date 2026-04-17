@@ -187,8 +187,7 @@ contract EASTrustedIssuersAdapter is IEASTrustedIssuersAdapter, AccessControl {
         if (att.revocationTime != 0) revert IssuerAuthAttestationMissing();
         if (att.expirationTime != 0 && att.expirationTime <= block.timestamp) revert IssuerAuthAttestationMissing();
 
-        (address authIssuer, uint256[] memory authorizedTopics,) =
-            abi.decode(att.data, (address, uint256[], string));
+        (address authIssuer, uint256[] memory authorizedTopics,) = abi.decode(att.data, (address, uint256[], string));
 
         if (authIssuer != attester) revert IssuerAuthRecipientMismatch();
 

@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {AccessControlUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {UUPSUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {Initializable} from
-    "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {IEAS, Attestation} from "@eas/IEAS.sol";
 import {IEASClaimVerifier} from "../interfaces/IEASClaimVerifier.sol";
 import {IEASTrustedIssuersAdapter} from "../interfaces/IEASTrustedIssuersAdapter.sol";
@@ -23,12 +20,7 @@ import {ITopicPolicy} from "../policies/ITopicPolicy.sol";
  *      deployment exists so we are free to reorder. `__gap` is recomputed so the
  *      total slot budget remains constant for future upgrades.
  */
-contract EASClaimVerifierUpgradeable is
-    Initializable,
-    AccessControlUpgradeable,
-    UUPSUpgradeable,
-    IEASClaimVerifier
-{
+contract EASClaimVerifierUpgradeable is Initializable, AccessControlUpgradeable, UUPSUpgradeable, IEASClaimVerifier {
     // ============ Roles ============
 
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
@@ -63,12 +55,17 @@ contract EASClaimVerifierUpgradeable is
     function initialize(address initialAdmin) external initializer {
         if (initialAdmin == address(0)) revert ZeroAddressNotAllowed();
         __AccessControl_init();
-        __UUPSUpgradeable_init();
         _grantRole(DEFAULT_ADMIN_ROLE, initialAdmin);
         _grantRole(OPERATOR_ROLE, initialAdmin);
     }
 
-    function _authorizeUpgrade(address /*newImplementation*/ ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeUpgrade(
+        address /*newImplementation*/
+    )
+        internal
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {}
 
     // ============ Configuration ============
 

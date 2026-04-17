@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {AccessControlUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {UUPSUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {Initializable} from
-    "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {IEAS} from "@eas/IEAS.sol";
 import {Attestation} from "@eas/Common.sol";
 import {IEASTrustedIssuersAdapter} from "../interfaces/IEASTrustedIssuersAdapter.sol";
@@ -58,12 +55,17 @@ contract EASTrustedIssuersAdapterUpgradeable is
     function initialize(address initialAdmin) external initializer {
         if (initialAdmin == address(0)) revert ZeroAddressNotAllowed();
         __AccessControl_init();
-        __UUPSUpgradeable_init();
         _grantRole(DEFAULT_ADMIN_ROLE, initialAdmin);
         _grantRole(OPERATOR_ROLE, initialAdmin);
     }
 
-    function _authorizeUpgrade(address /*newImplementation*/ ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeUpgrade(
+        address /*newImplementation*/
+    )
+        internal
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {}
 
     // ============ Admin config ============
 
@@ -198,8 +200,7 @@ contract EASTrustedIssuersAdapterUpgradeable is
         if (att.revocationTime != 0) revert IssuerAuthAttestationMissing();
         if (att.expirationTime != 0 && att.expirationTime <= block.timestamp) revert IssuerAuthAttestationMissing();
 
-        (address authIssuer, uint256[] memory authorizedTopics,) =
-            abi.decode(att.data, (address, uint256[], string));
+        (address authIssuer, uint256[] memory authorizedTopics,) = abi.decode(att.data, (address, uint256[], string));
 
         if (authIssuer != attester) revert IssuerAuthRecipientMismatch();
 

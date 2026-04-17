@@ -138,9 +138,8 @@ contract PolicyDrivenVerificationTest is BridgeHarness {
         address otherAttester = makeAddr("other");
         uint256[] memory topics = _topicsArray(TOPIC_KYC);
 
-        bytes32 authUID = authorizer.attestIssuerAuthorization(
-            SCHEMA_ISSUER_AUTHORIZATION, otherAttester, topics, "wrong-recipient"
-        );
+        bytes32 authUID =
+            authorizer.attestIssuerAuthorization(SCHEMA_ISSUER_AUTHORIZATION, otherAttester, topics, "wrong-recipient");
 
         vm.prank(tokenIssuer);
         vm.expectRevert();

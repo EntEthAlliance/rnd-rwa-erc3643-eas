@@ -77,7 +77,8 @@ contract DeployBridge is Script {
         address inst = address(new InstitutionalInvestorPolicy());
 
         uint16[] memory defaultCountries = new uint16[](0);
-        address country = address(new CountryAllowListPolicy(admin, CountryAllowListPolicy.Mode.Allow, defaultCountries));
+        address country =
+            address(new CountryAllowListPolicy(admin, CountryAllowListPolicy.Mode.Allow, defaultCountries));
 
         uint8[] memory defaultAccreditations = new uint8[](0);
         address acc = address(new AccreditationPolicy(admin, defaultAccreditations));

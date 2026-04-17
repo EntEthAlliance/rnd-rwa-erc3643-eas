@@ -28,8 +28,7 @@ contract RegisterSchemas is Script {
     string constant INVESTOR_ELIGIBILITY_SCHEMA =
         "address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sourceOfFundsStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp,bytes32 evidenceHash,uint8 verificationMethod";
 
-    string constant ISSUER_AUTHORIZATION_SCHEMA =
-        "address issuerAddress,uint256[] authorizedTopics,string issuerName";
+    string constant ISSUER_AUTHORIZATION_SCHEMA = "address issuerAddress,uint256[] authorizedTopics,string issuerName";
 
     bytes32 public investorEligibilityUID;
     bytes32 public issuerAuthorizationUID;
@@ -71,12 +70,10 @@ contract RegisterSchemas is Script {
         console2.log("ISSUER_AUTHORIZATION_SCHEMA_UID=", vm.toString(issuerAuthorizationUID));
     }
 
-    function _registerSchemaIfNeeded(
-        ISchemaRegistry registry,
-        string memory schema,
-        address resolver,
-        bool revocable
-    ) internal returns (bytes32 uid) {
+    function _registerSchemaIfNeeded(ISchemaRegistry registry, string memory schema, address resolver, bool revocable)
+        internal
+        returns (bytes32 uid)
+    {
         uid = keccak256(abi.encodePacked(schema, resolver, revocable));
 
         try registry.getSchema(uid) returns (SchemaRecord memory record) {

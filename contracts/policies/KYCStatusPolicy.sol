@@ -17,7 +17,6 @@ contract KYCStatusPolicy is TopicPolicyBase {
 
     constructor() TopicPolicyBase(TOPIC_KYC, "KYCStatusPolicy") {}
 
-    /// @inheritdoc TopicPolicyBase
     function validate(Attestation calldata attestation) external view override returns (bool) {
         (bool ok, InvestorEligibility memory e) = _preflight(attestation.data);
         if (!ok) return false;

@@ -54,8 +54,7 @@ contract EASTrustedIssuersAdapterTest is BridgeHarness {
     function test_addTrustedAttester_requires_operator_role() public {
         MockAttester kyc = new MockAttester(address(eas), "KYC");
         uint256[] memory topics = _topicsArray(TOPIC_KYC);
-        bytes32 authUID =
-            authorizer.attestIssuerAuthorization(SCHEMA_ISSUER_AUTHORIZATION, address(kyc), topics, "KYC");
+        bytes32 authUID = authorizer.attestIssuerAuthorization(SCHEMA_ISSUER_AUTHORIZATION, address(kyc), topics, "KYC");
 
         address outsider = makeAddr("outsider");
         vm.prank(outsider);
@@ -74,9 +73,8 @@ contract EASTrustedIssuersAdapterTest is BridgeHarness {
     function test_updateAttesterTopics_requires_authUID() public {
         MockAttester kyc = _createAttester("KYC", _topicsArray(TOPIC_KYC));
         uint256[] memory newTopics = _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION);
-        bytes32 newAuth = authorizer.attestIssuerAuthorization(
-            SCHEMA_ISSUER_AUTHORIZATION, address(kyc), newTopics, "KYC-expanded"
-        );
+        bytes32 newAuth =
+            authorizer.attestIssuerAuthorization(SCHEMA_ISSUER_AUTHORIZATION, address(kyc), newTopics, "KYC-expanded");
         vm.prank(tokenIssuer);
         adapter.updateAttesterTopics(address(kyc), newTopics, newAuth);
         assertTrue(adapter.isAttesterTrusted(address(kyc), TOPIC_ACCREDITATION));

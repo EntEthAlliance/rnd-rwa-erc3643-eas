@@ -124,9 +124,7 @@ abstract contract TopicPolicyBase is ITopicPolicy {
             e.expirationTimestamp,
             e.evidenceHash,
             e.verificationMethod
-        ) = abi.decode(
-            data, (address, uint8, uint8, uint8, uint8, uint8, uint16, uint64, bytes32, uint8)
-        );
+        ) = abi.decode(data, (address, uint8, uint8, uint8, uint8, uint8, uint16, uint64, bytes32, uint8));
     }
 
     /**

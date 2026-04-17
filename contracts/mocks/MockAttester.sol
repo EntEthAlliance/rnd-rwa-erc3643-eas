@@ -75,12 +75,7 @@ contract MockAttester {
         AttestationRequest memory request = AttestationRequest({
             schema: schemaUID,
             data: AttestationRequestData({
-                recipient: recipient,
-                expirationTime: 0,
-                revocable: true,
-                refUID: bytes32(0),
-                data: data,
-                value: 0
+                recipient: recipient, expirationTime: 0, revocable: true, refUID: bytes32(0), data: data, value: 0
             })
         });
 
@@ -137,9 +132,7 @@ contract MockAttester {
             uint8 verificationMethod
         )
     {
-        return abi.decode(
-            data, (address, uint8, uint8, uint8, uint8, uint8, uint16, uint64, bytes32, uint8)
-        );
+        return abi.decode(data, (address, uint8, uint8, uint8, uint8, uint8, uint16, uint64, bytes32, uint8));
     }
 
     // ============ Issuer Authorization (Schema 2) ============
@@ -164,12 +157,7 @@ contract MockAttester {
         AttestationRequest memory request = AttestationRequest({
             schema: schemaUID,
             data: AttestationRequestData({
-                recipient: issuerAddress,
-                expirationTime: 0,
-                revocable: true,
-                refUID: bytes32(0),
-                data: data,
-                value: 0
+                recipient: issuerAddress, expirationTime: 0, revocable: true, refUID: bytes32(0), data: data, value: 0
             })
         });
 
@@ -211,12 +199,7 @@ contract MockAttester {
         AttestationRequest memory request = AttestationRequest({
             schema: schemaUID,
             data: AttestationRequestData({
-                recipient: recipient,
-                expirationTime: 0,
-                revocable: true,
-                refUID: refUID,
-                data: data,
-                value: 0
+                recipient: recipient, expirationTime: 0, revocable: true, refUID: refUID, data: data, value: 0
             })
         });
 

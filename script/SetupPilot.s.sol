@@ -97,9 +97,8 @@ contract SetupPilot is Script {
         authorizedTopics[1] = TOPIC_ACCREDITATION;
         authorizedTopics[2] = TOPIC_COUNTRY;
 
-        bytes32 authUID = authorizer.attestIssuerAuthorization(
-            ISSUER_AUTH_UID, address(kycProvider), authorizedTopics, "PilotKYC"
-        );
+        bytes32 authUID =
+            authorizer.attestIssuerAuthorization(ISSUER_AUTH_UID, address(kycProvider), authorizedTopics, "PilotKYC");
 
         adapter.addTrustedAttester(address(kycProvider), authorizedTopics, authUID);
 

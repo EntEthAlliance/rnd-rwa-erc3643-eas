@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {AccessControlUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {UUPSUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {Initializable} from
-    "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {IEASIdentityProxy} from "../interfaces/IEASIdentityProxy.sol";
 
 /**
@@ -17,12 +14,7 @@ import {IEASIdentityProxy} from "../interfaces/IEASIdentityProxy.sol";
  *      AGENT_ROLE holders are the only entities that may mutate wallet-identity
  *      bindings.
  */
-contract EASIdentityProxyUpgradeable is
-    Initializable,
-    AccessControlUpgradeable,
-    UUPSUpgradeable,
-    IEASIdentityProxy
-{
+contract EASIdentityProxyUpgradeable is Initializable, AccessControlUpgradeable, UUPSUpgradeable, IEASIdentityProxy {
     // ============ Roles ============
 
     bytes32 public constant AGENT_ROLE = keccak256("AGENT_ROLE");
@@ -56,12 +48,17 @@ contract EASIdentityProxyUpgradeable is
     function initialize(address initialAdmin) external initializer {
         if (initialAdmin == address(0)) revert ZeroAddressNotAllowed();
         __AccessControl_init();
-        __UUPSUpgradeable_init();
         _grantRole(DEFAULT_ADMIN_ROLE, initialAdmin);
         _grantRole(AGENT_ROLE, initialAdmin);
     }
 
-    function _authorizeUpgrade(address /*newImplementation*/ ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeUpgrade(
+        address /*newImplementation*/
+    )
+        internal
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {}
 
     // ============ Modifiers ============
 
