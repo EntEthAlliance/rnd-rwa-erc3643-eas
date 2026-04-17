@@ -36,11 +36,15 @@ We solve this by shipping a single, credible, demoable MVP path institutions can
 ## MVP Scope
 
 ## In Scope
-- `EASClaimVerifier` (core verification)
-- `EASTrustedIssuersAdapter` (attester trust controls)
-- `EASIdentityProxy` (wallet↔identity mapping)
-- `EASClaimVerifierIdentityWrapper` (zero-mod integration mode)
+- `EASClaimVerifier` (payload-aware verification via topic policies)
+- `EASTrustedIssuersAdapter` (Schema-2-gated attester trust; `authUID`-backed)
+- `EASIdentityProxy` (AGENT_ROLE-gated wallet↔identity mapping)
+- `EASClaimVerifierIdentityWrapper` (read-compat shim; see wrapper NatSpec for what it does NOT do)
+- `TrustedIssuerResolver` (EAS resolver that gates Schema-2 writes)
+- `ITopicPolicy` + 8 policy modules (KYC, AML, country allow-list, accreditation, professional, institutional, sanctions, source-of-funds)
+- Schema 1 v2 (with `evidenceHash` and `verificationMethod`)
 - UUPS proxy-based deployment path and operational docs
+- AccessControl administration (DEFAULT_ADMIN_ROLE, OPERATOR_ROLE, AGENT_ROLE)
 - Validation and demo flow
 
 ## Out of Scope
