@@ -31,6 +31,11 @@ interface IEASClaimVerifier {
     /// @param registryAddress The new claim topics registry address
     event ClaimTopicsRegistrySet(address indexed registryAddress);
 
+    /// @notice Emitted when a topic policy contract is set (audit finding C-1).
+    /// @param claimTopic The ERC-3643 claim topic ID
+    /// @param policy The ITopicPolicy contract bound to this topic
+    event TopicPolicySet(uint256 indexed claimTopic, address indexed policy);
+
     // ============ Errors ============
 
     /// @notice Thrown when EAS address is not configured
@@ -48,6 +53,13 @@ interface IEASClaimVerifier {
 
     /// @notice Thrown when attempting to set zero address
     error ZeroAddressNotAllowed();
+
+    /// @notice Thrown when a required identity proxy has not been configured (audit finding C-6).
+    error IdentityProxyNotConfigured();
+
+    /// @notice Thrown when no policy is configured for a required claim topic (audit finding C-1).
+    /// @param claimTopic The topic with no bound policy
+    error PolicyNotConfiguredForTopic(uint256 claimTopic);
 
     // ============ View Functions ============
 
@@ -138,4 +150,21 @@ interface IEASClaimVerifier {
      * @param registryAddress The claim topics registry contract address
      */
     function setClaimTopicsRegistry(address registryAddress) external;
+
+    /**
+     * @notice Binds a policy module to a claim topic (audit finding C-1).
+     * @dev Only callable by an operator role. Passing `address(0)` clears the
+     *      binding; `isVerified()` will then reject any required topic that
+     *      lacks a bound policy.
+     * @param claimTopic The ERC-3643 claim topic ID
+     * @param policy An ITopicPolicy implementation, or zero to clear
+     */
+    function setTopicPolicy(uint256 claimTopic, address policy) external;
+
+    /**
+     * @notice Returns the policy address bound to a claim topic.
+     * @param claimTopic The topic ID
+     * @return The policy address (zero if unset)
+     */
+    function getTopicPolicy(uint256 claimTopic) external view returns (address);
 }

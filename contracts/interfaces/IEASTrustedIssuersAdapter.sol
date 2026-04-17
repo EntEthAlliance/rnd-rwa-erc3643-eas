@@ -24,6 +24,10 @@ interface IEASTrustedIssuersAdapter {
     /// @param claimTopics The new claim topics the attester is authorized for
     event AttesterTopicsUpdated(address indexed attester, uint256[] claimTopics);
 
+    /// @notice Emitted when the Issuer Authorization (Schema 2) UID is set.
+    /// @param schemaUID The EAS schema UID used to validate authUIDs on `addTrustedAttester`
+    event IssuerAuthSchemaUIDSet(bytes32 indexed schemaUID);
+
     // ============ Errors ============
 
     /// @notice Thrown when attempting to add zero address as attester
@@ -37,6 +41,21 @@ interface IEASTrustedIssuersAdapter {
 
     /// @notice Thrown when claim topics array is empty
     error EmptyClaimTopics();
+
+    /// @notice Thrown when `addTrustedAttester` is called before the Schema 2 UID is configured.
+    error IssuerAuthSchemaUIDNotSet();
+
+    /// @notice Thrown when the `authUID` does not resolve to a live Schema 2 attestation.
+    error IssuerAuthAttestationMissing();
+
+    /// @notice Thrown when the Schema-2 attestation's `issuerAddress` does not equal the attester being added.
+    error IssuerAuthRecipientMismatch();
+
+    /// @notice Thrown when the `claimTopics` argument is not a subset of the Schema-2 `authorizedTopics`.
+    error IssuerAuthTopicsNotAuthorized();
+
+    /// @notice Thrown when EAS has not been configured on the adapter (required for authUID lookup).
+    error EASNotConfigured();
 
     // ============ View Functions ============
 
@@ -78,25 +97,56 @@ interface IEASTrustedIssuersAdapter {
     // ============ Mutative Functions ============
 
     /**
-     * @notice Adds a trusted attester for specific claim topics
-     * @dev Only callable by owner or agent
+     * @notice Adds a trusted attester for specific claim topics.
+     * @dev Only callable by an operator role. Audit finding C-5: every add MUST be
+     *      backed by a live EAS Schema-2 (Issuer Authorization) attestation whose
+     *      `recipient` equals `attester` and whose `authorizedTopics` contain
+     *      every entry of `claimTopics`. The adapter verifies the attestation
+     *      before updating trust state. The Schema-2 resolver gates who can
+     *      create such attestations (see `TrustedIssuerResolver`).
      * @param attester The address to add as trusted attester
      * @param claimTopics The claim topics the attester is authorized for
+     * @param authUID The EAS attestation UID evidencing this authorization
      */
-    function addTrustedAttester(address attester, uint256[] calldata claimTopics) external;
+    function addTrustedAttester(address attester, uint256[] calldata claimTopics, bytes32 authUID) external;
 
     /**
      * @notice Removes a trusted attester
-     * @dev Only callable by owner or agent
+     * @dev Only callable by an operator role.
      * @param attester The attester address to remove
      */
     function removeTrustedAttester(address attester) external;
 
     /**
-     * @notice Updates the claim topics a trusted attester is authorized for
-     * @dev Only callable by owner or agent
+     * @notice Updates the claim topics a trusted attester is authorized for.
+     * @dev Only callable by an operator role. The same Schema-2 `authUID` check
+     *      as `addTrustedAttester` is applied to the new topic set.
      * @param attester The attester address to update
      * @param claimTopics The new claim topics the attester is authorized for
+     * @param authUID The EAS attestation UID evidencing this authorization
      */
-    function updateAttesterTopics(address attester, uint256[] calldata claimTopics) external;
+    function updateAttesterTopics(address attester, uint256[] calldata claimTopics, bytes32 authUID) external;
+
+    /**
+     * @notice Sets the EAS schema UID used to validate `authUID` on trust changes.
+     * @dev Only callable by an admin role. Must be set before `addTrustedAttester`.
+     * @param schemaUID The Schema 2 (Issuer Authorization) UID
+     */
+    function setIssuerAuthSchemaUID(bytes32 schemaUID) external;
+
+    /**
+     * @notice Returns the configured Issuer Authorization schema UID.
+     */
+    function getIssuerAuthSchemaUID() external view returns (bytes32);
+
+    /**
+     * @notice Sets the EAS contract address used for authUID lookups.
+     * @dev Only callable by an admin role.
+     */
+    function setEASAddress(address easAddress) external;
+
+    /**
+     * @notice Returns the configured EAS contract address (or zero if unset).
+     */
+    function getEASAddress() external view returns (address);
 }
