@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Identity Solutions — Shibui Reference Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111418;
+    --border: #1e2530;
+    --border-bright: #2e3a4a;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #e8f0f8;
+    --accent: #00c8a0;
+    --accent-dim: rgba(0,200,160,0.12);
+    --accent-mid: rgba(0,200,160,0.25);
+    --red: #e05050;
+    --yellow: #d4a843;
+    --blue: #4a9cd4;
+    --purple: #9a7ad4;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .title {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  .count-badge {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  /* FILTERS */
+  .filter-bar {
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+  .search-input {
+    margin-left: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 2px;
+    width: 200px;
+    outline: none;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text-dim); }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 0;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    padding: 20px 22px 18px;
+    transition: background 0.15s;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .card:hover { background: #141a22; }
+
+  .card-accent-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  /* Category colors */
+  .cat-onchain .card-accent-bar { background: var(--accent); }
+  .cat-credential .card-accent-bar { background: var(--blue); }
+  .cat-traditional .card-accent-bar { background: var(--yellow); }
+  .cat-institutional .card-accent-bar { background: var(--purple); }
+  .cat-pilot .card-accent-bar { background: var(--red); }
+  .cat-travelrule .card-accent-bar { background: #d47a4a; }
+
+  /* Card header */
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+
+  .card-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-bright);
+    letter-spacing: 0.03em;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 1px;
+    white-space: nowrap;
+  }
+
+  .tag-onchain { background: rgba(0,200,160,0.1); color: var(--accent); border: 1px solid rgba(0,200,160,0.2); }
+  .tag-credential { background: rgba(74,156,212,0.1); color: var(--blue); border: 1px solid rgba(74,156,212,0.2); }
+  .tag-traditional { background: rgba(212,168,67,0.1); color: var(--yellow); border: 1px solid rgba(212,168,67,0.2); }
+  .tag-institutional { background: rgba(154,122,212,0.1); color: var(--purple); border: 1px solid rgba(154,122,212,0.2); }
+  .tag-pilot { background: rgba(224,80,80,0.1); color: var(--red); border: 1px solid rgba(224,80,80,0.2); }
+  .tag-travelrule { background: rgba(212,122,74,0.1); color: #d47a4a; border: 1px solid rgba(212,122,74,0.2); }
+
+  .card-led {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .led-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+
+  /* Adoption / Limitation rows */
+  .card-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .meta-block {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 8px 10px;
+  }
+
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .meta-value {
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .meta-value.adoption { color: var(--accent); }
+  .meta-value.limitation { color: #c8a060; }
+
+  /* Links */
+  .card-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-link {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 2px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .card-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .card-link::before { content: '↗'; font-size: 9px; }
+
+  /* Adoption indicator */
+  .adoption-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .adoption-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .adot {
+    width: 6px; height: 6px;
+    border-radius: 1px;
+    background: var(--border-bright);
+  }
+
+  .adot.filled { background: var(--accent); }
+
+  .adoption-text {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* HIDDEN */
+  .card.hidden { display: none; }
+
+  /* Section headers */
+  .section-header {
+    grid-column: 1 / -1;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 22px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .no-results {
+    grid-column: 1 / -1;
+    padding: 60px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 32px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">Shibui</span>
+  <span class="title">Identity Management Solutions — Reference Map</span>
+  <span class="count-badge" id="countBadge">28 solutions</span>
+</header>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter</span>
+  <button class="filter-btn active" onclick="filter('all',this)">All</button>
+  <button class="filter-btn" onclick="filter('onchain',this)">On-Chain</button>
+  <button class="filter-btn" onclick="filter('credential',this)">Credential Standards</button>
+  <button class="filter-btn" onclick="filter('traditional',this)">Traditional Finance</button>
+  <button class="filter-btn" onclick="filter('institutional',this)">Institutional Platforms</button>
+  <button class="filter-btn" onclick="filter('pilot',this)">CB / Pilot Programs</button>
+  <button class="filter-btn" onclick="filter('travelrule',this)">Travel Rule</button>
+  <input class="search-input" id="searchInput" placeholder="Search solutions..." oninput="search(this.value)">
+</div>
+
+<div class="grid" id="grid">
+
+<!-- ─── ON-CHAIN ─── -->
+<div class="section-header cat-onchain" data-cat="onchain">
+  <span>On-Chain Identity &amp; Compliance Primitives</span>
+  <span class="section-line"></span>
+</div>
+
+<div class="card cat-onchain" data-cat="onchain" data-text="ERC-3643 T-REX ONCHAINID Tokeny security token compliance">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">ERC-3643 / T-REX</span>
+    <div class="card-tags"><span class="tag tag-onchain">On-Chain</span><span class="tag tag-onchain">Standard</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Tokeny Solutions — co-authored by Joachim Lebrun</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">High adoption</span>
+  </div>
+  <div class="card-desc">The leading standard for regulated security tokens on Ethereum. Defines a six-contract compliance framework: token, identity registry, claim topics registry, trusted issuers registry, modular compliance. Each investor needs an ONCHAINID smart contract storing signed claims (KYC, accreditation, jurisdiction, AML). Enforces transfer restrictions on-chain deterministically.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Blackrock, ABN AMRO, Société Générale Forge. 12%+ of tokenized RWA by standard. 15+ chains. Formal Ethereum EIP.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Per-token identity silos. No ZK-native privacy — country codes visible on-chain. ~1.5M gas per investor contract. Claim topics not globally standardized. ONCHAINID tooling is vendor-specific (Tokeny).</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://eips.ethereum.org/EIPS/eip-3643" target="_blank">EIP-3643</a>
+    <a class="card-link" href="https://github.com/ERC-3643/ERC-3643" target="_blank">GitHub</a>
+    <a class="card-link" href="https://tokeny.com/erc3643" target="_blank">Tokeny</a>
+  </div>
+</div>
+
+<div class="card cat-onchain" data-cat="onchain" data-text="ONCHAINID ERC-734 ERC-735 identity contract claims">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">ONCHAINID (ERC-734/735)</span>
+    <div class="card-tags"><span class="tag tag-onchain">On-Chain</span><span class="tag tag-onchain">Identity</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Tokeny Solutions</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Moderate adoption</span>
+  </div>
+  <div class="card-desc">The default identity backend for ERC-3643. Each investor deploys a smart contract as their on-chain identity (ERC-734: key management; ERC-735: claim storage). Claims are signed by trusted issuers and stored in the identity contract. Any smart contract can verify claims by calling the identity contract. Open source contracts, but practical tooling is Tokeny-specific.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Deployed alongside every ERC-3643 token. Used in production by Société Générale Forge, ABN AMRO, and ~50+ token issuers.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">~1.5M gas per contract deployment. No cross-chain portability. No ZK privacy. Tooling lock-in to Tokeny SDKs. ERC-734/735 never formally finalized as ERC standards.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://docs.onchainid.com" target="_blank">Docs</a>
+    <a class="card-link" href="https://github.com/onchain-id/solidity" target="_blank">GitHub</a>
+  </div>
+</div>
+
+<div class="card cat-onchain" data-cat="onchain" data-text="EAS Ethereum Attestation Service schemas attest">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Ethereum Attestation Service (EAS)</span>
+    <div class="card-tags"><span class="tag tag-onchain">On-Chain</span><span class="tag tag-onchain">Protocol</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Ethereum Foundation / attest.org — open source</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">High adoption</span>
+  </div>
+  <div class="card-desc">A two-contract system (SchemaRegistry + EAS) enabling anyone to register schemas and issue attestations on-chain or off-chain. Each attestation carries: recipient, attester, schema, data, expiry, revocability, and a refUID enabling attestation chaining. Off-chain attestations use EIP-712 signatures at zero cost. Supports Merkle-root private data with selective disclosure. Deployed on 15+ EVM chains.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Coinbase, Optimism, Base, Gitcoin Passport, Worldcoin. 15+ chains deployed. Used by Shibui as identity substrate.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">No canonical financial schemas — schema proliferation risk. No native trust framework (who is a trusted attester?). On-chain attestations are public by default. No ZK-native verification circuit.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://docs.attest.org" target="_blank">Docs</a>
+    <a class="card-link" href="https://github.com/ethereum-attestation-service" target="_blank">GitHub</a>
+    <a class="card-link" href="https://attest.org" target="_blank">attest.org</a>
+  </div>
+</div>
+
+<div class="card cat-onchain" data-cat="onchain" data-text="ERC-7943 uRWA canSend canReceive canTransfer universal RWA interface">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">ERC-7943 (uRWA)</span>
+    <div class="card-tags"><span class="tag tag-onchain">On-Chain</span><span class="tag tag-onchain">Interface</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by community — EIP authors: multiple contributors</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Early adoption</span>
+  </div>
+  <div class="card-desc">Universal Real World Asset interface defining three view functions — canSend(), canReceive(), canTransfer() — that abstract the identity/compliance system behind a standard hook. Any token standard (ERC-20, ERC-721, ERC-1155) can implement this interface. The compliance system behind it is fully pluggable. Costs 5–10k gas per check vs 50k+ for full ERC-3643 modular compliance.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Referenced by Shibui. Growing recognition as the right abstraction layer. Adopted as the interface pattern for next-gen compliance contracts.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Interface only — says nothing about what checks happen inside. No metadata or credential standards. Not yet widely deployed in production. Standard still maturing.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://eips.ethereum.org/EIPS/eip-7943" target="_blank">EIP-7943</a>
+    <a class="card-link" href="https://ercs.ethereum.org/ERCS/erc-7943" target="_blank">ERC Spec</a>
+  </div>
+</div>
+
+<div class="card cat-onchain" data-cat="onchain" data-text="Polygon ID Privado ZK credential identity zero knowledge proof">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Polygon ID (Privado ID)</span>
+    <div class="card-tags"><span class="tag tag-onchain">On-Chain</span><span class="tag tag-onchain">ZK</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Polygon Labs → rebranded Privado ID (2024)</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Growing adoption</span>
+  </div>
+  <div class="card-desc">W3C VC-based identity system with native ZK proof generation. Uses Iden3 circuits (credentialAtomicQuerySigV2 / MTPV2) to prove credential predicates (e.g. "age ≥ 18", "accredited = true") on-chain via Groth16 proofs without revealing the credential. The EmbeddedZKPVerifier contract gates smart-contract functions behind ZK proof verification. Issuer ecosystem for financial credentials is limited.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Deployed on Polygon, Ethereum, and L2s. Used by DeFi protocols for KYC-gating. Strongest ZK credential model surveyed.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">No regulated financial credential issuer ecosystem. Proving time is non-trivial. No canonical financial schemas. Issuer infrastructure requires technical depth. Rebrand disrupted ecosystem momentum.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://docs.privado.id" target="_blank">Docs</a>
+    <a class="card-link" href="https://github.com/0xPolygonID" target="_blank">GitHub</a>
+  </div>
+</div>
+
+<div class="card cat-onchain" data-cat="onchain" data-text="Securitize DS Protocol tokenized securities investor registry">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Securitize DS Protocol</span>
+    <div class="card-tags"><span class="tag tag-onchain">On-Chain</span><span class="tag tag-institutional">Platform</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Securitize — Carlos Domingo, CEO</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">High adoption</span>
+  </div>
+  <div class="card-desc">Proprietary compliance protocol for tokenized securities. v4 uses investor-centric identity model (multiple wallets per investor identity) with EIP-712 attestations. Centralized registry tracks compliance status per investor. Platform manages KYC, AML, accreditation via partner network. Handles BlackRock BUIDL, KKR, Hamilton Lane funds. Largest tokenized fund platform by AUM.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">BlackRock BUIDL ($2B+). KKR, Hamilton Lane, Apollo funds. SEC-registered transfer agent. Dominant US platform for tokenized private securities.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Proprietary — not ERC-3643 compatible. No cross-platform credential portability. Investor credentials locked to Securitize. Centralized registry creates single point of failure. No open standard.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://securitize.io" target="_blank">Securitize</a>
+    <a class="card-link" href="https://medium.com/securitize/ds-protocol-the-basic-elements-23fabcb5c85f" target="_blank">Protocol Post</a>
+  </div>
+</div>
+
+<!-- ─── CREDENTIAL STANDARDS ─── -->
+<div class="section-header cat-credential" data-cat="credential">
+  <span>Credential &amp; Sovereign Identity Standards</span>
+  <span class="section-line"></span>
+</div>
+
+<div class="card cat-credential" data-cat="credential" data-text="W3C Verifiable Credentials DID VC VP selective disclosure BBS+">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">W3C Verifiable Credentials 2.0</span>
+    <div class="card-tags"><span class="tag tag-credential">Standard</span><span class="tag tag-credential">VC</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by W3C Credentials Community Group — Manu Sporny (Digital Bazaar)</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">High adoption (institutional)</span>
+  </div>
+  <div class="card-desc">The canonical credential envelope standard (W3C Recommendation, May 2025). Fields: @context, type, issuer, validFrom, validUntil, credentialSubject, credentialStatus, proof. BBS+ cryptosuite (bbs-2023) enables unlinkable selective disclosure — a holder derives proofs revealing only chosen attributes. Bitstring Status List handles revocation. SD-JWT variant (RFC 9901) enables selective disclosure for JSON credentials.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">eIDAS 2.0 mandates SD-JWT + mdoc. Used by Project Guardian, JPM Project EPIC, FATF TAP protocol, EBSI (EU). The dominant standard for institutional digital credentials.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">No canonical financial schemas — each issuer defines their own. JSON-LD parsing complexity. Multiple proof formats (BBS+, SD-JWT, Data Integrity) fragment the ecosystem. No on-chain native integration path.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.w3.org/TR/vc-data-model-2.0/" target="_blank">W3C Spec</a>
+    <a class="card-link" href="https://w3c.github.io/vc-overview/" target="_blank">Overview</a>
+    <a class="card-link" href="https://datatracker.ietf.org/doc/draft-ietf-oauth-selective-disclosure-jwt/" target="_blank">SD-JWT RFC</a>
+  </div>
+</div>
+
+<div class="card cat-credential" data-cat="credential" data-text="GLEIF vLEI verifiable LEI entity identity KERI ACDC">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">GLEIF vLEI (ISO 17442-3)</span>
+    <div class="card-tags"><span class="tag tag-credential">Standard</span><span class="tag tag-credential">Entity ID</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by GLEIF (Global Legal Entity Identifier Foundation) — Stephan Wolf, CEO</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Growing — early institutional</span>
+  </div>
+  <div class="card-desc">Verifiable LEI credential system on top of the 2M+ LEI registry. Trust chain: GLEIF Root → Qualified vLEI Issuer (QVI) → Legal Entity VC → Official Organizational Role (OOR) / Engagement Context Role (ECR). Built on KERI (Key Event Receipt Infrastructure) with self-certifying identifiers and ACDC (Authentic Chained Data Containers). Designed as the canonical financial entity identifier for digital credentials.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">ISO 17442-3:2024 published. Piloted by ESMA, BIS, major banks. FATF 2024 update expands Travel Rule to LEI. BIS CPMI harmonization initiative. ~2M LEIs globally.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">KERI/ACDC tooling ecosystem is nascent. Not yet Ethereum-native — no on-chain verification contract. QVI ecosystem small. GLEIF issuance process is not real-time. Individual (natural person) identity requires separate framework.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.gleif.org/en/organizational-identity/lei-vlei/the-verifiable-lei-vlei" target="_blank">GLEIF</a>
+    <a class="card-link" href="https://github.com/GLEIF-IT/vLEI-schema" target="_blank">Schema Repo</a>
+    <a class="card-link" href="https://rapidlei.com/vlei/" target="_blank">RapidLEI</a>
+  </div>
+</div>
+
+<div class="card cat-credential" data-cat="credential" data-text="eIDAS EUDIW EU Digital Identity Wallet PID mDL OpenID4VC">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">eIDAS 2.0 / EUDIW</span>
+    <div class="card-tags"><span class="tag tag-credential">Regulation</span><span class="tag tag-credential">EU</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by European Commission — DG CONNECT</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">Mandatory by Dec 2026 (EU)</span>
+  </div>
+  <div class="card-desc">Government-mandated digital identity wallet framework for EU citizens. Person Identification Data (PID) carries 30+ attributes (name, birth date, nationality, address) with mandatory selective disclosure in SD-JWT and ISO 18013-5 (mdoc) formats. Uses OpenID4VCI for issuance and OpenID4VP for presentation. Banks and PSPs must accept EUDIW for Strong Customer Authentication by December 2027. Authentic Sources include financial and company data.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Mandated across EU 27 member states. December 2026 wallet availability deadline. December 2027 bank/PSP acceptance deadline. Largest government-driven digital identity deployment globally.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">EU-only scope. Implementation fragmented across member states. No direct on-chain integration path defined. mdoc and SD-JWT format split creates dual implementation burden. Natural persons only — no entity identity coverage.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://eu-digital-identity-wallet.github.io/eudi-doc-architecture-and-reference-framework/" target="_blank">ARF Docs</a>
+    <a class="card-link" href="https://eudi.dev" target="_blank">EUDI Dev</a>
+  </div>
+</div>
+
+<div class="card cat-credential" data-cat="credential" data-text="DID Decentralized Identifier W3C did:web did:key did:pkh">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">W3C DID (Decentralized Identifiers)</span>
+    <div class="card-tags"><span class="tag tag-credential">Standard</span><span class="tag tag-credential">Identity</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by W3C Decentralized Identifiers Working Group</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Moderate adoption</span>
+  </div>
+  <div class="card-desc">A W3C Recommendation (2022) defining a URI scheme for verifiable, self-sovereign digital identifiers independent of any centralized registry. A DID resolves to a DID Document containing public keys, verification methods, and service endpoints. Methods include did:web (domain-anchored), did:key (self-describing), did:pkh (blockchain address), did:ethr (Ethereum), and 100+ others. Foundation for W3C VC issuers and holders.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Used by FATF TAP protocol, EUDIW (did:web for issuer), vLEI ecosystem, EBSI. Foundational identifier layer for all W3C VC deployments.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">100+ DID methods create fragmentation. did:web relies on DNS/HTTP — centralized dependency. No single resolver standard. Method quality varies enormously. Key rotation complexity. No financial sector canonical DID method defined.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.w3.org/TR/did-core/" target="_blank">W3C Spec</a>
+    <a class="card-link" href="https://dev.uniresolver.io" target="_blank">Universal Resolver</a>
+  </div>
+</div>
+
+<div class="card cat-credential" data-cat="credential" data-text="Spruce DIDKit Veramo SpruceID credential toolkit developer">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">SpruceID / DIDKit</span>
+    <div class="card-tags"><span class="tag tag-credential">Tooling</span><span class="tag tag-credential">VC</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Spruce Systems — Wayne Chang, CEO</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Developer adoption</span>
+  </div>
+  <div class="card-desc">Open-source toolkit for W3C DID and VC operations. DIDKit provides cross-platform credential issuance, verification, and wallet capabilities in Rust/WASM/FFI. Rebase provides credential schema registry. SpruceID Wallet offers EVM-native credential storage. Used by state/government identity pilots (Colorado mDL) and enterprise blockchain identity. Ethereum Login (EIP-4361) co-authored by Spruce.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Colorado digital driver's license. EIP-4361 (Sign-In with Ethereum) standard. Used by FATF TAP reference implementation. Open source with active community.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">No financial-sector credential schemas. Limited institutional issuer ecosystem. Developer-oriented — requires significant integration work. No production financial identity deployments documented.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://spruceid.com" target="_blank">SpruceID</a>
+    <a class="card-link" href="https://github.com/spruceid/didkit" target="_blank">DIDKit</a>
+  </div>
+</div>
+
+<!-- ─── TRADITIONAL FINANCE ─── -->
+<div class="section-header cat-traditional" data-cat="traditional">
+  <span>Traditional Finance Identity &amp; Messaging Infrastructure</span>
+  <span class="section-line"></span>
+</div>
+
+<div class="card cat-traditional" data-cat="traditional" data-text="ISO 20022 LEI BIC party identification financial messaging">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">ISO 20022</span>
+    <div class="card-tags"><span class="tag tag-traditional">Standard</span><span class="tag tag-traditional">Messaging</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by ISO TC68 — maintained by SWIFT as Registration Authority</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span></div>
+    <span class="adoption-text">Universal in traditional finance</span>
+  </div>
+  <div class="card-desc">The global standard for financial messaging. Its PartyIdentification component carries LEI, BIC, structured addresses (15 fields), and private-identification fields (national ID, passport, tax ID, date/place of birth). Party roles span debtor, creditor, instructing/instructed agents, intermediary agents, ultimate debtor/creditor. Securities settlement messages (sese.023) carry full party chains with CSD identifiers. Mandatory for all major payment systems by 2025.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Mandatory in SWIFT, TARGET2, Fedwire, CHAPS, SEPA. $5T+ daily. All major CSDs. The richest party-identification model in global production finance.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Assumes confidential point-to-point channels — not designed for public ledgers. No cryptographic binding between party ID and on-chain address. Not machine-verifiable in real time. Schema complexity is enormous.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.iso20022.org" target="_blank">ISO 20022</a>
+    <a class="card-link" href="https://www.swift.com/standards/iso-20022/iso-20022-standards" target="_blank">SWIFT</a>
+  </div>
+</div>
+
+<div class="card cat-traditional" data-cat="traditional" data-text="GLEIF LEI Legal Entity Identifier ISO 17442 entity identity 2 million">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">LEI / GLEIF Registry</span>
+    <div class="card-tags"><span class="tag tag-traditional">Standard</span><span class="tag tag-traditional">Entity ID</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by GLEIF — governed by Financial Stability Board (FSB)</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span></div>
+    <span class="adoption-text">Mandatory for regulated entities</span>
+  </div>
+  <div class="card-desc">ISO 17442 — a 20-character alphanumeric code identifying legal entities globally. The GLEIF database holds 2M+ LEIs with associated legal name, registered address, parent/child entity relationships, and status. Required by MiFID II, EMIR, Dodd-Frank, and FATF Travel Rule. The global standard for legal entity identification in finance. Public, queryable API with full entity data.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">2M+ LEIs. Mandatory for regulated entities in EU, US, and 40+ jurisdictions. Required in SWIFT messages, securities filings, derivatives reporting. The anchor for vLEI.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Annual renewal — can be lapsed. No cryptographic verifiability (vLEI solves this). Covers legal entities only — no natural persons. Renewal process can be slow for new entities.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.gleif.org/en/organizational-identity/lei-vlei/the-legal-entity-identifier-lei" target="_blank">GLEIF</a>
+    <a class="card-link" href="https://search.gleif.org" target="_blank">LEI Search</a>
+  </div>
+</div>
+
+<div class="card cat-traditional" data-cat="traditional" data-text="FIX Protocol party identification PartyRole PartyIDSource execution settlement">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">FIX Protocol — Parties Block</span>
+    <div class="card-tags"><span class="tag tag-traditional">Standard</span><span class="tag tag-traditional">Trading</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by FIX Trading Community</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span></div>
+    <span class="adoption-text">Universal in electronic trading</span>
+  </div>
+  <div class="card-desc">The Parties component block (PartyID + PartyIDSource + PartyRole) is the most flexible identity model in trade execution. Supports 14+ identifier types (BIC, LEI, CSD code, FDID, national ID) via PartyIDSource and 30+ roles (executing firm, clearing firm, custodian, beneficiary, sub-custodian) via PartyRole. Settlement-specific roles (values 27–32) define the full DvP counterparty chain. Used in every equity and derivatives trade on every major exchange.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Used by every electronic trading venue globally. NYSE, NASDAQ, CME, LSE, Euronext. The de facto standard for order, execution, and settlement identity in capital markets.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Point-to-point — no public verifiability. Identifiers are not cryptographically bound to parties. No DLT integration path defined. Role taxonomy is extensive but static.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.fixtrading.org/standards/" target="_blank">FIX Standards</a>
+    <a class="card-link" href="https://www.onixs.biz/fix-dictionary/5.0.sp2/app_6_g.html" target="_blank">Parties Reference</a>
+  </div>
+</div>
+
+<div class="card cat-traditional" data-cat="traditional" data-text="ISDA CDM Common Domain Model derivatives trade lifecycle party">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">ISDA CDM 6.0</span>
+    <div class="card-tags"><span class="tag tag-traditional">Standard</span><span class="tag tag-traditional">Derivatives</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by ISDA — maintained by FINOS (Fintech Open Source Foundation)</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Growing institutional adoption</span>
+  </div>
+  <div class="card-desc">Open-source standard model for financial products, trades, and lifecycle events. Party model: {partyId: PartyIdentifier[], name, businessUnit, person: NaturalPerson[], account}. Models 19+ lifecycle events (settlement, transfer, novation). v6.0 adds DigitalAsset type acknowledging blockchain-native assets. CDM Tokenized Assets Working Group extending the model for tokenized instruments. Used by DTCC, Barclays, Goldman Sachs in production.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">DTCC, Barclays, Goldman Sachs, JPMorgan in production. Adopted by ISDA, ICMA, ISLA. 100+ financial institutions contributing. FINOS open-source governance.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Primarily derivatives-focused. Digital asset extensions still maturing. Complex model — steep learning curve. No direct on-chain execution integration. Party identity model is flexible but not standardized to LEI/DID.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.isda.org/isda-solutions-infohub/cdm/" target="_blank">ISDA CDM</a>
+    <a class="card-link" href="https://github.com/finos/common-domain-model" target="_blank">GitHub</a>
+    <a class="card-link" href="https://cdm.finos.org" target="_blank">FINOS CDM</a>
+  </div>
+</div>
+
+<div class="card cat-traditional" data-cat="traditional" data-text="SWIFT KYC Registry correspondent banking AML due diligence">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">SWIFT KYC Registry</span>
+    <div class="card-tags"><span class="tag tag-traditional">Infrastructure</span><span class="tag tag-traditional">KYC</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by SWIFT</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">High adoption (correspondent banking)</span>
+  </div>
+  <div class="card-desc">A centralized repository of standardized KYC data for financial institutions engaged in correspondent banking. Holds ~6,000 FI profiles across five data areas: identification, ownership/UBO, business type, compliance programs, and tax. Each profile contains several hundred data points. SWIFT validates data and controls access. Institutions upload once and share with any correspondent. Reduces bilateral KYC duplication across the global correspondent network.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">~6,000 financial institutions. Used by global correspondent banks to streamline due diligence. SWIFT's blockchain initiative (2025) integrates this data with tokenized asset settlement.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">FI-to-FI only — not investor identity. Centralized and SWIFT-controlled. Not cryptographically verifiable. No API for real-time on-chain consumption. Annual subscription cost. Covers institutional counterparties, not retail/investor KYC.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://swift-verify.com/our-solutions/compliance-and-shared-services/financial-crime-compliance/kyc-registry.html" target="_blank">SWIFT Registry</a>
+  </div>
+</div>
+
+<!-- ─── INSTITUTIONAL PLATFORMS ─── -->
+<div class="section-header cat-institutional" data-cat="institutional">
+  <span>Institutional Settlement &amp; Identity Platforms</span>
+  <span class="section-line"></span>
+</div>
+
+<div class="card cat-institutional" data-cat="institutional" data-text="Kinexys JPMorgan Onyx tokenized deposit institutional blockchain identity">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Kinexys by J.P. Morgan</span>
+    <div class="card-tags"><span class="tag tag-institutional">Platform</span><span class="tag tag-institutional">Bank-Led</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by J.P. Morgan — Umar Farooq (formerly), Naveen Mallela (Digital Assets)</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">$2T+ daily volume</span>
+  </div>
+  <div class="card-desc">JPMorgan's blockchain-based settlement platform (formerly Onyx/JPM Coin). Identity = existing JPM banking relationship. Permissioned access gated by bank onboarding. Issues tokenized bank deposits (JPMD) as settlement asset. Project EPIC explores W3C VC-based portable identity for multi-institution DeFi. Processes cross-border payments, repo, FX. Partior (JPM + DBS + Temasek) extends to multi-bank interoperability.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">$2T+ daily on Kinexys Digital Payments. BlackRock, Siemens, 300+ institutional clients. Deutsche Bank completed first EUR blockchain transaction via Partior (Sept 2025).</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Identity = JPM banking relationship — excludes non-clients. Permissioned, proprietary. No interoperability with external credential frameworks without custom integration. Project EPIC still at PoC stage.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.jpmorgan.com/insights/payments/blockchain-digital-assets/introducing-kinexys" target="_blank">Kinexys</a>
+  </div>
+</div>
+
+<div class="card cat-institutional" data-cat="institutional" data-text="Canton Network Digital Asset Daml privacy sub-transaction smart contract">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Canton Network (Digital Asset)</span>
+    <div class="card-tags"><span class="tag tag-institutional">Platform</span><span class="tag tag-institutional">Privacy</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Digital Asset — Yuval Rooz, CEO</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">High institutional adoption</span>
+  </div>
+  <div class="card-desc">A privacy-preserving blockchain platform built on Daml smart contracts with sub-transaction privacy. Party identity = cryptographic Daml party identifier; legal identity is deferred to the application layer. Canton Network connects Canton-based applications (Broadridge DLR, DTCC tokenization, Goldman Sachs GS DAP) via synchronization. BIS RLN US PoC validated at 1M TPS on Canton. Identity interoperability relies on off-chain legal agreements.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Broadridge DLR ($8T/month repo). DTCC (SEC no-action Dec 2025). Goldman Sachs GS DAP. ASX (Australia). ~50 financial institutions on Canton Network.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Legal identity deferred to application layer — no standard credential framework. Not EVM-compatible. Daml is proprietary smart contract language. No standard on-chain binding to LEI/DID/VC.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.canton.network" target="_blank">Canton Network</a>
+    <a class="card-link" href="https://www.digitalasset.com" target="_blank">Digital Asset</a>
+  </div>
+</div>
+
+<div class="card cat-institutional" data-cat="institutional" data-text="Fnality wholesale CBDC settlement tokenized central bank money">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Fnality International</span>
+    <div class="card-tags"><span class="tag tag-institutional">Platform</span><span class="tag tag-institutional">Settlement</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Fnality — consortium of Barclays, HSBC, Lloyds, Santander, UBS + others</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Live (GBP, pilot stage)</span>
+  </div>
+  <div class="card-desc">Multi-currency settlement network using tokenized central bank money (Utility Settlement Coin concept). Identity = central bank access / bank membership in the Fnality consortium. Participants are regulated financial institutions vetted at the central bank level. No external credential framework — identity is the regulated bank status itself. Designed for wholesale interbank settlement and payment-vs-payment flows.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">GBP system live (2023). USD, EUR planned. Backed by 20+ global banks. Bank of England supervised. First production wholesale DLT settlement network.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Identity = bank membership — no external credential portability. FI-only access. Each currency is a separate legal entity and network. DvP with external asset chains requires custom bridging.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://fnality.com/how-it-works" target="_blank">Fnality</a>
+  </div>
+</div>
+
+<div class="card cat-institutional" data-cat="institutional" data-text="DTCC tokenization DTC digital securities tokenized equities CSD">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">DTCC Tokenization Service</span>
+    <div class="card-tags"><span class="tag tag-institutional">Infrastructure</span><span class="tag tag-institutional">CSD</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by DTCC — Brian Steele, President Clearing & Securities Services</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Launching H2 2026 (SEC no-action Dec 2025)</span>
+  </div>
+  <div class="card-desc">DTC tokenization service enabling DTC participants to register wallet addresses for tokenized securities. Each participant OFAC-screened before wallet registration. Digital Omnibus Account at DTC reflects all token holdings. DTCC retains a "root wallet" override. Tokens are not the securities — they are instructions for DTC to record transfers. Beneficial ownership tracked off-chain by broker-dealers. Preserves the street-name model.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">SEC no-action relief December 2025. Launch H2 2026. 5,000+ DTC participant network. If adopted, covers the majority of US equity and bond settlement infrastructure.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">DTC-participant identity only — not investor identity. Beneficial ownership remains off-chain at broker-dealer level. No standard credential framework for wallet-to-identity binding. Preserves opacity of street-name model.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.sec.gov/files/tm/no-action/dtc-nal-121125.pdf" target="_blank">SEC No-Action Letter</a>
+    <a class="card-link" href="https://www.dtcc.com" target="_blank">DTCC</a>
+  </div>
+</div>
+
+<!-- ─── PILOT PROGRAMS ─── -->
+<div class="section-header cat-pilot" data-cat="pilot">
+  <span>Central Bank &amp; Regulatory Pilot Programs</span>
+  <span class="section-line"></span>
+</div>
+
+<div class="card cat-pilot" data-cat="pilot" data-text="Project Guardian MAS Singapore W3C VC institutional DeFi trust anchor">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Project Guardian (MAS)</span>
+    <div class="card-tags"><span class="tag tag-pilot">Pilot</span><span class="tag tag-pilot">RegSandbox</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Monetary Authority of Singapore — with DBS, J.P. Morgan, SBI Digital Markets</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Active pilots — production-adjacent</span>
+  </div>
+  <div class="card-desc">MAS-led initiative testing tokenized asset markets with regulated institutions. Identity model: W3C Verifiable Credentials issued by regulated trust anchors (DBS, JPM, SBI) gate access to modified DeFi protocols (Aave Arc). Proved that VCs can serve as institutional trust anchors preserving counterparty privacy. ICMA Fixed Income Framework produced DvP settlement guide distinguishing payment-leg identity (banking AML) from delivery-leg identity (securities eligibility).</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">50+ institutions across 13 pilot workstreams. Live trades in tokenized bonds, FX, funds. Most advanced regulatory sandbox for tokenized finance. ICMA framework published as global reference.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Singapore-jurisdiction primary focus. VC schemas are pilot-specific — not standardized across workstreams. Cross-border legal recognition of VCs not yet established. Pilot conditions differ from production compliance requirements.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.mas.gov.sg/schemes-and-initiatives/project-guardian" target="_blank">MAS Guardian</a>
+    <a class="card-link" href="https://www.icmagroup.org" target="_blank">ICMA Framework</a>
+  </div>
+</div>
+
+<div class="card cat-pilot" data-cat="pilot" data-text="Project Agora BIS central bank unified ledger tokenized deposit compliance metadata">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Project Agorá (BIS)</span>
+    <div class="card-tags"><span class="tag tag-pilot">Pilot</span><span class="tag tag-pilot">BIS</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by BIS Innovation Hub — with 7 central banks + commercial bank consortium</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Active development 2024–2025</span>
+  </div>
+  <div class="card-desc">BIS-led initiative building a unified ledger where wholesale CBDC and commercial bank deposits share a programmable platform. Identity flows through the depositor-bank relationship. Compliance metadata — geographic attributes, transfer type, party identification — is embedded directly into the token. Aims to streamline pre-validation by sharing compliance data across banks, eliminating redundant screening in cross-border payments.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Fed, ECB, Bank of England, Bank of Japan, BdF, SNB, MAS participating. 40+ commercial banks. Most significant multilateral CBDC interoperability initiative active today.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Wholesale only — no retail identity model. Compliance metadata embedding in token raises privacy concerns. Cross-jurisdictional legal framework not resolved. Identity standard not yet defined — deferred to Phase 2.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.bis.org/press/p240403.htm" target="_blank">BIS Press Release</a>
+    <a class="card-link" href="https://www.bis.org/innovation_hub/projects/agora_faq.pdf" target="_blank">FAQ PDF</a>
+  </div>
+</div>
+
+<div class="card cat-pilot" data-cat="pilot" data-text="Regulated Liability Network RLN tokenized deposits shared ledger Canton Daml NYIC">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Regulated Liability Network (RLN)</span>
+    <div class="card-tags"><span class="tag tag-pilot">Pilot</span><span class="tag tag-pilot">Multi-Bank</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by NY Innovation Center (NYIC/Fed) — with BofA, Citi, HSBC, JPM, Wells Fargo, Mastercard</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">PoC completed — commercialization TBD</span>
+  </div>
+  <div class="card-desc">A shared-ledger concept where each token is a regulated bank liability, carrying that institution's compliance framework. Built on Canton/Daml with sub-transaction privacy. Identity = being a regulated bank participant. Legal working group concluded that using DLT does not alter the legal treatment of deposits. US PoC validated technical feasibility at 1M TPS. UK PoC followed. No new legal instruments required.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">US PoC: BofA, Citi, HSBC, JPM, Mastercard, Wells Fargo. UK PoC: separate consortium. Technical feasibility proven at scale. Regulatory clarity established — no new law needed.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">No investor-level credential framework. Identity = bank membership. Commercialization path unclear after PoC. No EVM compatibility. Legal framework covers US/UK only. Interoperability with non-bank tokenized assets undefined.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.newyorkfed.org/medialibrary/media/aboutthefed/nyic/project-cedar-phase-two-report.pdf" target="_blank">NYIC Report</a>
+    <a class="card-link" href="https://blog.digitalasset.com/blog/regulated-liability-network" target="_blank">Digital Asset Post</a>
+  </div>
+</div>
+
+<!-- ─── TRAVEL RULE ─── -->
+<div class="section-header cat-travelrule" data-cat="travelrule">
+  <span>Travel Rule &amp; VASP Identity Frameworks</span>
+  <span class="section-line"></span>
+</div>
+
+<div class="card cat-travelrule" data-cat="travelrule" data-text="IVMS101 interVASP Travel Rule messaging standard originator beneficiary">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">IVMS101</span>
+    <div class="card-tags"><span class="tag tag-travelrule">Standard</span><span class="tag tag-travelrule">Travel Rule</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by interVASP Messaging Standards Working Group (JMLSG)</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span></div>
+    <span class="adoption-text">Industry standard for Travel Rule</span>
+  </div>
+  <div class="card-desc">The FATF Travel Rule data standard defining originator and beneficiary data schemas for VASP-to-VASP transfers. Defines NaturalPerson (name identifiers, geographic address, national ID, date/place of birth) and LegalPerson (name, LEI, registered address). 11 national identifier types including LEIX (LEI). Used by Notabene, Sygna, VerifyVASP, and the TAP protocol. The TAP protocol wraps IVMS101 in W3C Verifiable Presentations.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Used by all major Travel Rule compliance vendors. Coinbase, Binance, Kraken, major VASPs. Reference data model for FATF R.16 compliance globally.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">VASP-to-VASP only — not designed for securities or institutional DvP. No on-chain format. Pairwise exchange — no broadcast/discovery. Jurisdictional thresholds vary ($1K in EU, $3K in US). No ZK privacy option.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://gitlab.com/intervasp/interVASP-Messaging-Standard" target="_blank">interVASP</a>
+    <a class="card-link" href="https://notabene.id/travel-rule-messaging-protocols/ivms-101" target="_blank">Notabene Analysis</a>
+  </div>
+</div>
+
+<div class="card cat-travelrule" data-cat="travelrule" data-text="TAP Transaction Authorization Protocol Travel Rule W3C VC DID TAIP">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">TAP Protocol (TAIP)</span>
+    <div class="card-tags"><span class="tag tag-travelrule">Standard</span><span class="tag tag-travelrule">Protocol</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Notabene — open protocol, multi-stakeholder</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Early adoption — growing</span>
+  </div>
+  <div class="card-desc">Transaction Authorization Protocol — wraps IVMS101 in W3C Verifiable Presentations exchanged between DIDs (did:web, did:pkh). TAIP-10 defines the IVMS101 VC format. The most direct bridge between Travel Rule compliance and the W3C credential ecosystem. Enables selective disclosure of originator/beneficiary data. Signed by institutional DIDs, making VASP identity cryptographically verifiable.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Notabene reference implementation. Growing VASP adoption. Positions Travel Rule data as the first widespread deployment of W3C VPs in financial services.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">VASP-only scope. did:web reliance on DNS. Not yet adopted by legacy TRP protocol users. Standardization not yet complete. No securities/DvP applicability defined.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://taips.tap.rsvp" target="_blank">TAIP Spec</a>
+    <a class="card-link" href="https://notabene.id" target="_blank">Notabene</a>
+  </div>
+</div>
+
+<div class="card cat-travelrule" data-cat="travelrule" data-text="Notabene VerifyVASP Sygna Travel Rule compliance vendor network">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Notabene / VerifyVASP / Sygna</span>
+    <div class="card-tags"><span class="tag tag-travelrule">Platform</span><span class="tag tag-travelrule">Travel Rule</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Three competing Travel Rule networks — Notabene (NYC), VerifyVASP (Singapore), Sygna (CoolBitX)</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Hundreds of VASPs each</span>
+  </div>
+  <div class="card-desc">The three dominant Travel Rule compliance networks enabling VASP-to-VASP IVMS101 data exchange. Each operates as a permissioned network of verified VASPs. Notabene uses TAP/W3C VP. VerifyVASP uses its own encrypted P2P protocol. Sygna integrates with CoolBitX's exchange clients. All three participate in cross-network interoperability (TRISA/TRUST frameworks). Key function: VASP identity discovery + compliant data exchange before on-chain transfer.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Notabene: Coinbase, Crypto.com, 200+ VASPs. VerifyVASP: Asia-Pacific heavy, 300+ VASPs. Sygna: CoolBitX exchange clients. Combined: majority of regulated global VASP activity.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Three incompatible networks — sunrise problem persists. VASP-only scope. No securities or institutional DvP coverage. Data exchange pre-transfer but no on-chain proof generated. Subscriber costs limit small VASP adoption.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://notabene.id" target="_blank">Notabene</a>
+    <a class="card-link" href="https://verifyvasp.com" target="_blank">VerifyVASP</a>
+    <a class="card-link" href="https://sygna.io" target="_blank">Sygna</a>
+  </div>
+</div>
+
+<div class="no-results hidden" id="noResults">No solutions match this filter.</div>
+
+</div><!-- /grid -->
+
+<footer>
+  <span>Shibui Reference Map — Enterprise Ethereum Alliance</span>
+  <span>github.com/EntEthAlliance/rnd-rwa-erc3643-eas</span>
+</footer>
+
+<script>
+  let activeFilter = 'all';
+  let searchTerm = '';
+
+  function updateVisibility() {
+    const cards = document.querySelectorAll('.card');
+    const sections = document.querySelectorAll('.section-header');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const text = (card.dataset.text + ' ' + card.innerText).toLowerCase();
+      const catMatch = activeFilter === 'all' || cat === activeFilter;
+      const searchMatch = !searchTerm || text.includes(searchTerm.toLowerCase());
+      if (catMatch && searchMatch) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Show/hide section headers
+    sections.forEach(s => {
+      const cat = s.dataset.cat;
+      if (activeFilter === 'all' || cat === activeFilter) {
+        s.style.display = '';
+      } else {
+        s.style.display = 'none';
+      }
+    });
+
+    document.getElementById('countBadge').textContent = visible + ' solution' + (visible !== 1 ? 's' : '');
+    document.getElementById('noResults').classList.toggle('hidden', visible > 0);
+  }
+
+  function filter(cat, btn) {
+    activeFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateVisibility();
+  }
+
+  function search(val) {
+    searchTerm = val;
+    updateVisibility();
+  }
+</script>
+</body>
+</html>
