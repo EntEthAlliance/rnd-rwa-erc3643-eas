@@ -124,8 +124,12 @@ jobs:
           version: nightly
 
       - name: Run coverage
+        # `forge coverage` disables via_ir + optimizer by default for accurate line
+        # counts, which trips stack-too-deep in MockAttester / TopicPolicyBase
+        # (10-field Schema v2 abi.encode). `--ir-minimum` re-enables via_ir with
+        # minimal optimisation while still producing usable coverage output.
         run: |
-          forge coverage --report summary
+          forge coverage --ir-minimum --report summary
 
   gas-report:
     name: Gas Report (PR-only)
