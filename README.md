@@ -1,58 +1,98 @@
-# Shibui (EAS ↔ ERC-3643)
+# Shibui
 
-**Shibui is an attestation retrieval adapter for ERC-3643 identity verification** — it answers one question, authoritatively, for a token contract's compliance hook: *"Does this wallet hold the attestations my issuer requires, with current payloads, right now?"*
-
-It is not a full identity layer. Token-side enforcement primitives (forced transfer, freeze, recovery) remain the ERC-3643 token contract's responsibility. See [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md).
+**An attestation retrieval adapter for ERC-3643 security tokens.** Shibui lets an ERC-3643 token answer *"is this wallet allowed to hold this security right now?"* from attestations issued on the [Ethereum Attestation Service](https://attest.org/) by any trusted KYC/AML/accreditation provider — without deploying a per-user identity contract or coupling the token to a single provider ecosystem.
 
 > An open-source project by the [Enterprise Ethereum Alliance](https://entethalliance.org)
 
-## What changed (post audit refactor)
+---
 
-The codebase was refactored to address a structured audit (findings C-1 through C-7 and R-1, R-3, R-5, R-6, merged in [PR #54](https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/pull/54)). Key shifts:
+## Why Shibui exists
 
-- **Verification is now payload-aware.** `isVerified()` invokes an `ITopicPolicy` module per required topic. A KYC attestation with `kycStatus = PENDING` no longer passes Topic 1; an accreditation attestation with `accreditationType = NONE` no longer passes Topic 7.
-- **No single-slot attestation cache.** `_verifyTopic` iterates the trusted-attester list for the topic (≤ 5 per topic) so removing one compromised provider does not invalidate investors covered by other trusted providers.
-- **`addTrustedAttester` is Schema-2-gated.** Every trust change must reference a live EAS Schema-2 (Issuer Authorization) attestation whose `recipient == attester` and whose `authorizedTopics ⊇ requested topics`. The Schema-2 resolver gates who can issue these attestations in the first place.
-- **Admin surface is `AccessControl`-based.** `Ownable` is gone; production deploys put `DEFAULT_ADMIN_ROLE` behind a multisig.
-- **Identity is always proxied.** The `wallet == identity` fallback is removed; `setIdentityProxy(0)` reverts.
-- **Schema v2 carries evidence fields.** `evidenceHash` and `verificationMethod` are part of Schema 1 v2, so examiners can trace an eligibility decision back to its supporting KYC file.
-- **Wrapper is a read-compat shim, not a drop-in.** `EASClaimVerifierIdentityWrapper` is explicitly documented as not implementing ERC-734 keys, recovery, or signature verification.
+ERC-3643 (the security token standard) mandates an on-chain identity check on every transfer. The reference implementation (ONCHAINID) requires each investor to deploy their own identity contract, pins the token to a specific KYC-provider ecosystem, and offers no on-chain enforcement of the attestation's *contents* — only its existence.
+
+That model breaks down for issuers who need any of:
+
+- **Multiple KYC providers** for the same token (geographic, redundancy, or suitability).
+- **Semantic enforcement** — blocking a wallet whose KYC is pending, expired, or whose jurisdiction is on a sanctions list.
+- **An auditable control plane** where compliance staff, not engineers, can rotate trusted providers.
+- **An evidence trail** that ties a verification decision back to the underlying KYC file a regulator will ask for.
+
+Shibui addresses those needs by replacing the ONCHAINID identity layer with a small stack of contracts that read EAS attestations, enforce the payload against a configurable policy per topic, and gate trust changes with a cryptographic audit trail.
+
+## What it does
+
+Shibui's one public entry point is:
+
+```solidity
+EASClaimVerifier.isVerified(address wallet) → bool
+```
+
+For a transfer to be allowed, the ERC-3643 token contract calls this from its compliance hook. Shibui returns `true` only when, for **every** claim topic the token requires:
+
+- The investor's identity has an EAS attestation registered for that topic, from an attester the issuer currently trusts for that topic.
+- The attestation is live (not revoked, not past its EAS-level `expirationTime`, not past its payload-level `expirationTimestamp`).
+- The attestation's decoded payload satisfies the topic's policy — e.g. `kycStatus == VERIFIED`, `countryCode` in the allow-list, `accreditationType` in the allowed set, `sanctionsStatus == CLEAR`.
+
+If any required topic fails any check, `isVerified` returns `false` and the transfer is blocked by the token contract.
+
+## What it does *not* do
+
+Shibui is deliberately narrow. The following remain the responsibility of the ERC-3643 **token contract** or off-chain operational tooling:
+
+| Primitive | Where it lives |
+|---|---|
+| Forced transfer (court orders) | ERC-3643 token |
+| Freeze / partial freeze (sanctions) | ERC-3643 token |
+| Lost-key recovery | ERC-3643 token `recoveryAddress` flow |
+| Lock-ups, per-investor caps, ownership limits | ERC-3643 compliance modules |
+| Cross-chain attestation canonicity | Per-chain today — re-attest per chain |
+| Off-chain / privacy-preserving attestation verification | Not supported today |
+| Tax withholding, FATCA / CRS reporting | Off-chain |
+
+Revoking a Shibui attestation blocks *future* transfers to/from the wallet. It does not move, freeze, or recover tokens already held. See [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md).
+
+---
 
 ## Architecture
+
+### Runtime wiring
 
 ```mermaid
 flowchart LR
     Wallet[Investor Wallet] -->|transfer| Token[ERC-3643 Token]
     Token -->|isVerified| Verifier[EASClaimVerifier]
 
-    Verifier -->|resolve| Proxy[EASIdentityProxy]
+    Verifier -->|resolve wallet→identity| Proxy[EASIdentityProxy]
     Verifier -->|required topics| CTR[ClaimTopicsRegistry]
-    Verifier -->|attester list| Adapter[EASTrustedIssuersAdapter]
-    Verifier -->|attestation| EAS[(EAS)]
+    Verifier -->|attester list per topic| Adapter[EASTrustedIssuersAdapter]
+    Verifier -->|fetch attestation| EAS[(EAS)]
     Verifier -->|validate payload| Policies[ITopicPolicy × 8]
 
     Adapter -.->|authUID → Schema 2| EAS
-    EAS -.->|gate Schema 2 writes| Resolver[TrustedIssuerResolver]
+    EAS -.->|gate Schema-2 writes| Resolver[TrustedIssuerResolver]
 
-    Admin[Multisig / DEFAULT_ADMIN_ROLE] -.->|grant/revoke| Verifier
-    Admin -.->|grant/revoke| Adapter
-    Admin -.->|grant/revoke| Proxy
-    Admin -.->|manage authorizers| Resolver
+    Admin[Compliance Multisig] -.->|AccessControl| Verifier
+    Admin -.->|AccessControl| Adapter
+    Admin -.->|AccessControl| Proxy
+    Admin -.->|Ownable| Resolver
 ```
 
-### How a single `isVerified(wallet)` call resolves
+### Verification flow
 
-1. **Resolve identity.** `verifier._identityProxy.getIdentity(wallet)` returns the investor's identity address. If no proxy is configured the call reverts — there is no implicit "wallet is its own identity" fallback.
-2. **Enumerate required topics.** `verifier._claimTopicsRegistry.getClaimTopics()` returns the set the token issuer declared required.
-3. **For each topic**, the verifier:
-   - Looks up the bound `ITopicPolicy` (e.g. `KYCStatusPolicy` for topic 1). If none, verification reverts with `PolicyNotConfiguredForTopic`.
+For a single `isVerified(wallet)` call:
+
+1. **Resolve the investor's identity.** `EASIdentityProxy.getIdentity(wallet)` returns the identity address. The proxy is required — there is no "wallet is its own identity" fallback.
+2. **Enumerate required topics** from `ClaimTopicsRegistry.getClaimTopics()`.
+3. **For each required topic**, the verifier:
+   - Looks up the bound `ITopicPolicy` (e.g. `KYCStatusPolicy` for topic 1). No policy bound → verification reverts with `PolicyNotConfiguredForTopic`.
    - Looks up the bound EAS schema UID.
-   - Iterates the trusted-attester list for the topic (capped at `MAX_ATTESTERS_PER_TOPIC = 5`).
-   - For each attester, fetches the attestation registered for `(identity, topic, attester)`, verifies the attestation is live (exists, schema matches, not revoked, EAS `expirationTime` current, attester still trusted), and calls `policy.validate(attestation)` to enforce the payload rule.
-   - As soon as one attester's attestation satisfies both the structural checks and the policy, the topic is considered satisfied.
-4. **Return true** only if every required topic was satisfied.
+   - Iterates the topic's trusted-attester list (capped at 5). For each attester, fetches the registered attestation and checks: exists → schema matches → not revoked → not expired → attester still trusted → `policy.validate(attestation)` returns true.
+   - Short-circuits to *pass* on the first attester whose attestation clears all checks.
+4. **Returns true** only if every required topic was satisfied.
 
-### Schema-2 gate (audit fix C-5)
+### Trust changes (Schema-2 gate)
+
+Adding a trusted attester is a two-step, cryptographically signed process:
 
 ```mermaid
 sequenceDiagram
@@ -62,7 +102,7 @@ sequenceDiagram
     participant Adapter as EASTrustedIssuersAdapter
 
     Admin->>Resolver: addAuthorizer(authorizer)
-    Note right of Resolver: Resolver keeps an admin-curated<br/>set of allowed Schema-2 writers
+    Note right of Resolver: Resolver curates the<br/>set of Schema-2 writers
 
     Admin->>EAS: attest Schema 2<br/>(attester, topics, name)
     EAS->>Resolver: onAttest()
@@ -72,76 +112,30 @@ sequenceDiagram
     Admin->>Adapter: addTrustedAttester(attester, topics, authUID)
     Adapter->>EAS: getAttestation(authUID)
     EAS-->>Adapter: Schema 2 attestation
-    Adapter-->>Adapter: recipient == attester ✓<br/>topics ⊆ authorizedTopics ✓<br/>not revoked / not expired ✓
+    Adapter->>Adapter: recipient == attester ✓<br/>topics ⊆ authorizedTopics ✓<br/>not revoked / not expired ✓
     Adapter-->>Admin: trust updated
 ```
 
-## Repository layout
+Every trusted-attester change references a live EAS attestation under Schema 2 (Issuer Authorization). That attestation is gated by a resolver, so only admin-curated authorizers can write it. The result is an on-chain audit trail: "this provider is trusted for these topics, as attested on-chain by this authorized party at this block."
 
-```
-contracts/
-├─ EASClaimVerifier.sol              — payload-aware verifier (AccessControl)
-├─ EASTrustedIssuersAdapter.sol      — Schema-2-gated trusted-attester registry
-├─ EASIdentityProxy.sol              — wallet ↔ identity binding (AGENT_ROLE)
-├─ EASClaimVerifierIdentityWrapper.sol — read-compat shim for legacy ERC-3643 (Path B)
-├─ interfaces/                       — IEASClaimVerifier, IEASTrustedIssuersAdapter, …
-├─ policies/
-│  ├─ ITopicPolicy.sol                — single-method predicate interface
-│  ├─ TopicPolicyBase.sol             — shared Schema-v2 decoder
-│  ├─ KYCStatusPolicy.sol             — Topic 1
-│  ├─ AMLPolicy.sol                   — Topic 2
-│  ├─ CountryAllowListPolicy.sol      — Topic 3 (admin-configurable allow/block)
-│  ├─ AccreditationPolicy.sol         — Topic 7 (admin-configurable allow-list)
-│  ├─ ProfessionalInvestorPolicy.sol  — Topic 9 (MiFID II)
-│  ├─ InstitutionalInvestorPolicy.sol — Topic 10
-│  ├─ SanctionsPolicy.sol             — Topic 13 (OFAC)
-│  └─ SourceOfFundsPolicy.sol         — Topic 14
-├─ resolvers/
-│  └─ TrustedIssuerResolver.sol       — gates Schema-2 writes
-├─ upgradeable/                        — UUPS variants of the three core contracts
-└─ mocks/                              — MockEAS, MockAttester, MockClaimTopicsRegistry
-
-script/
-├─ DeployMainnet.s.sol                 — gated deploy; multisig receives all admin roles
-├─ DeployTestnet.s.sol                 — Sepolia / Base Sepolia
-├─ DeployUpgradeable.s.sol             — UUPS deploy
-├─ DeployBridge.s.sol                  — non-upgradeable reference deploy
-├─ DeployIdentityWrapper.s.sol         — per-identity Path B wrapper
-├─ RegisterSchemas.s.sol               — register Schema 1 v2 + Schema 2 (with resolver)
-├─ ConfigureBridge.s.sol               — idempotent topic-schema & topic-policy wiring
-├─ AddTrustedAttester.s.sol            — CLI helper; requires AUTH_UID
-└─ SetupPilot.s.sol                    — local anvil pilot with 5 seeded investors
-
-test/
-├─ helpers/BridgeHarness.sol           — deploys + wires the full stack for each test
-├─ unit/                               — per-contract unit tests + policy suite
-├─ integration/                        — revocation, dual-mode, policy-driven verification
-└─ scenarios/                          — Reg D, Reg S, MiFID II, OFAC end-to-end flows
-
-docs/
-├─ architecture/
-│  ├─ enforcement-boundary.md          — what Shibui does NOT provide (start here)
-│  ├─ identity-architecture-explained.md
-│  └─ system-architecture.md
-├─ schemas/schema-definitions.md       — Schema 1 v2 spec
-├─ research/gap-analysis.md            — ONCHAINID vs EAS comparison
-└─ integration-guide.md                — Path A & Path B integration
-```
+---
 
 ## Claim topics and policies
+
+Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same **Investor Eligibility v2** schema.
 
 | Topic ID | Name | Policy | What it enforces |
 |---:|---|---|---|
 | 1 | KYC | `KYCStatusPolicy` | `kycStatus == VERIFIED` |
 | 2 | AML | `AMLPolicy` | `amlStatus == CLEAR` |
-| 3 | COUNTRY | `CountryAllowListPolicy` | country in allow-list (or not in block-list) |
-| 7 | ACCREDITATION | `AccreditationPolicy` | accreditation type in admin-configured allow-list |
+| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in allow-list (or not in block-list, configurable) |
+| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allowed set |
 | 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | any non-zero accreditation type (MiFID II) |
 | 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == INSTITUTIONAL` |
 | 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
 | 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
 
-All eight read the same Schema 1 v2 payload:
+Schema 1 v2:
 
 ```
 address identity, uint8 kycStatus, uint8 amlStatus, uint8 sanctionsStatus,
@@ -149,39 +143,86 @@ uint8 sourceOfFundsStatus, uint8 accreditationType, uint16 countryCode,
 uint64 expirationTimestamp, bytes32 evidenceHash, uint8 verificationMethod
 ```
 
+`evidenceHash` commits to the KYC file the provider holds off-chain; `verificationMethod` captures whether the check was self-certified, third-party-reviewed, broker-dealer-file-backed, etc. Both support post-trade audit trails without putting PII on-chain.
+
+---
+
 ## Administration
 
-All core contracts use OpenZeppelin `AccessControl`:
+Three roles, gated by OpenZeppelin `AccessControl`:
 
-| Role | Granted to | Surface |
+| Role | Holder | Can do |
 |---|---|---|
-| `DEFAULT_ADMIN_ROLE` | **Multisig (production)** | Grant/revoke other roles; `_authorizeUpgrade` on UUPS variants; set Issuer Authorization schema UID on adapter |
-| `OPERATOR_ROLE` | Day-to-day operators | Topic-schema mapping, topic-policy mapping, trusted-attester changes |
-| `AGENT_ROLE` | Issuer agents | Wallet ↔ identity binding in `EASIdentityProxy` |
+| `DEFAULT_ADMIN_ROLE` | **Compliance multisig** | Grant/revoke other roles; authorise UUPS upgrades; set the Issuer Authorization schema UID on the adapter. |
+| `OPERATOR_ROLE` | Day-to-day operators | Map topics to schemas, bind topics to policies, add/remove/update trusted attesters. |
+| `AGENT_ROLE` | Issuer agents | Bind wallets to investor identities in the identity proxy. |
 
-No timelock is applied by default; the multisig is the control plane. Deployers transfer `DEFAULT_ADMIN_ROLE` to the multisig and renounce their own grant atomically in `DeployMainnet.s.sol`.
+The production deploy script grants all three to the multisig atomically and renounces the deployer's grants in the same transaction. No timelock — the multisig is the control plane.
 
-## Out of scope
+---
 
-The following live in the ERC-3643 **token contract** (or in off-chain tooling), not in Shibui, and revoking a Shibui attestation is not a substitute for them:
+## Repository layout
 
-- Forced transfer (court orders)
-- Account freeze / partial freeze (sanctions)
-- Lost-key recovery
-- Lock-up schedules, per-investor caps, ownership limits
-- Cross-chain attestation canonicity — EAS attestations are per-chain today; multi-chain portability is on the V2 roadmap
-- Off-chain attestation verification — deferred to V2
-- Tax withholding / FATCA-CRS reporting
+```
+contracts/
+├─ EASClaimVerifier.sol                — main entry point, payload-aware
+├─ EASTrustedIssuersAdapter.sol        — Schema-2-gated trusted attester registry
+├─ EASIdentityProxy.sol                — wallet ↔ identity binding
+├─ EASClaimVerifierIdentityWrapper.sol — read-compat shim (Path B, see below)
+├─ interfaces/                          — public interfaces
+├─ policies/
+│  ├─ ITopicPolicy.sol                  — predicate interface
+│  ├─ TopicPolicyBase.sol               — shared Schema-v2 decoder
+│  └─ (8 concrete policies, one per topic)
+├─ resolvers/
+│  └─ TrustedIssuerResolver.sol         — gates Schema-2 writes
+├─ upgradeable/                         — UUPS variants of the three core contracts
+└─ mocks/                                — MockEAS / MockAttester / MockClaimTopicsRegistry
+
+script/
+├─ DeployMainnet.s.sol                  — gated production deploy
+├─ DeployTestnet.s.sol                  — Sepolia / Base Sepolia
+├─ DeployUpgradeable.s.sol              — ERC1967Proxy-fronted UUPS
+├─ DeployBridge.s.sol                   — non-upgradeable reference deploy
+├─ DeployIdentityWrapper.s.sol          — per-identity Path B wrapper
+├─ RegisterSchemas.s.sol                — register Schema 1 v2 + Schema 2 on EAS
+├─ ConfigureBridge.s.sol                — idempotent topic/schema/policy wiring
+├─ AddTrustedAttester.s.sol             — CLI helper, requires AUTH_UID
+└─ SetupPilot.s.sol                     — local anvil pilot with 5 seeded investors
+
+test/
+├─ helpers/BridgeHarness.sol            — deploys + wires full stack
+├─ unit/                                — per-contract + per-policy tests
+├─ integration/                         — revocation, dual-mode, policy-driven verification, gas
+└─ scenarios/                           — Reg D, Reg S, MiFID II, OFAC, multi-wallet lifecycle
+```
+
+---
+
+## Two integration paths
+
+**Path A — pluggable verifier (recommended).** The token's ERC-3643 compliance module calls `EASClaimVerifier.isVerified(wallet)` directly. This gives you payload-aware verification, multi-attester resiliency, and the full admin surface.
+
+**Path B — read-compat shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations, for integrating with a pre-existing ERC-3643 Identity Registry that can't be modified. It is **not** a drop-in replacement for ONCHAINID:
+
+- Does not implement ERC-734 key management (no `addKey`, no recovery).
+- Does not return real attester signatures from `getClaim` (returns empty bytes).
+- Does not run topic policies in `isClaimValid` (only checks existence / revocation / expiration).
+- Gas profile is not suitable for hot paths without caching.
+
+Use Path A for new deployments. Use Path B only if you genuinely cannot modify the Identity Registry, and understand the trade-offs.
+
+---
 
 ## Quickstart
 
 ```bash
 forge install
 forge build
-forge test            # 71 tests passing
+forge test
 ```
 
-### Local pilot (anvil)
+### Local pilot
 
 ```bash
 anvil
@@ -190,56 +231,89 @@ forge script script/SetupPilot.s.sol:SetupPilot \
   --broadcast
 ```
 
-The pilot deploys MockEAS, the full Shibui stack (all 8 policies + resolver + Schema-2 authorizer), seeds five investors with Schema v2 attestations, and prints `isVerified()` for each.
+Deploys MockEAS, the full Shibui stack (all 8 policies + resolver + Schema-2 authorizer), seeds five investors with Schema v2 attestations, and prints `isVerified()` for each.
 
-### Testnet / mainnet deploy
+### Testnet pipeline
 
 ```bash
-# testnet (Sepolia / Base Sepolia)
+# 1. Deploy contracts + policies + resolver
 PRIVATE_KEY=... ADMIN_ADDRESS=0x... \
   forge script script/DeployTestnet.s.sol:DeployTestnet --rpc-url $RPC --broadcast
 
-# register schemas (prints new UIDs)
-ISSUER_AUTH_RESOLVER=<TrustedIssuerResolver from above> PRIVATE_KEY=... \
+# 2. Register the two EAS schemas (prints UIDs)
+PRIVATE_KEY=... ISSUER_AUTH_RESOLVER=<from step 1> \
   forge script script/RegisterSchemas.s.sol:RegisterSchemas --rpc-url $RPC --broadcast
 
-# wire schema UIDs and policies
+# 3. Wire schema UIDs, topic-policy bindings, and Schema-2 UID on the adapter
 VERIFIER_ADDRESS=... ADAPTER_ADDRESS=... \
 INVESTOR_ELIGIBILITY_SCHEMA_UID=0x... \
 ISSUER_AUTHORIZATION_SCHEMA_UID=0x... \
-KYC_POLICY=0x... AML_POLICY=0x... …  \
+KYC_POLICY=0x... AML_POLICY=0x... COUNTRY_POLICY=0x... \
   forge script script/ConfigureBridge.s.sol:ConfigureBridge --rpc-url $RPC --broadcast
 
-# add trusted attester (requires AUTH_UID from a Schema-2 attestation)
+# 4. Authorize the authorizer(s) on the resolver, then create a Schema-2 attestation
+#    for each KYC provider (off-chain or via cast/EAS SDK), then:
 ADAPTER_ADDRESS=... ATTESTER_ADDRESS=0x... TOPICS="1,3,7" AUTH_UID=0x... \
   forge script script/AddTrustedAttester.s.sol:AddTrustedAttester --rpc-url $RPC --broadcast
 
-# mainnet: gated by AUDIT_ACKNOWLEDGED=true and MULTISIG_ADDRESS
-AUDIT_ACKNOWLEDGED=true PRIVATE_KEY=... MULTISIG_ADDRESS=0x... CLAIM_TOPICS_REGISTRY=0x... \
+# 5. Each KYC provider attests investors against the Investor Eligibility schema,
+#    then the provider (or an AGENT_ROLE holder) registers the UID via
+#    EASClaimVerifier.registerAttestation(identity, topic, uid).
+```
+
+### Mainnet
+
+Gated behind `AUDIT_ACKNOWLEDGED=true`; requires an audited deploy and a compliance multisig:
+
+```bash
+AUDIT_ACKNOWLEDGED=true \
+PRIVATE_KEY=... \
+MULTISIG_ADDRESS=0x... \
+CLAIM_TOPICS_REGISTRY=0x... \
   forge script script/DeployMainnet.s.sol:DeployMainnet --rpc-url $RPC --broadcast
 ```
 
-## Live website
+The script transfers all admin roles to the multisig and renounces the deployer's grants in the same broadcast. See [`AUDIT.md`](AUDIT.md) for the launch gate and threat model.
 
-- Landing page: https://entethalliance.github.io/rnd-rwa-erc3643-eas/
-- Identity Management Solutions reference map: https://entethalliance.github.io/rnd-rwa-erc3643-eas/identity-solutions-map.html
+---
+
+## Gas at a glance
+
+| Operation | Gas |
+|---|---:|
+| `isVerified` — 1 topic | 31,539 |
+| `isVerified` — 3 topics | 80,083 |
+| `isVerified` — 5 topics | 122,090 |
+| `registerAttestation` | 53,393 |
+| `addTrustedAttester` (Schema-2 gated) | 201,533 |
+| `registerWallet` | 79,029 |
+
+Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas-benchmarks.md).
+
+---
 
 ## Security
 
-- Independent audit of the refactored contracts is required before mainnet. The refactor in #54 addressed audit findings C-1 through C-7 and R-1/R-3/R-5/R-6, but a fresh pass on the new surface area (policies, resolver, Schema-2 gate) is a prerequisite.
-- Mainnet deploy script refuses to broadcast unless `AUDIT_ACKNOWLEDGED=true` is set (see [`AUDIT.md`](AUDIT.md)).
+- Reproducible local tests: `forge test` (107 tests passing).
+- Mainnet deploy is gated — the script refuses to broadcast unless `AUDIT_ACKNOWLEDGED=true` is set. See [`AUDIT.md`](AUDIT.md) for the launch gate, threat model, and minimum-required pre-flight checklist.
+- Roles, not ownership. All admin actions are role-gated; production uses a compliance multisig as `DEFAULT_ADMIN_ROLE`.
+
+---
 
 ## Documentation
 
-Start with:
+- [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md) — what Shibui does and does not provide. **Start here if you're integrating.**
+- [`docs/architecture/identity-architecture-explained.md`](docs/architecture/identity-architecture-explained.md) — architectural walkthrough.
+- [`docs/integration-guide.md`](docs/integration-guide.md) — Path A and Path B step-by-step.
+- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) — Schema 1 v2 and Schema 2 specs.
+- [`docs/research/gap-analysis.md`](docs/research/gap-analysis.md) — ONCHAINID vs EAS comparison.
+- [`AUDIT.md`](AUDIT.md) — launch gate, threat model, pre-flight checklist.
+- [`PRD.md`](PRD.md) — scope and acceptance criteria.
 
-- [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md) — scope boundaries
-- [`docs/architecture/identity-architecture-explained.md`](docs/architecture/identity-architecture-explained.md) — architectural walkthrough
-- [`docs/integration-guide.md`](docs/integration-guide.md) — Path A and Path B integration
-- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) — Schema 1 v2 spec
-- [`AUDIT.md`](AUDIT.md) — threat model and mainnet launch gates
-- [`PRD.md`](PRD.md) — MVP scope and acceptance criteria
-- [`docs/research/gap-analysis.md`](docs/research/gap-analysis.md) — ONCHAINID vs EAS comparison
+## Live site
+
+- Landing: https://entethalliance.github.io/rnd-rwa-erc3643-eas/
+- Identity solutions reference map: https://entethalliance.github.io/rnd-rwa-erc3643-eas/identity-solutions-map.html
 
 ## License
 
