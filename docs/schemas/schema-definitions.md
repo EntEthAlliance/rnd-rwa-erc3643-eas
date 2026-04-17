@@ -15,17 +15,32 @@ Schema UIDs should be stored in a constants file and referenced by the bridge co
 
 ---
 
-## Schema 1: Investor Eligibility
+## Schema 1 v2: Investor Eligibility
+
+**Version:** 2.0 (post audit finding C-7). **Greenfield** — there is no
+production v1 deployment, so no dual-accept migration is provided. Any
+deployments should use v2 directly.
 
 ### Purpose
 
-Primary compliance attestation for security token investors. Covers KYC status, accreditation type, and country of residence - the most common requirements for regulated security tokens.
+Primary compliance attestation for security token investors. Covers KYC status,
+accreditation type, country, AML, sanctions, source-of-funds, and evidence
+traceability — enough to gate Reg D / Reg S / MiFID II / OFAC workflows via
+the Shibui topic-policy modules.
 
 ### Schema String
 
 ```
-address identity, uint8 kycStatus, uint8 accreditationType, uint16 countryCode, uint64 expirationTimestamp
+address identity, uint8 kycStatus, uint8 amlStatus, uint8 sanctionsStatus, uint8 sourceOfFundsStatus, uint8 accreditationType, uint16 countryCode, uint64 expirationTimestamp, bytes32 evidenceHash, uint8 verificationMethod
 ```
+
+### New fields (audit C-7)
+
+- `amlStatus` — 0 = clear, 1 = flagged. Consumed by `AMLPolicy`.
+- `sanctionsStatus` — 0 = clear, 1 = hit. Consumed by `SanctionsPolicy`.
+- `sourceOfFundsStatus` — 0 = not verified, 1 = verified. Consumed by `SourceOfFundsPolicy`.
+- `evidenceHash` — `keccak256` of the underlying KYC file set, or an equivalent commitment. Auditor-visible; the bytes themselves stay with the KYC provider.
+- `verificationMethod` — 1 = self-attested, 2 = third-party reviewer, 3 = professional letter, 4 = broker-dealer suitability file. Mirrors the field set in `docs/research/claim-topic-analysis.md`.
 
 ### Field Definitions
 
@@ -135,11 +150,20 @@ function validateInvestorEligibility(Attestation memory att) internal view retur
 
 ---
 
-## Schema 2: Issuer Authorization
+## Schema 2: Issuer Authorization (resolver-gated)
 
 ### Purpose
 
-Attests that a given address is authorized to issue compliance attestations on specific topics. Created by the token issuer or their compliance agent.
+Cryptographic audit trail backing the
+`EASTrustedIssuersAdapter.addTrustedAttester(attester, topics, authUID)` call.
+Every add/update of a trusted attester MUST cite a live Schema-2 attestation
+whose `recipient == attester` and whose `authorizedTopics ⊇ requested topics`.
+
+Post audit finding C-5, Schema 2 is registered with the `TrustedIssuerResolver`
+address as its resolver (see `contracts/resolvers/TrustedIssuerResolver.sol`).
+The resolver rejects any `onAttest` callback from an attester that is not in
+the admin-curated authorizer set, so the trust boundary is cryptographic rather
+than purely conventional.
 
 ### Schema String
 

@@ -7,195 +7,146 @@ import {EASTrustedIssuersAdapter} from "../contracts/EASTrustedIssuersAdapter.so
 import {EASIdentityProxy} from "../contracts/EASIdentityProxy.sol";
 import {MockClaimTopicsRegistry} from "../contracts/mocks/MockClaimTopicsRegistry.sol";
 import {MockEAS} from "../contracts/mocks/MockEAS.sol";
-import {IEAS, AttestationRequest, AttestationRequestData} from "@eas/IEAS.sol";
+import {MockAttester} from "../contracts/mocks/MockAttester.sol";
+
+import {KYCStatusPolicy} from "../contracts/policies/KYCStatusPolicy.sol";
+import {AccreditationPolicy} from "../contracts/policies/AccreditationPolicy.sol";
+import {CountryAllowListPolicy} from "../contracts/policies/CountryAllowListPolicy.sol";
 
 /**
  * @title SetupPilot
- * @author EEA Working Group
- * @notice Complete pilot deployment script for testing and demonstration
- * @dev Deploys all bridge contracts, configures them, sets up a KYC provider,
- *      and creates 5 test investor identities with attestations.
+ * @notice End-to-end pilot on a local anvil chain using MockEAS.
+ * @dev Post-refactor flow:
+ *        1. Deploy MockEAS + core contracts + policies.
+ *        2. Register schemas on MockEAS (UIDs are keccak-derived in the verifier / adapter
+ *           config here; real deployments wire the UIDs from `RegisterSchemas`).
+ *        3. Create a Schema-2 authorization attestation for the pilot KYC provider.
+ *        4. addTrustedAttester with the authUID (audit C-5).
+ *        5. Seed 5 investor identities with Schema-v2 attestations (audit C-7).
  *
- *      Run with:
- *      forge script script/SetupPilot.s.sol:SetupPilot --rpc-url $RPC_URL --broadcast
- *
- *      Environment variables:
- *      - PRIVATE_KEY: Deployer private key (also acts as token issuer and KYC provider)
- *      - EAS_ADDRESS: (optional) EAS contract address, auto-detected if not set
- *
- *      This script is designed for testnet/local deployments only.
+ *      Intended for `anvil` / testnet only. Do NOT run on mainnet.
  */
 contract SetupPilot is Script {
-    // EAS addresses
-    address constant EAS_SEPOLIA = 0xC2679fBD37d54388Ce493F1DB75320D236e1815e;
-    address constant EAS_BASE_SEPOLIA = 0x4200000000000000000000000000000000000021;
-
-    // Claim topic constants (ERC-3643 standard)
     uint256 constant TOPIC_KYC = 1;
-    uint256 constant TOPIC_AML = 2;
-    uint256 constant TOPIC_COUNTRY = 3;
     uint256 constant TOPIC_ACCREDITATION = 7;
+    uint256 constant TOPIC_COUNTRY = 3;
 
-    // Demo schema UID (replace with actual registered schema)
-    bytes32 constant DEMO_SCHEMA_UID = keccak256(
-        "address identity,uint8 kycStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp"
-    );
-
-    // Deployed contracts
-    EASClaimVerifier public verifier;
-    EASTrustedIssuersAdapter public adapter;
-    EASIdentityProxy public identityProxy;
-    MockClaimTopicsRegistry public topicsRegistry;
-    MockEAS public localMockEAS;
+    bytes32 constant INVESTOR_ELIGIBILITY_UID = keccak256("InvestorEligibility_v2");
+    bytes32 constant ISSUER_AUTH_UID = keccak256("IssuerAuthorization_v1");
 
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address deployer = vm.addr(deployerPrivateKey);
-        address easAddress = vm.envOr("EAS_ADDRESS", address(0));
-        bool isLocal = block.chainid == 31337;
+        uint256 deployerKey = vm.envUint("PRIVATE_KEY");
+        address deployer = vm.addr(deployerKey);
 
-        if (easAddress == address(0) && !isLocal) {
-            easAddress = _getEasAddress();
-        }
-
-        console2.log("=== EAS-ERC3643 Bridge Pilot Setup ===");
+        console2.log("=== Shibui Pilot Setup ===");
+        console2.log("Deployer:", deployer);
         console2.log("Chain ID:", block.chainid);
-        console2.log("Deployer/TokenIssuer:", deployer);
-        console2.log("EAS Address:", easAddress);
-        console2.log("");
 
-        vm.startBroadcast(deployerPrivateKey);
+        vm.startBroadcast(deployerKey);
 
-        if (isLocal && easAddress == address(0)) {
-            localMockEAS = new MockEAS();
-            easAddress = address(localMockEAS);
-            console2.log("Local mode: deployed MockEAS at", easAddress);
-        }
+        // MockEAS so the pilot is fully self-contained.
+        MockEAS eas = new MockEAS();
+        console2.log("MockEAS:", address(eas));
 
-        // 1. Deploy core bridge contracts
-        console2.log("Step 1: Deploying bridge contracts...");
+        EASTrustedIssuersAdapter adapter = new EASTrustedIssuersAdapter(deployer);
+        EASIdentityProxy identityProxy = new EASIdentityProxy(deployer);
+        EASClaimVerifier verifier = new EASClaimVerifier(deployer);
+        MockClaimTopicsRegistry topicsRegistry = new MockClaimTopicsRegistry();
 
-        adapter = new EASTrustedIssuersAdapter(deployer);
-        console2.log("  EASTrustedIssuersAdapter:", address(adapter));
+        adapter.setEASAddress(address(eas));
+        adapter.setIssuerAuthSchemaUID(ISSUER_AUTH_UID);
 
-        identityProxy = new EASIdentityProxy(deployer);
-        console2.log("  EASIdentityProxy:", address(identityProxy));
-
-        verifier = new EASClaimVerifier(deployer);
-        console2.log("  EASClaimVerifier:", address(verifier));
-
-        // 2. Deploy mock claim topics registry for pilot
-        console2.log("Step 2: Deploying ClaimTopicsRegistry...");
-        topicsRegistry = new MockClaimTopicsRegistry();
-        console2.log("  MockClaimTopicsRegistry:", address(topicsRegistry));
-
-        // 3. Configure verifier
-        console2.log("Step 3: Configuring verifier...");
-        verifier.setEASAddress(easAddress);
+        verifier.setEASAddress(address(eas));
         verifier.setTrustedIssuersAdapter(address(adapter));
         verifier.setIdentityProxy(address(identityProxy));
         verifier.setClaimTopicsRegistry(address(topicsRegistry));
-        console2.log("  Verifier configured with all dependencies");
 
-        // 4. Set up claim topics
-        console2.log("Step 4: Configuring claim topics...");
+        KYCStatusPolicy kycPolicy = new KYCStatusPolicy();
+
+        uint8[] memory accTypes = new uint8[](2);
+        accTypes[0] = 2;
+        accTypes[1] = 4;
+        AccreditationPolicy accPolicy = new AccreditationPolicy(deployer, accTypes);
+
+        uint16[] memory countries = new uint16[](1);
+        countries[0] = 840; // US
+        CountryAllowListPolicy countryPolicy =
+            new CountryAllowListPolicy(deployer, CountryAllowListPolicy.Mode.Allow, countries);
+
+        verifier.setTopicSchemaMapping(TOPIC_KYC, INVESTOR_ELIGIBILITY_UID);
+        verifier.setTopicSchemaMapping(TOPIC_ACCREDITATION, INVESTOR_ELIGIBILITY_UID);
+        verifier.setTopicSchemaMapping(TOPIC_COUNTRY, INVESTOR_ELIGIBILITY_UID);
+
+        verifier.setTopicPolicy(TOPIC_KYC, address(kycPolicy));
+        verifier.setTopicPolicy(TOPIC_ACCREDITATION, address(accPolicy));
+        verifier.setTopicPolicy(TOPIC_COUNTRY, address(countryPolicy));
+
         topicsRegistry.addClaimTopic(TOPIC_KYC);
         topicsRegistry.addClaimTopic(TOPIC_ACCREDITATION);
-        console2.log("  Added topics: KYC (1), Accreditation (7)");
+        topicsRegistry.addClaimTopic(TOPIC_COUNTRY);
 
-        // 5. Set topic-to-schema mappings
-        console2.log("Step 5: Setting schema mappings...");
-        verifier.setTopicSchemaMapping(TOPIC_KYC, DEMO_SCHEMA_UID);
-        verifier.setTopicSchemaMapping(TOPIC_ACCREDITATION, DEMO_SCHEMA_UID);
-        console2.log("  Topics mapped to demo schema");
+        // Schema-2 authorizer (deployer-run). In production, an authorizer must be
+        // registered on TrustedIssuerResolver before this step succeeds on real EAS.
+        MockAttester authorizer = new MockAttester(address(eas), "PilotAuthorizer");
 
-        // 6. Add deployer as KYC provider (trusted attester)
-        console2.log("Step 6: Adding KYC provider...");
-        uint256[] memory topics = new uint256[](2);
-        topics[0] = TOPIC_KYC;
-        topics[1] = TOPIC_ACCREDITATION;
-        adapter.addTrustedAttester(deployer, topics);
-        console2.log("  KYC Provider (deployer) added as trusted attester");
+        // KYC provider
+        MockAttester kycProvider = new MockAttester(address(eas), "PilotKYC");
 
-        // 7. Create 5 test investor identities + attestations
-        console2.log("Step 7: Creating test investor wallets and attestations...");
-        address[5] memory investors;
-        address[5] memory identities;
+        uint256[] memory authorizedTopics = new uint256[](3);
+        authorizedTopics[0] = TOPIC_KYC;
+        authorizedTopics[1] = TOPIC_ACCREDITATION;
+        authorizedTopics[2] = TOPIC_COUNTRY;
+
+        bytes32 authUID =
+            authorizer.attestIssuerAuthorization(ISSUER_AUTH_UID, address(kycProvider), authorizedTopics, "PilotKYC");
+
+        adapter.addTrustedAttester(address(kycProvider), authorizedTopics, authUID);
+
+        // Seed 5 investors
         for (uint256 i = 0; i < 5; i++) {
-            // Generate deterministic addresses for testing
-            investors[i] = address(uint160(uint256(keccak256(abi.encodePacked("pilot_investor_", i)))));
-            identities[i] = address(uint160(uint256(keccak256(abi.encodePacked("pilot_identity_", i)))));
+            address wallet = address(uint160(uint256(keccak256(abi.encodePacked("pilot_wallet_", i)))));
+            address identity = address(uint160(uint256(keccak256(abi.encodePacked("pilot_identity_", i)))));
 
-            identityProxy.registerWallet(investors[i], identities[i]);
+            identityProxy.registerWallet(wallet, identity);
 
-            bytes32 kycUID = _createAttestation(easAddress, identities[i], 1, 2, 840);
-            verifier.registerAttestation(identities[i], TOPIC_KYC, kycUID);
+            bytes32 uid = kycProvider.attestInvestorEligibility(
+                INVESTOR_ELIGIBILITY_UID,
+                identity,
+                identity,
+                1, // kycStatus = VERIFIED
+                0, // amlStatus = CLEAR
+                0, // sanctionsStatus = CLEAR
+                1, // sourceOfFundsStatus = VERIFIED
+                2, // accreditationType = ACCREDITED
+                840, // US
+                uint64(block.timestamp + 365 days),
+                keccak256(abi.encodePacked("evidence-", i)),
+                2 // verificationMethod = third-party
+            );
 
-            bytes32 accUID = _createAttestation(easAddress, identities[i], 1, 2, 840);
-            verifier.registerAttestation(identities[i], TOPIC_ACCREDITATION, accUID);
+            // Register for each required topic
+            vm.stopBroadcast();
+            vm.startBroadcast(address(kycProvider));
+            verifier.registerAttestation(identity, TOPIC_KYC, uid);
+            verifier.registerAttestation(identity, TOPIC_ACCREDITATION, uid);
+            verifier.registerAttestation(identity, TOPIC_COUNTRY, uid);
+            vm.stopBroadcast();
+            vm.startBroadcast(deployerKey);
 
-            console2.log("  Investor", i + 1);
-            console2.log("    wallet:", investors[i]);
-            console2.log("    identity:", identities[i]);
+            console2.log("Investor", i + 1);
+            console2.log("  wallet:  ", wallet);
+            console2.log("  identity:", identity);
+            console2.log("  verified:", verifier.isVerified(wallet));
         }
 
         vm.stopBroadcast();
 
-        // Output summary
         console2.log("");
-        console2.log("=== Pilot Deployment Complete ===");
-        console2.log("");
-        console2.log("Contract Addresses:");
-        console2.log("  VERIFIER_ADDRESS=", address(verifier));
-        console2.log("  ADAPTER_ADDRESS=", address(adapter));
-        console2.log("  IDENTITY_PROXY_ADDRESS=", address(identityProxy));
-        console2.log("  CLAIM_TOPICS_REGISTRY=", address(topicsRegistry));
-        console2.log("");
-        console2.log("Test Investors:");
-        for (uint256 i = 0; i < 5; i++) {
-            console2.log("  Investor", i + 1, ":", investors[i]);
-        }
-        console2.log("");
-        console2.log("Next Steps:");
-        console2.log("1. Verify seeded investors: verifier.isVerified(investor)");
-        console2.log("2. Fund investor wallets with test tokens");
-        console2.log("3. Execute demo transfers through Identity Registry");
-        console2.log("");
-        console2.log("Demo Transfer:");
-        console2.log("1. Fund investor wallets with test tokens");
-        console2.log("2. Perform transfer - Identity Registry will call verifier.isVerified()");
-    }
-
-    function _createAttestation(
-        address easAddress,
-        address identity,
-        uint8 kycStatus,
-        uint8 accreditationType,
-        uint16 countryCode
-    ) internal returns (bytes32) {
-        AttestationRequest memory request = AttestationRequest({
-            schema: DEMO_SCHEMA_UID,
-            data: AttestationRequestData({
-                recipient: identity,
-                expirationTime: uint64(block.timestamp + 365 days),
-                revocable: true,
-                refUID: bytes32(0),
-                data: abi.encode(
-                    identity, kycStatus, accreditationType, countryCode, uint64(block.timestamp + 365 days)
-                ),
-                value: 0
-            })
-        });
-
-        return IEAS(easAddress).attest(request);
-    }
-
-    function _getEasAddress() internal view returns (address) {
-        uint256 chainId = block.chainid;
-
-        if (chainId == 11155111) return EAS_SEPOLIA;
-        if (chainId == 84532) return EAS_BASE_SEPOLIA;
-
-        revert("EAS_ADDRESS required for this network");
+        console2.log("=== Deployment Summary ===");
+        console2.log("VERIFIER_ADDRESS=", address(verifier));
+        console2.log("ADAPTER_ADDRESS=", address(adapter));
+        console2.log("IDENTITY_PROXY_ADDRESS=", address(identityProxy));
+        console2.log("TOPICS_REGISTRY=", address(topicsRegistry));
+        console2.log("KYC_PROVIDER=", address(kycProvider));
     }
 }

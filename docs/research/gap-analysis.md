@@ -129,6 +129,9 @@ function getWallets(address identity) external view returns (address[] memory);
 
 ## Dimension 3: Cross-Chain Portability
 
+> **Reality check (post audit finding R-5).** Earlier README copy claimed "one KYC, all chains" as a benefit. That is **not** a property of the current implementation. EAS attestations are per-chain; an investor verified on chain A must be separately attested on chain B. Multi-chain attestation portability is on the V2 roadmap. Integrators should plan for per-chain attestation and, if needed, their own mirroring infrastructure.
+
+
 ### ONCHAINID Approach
 
 ONCHAINID uses CREATE2 via IdFactory for deterministic addresses:

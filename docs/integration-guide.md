@@ -1,5 +1,12 @@
 # EAS-to-ERC-3643 Bridge Integration Guide
 
+> **Scope reminder.** Shibui is an **attestation retrieval adapter**, not a full identity layer. Token-side primitives (forced transfer, freeze, recovery) live in the ERC-3643 token contract. See [`docs/architecture/enforcement-boundary.md`](architecture/enforcement-boundary.md).
+>
+> **Cross-chain.** EAS attestations are **per-chain** today. An investor verified on chain A must be re-attested on chain B; "one KYC, all chains" is on the V2 roadmap and not a property of the current implementation.
+>
+> **Path B caveats.** `EASClaimVerifierIdentityWrapper` is a **read-compat shim** for legacy ERC-3643 deployments that cannot be modified. It does not run topic policies in `isClaimValid`, returns empty signatures from `getClaim`, and has an unfavourable gas profile. New deployments should use Path A. See the wrapper's NatSpec for the full list of non-features.
+
+
 ## What You'll Achieve
 
 By the end of this guide, your ERC-3643 security token will be able to verify investor eligibility using EAS attestations. Concretely:

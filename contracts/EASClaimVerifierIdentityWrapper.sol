@@ -9,27 +9,50 @@ import {IEAS, Attestation} from "@eas/IEAS.sol";
 /**
  * @title EASClaimVerifierIdentityWrapper
  * @author EEA Working Group
- * @notice Path B implementation - Wraps EAS attestations behind the IIdentity interface
- * @dev This contract implements IIdentity (ERC-735) so the standard ERC-3643 Identity Registry
- *      can use it without any modifications. It translates EAS attestations into the claim
- *      structure the Identity Registry expects.
+ * @notice Path B — **Read-compatibility shim** exposing EAS attestations behind
+ *         the IIdentity / ERC-735 / ERC-734 interface surface.
  *
- *      Path B Trade-offs:
- *      - PRO: Zero changes to existing ERC-3643 contracts
- *      - PRO: Drop-in replacement for ONCHAINID
- *      - CON: More complex than Path A
- *      - CON: Emulates claim structure rather than native integration
- *      - CON: Each user needs a wrapper deployed (or uses a factory pattern)
+ * @dev **This is NOT a drop-in replacement for ONCHAINID.** Audit finding C-4
+ *      flagged that earlier documentation presented this contract as such, which
+ *      is misleading. It is a minimal shim intended for the narrow case of an
+ *      existing ERC-3643 deployment whose `IdentityRegistryStorage` cannot be
+ *      modified to call the new payload-aware verifier directly. New
+ *      deployments should use Path A (`EASClaimVerifier` called from a modified
+ *      Identity Registry) and skip this wrapper entirely.
  *
- *      This wrapper is deployed per-identity and holds references to:
- *      - The identity address (user's main address for attestations)
- *      - The EASClaimVerifier for validation logic
- *      - The EAS contract for attestation queries
+ *      **What this wrapper DOES:**
+ *        - Translates `getClaim(claimId)` lookups into EAS attestation reads
+ *          via `EASClaimVerifier.getRegisteredAttestation(...)`.
+ *        - Reports claim IDs by topic.
+ *        - Provides a minimal `isClaimValid()` that verifies attestation
+ *          existence, revocation status, and EAS-level expiration.
  *
- *      When the Identity Registry calls getClaim(), this wrapper:
- *      1. Extracts the topic from the claim ID
- *      2. Finds the corresponding EAS attestation
- *      3. Returns the attestation data in ERC-735 claim format
+ *      **What this wrapper DOES NOT do — and why each matters:**
+ *        - **Does not run topic policies.** `isClaimValid()` does NOT check
+ *          payload semantics (kycStatus, accreditationType, country, etc.).
+ *          Downstream consumers that rely on it for Reg D / Reg S / MiFID
+ *          gating will make incorrect decisions. Call
+ *          `EASClaimVerifier.isVerified()` for policy-aware checks.
+ *        - **Does not implement ERC-734 key management.** `addKey`,
+ *          `removeKey`, `approve`, `execute` all revert. ONCHAINID-style
+ *          recovery flows (rotation, management keys) are unavailable.
+ *        - **Does not return real ECDSA signatures from `getClaim`.** The
+ *          returned `signature` field is empty bytes; EAS does not expose
+ *          the attester signature post-creation. ERC-3643 consumers that
+ *          re-verify claim signatures out-of-band will fail.
+ *        - **Gas profile is not suitable for hot paths.** `getClaim`
+ *          brute-forces the (attester × topic) space via nested loops
+ *          bounded by `MAX_ATTESTERS` × `MAX_TOPICS_PER_ATTESTER` — up to
+ *          50 × 15 = 750 combinations, each invoking an EAS read. Deploy a
+ *          per-identity wrapper + cache if you must use Path B, and profile
+ *          before production.
+ *        - **Does not handle wallet recovery.** The `identityAddress` is
+ *          immutable at construction; losing the key means losing the
+ *          identity. Use the token contract's `recoveryAddress` flow on
+ *          the ERC-3643 side.
+ *
+ *      See `docs/integration-guide.md` § "Path B caveats" for the integration
+ *      matrix and guidance on when to use this shim.
  */
 contract EASClaimVerifierIdentityWrapper is IIdentity {
     // ============ Storage ============
