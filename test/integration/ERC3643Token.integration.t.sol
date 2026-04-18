@@ -25,9 +25,13 @@ pragma solidity ^0.8.24;
  *                         level ("Transfer not possible") because isVerified->false.
  *   3. Policy failure:    investor C has all topics attested but accreditationType
  *                         = NONE -> mint reverts ("Identity is not verified.").
- *   4. Fallback:          setIdentityVerifier(0). Without a registered ONCHAINID,
- *                         the default path returns false and mint reverts.
- *                         Confirms the extension's default path.
+ *   4. Fallback works:    setIdentityVerifier(0) + register a stub ONCHAINID on
+ *                         the T-REX side. Default `isVerified` returns true,
+ *                         mint + transfer succeed. Proves the short-circuit's
+ *                         "off" branch reaches and exercises the built-in path.
+ *   5. Provider retired:  adapter.removeTrustedAttester invalidates every
+ *                         investor covered by that provider in one admin call;
+ *                         subsequent transfers revert at the token level.
  *
  * Gas snapshot (captured at end of test run, see docs/integration-gas.md):
  *   - token.transfer (Shibui-delegated) printed by test_happyPath_*
@@ -49,6 +53,7 @@ interface IIdentityRegistryView {
     function identityVerifier() external view returns (address);
     function isVerified(address _userAddress) external view returns (bool);
     function addAgent(address _agent) external;
+    function registerIdentity(address _userAddress, address _identity, uint16 _country) external;
 }
 
 interface IIdentityRegistryStorageView {
@@ -105,31 +110,42 @@ contract ERC3643TokenIntegrationTest is BridgeHarness {
 
     // Artifact paths (relative to project root). These are produced by running
     // `npx hardhat compile` inside lib/ERC-3643 once before running the test.
-    string internal constant ART_IR = "lib/ERC-3643/artifacts/contracts/registry/implementation/IdentityRegistry.sol/IdentityRegistry.json";
-    string internal constant ART_IRS = "lib/ERC-3643/artifacts/contracts/registry/implementation/IdentityRegistryStorage.sol/IdentityRegistryStorage.json";
-    string internal constant ART_CTR = "lib/ERC-3643/artifacts/contracts/registry/implementation/ClaimTopicsRegistry.sol/ClaimTopicsRegistry.json";
-    string internal constant ART_TIR = "lib/ERC-3643/artifacts/contracts/registry/implementation/TrustedIssuersRegistry.sol/TrustedIssuersRegistry.json";
-    string internal constant ART_MC = "lib/ERC-3643/artifacts/contracts/compliance/modular/ModularCompliance.sol/ModularCompliance.json";
+    string internal constant ART_IR =
+        "lib/ERC-3643/artifacts/contracts/registry/implementation/IdentityRegistry.sol/IdentityRegistry.json";
+    string internal constant ART_IRS =
+        "lib/ERC-3643/artifacts/contracts/registry/implementation/IdentityRegistryStorage.sol/IdentityRegistryStorage.json";
+    string internal constant ART_CTR =
+        "lib/ERC-3643/artifacts/contracts/registry/implementation/ClaimTopicsRegistry.sol/ClaimTopicsRegistry.json";
+    string internal constant ART_TIR =
+        "lib/ERC-3643/artifacts/contracts/registry/implementation/TrustedIssuersRegistry.sol/TrustedIssuersRegistry.json";
+    string internal constant ART_MC =
+        "lib/ERC-3643/artifacts/contracts/compliance/modular/ModularCompliance.sol/ModularCompliance.json";
     string internal constant ART_TOKEN = "lib/ERC-3643/artifacts/contracts/token/Token.sol/Token.json";
 
     function setUp() public {
+        // Review fix (8): fail loudly and usefully if the ERC-3643 submodule
+        // has not been pre-compiled. forge's `vm.deployCode` would otherwise
+        // revert with an opaque "file not found" deep inside the setUp.
+        try vm.readFile(ART_IR) returns (string memory s) {
+            require(bytes(s).length > 0, "ERC-3643 artifacts empty; run: cd lib/ERC-3643 && npx hardhat compile");
+        } catch {
+            revert("ERC-3643 artifacts missing; run: cd lib/ERC-3643 && npx hardhat compile");
+        }
+
         _setupBridge();
 
         investorA = makeAddr("investorA");
         walletA = makeAddr("walletA");
         investorB = makeAddr("investorB");
         walletB = makeAddr("walletB");
-        investorC = makeAddr("investorC");
-        walletC = makeAddr("walletC");
+        // investorC/walletC are only used in scenario 3 (policy failure); their
+        // binding is performed inside that scenario to keep setUp tight.
 
-        kycProvider = _createAttester(
-            "KYC",
-            _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS)
-        );
+        kycProvider =
+            _createAttester("KYC", _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS));
 
         _bindWallet(walletA, investorA);
         _bindWallet(walletB, investorB);
-        _bindWallet(walletC, investorC);
 
         _setRequiredTopics(_topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS));
 
@@ -157,6 +173,11 @@ contract ERC3643TokenIntegrationTest is BridgeHarness {
         token.addAgent(tokenIssuer);
         token.unpause();
 
+        // Agent role on the Identity Registry itself — needed for scenario 4
+        // (fallback path) which registers a stub ONCHAINID under the default
+        // verification path.
+        identityRegistry.addAgent(tokenIssuer);
+
         // Wire Shibui's EASClaimVerifier behind the IdentityRegistry.
         identityRegistry.setIdentityVerifier(address(verifier));
 
@@ -169,16 +190,10 @@ contract ERC3643TokenIntegrationTest is BridgeHarness {
     function test_happyPath_mint_and_transfer_delegates_to_shibui() public {
         EligibilityData memory e = _happyPayload(uint64(block.timestamp + 365 days));
         _attestAndRegister(
-            kycProvider,
-            investorA,
-            _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS),
-            e
+            kycProvider, investorA, _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS), e
         );
         _attestAndRegister(
-            kycProvider,
-            investorB,
-            _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS),
-            e
+            kycProvider, investorB, _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS), e
         );
 
         assertTrue(identityRegistry.isVerified(walletA));
@@ -204,16 +219,10 @@ contract ERC3643TokenIntegrationTest is BridgeHarness {
     function test_revocation_blocks_transfer_through_token_level() public {
         EligibilityData memory e = _happyPayload(uint64(block.timestamp + 365 days));
         _attestAndRegister(
-            kycProvider,
-            investorA,
-            _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS),
-            e
+            kycProvider, investorA, _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS), e
         );
         bytes32 uidB = _attestAndRegister(
-            kycProvider,
-            investorB,
-            _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS),
-            e
+            kycProvider, investorB, _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS), e
         );
 
         vm.prank(tokenIssuer);
@@ -226,6 +235,8 @@ contract ERC3643TokenIntegrationTest is BridgeHarness {
 
         assertFalse(identityRegistry.isVerified(walletB));
 
+        // T-REX `Token._beforeTokenTransfer` check — revert string from
+        // lib/ERC-3643/contracts/token/Token.sol (search "Transfer not possible").
         vm.prank(walletA);
         vm.expectRevert(bytes("Transfer not possible"));
         token.transfer(walletB, 100);
@@ -238,37 +249,105 @@ contract ERC3643TokenIntegrationTest is BridgeHarness {
     // Scenario 3: policy failure — accreditationType NONE blocks mint
     // --------------------------------------------------------------------
     function test_policy_failure_blocks_mint() public {
+        investorC = makeAddr("investorC");
+        walletC = makeAddr("walletC");
+        _bindWallet(walletC, investorC);
+
         EligibilityData memory bad = _happyPayload(uint64(block.timestamp + 365 days));
         bad.accreditationType = 0; // NONE -> AccreditationPolicy rejects
         _attestAndRegister(
-            kycProvider,
-            investorC,
-            _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS),
-            bad
+            kycProvider, investorC, _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS), bad
         );
 
         assertFalse(identityRegistry.isVerified(walletC));
 
         vm.prank(tokenIssuer);
+        // T-REX `Token.mint` — revert string from
+        // lib/ERC-3643/contracts/token/Token.sol (search "Identity is not verified.")
         vm.expectRevert(bytes("Identity is not verified."));
         token.mint(walletC, 100);
     }
 
     // --------------------------------------------------------------------
-    // Scenario 4: Fallback — clear verifier, default path fails without ONCHAINID
+    // Scenario 4: Fallback — clear verifier, default path works for a
+    // registered ONCHAINID identity. Exercises the short-circuit's "off"
+    // branch end-to-end (not just "path is reached").
+    //
+    // Note: the T-REX ClaimTopicsRegistry in this test is empty (our topics
+    // live in Shibui's separate registry), so the default `isVerified`
+    // returns true as soon as an identity is registered — no claim
+    // validation loop runs. We register `address(irs)` as a sentinel stub
+    // identity; any contract address satisfies `registerIdentity`'s
+    // non-zero check and the default path never calls into it.
     // --------------------------------------------------------------------
-    function test_fallback_clears_verifier_and_built_in_path_blocks_mint() public {
+    function test_fallback_to_registered_onchainid_allows_mint_and_transfer() public {
+        // Register a stub identity for walletA on the T-REX side.
+        vm.prank(tokenIssuer);
+        identityRegistry.registerIdentity(walletA, address(irs), 840);
+
+        // Clear the Shibui delegation.
         vm.prank(tokenIssuer);
         identityRegistry.setIdentityVerifier(address(0));
         assertEq(identityRegistry.identityVerifier(), address(0));
 
-        // No ONCHAINID identity registered in the IdentityRegistryStorage for
-        // walletA, so the built-in isVerified returns false at the first check.
-        assertFalse(identityRegistry.isVerified(walletA));
+        // Default path: identity != 0 AND no required claim topics -> true.
+        assertTrue(identityRegistry.isVerified(walletA));
+
+        // Register walletB too so the transfer has a verified recipient.
+        vm.prank(tokenIssuer);
+        identityRegistry.registerIdentity(walletB, address(irs), 840);
+        assertTrue(identityRegistry.isVerified(walletB));
 
         vm.prank(tokenIssuer);
-        vm.expectRevert(bytes("Identity is not verified."));
-        token.mint(walletA, 100);
+        token.mint(walletA, 500);
+        assertEq(token.balanceOf(walletA), 500);
+
+        vm.prank(walletA);
+        token.transfer(walletB, 200);
+        assertEq(token.balanceOf(walletA), 300);
+        assertEq(token.balanceOf(walletB), 200);
+    }
+
+    // --------------------------------------------------------------------
+    // Scenario 5: De-trust entire provider — adapter.removeTrustedAttester
+    // invalidates every investor covered by that attester in one admin
+    // call. Demonstrates Shibui's multi-attester lifecycle *through the
+    // ERC-3643 token* (the unit-level variant lives in
+    // test/integration/AttestationRevocation.t.sol).
+    // --------------------------------------------------------------------
+    function test_detrust_provider_blocks_all_covered_investors() public {
+        EligibilityData memory e = _happyPayload(uint64(block.timestamp + 365 days));
+        _attestAndRegister(
+            kycProvider, investorA, _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS), e
+        );
+        _attestAndRegister(
+            kycProvider, investorB, _topicsArray(TOPIC_KYC, TOPIC_ACCREDITATION, TOPIC_COUNTRY, TOPIC_SANCTIONS), e
+        );
+
+        vm.prank(tokenIssuer);
+        token.mint(walletA, 1_000);
+
+        // Warm-up: transfer works while kycProvider is trusted.
+        vm.prank(walletA);
+        token.transfer(walletB, 100);
+        assertEq(token.balanceOf(walletB), 100);
+
+        // Retire the provider from Shibui's adapter. Both investors lose their
+        // only source of attestation trust at once.
+        vm.prank(tokenIssuer);
+        adapter.removeTrustedAttester(address(kycProvider));
+
+        assertFalse(identityRegistry.isVerified(walletA));
+        assertFalse(identityRegistry.isVerified(walletB));
+
+        // T-REX `Token._beforeTokenTransfer` check — revert string from
+        // lib/ERC-3643/contracts/token/Token.sol (search "Transfer not possible").
+        vm.prank(walletA);
+        vm.expectRevert(bytes("Transfer not possible"));
+        token.transfer(walletB, 100);
+
+        assertEq(token.balanceOf(walletA), 900);
+        assertEq(token.balanceOf(walletB), 100);
     }
 }
 
