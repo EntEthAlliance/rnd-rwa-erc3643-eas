@@ -1,0 +1,44 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f0f0f0', 'primaryTextColor': '#333', 'primaryBorderColor': '#666', 'lineColor': '#444'}}}%%
+flowchart LR
+    subgraph Before["BEFORE: Single-vendor identity stack"]
+        direction TB
+        B_Investor["👤 Investor"]
+        B_Provider["ONCHAINID-compatible<br/>KYC Provider"]
+        B_Identity["ONCHAINID Contract<br/>(deployed per investor)"]
+        B_Token["ERC-3643 Token"]
+        B_IR["Identity Registry<br/>(reads ERC-735 claims directly)"]
+
+        B_Investor -->|"KYC"| B_Provider
+        B_Provider -->|"ERC-735 claim"| B_Identity
+        B_Identity -->|"queried by"| B_IR
+        B_IR -->|"isVerified"| B_Token
+    end
+
+    subgraph After["AFTER: Pluggable backend + payload-aware verifier"]
+        direction TB
+        A_Investor["👤 Investor"]
+        A_Provider1["KYC Provider A"]
+        A_Provider2["KYC Provider B"]
+        A_Provider3["AML / Sanctions Screener"]
+        A_EAS["EAS<br/>(Ethereum Attestation Service)"]
+        A_Shibui["EASClaimVerifier<br/>+ 8 ITopicPolicy modules"]
+        A_IR["Identity Registry<br/>(IIdentityVerifier extension point)"]
+        A_Token["ERC-3643 Token"]
+
+        A_Investor -->|"one KYC"| A_Provider1
+        A_Investor -.->|"or"| A_Provider2
+        A_Provider3 -.->|"screens separately"| A_Investor
+        A_Provider1 -->|"Schema-v2 attestation"| A_EAS
+        A_Provider2 -->|"Schema-v2 attestation"| A_EAS
+        A_Provider3 -->|"sanctions attestation"| A_EAS
+        A_EAS -->|"read by"| A_Shibui
+        A_Shibui -->|"setIdentityVerifier(shibui)"| A_IR
+        A_IR -->|"isVerified"| A_Token
+    end
+
+    Before ~~~ After
+
+    style Before fill:#fee2e2,stroke:#dc2626
+    style After fill:#dcfce7,stroke:#16a34a
+    style A_EAS fill:#dbeafe,stroke:#2563eb
+    style A_Shibui fill:#fef3c7,stroke:#d97706

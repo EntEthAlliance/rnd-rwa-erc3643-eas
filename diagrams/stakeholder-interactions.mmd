@@ -1,51 +1,54 @@
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f0f0f0', 'primaryTextColor': '#333', 'primaryBorderColor': '#666', 'lineColor': '#444'}}}%%
 flowchart TB
-    subgraph Stakeholders["Who Does What"]
+    subgraph Stakeholders["Who does what in a Shibui-backed deployment"]
         direction TB
 
-        subgraph Issuer["🏢 Token Issuer"]
-            I1["Deploy bridge contracts"]
-            I2["Define required topics<br/>(KYC, accreditation, country)"]
-            I3["Approve trusted KYC providers"]
-            I4["Remove compromised providers"]
+        subgraph IssuerOrg["🏢 Token Issuer"]
+            I1["Deploy the Shibui stack<br/>(verifier + adapter + proxy + policies + resolver)"]
+            I2["Choose required topics<br/>(KYC, accreditation, country, sanctions, ...)"]
+            I3["Call setIdentityVerifier(shibui)<br/>on the ERC-3643 Identity Registry"]
         end
 
-        subgraph KYCProvider["🔍 KYC Provider"]
-            K1["Verify investor identity<br/>(off-chain KYC/AML)"]
-            K2["Issue EAS attestation<br/>(on-chain, reusable)"]
-            K3["Revoke attestation<br/>(AML flag, sanctions)"]
+        subgraph Multisig["⚖️ Compliance Multisig (DEFAULT_ADMIN_ROLE)"]
+            M1["Curate the Schema-2 authorizer set<br/>(resolver.addAuthorizer)"]
+            M2["Grant / revoke OPERATOR_ROLE,<br/>AGENT_ROLE"]
+            M3["Emergency response:<br/>remove trusted attester, flip policies"]
+        end
+
+        subgraph Operator["🛠️ Operators (OPERATOR_ROLE)"]
+            O1["Day-to-day topic-schema wiring"]
+            O2["Bind topics to policies"]
+            O3["Add trusted attesters with authUID"]
+        end
+
+        subgraph KYCProvider["🔍 KYC / Compliance Provider"]
+            K1["Verify investor off-chain<br/>(KYC, AML, accreditation, sanctions)"]
+            K2["Attest on EAS under Schema 1 v2"]
+            K3["Revoke attestation when needed"]
         end
 
         subgraph InvestorRole["👤 Investor"]
-            INV1["Complete KYC once"]
-            INV2["Receive EAS attestation"]
-            INV3["Reuse across tokens & chains"]
-            INV4["No per-token identity setup"]
+            INV1["Complete KYC with a trusted provider"]
+            INV2["Receive an EAS attestation"]
+            INV3["No per-investor contract deployed"]
         end
 
-        subgraph ComplianceOfficer["⚖️ Compliance Officer"]
-            C1["Monitor attestation events"]
-            C2["Audit verification history"]
-            C3["Trigger revocations"]
-            C4["Add/update required topics"]
-        end
-
-        subgraph TokenContract["📜 Token Contract (ERC-3643)"]
-            T1["Call isVerified() on transfer"]
-            T2["Block if not eligible"]
-            T3["No code changes needed"]
+        subgraph TokenContract["📜 ERC-3643 Token"]
+            T1["Transfer hook calls isVerified()<br/>on the Identity Registry"]
+            T2["Block on false — no custom integration needed<br/>beyond the setIdentityVerifier call"]
         end
     end
 
-    Issuer -->|"configures"| TokenContract
-    Issuer -->|"trusts"| KYCProvider
+    IssuerOrg -->|"hands admin to"| Multisig
+    Multisig -->|"delegates day-to-day to"| Operator
+    Operator -->|"configures"| TokenContract
+    Multisig -->|"approves authorizers who in turn trust"| KYCProvider
     KYCProvider -->|"attests"| InvestorRole
     InvestorRole -->|"verified by"| TokenContract
-    ComplianceOfficer -->|"monitors"| KYCProvider
-    ComplianceOfficer -->|"updates"| Issuer
 
-    style Issuer fill:#dbeafe,stroke:#2563eb
+    style IssuerOrg fill:#dbeafe,stroke:#2563eb
+    style Multisig fill:#fce4ec,stroke:#c2185b
+    style Operator fill:#fce4ec,stroke:#ad1457
     style KYCProvider fill:#fef3c7,stroke:#d97706
     style InvestorRole fill:#dcfce7,stroke:#16a34a
-    style ComplianceOfficer fill:#f3e8ff,stroke:#7c3aed
     style TokenContract fill:#f1f5f9,stroke:#475569

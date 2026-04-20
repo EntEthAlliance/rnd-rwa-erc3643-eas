@@ -1,51 +1,68 @@
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f0f0f0', 'primaryTextColor': '#333', 'primaryBorderColor': '#666', 'lineColor': '#666', 'secondaryColor': '#e0e0e0', 'tertiaryColor': '#fff'}}}%%
 flowchart TB
-    %% This diagram mirrors OpenZeppelin RWA vocabulary:
-    %% - Token core calls into a separate Shibui Identity Layer module
-    %% - Compliance is modular and remains independent from identity proof format
+    %% Shibui v0.4 architecture — payload-aware verifier wired behind an
+    %% ERC-3643 Identity Registry via the IIdentityVerifier extension point
+    %% (ERC-3643/ERC-3643 PR #98). Backend is total, not hybrid: when the
+    %% Identity Registry has a verifier set, the built-in ONCHAINID path is
+    %% skipped entirely. Only one backend is active at a time.
 
-    subgraph TokenLayer["ERC-3643 Token Layer (Token Core + Compliance)"]
-        Token["Token Contract (ERC-3643)"]
+    subgraph TokenLayer["ERC-3643 Token Layer"]
+        Token["Token Contract"]
         Compliance["Compliance Module(s)"]
-        IR["Identity Registry"]
+        IR["Identity Registry\n(IIdentityVerifier extension point)"]
     end
 
-    subgraph IdentityVerifierLayer["Shibui Identity Layer (pluggable)"]
-        ECV["Shibui Verifier (EAS)\nEASClaimVerifier"]
-        TIA["Trusted Attesters Adapter\nEASTrustedIssuersAdapter"]
-        EIP["Wallet→Identity Mapping\nEASIdentityProxy"]
-        CTR["Claim Topics Registry\n(ERC-3643)"]
+    subgraph ShibuiLayer["Shibui Identity Verifier (backend)"]
+        ECV["EASClaimVerifier\n(payload-aware)"]
+        TIA["EASTrustedIssuersAdapter\n(Schema-2-gated trust)"]
+        EIP["EASIdentityProxy\n(wallet↔identity, AGENT_ROLE)"]
+        CTR["Claim Topics Registry"]
+
+        subgraph Policies["ITopicPolicy × 8"]
+            KYC["KYCStatusPolicy"]
+            AML["AMLPolicy"]
+            COUNTRY["CountryAllowListPolicy"]
+            ACC["AccreditationPolicy"]
+            PRO["ProfessionalInvestor"]
+            INST["InstitutionalInvestor"]
+            SANC["SanctionsPolicy"]
+            SOF["SourceOfFundsPolicy"]
+        end
     end
 
-    subgraph EASLayer["EAS Protocol Layer"]
+    subgraph EASLayer["EAS Protocol"]
         EAS["EAS.sol"]
         SR["Schema Registry"]
+        Resolver["TrustedIssuerResolver\n(gates Schema-2 writes)"]
     end
 
-    subgraph OnchainIDLayer["ONCHAINID Verifier Module (optional)"]
-        OCID["ONCHAINID Contract"]
-        TIR["TrustedIssuersRegistry"]
-        IRS["IdentityRegistryStorage"]
+    subgraph Admin["Control plane"]
+        Multisig["Compliance Multisig\n(DEFAULT_ADMIN_ROLE)"]
+        Op["Operators\n(OPERATOR_ROLE)"]
+        Agent["Agents\n(AGENT_ROLE)"]
     end
 
     Token -->|canTransfer| Compliance
     Compliance -->|isVerified| IR
+    IR -->|delegates| ECV
 
-    %% ERC-3643 Identity Registry delegates identity checks to the Shibui verifier module.
-    IR -->|EAS Identity Verifier| ECV
-
-    %% Optional dual-mode: keep ONCHAINID as an alternative verifier.
-    IR -.->|ONCHAINID Verifier| IRS
-    IRS -.-> OCID
-    OCID -.-> TIR
-
-    %% Internals of the EAS Identity Verifier module
     ECV -->|resolve identity| EIP
     ECV -->|required topics| CTR
     ECV -->|trusted attesters| TIA
-    ECV -->|read attestations| EAS
+    ECV -->|fetch attestation| EAS
+    ECV -->|validate payload| Policies
 
+    TIA -.->|authUID→Schema 2| EAS
+    EAS -.->|gate Schema-2 writes| Resolver
     EAS --> SR
+
+    Multisig -.->|admin| ECV
+    Multisig -.->|admin| TIA
+    Multisig -.->|admin| EIP
+    Multisig -.->|owner| Resolver
+    Op -.->|day-to-day| ECV
+    Op -.->|day-to-day| TIA
+    Agent -.->|wallet bindings| EIP
 
     style Token fill:#e3f2fd
     style Compliance fill:#e3f2fd
@@ -55,10 +72,12 @@ flowchart TB
     style TIA fill:#c8e6c9
     style EIP fill:#c8e6c9
     style CTR fill:#c8e6c9
+    style Policies fill:#dcedc8
 
     style EAS fill:#fff3e0
     style SR fill:#fff3e0
+    style Resolver fill:#fff3e0
 
-    style OCID fill:#f3e5f5
-    style IRS fill:#f3e5f5
-    style TIR fill:#f3e5f5
+    style Multisig fill:#fce4ec
+    style Op fill:#fce4ec
+    style Agent fill:#fce4ec

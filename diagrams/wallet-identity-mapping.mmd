@@ -16,10 +16,10 @@ flowchart LR
         I2[Identity B\n0xBBB...222]
     end
 
-    subgraph EASAttestations["EAS Attestations"]
-        A1["Attestation 1\nrecipient: Identity A\ntopic: KYC\nstatus: VERIFIED"]
-        A2["Attestation 2\nrecipient: Identity A\ntopic: ACCREDITATION\ntype: ACCREDITED"]
-        A3["Attestation 3\nrecipient: Identity B\ntopic: KYC\nstatus: VERIFIED"]
+    subgraph EASAttestations["EAS Attestations (Schema 1 v2)"]
+        A1["Attestation 1\nrecipient: Identity A\ntopic: KYC\nkycStatus: VERIFIED\nevidenceHash: 0x…\nverificationMethod: third-party"]
+        A2["Attestation 2\nrecipient: Identity A\ntopic: ACCREDITATION\naccreditationType: ACCREDITED"]
+        A3["Attestation 3\nrecipient: Identity B\ntopic: KYC\nkycStatus: VERIFIED"]
     end
 
     W1 -->|registered to| Mapping
