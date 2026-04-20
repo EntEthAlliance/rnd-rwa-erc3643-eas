@@ -317,4 +317,5 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## License
 
-MIT
+Licensed under the [Apache License, Version 2.0](LICENSE).
+`Copyright © 2026 Enterprise Ethereum Alliance Inc.`
