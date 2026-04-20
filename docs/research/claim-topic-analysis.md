@@ -279,28 +279,35 @@ Use ISO 3166-1 numeric codes (same as ERC-3643):
 
 ## Trusted Issuer Patterns
 
+Attester selection is the token issuer's responsibility. The categories below
+describe the *kinds* of providers that typically issue the corresponding
+claims. The EEA does not endorse, recommend, or exclude any specific vendor;
+this document is neutral reference material, not a procurement list.
+
 ### KYC Providers (Topic 1)
 
-Common trusted issuers for KYC claims:
-- Tokeny (self-service verification)
-- Jumio (automated document verification)
-- Onfido (identity verification platform)
-- SumSub (compliance platform)
-- Veriff (identity verification)
+Kinds of services that commonly issue KYC claims to token investors:
+
+- Self-service identity-verification platforms.
+- Automated document-verification services.
+- Identity-verification platforms with manual review tiers.
+- Full-service compliance platforms bundling KYC with sanctions/PEP screening.
 
 ### Accreditation Verifiers (Topic 7)
 
-Common trusted issuers for accreditation:
-- VerifyInvestor.com
-- Parallel Markets
-- Law firms issuing investor qualification letters
-- Broker-dealers with suitability records
+Kinds of services that commonly issue accreditation claims:
+
+- Third-party accredited-investor verification services.
+- Qualified-purchaser / professional-investor verification services.
+- Law firms issuing investor qualification letters.
+- Broker-dealers with suitability records.
 
 ### Multi-Topic Issuers
 
-Some issuers are authorized for multiple topics:
-- Full-service compliance platforms (KYC + AML + Accreditation)
-- Broker-dealers (KYC + Accreditation + Suitability)
+Some providers are authorised for multiple topics:
+
+- Full-service compliance platforms (KYC + AML + accreditation).
+- Broker-dealers (KYC + accreditation + suitability).
 
 ## Recommendations for EAS Bridge
 
