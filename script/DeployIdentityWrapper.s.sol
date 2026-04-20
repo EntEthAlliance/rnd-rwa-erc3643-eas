@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {EASClaimVerifierIdentityWrapper} from "../contracts/EASClaimVerifierIdentityWrapper.sol";
+import {EASClaimVerifierIdentityWrapper} from "../contracts/compat/EASClaimVerifierIdentityWrapper.sol";
 
 /**
  * @title DeployIdentityWrapper
@@ -37,7 +37,7 @@ contract DeployIdentityWrapper is Script {
         console2.log("  - ERC-734 key management (no recovery)");
         console2.log("  - Claim signature verification (empty signatures)");
         console2.log("  - Topic policies in isClaimValid");
-        console2.log("See contracts/EASClaimVerifierIdentityWrapper.sol NatSpec.");
+        console2.log("See contracts/compat/EASClaimVerifierIdentityWrapper.sol NatSpec.");
 
         vm.startBroadcast(deployerKey);
         EASClaimVerifierIdentityWrapper wrapper =

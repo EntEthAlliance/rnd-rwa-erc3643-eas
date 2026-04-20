@@ -168,8 +168,9 @@ contracts/
 ├─ EASClaimVerifier.sol                — main entry point, payload-aware
 ├─ EASTrustedIssuersAdapter.sol        — Schema-2-gated trusted attester registry
 ├─ EASIdentityProxy.sol                — wallet ↔ identity binding
-├─ EASClaimVerifierIdentityWrapper.sol — read-compat shim (Path B, see below)
 ├─ interfaces/                          — public interfaces
+├─ compat/                              — Level-1 shims (Path B)
+│  └─ EASClaimVerifierIdentityWrapper.sol — read-compat shim for legacy registries
 ├─ policies/
 │  ├─ ITopicPolicy.sol                  — predicate interface
 │  ├─ TopicPolicyBase.sol               — shared Schema-v2 decoder
