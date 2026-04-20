@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
+// Copyright © 2026 Enterprise Ethereum Alliance Inc.
 pragma solidity ^0.8.24;
 
 import {Script, console2} from "forge-std/Script.sol";
