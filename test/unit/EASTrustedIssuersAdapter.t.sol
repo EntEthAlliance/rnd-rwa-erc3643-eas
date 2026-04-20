@@ -86,4 +86,32 @@ contract EASTrustedIssuersAdapterTest is BridgeHarness {
         vm.expectRevert();
         adapter.setIssuerAuthSchemaUID(bytes32(uint256(0x1)));
     }
+
+    function test_setEASAddress_emits_event() public {
+        // The harness already wired EAS in setUp; point to a different contract
+        // address to produce a state change and observable event.
+        address newEAS = address(new MockAttester(address(eas), "DummyEAS"));
+
+        vm.expectEmit(true, false, false, false, address(adapter));
+        emit IEASTrustedIssuersAdapter.EASAddressSet(newEAS);
+
+        vm.prank(tokenIssuer);
+        adapter.setEASAddress(newEAS);
+
+        assertEq(adapter.getEASAddress(), newEAS);
+    }
+
+    function test_setEASAddress_zero_reverts() public {
+        vm.prank(tokenIssuer);
+        vm.expectRevert(IEASTrustedIssuersAdapter.ZeroAddressNotAllowed.selector);
+        adapter.setEASAddress(address(0));
+    }
+
+    function test_setEASAddress_requires_admin() public {
+        address outsider = makeAddr("outsider");
+        address dummy = address(new MockAttester(address(eas), "Dummy"));
+        vm.prank(outsider);
+        vm.expectRevert();
+        adapter.setEASAddress(dummy);
+    }
 }

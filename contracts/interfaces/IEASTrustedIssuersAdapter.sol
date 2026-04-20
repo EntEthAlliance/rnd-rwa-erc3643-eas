@@ -28,6 +28,10 @@ interface IEASTrustedIssuersAdapter {
     /// @param schemaUID The EAS schema UID used to validate authUIDs on `addTrustedAttester`
     event IssuerAuthSchemaUIDSet(bytes32 indexed schemaUID);
 
+    /// @notice Emitted when the EAS contract address used for authUID validation is set.
+    /// @param easAddress The new EAS contract address
+    event EASAddressSet(address indexed easAddress);
+
     // ============ Errors ============
 
     /// @notice Thrown when attempting to add zero address as attester
