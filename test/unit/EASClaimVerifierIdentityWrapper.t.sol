@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {BridgeHarness} from "../helpers/BridgeHarness.sol";
-import {EASClaimVerifierIdentityWrapper} from "../../contracts/EASClaimVerifierIdentityWrapper.sol";
+import {EASClaimVerifierIdentityWrapper} from "../../contracts/compat/EASClaimVerifierIdentityWrapper.sol";
 import {IIdentity} from "../../contracts/interfaces/IIdentity.sol";
 import {MockAttester} from "../../contracts/mocks/MockAttester.sol";
 
