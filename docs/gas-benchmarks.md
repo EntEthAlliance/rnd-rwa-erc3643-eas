@@ -5,6 +5,28 @@ Measured on Foundry (Solidity 0.8.24, optimizer 200 runs, via_ir enabled) agains
 
 > Reproduce with `forge test --match-contract GasBenchmarkTest -vvvv | grep GasUsed`.
 
+## Intentional vs unintentional drift
+
+Current numbers reflect the cost of payload-aware verification (audit C-1):
+`isVerified` decodes the attestation payload and invokes an `ITopicPolicy`
+module per required claim topic. This is **deliberately** more expensive than
+the pre-refactor "claim exists and attester is trusted" check, because the
+old path could not distinguish `kycStatus = VERIFIED` from `kycStatus =
+PENDING` — a regulatory non-starter. The numbers below are the floor for a
+regulatorily honest check, not a target to drive down.
+
+To guard against *unintentional* regressions, `GasBenchmark.t.sol` locks
+in ceilings via `assertLt` with ~10k headroom above each current reading:
+
+| Operation | Current | Ceiling (asserted in test) |
+|---|---:|---:|
+| `isVerified` — 1 topic | 31,539 | 45,000 |
+| `isVerified` — 3 topics | 80,083 | 95,000 |
+| `isVerified` — 5 topics | 122,090 | 140,000 |
+
+If those asserts fire, either a legitimate optimisation landed (bump the
+ceiling down) or a regression slipped in (investigate before merge).
+
 ## Verification (`isVerified`)
 
 The core verification function is the hot path: one call per token transfer that

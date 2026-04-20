@@ -36,6 +36,16 @@ contract GasBenchmarkTest is BridgeHarness {
 
     // ----- isVerified ---------------------------------------------------------
 
+    // Baseline ceilings below lock in post-refactor gas (audit C-1 added policy
+    // dispatch + payload decode, so numbers grew vs. pre-refactor; see
+    // docs/gas-benchmarks.md). Each ceiling is current baseline + ~10k headroom.
+    // If any of these fire, either (a) an intended gas improvement landed (bump
+    // the ceiling down), or (b) an unintended regression landed (investigate).
+
+    uint256 internal constant GAS_CEILING_ISVERIFIED_1_TOPIC = 45_000;
+    uint256 internal constant GAS_CEILING_ISVERIFIED_3_TOPICS = 95_000;
+    uint256 internal constant GAS_CEILING_ISVERIFIED_5_TOPICS = 140_000;
+
     function test_gas_isVerified_1_topic() public {
         kyc = _createAttester("KYC", _topicsArray(TOPIC_KYC));
         _setRequiredTopics(_topicsArray(TOPIC_KYC));
@@ -47,6 +57,7 @@ contract GasBenchmarkTest is BridgeHarness {
         uint256 used = g - gasleft();
         emit GasUsed("isVerified(1 topic)", used);
         assertTrue(ok);
+        assertLt(used, GAS_CEILING_ISVERIFIED_1_TOPIC, "isVerified(1) regressed; see docs/gas-benchmarks.md");
     }
 
     function test_gas_isVerified_3_topics() public {
@@ -61,6 +72,7 @@ contract GasBenchmarkTest is BridgeHarness {
         uint256 used = g - gasleft();
         emit GasUsed("isVerified(3 topics)", used);
         assertTrue(ok);
+        assertLt(used, GAS_CEILING_ISVERIFIED_3_TOPICS, "isVerified(3) regressed; see docs/gas-benchmarks.md");
     }
 
     function test_gas_isVerified_5_topics() public {
@@ -80,6 +92,7 @@ contract GasBenchmarkTest is BridgeHarness {
         uint256 used = g - gasleft();
         emit GasUsed("isVerified(5 topics)", used);
         assertTrue(ok);
+        assertLt(used, GAS_CEILING_ISVERIFIED_5_TOPICS, "isVerified(5) regressed; see docs/gas-benchmarks.md");
     }
 
     // ----- Administration ----------------------------------------------------
