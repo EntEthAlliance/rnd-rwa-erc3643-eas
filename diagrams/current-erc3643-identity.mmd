@@ -36,17 +36,26 @@ flowchart TB
         IR -->|"required topics"| CTRS
     end
 
-    subgraph Problems["❌ Pain Points"]
-        P1["Single vendor lock-in<br/>(must use ONCHAINID)"]
+    subgraph Problems["❌ Pain points Shibui addresses"]
+        P1["Single vendor ecosystem<br/>(only ONCHAINID-compatible providers)"]
         P2["Per-investor contract deployment<br/>(expensive, slow)"]
-        P3["Per-chain identity<br/>(no portability)"]
-        P4["Limited provider ecosystem<br/>(only ONCHAINID-compatible)"]
+        P3["No on-chain payload enforcement<br/>(claim existence ≠ claim correctness)"]
+        P4["No auditable trust-change trail<br/>(who authorised this KYC provider?)"]
+    end
+
+    subgraph NotAddressed["⏳ Out of scope today (see enforcement-boundary.md)"]
+        N1["Cross-chain attestation portability<br/>(per-chain today; V2 roadmap)"]
+        N2["Forced transfer, freeze, recovery<br/>(ERC-3643 token contract's responsibility)"]
     end
 
     Today ~~~ Problems
+    Problems ~~~ NotAddressed
 
     style Problems fill:#fee2e2,stroke:#dc2626
     style P1 fill:#fee2e2,stroke:#dc2626
     style P2 fill:#fee2e2,stroke:#dc2626
     style P3 fill:#fee2e2,stroke:#dc2626
     style P4 fill:#fee2e2,stroke:#dc2626
+    style NotAddressed fill:#fff7ed,stroke:#ea580c
+    style N1 fill:#fff7ed,stroke:#ea580c
+    style N2 fill:#fff7ed,stroke:#ea580c

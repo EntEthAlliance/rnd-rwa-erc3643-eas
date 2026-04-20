@@ -3,7 +3,7 @@ sequenceDiagram
     participant CO as ⚖️ Compliance Officer
     participant KYC as 🔍 KYC Provider
     participant EAS as 📋 EAS Contract
-    participant Bridge as 🌉 Shibui (EAS ↔ ERC-3643) Bridge
+    participant Shibui as 🔒 Shibui Verifier
     participant Token as 📜 ERC-3643 Token
     participant Bob as 👤 Bob (Investor)
 
@@ -16,10 +16,10 @@ sequenceDiagram
     Note over EAS: Attestation is now REVOKED on-chain
 
     Bob->>Token: transfer(alice, 100 tokens)
-    Token->>Bridge: isVerified(bob)?
-    Bridge->>EAS: getAttestation(uid)
-    EAS-->>Bridge: attestation (revocationTime ≠ 0)
-    Bridge-->>Token: FALSE ❌
+    Token->>Shibui: isVerified(bob)?
+    Shibui->>EAS: getAttestation(uid)
+    EAS-->>Shibui: attestation (revocationTime ≠ 0)
+    Shibui-->>Token: FALSE ❌
     Token-->>Bob: TRANSFER BLOCKED
 
     Note over CO,Bob: Bob cannot trade until re-verified with a new attestation

@@ -56,12 +56,19 @@ stateDiagram-v2
     KYCRejected --> [*]: Exit
 
     note right of Active
-        Attestation data includes:
-        - identity
-        - kycStatus
-        - accreditationType
-        - countryCode
+        Schema 1 v2 payload fields:
+        - identity, kycStatus, amlStatus
+        - sanctionsStatus, sourceOfFundsStatus
+        - accreditationType, countryCode
         - expirationTimestamp
+        - evidenceHash, verificationMethod
+
+        isVerified() also runs the topic's
+        ITopicPolicy against this payload —
+        e.g. kycStatus == VERIFIED,
+        countryCode in allow-list,
+        accreditationType in allowed-set.
+        Existence alone is not sufficient.
     end note
 
     note right of AttestationRevoked

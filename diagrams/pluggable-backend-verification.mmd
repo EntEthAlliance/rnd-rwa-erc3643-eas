@@ -1,0 +1,54 @@
+flowchart TD
+    %% Shibui v0.4 + upstream ERC-3643/ERC-3643 PR #98:
+    %% the Identity Registry holds an optional _identityVerifier slot.
+    %% When set (non-zero), isVerified delegates entirely to that backend.
+    %% When zero, the built-in ONCHAINID flow runs. This is NOT dual-mode —
+    %% only one backend ever executes per call.
+
+    Start([Token Transfer Request])
+    IR{"Identity Registry\n_identityVerifier set?"}
+
+    subgraph BuiltIn["Default path (no external verifier)"]
+        direction TB
+        OCID_Check{"ONCHAINID registered\nfor wallet?"}
+        IRS["IdentityRegistryStorage"]
+        OCID["IIdentity Contract (ONCHAINID)"]
+        CI["IClaimIssuer.isClaimValid"]
+        OCID_Valid{"Required claims\nall valid?"}
+    end
+
+    subgraph Shibui["External Shibui verifier"]
+        direction TB
+        ECV["EASClaimVerifier.isVerified"]
+        EIP["EASIdentityProxy\n(resolve wallet→identity)"]
+        TIA["EASTrustedIssuersAdapter\n(per-topic trusted list)"]
+        EAS["EAS.sol"]
+        POL["ITopicPolicy\n(payload predicate per topic)"]
+        EAS_Valid{"All required topics\npass policy?"}
+    end
+
+    Verified([Verification Passed])
+    NotVerified([Verification Failed])
+
+    Start --> IR
+
+    IR -->|"_identityVerifier == 0"| OCID_Check
+    OCID_Check -->|Yes| IRS --> OCID --> CI --> OCID_Valid
+    OCID_Valid -->|Yes| Verified
+    OCID_Valid -->|No| NotVerified
+    OCID_Check -->|No| NotVerified
+
+    IR -->|"_identityVerifier != 0"| ECV
+    ECV --> EIP
+    ECV --> TIA
+    TIA --> EAS
+    ECV --> POL
+    POL --> EAS_Valid
+    EAS_Valid -->|Yes| Verified
+    EAS_Valid -->|No| NotVerified
+
+    style Verified fill:#c8e6c9,stroke:#2e7d32
+    style NotVerified fill:#ffcdd2,stroke:#c62828
+    style ECV fill:#bbdefb,stroke:#1976d2
+    style POL fill:#dcedc8,stroke:#558b2f
+    style OCID fill:#e1bee7,stroke:#7b1fa2
