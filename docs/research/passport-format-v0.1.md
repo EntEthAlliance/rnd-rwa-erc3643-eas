@@ -1,4 +1,16 @@
-# Shibui Passport Format v0.1 (EAS Schemas)
+# Shibui Passport Format v0.1 (proposal)
+
+> **Status: research proposal, not the current schema.** This document
+> sketches a future, broader schema design with holder-vs-asset separation
+> and jurisdiction-indexed extensions. The schemas actually deployed in
+> Shibui v0.4 are documented in
+> [`docs/schemas/schema-definitions.md`](../schemas/schema-definitions.md)
+> (Investor Eligibility v2 + Issuer Authorization). Integrators should
+> build against those, not the fields proposed here.
+>
+> This proposal is retained to feed future standards-body discussions
+> and pressure-test the broader "on-chain investor credential format"
+> direction. It is explicitly exploratory.
 
 ## What this is
 Shibui is about **agreement on the passport format** — the Ethereum-native equivalent of what ICAO standardized for physical passports: a **simple, machine-readable core** that any border gate (token) can scan the same way.
