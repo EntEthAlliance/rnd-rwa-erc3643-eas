@@ -1,138 +1,152 @@
-# EAS-to-ERC-3643 Bridge Integration Guide
+# Shibui Integration Guide
 
-> **Scope reminder.** Shibui is an **attestation retrieval adapter**, not a full identity layer. Token-side primitives (forced transfer, freeze, recovery) live in the ERC-3643 token contract. See [`docs/architecture/enforcement-boundary.md`](architecture/enforcement-boundary.md).
+> **Scope reminder.** Shibui is an **attestation retrieval adapter**, not a full identity layer. Token-side primitives (forced transfer, freeze, recovery) live in the ERC-3643 token contract. See [`architecture/enforcement-boundary.md`](architecture/enforcement-boundary.md).
 >
-> **Cross-chain.** EAS attestations are **per-chain** today. An investor verified on chain A must be re-attested on chain B; "one KYC, all chains" is on the V2 roadmap and not a property of the current implementation.
+> **Cross-chain.** EAS attestations are **per-chain** today. An investor verified on chain A must be re-attested on chain B. Multi-chain attestation portability is on the V2 roadmap and is **not** a property of the current implementation.
 >
-> **Path B caveats.** `EASClaimVerifierIdentityWrapper` is a **read-compat shim** for legacy ERC-3643 deployments that cannot be modified. It does not run topic policies in `isClaimValid`, returns empty signatures from `getClaim`, and has an unfavourable gas profile. New deployments should use Path A. See the wrapper's NatSpec for the full list of non-features.
+> **Path B caveats.** `EASClaimVerifierIdentityWrapper` is a **read-compat shim** for legacy ERC-3643 deployments whose Identity Registry cannot be modified. It does not run topic policies in `isClaimValid`, returns empty signatures from `getClaim`, and has an unfavourable gas profile. New deployments should use Path A. See the wrapper's NatSpec under `contracts/compat/` for the full list of non-features.
 
 
-## What You'll Achieve
+## What you'll achieve
 
-By the end of this guide, your ERC-3643 security token will be able to verify investor eligibility using EAS attestations. Concretely:
+By the end of this guide your ERC-3643 security token will verify investor eligibility from EAS attestations, with payload semantics enforced on-chain:
 
-- **Token issuers** can accept KYC/accreditation credentials from any EAS-compatible provider — not just ONCHAINID
-- **Investors** reuse existing EAS attestations across multiple tokens and chains — one KYC, universal access
-- **KYC providers** issue attestations once, accepted everywhere — through an open standard instead of a proprietary system
-- **Compliance officers** can revoke access in real-time by revoking an attestation — enforcement is immediate and automated
+- **Token issuers** accept KYC/accreditation credentials from any EAS-compatible provider rather than being tied to a single identity ecosystem.
+- **Investors** complete KYC once per chain with a trusted provider; no per-investor identity contract is deployed.
+- **KYC providers** issue attestations on EAS; revoke or re-issue them without touching the token.
+- **Compliance officers** revoke access in real-time by revoking the attestation on EAS; the next `isVerified` returns false and the token blocks further transfers.
 
-### Example Scenario
+### Example scenario
 
-A fund manager launches a tokenized US Treasury product on Base using ERC-3643. Regulation requires investors to be KYC-verified and accredited.
+A fund manager launches a tokenised US Treasury product on Base using ERC-3643. Regulation requires investors to be KYC-verified and accredited. A sanctions screener also attests per-investor.
 
-**Without the bridge:** Each investor deploys an ONCHAINID identity contract. A specific ONCHAINID-compatible KYC provider issues claims. If the fund launches on Arbitrum too, investors repeat everything.
+**Without Shibui:** each investor needs an ONCHAINID contract deployed on Base. Only ONCHAINID-compatible KYC providers can participate. Claim existence is checked on-chain, but the payload (did KYC actually complete? is the investor on a sanctions list?) is not.
 
-**With the bridge:** Investors who already have EAS attestations from a KYC provider are immediately eligible — no new identity contracts, no re-verification. Works across Base, Arbitrum, Ethereum, and Optimism.
+**With Shibui:** the KYC provider and sanctions screener each attest the investor under the Investor Eligibility schema on EAS (on Base). The Identity Registry delegates `isVerified` to Shibui. When `token.transfer` calls `isVerified`, Shibui checks payload semantics on-chain: KYC verified, country in allow-list, sanctions clear. Deploying the same token on Arbitrum requires re-attesting on Arbitrum (per-chain).
 
 ## Prerequisites
 
 Before integration, ensure you have:
 
-1. **Deployed EAS infrastructure** — EAS is already live on [Ethereum, Base, Arbitrum, Optimism, and testnets](https://docs.attest.org/docs/quick--start/contracts)
-2. **Registered schemas** — Register the required EAS schemas (see [Schema Definitions](schemas/schema-definitions.md))
-3. **Deployed bridge contracts** — Deploy the core bridge contracts (see below)
-4. **KYC provider setup** — At least one trusted attestation provider issuing EAS attestations
+1. **Deployed EAS infrastructure** on the target chain — EAS is live on [Ethereum, Base, Arbitrum, Optimism, and common testnets](https://docs.attest.org/docs/quick--start/contracts).
+2. **Registered schemas** — Run [`script/RegisterSchemas.s.sol`](../script/RegisterSchemas.s.sol); schemas documented in [`schemas/schema-definitions.md`](schemas/schema-definitions.md).
+3. **Deployed Shibui contracts** — see below.
+4. **At least one trusted KYC / compliance provider** attesting under the Investor Eligibility schema.
 
 ## Integration Paths
 
-### Path A: Pluggable Verifier (Recommended)
+### Path A: Pluggable Verifier (recommended)
 
-> **"We're building a new token and want EAS attestations as our primary identity layer."**
+> **"We're building a new token (or we can upgrade our Identity Registry) and want EAS attestations as our identity layer."**
 
-Integrate `EASClaimVerifier` as a verification module called by a modified Identity Registry. This gives you full control and the cleanest integration.
+Integrate `EASClaimVerifier` as the backend the ERC-3643 Identity Registry delegates to. The cleanest way is via the `IIdentityVerifier` extension point proposed upstream in [`ERC-3643/ERC-3643#98`](https://github.com/ERC-3643/ERC-3643/pull/98): the Identity Registry gains one admin call, `setIdentityVerifier(shibuiAddress)`, and after that every `isVerified` delegates to Shibui.
 
 **When to use:**
-- New ERC-3643 deployments
-- When you can modify the Identity Registry
-- When you want native EAS integration
+- New ERC-3643 deployments.
+- Existing deployments whose Identity Registry you can upgrade to the version carrying the extension point.
 
 **Steps:**
 
-1. Deploy the bridge contracts
-2. Configure `EASClaimVerifier` with required components
-3. Modify your Identity Registry to call `EASClaimVerifier.isVerified()`
-4. Register trusted attesters
+1. Deploy the Shibui contracts (see [`script/DeployBridge.s.sol`](../script/DeployBridge.s.sol) or the testnet/mainnet scripts).
+2. Register the two EAS schemas (`script/RegisterSchemas.s.sol`).
+3. Wire the verifier: adapter, identity proxy, Claim Topics Registry, topic-schema mappings, topic-policy mappings.
+4. Add trusted attesters — each with an EAS Schema-2 `authUID` (see Step 3 below).
+5. Call `identityRegistry.setIdentityVerifier(address(verifier))` on the Identity Registry.
 
-### Path B: Identity Wrapper (Zero-Modification)
+### Path B: Identity Wrapper (read-compat shim, legacy only)
 
-> **"We already have an ERC-3643 token in production. We can't redeploy, but we want to start accepting EAS attestations."**
+> **"We have an ERC-3643 token already in production. We cannot modify the Identity Registry, but we want to start accepting EAS attestations."**
 
-Use `EASClaimVerifierIdentityWrapper` as a drop-in IIdentity replacement. Your existing contracts don't change at all — the wrapper translates EAS attestations into the ONCHAINID interface.
+Use `EASClaimVerifierIdentityWrapper` (under `contracts/compat/`) as a drop-in `IIdentity` replacement — one wrapper per investor identity. The wrapper presents an ONCHAINID-shaped surface whose `isClaimValid` delegates to `EASClaimVerifier` for the attestation existence check.
 
-**When to use:**
-- Existing ERC-3643 deployments already in production
-- When you cannot modify the Identity Registry
-- When you need backwards compatibility with ONCHAINID
+**Non-features — please read before choosing Path B:**
+- No ERC-734 keys. `addKey` / `removeKey` revert. Lost-key recovery uses the ERC-3643 token's `recoveryAddress` flow, not this wrapper.
+- No claim signatures. `getClaim` returns an empty `signature` — the attestation is authenticated by EAS at read time, not by a signature stored on the wrapper.
+- No topic policies inside `isClaimValid`. The wrapper only checks attestation existence + non-revocation + non-expiry; full payload-aware enforcement (Schema 1 v2 policy modules) only runs through Path A.
+- O(N × M) gas profile on `getClaim` — scales with trusted-attester count × registered attestations. Fine for low-topic, low-attester deployments; avoid for deep required-topic stacks.
+- Targets EthTrust Security Level 1, not Level 2. New deployments should use Path A.
+
+**When to use:** only when the Identity Registry cannot be modified *and* you accept the caveats above.
 
 **Steps:**
 
-1. Deploy wrapper for each identity
-2. Register wrapper address in IdentityRegistryStorage
-3. Token uses existing verification flow — no code changes needed
+1. Deploy a Shibui core stack (verifier + adapter + identity proxy + policies + resolver) as in Path A steps 1–3.
+2. Deploy one `EASClaimVerifierIdentityWrapper` per investor identity (constructor binds the wrapper to an investor address).
+3. Register the wrapper address in `IdentityRegistryStorage` in place of an ONCHAINID contract.
+4. KYC provider attests the investor on EAS (Schema 1 v2). Call `verifier.registerAttestation(identity, topic, uid)` from an `AGENT_ROLE` holder or from the attester itself.
+5. Token uses the existing verification flow — no token-side code change.
 
 ## Step-by-Step Integration (Path A)
 
-### 1. Deploy Bridge Contracts
+All setter calls below require the caller to hold `OPERATOR_ROLE` on the target contract; wallet registrations require `AGENT_ROLE` on the identity proxy. Roles are managed by `DEFAULT_ADMIN_ROLE` (the issuer multisig) via OpenZeppelin `AccessControl`. The deploy scripts grant the deployer `OPERATOR_ROLE` for bring-up, then the issuer transfers `DEFAULT_ADMIN_ROLE` to the multisig and revokes the deployer's grant.
+
+### 1. Deploy Shibui contracts
 
 ```solidity
-// Deploy in this order
-EASTrustedIssuersAdapter adapter = new EASTrustedIssuersAdapter(tokenIssuer);
-EASIdentityProxy identityProxy = new EASIdentityProxy(tokenIssuer);
-EASClaimVerifier verifier = new EASClaimVerifier(tokenIssuer);
+// Deploy the core stack
+EASTrustedIssuersAdapter adapter = new EASTrustedIssuersAdapter(admin);
+EASIdentityProxy identityProxy = new EASIdentityProxy(admin);
+EASClaimVerifier verifier = new EASClaimVerifier(admin);
 
-// Configure verifier
+// Configure verifier (caller must hold OPERATOR_ROLE)
 verifier.setEASAddress(EAS_CONTRACT_ADDRESS);
 verifier.setTrustedIssuersAdapter(address(adapter));
-verifier.setIdentityProxy(address(identityProxy));
+verifier.setIdentityProxy(address(identityProxy));      // required; reverts if address(0) after setting
 verifier.setClaimTopicsRegistry(address(claimTopicsRegistry));
+
+// Point the adapter at the Issuer Authorization schema (caller must hold DEFAULT_ADMIN_ROLE)
+adapter.setIssuerAuthSchemaUID(ISSUER_AUTHORIZATION_SCHEMA_UID);
 ```
 
-### 2. Configure Schema Mappings
+You can use [`script/DeployBridge.s.sol`](../script/DeployBridge.s.sol) (or the testnet / mainnet / UUPS variants) to do this end-to-end.
 
-Map ERC-3643 claim topics to EAS schema UIDs:
+### 2. Deploy topic policies + configure topic→schema + topic→policy mappings
+
+Shibui ships eight `ITopicPolicy` modules under `contracts/policies/` — one per production claim topic (KYC, AML, Country, Accreditation, Professional Investor, Institutional Investor, Sanctions, Source-of-Funds). Each policy decodes the Schema 1 v2 payload and enforces one rule. The deploy scripts (`DeployBridge`, `DeployTestnet`, `DeployMainnet`, `DeployUpgradeable`) instantiate all eight and call `setTopicPolicy` for each topic; wire them manually like this if you are scripting your own deploy:
 
 ```solidity
-// Topic 1 (KYC) -> Investor Eligibility Schema
-verifier.setTopicSchemaMapping(1, INVESTOR_ELIGIBILITY_SCHEMA_UID);
+// All eight policies decode the same Investor Eligibility v2 schema.
+verifier.setTopicSchemaMapping(1, INVESTOR_ELIGIBILITY_SCHEMA_UID); // KYC
+verifier.setTopicSchemaMapping(7, INVESTOR_ELIGIBILITY_SCHEMA_UID); // Accreditation
 
-// Topic 7 (Accreditation) -> Same or different schema
-verifier.setTopicSchemaMapping(7, INVESTOR_ELIGIBILITY_SCHEMA_UID);
+// Bind the policy that enforces the payload semantics for each topic.
+verifier.setTopicPolicy(1, address(kycStatusPolicy));
+verifier.setTopicPolicy(7, address(accreditationPolicy));
 ```
 
-### 3. Add Trusted Attesters
+`isVerified` reverts with `PolicyNotConfiguredForTopic(topic)` if a required topic has no policy bound — there is no implicit accept path.
 
-> This is where the token issuer decides **which KYC providers to trust**. Only attestations from these providers will be accepted. You can add multiple providers — giving investors choice while maintaining compliance.
+### 3. Add trusted attesters (Schema-2 gated)
 
-Register KYC providers as trusted attesters:
+Every attester add / topic update must be authorised by a live Schema 2 (Issuer Authorization) attestation whose `recipient == attester` and whose `authorizedTopics` is a superset of the topics being bound. The `TrustedIssuerResolver` gates Schema-2 writes so only admin-curated "authorizers" can produce them.
 
 ```solidity
 uint256[] memory topics = new uint256[](2);
 topics[0] = 1; // KYC
 topics[1] = 7; // Accreditation
 
-adapter.addTrustedAttester(KYC_PROVIDER_ADDRESS, topics);
+// authUID points at a Schema 2 attestation issued by an authorized authorizer.
+// Without it, addTrustedAttester reverts (IssuerAuthAttestationMissing /
+// IssuerAuthRecipientMismatch / IssuerAuthTopicsNotAuthorized).
+adapter.addTrustedAttester(KYC_PROVIDER_ADDRESS, topics, authUID);
 ```
 
-### 4. Configure Required Topics
+Up to `MAX_ATTESTERS_PER_TOPIC = 5` attesters per topic are supported. Adding a provider never invalidates investors covered by a different provider — `isVerified` short-circuits on the first trusted attester whose attestation clears the structural and policy checks.
 
-> Define what compliance checks your token requires. An investor must have valid attestations for **every** required topic to be eligible.
-
-Set which topics are required for your token:
+### 4. Configure required topics
 
 ```solidity
 claimTopicsRegistry.addClaimTopic(1); // KYC required
-claimTopicsRegistry.addClaimTopic(7); // Accreditation required (optional)
+claimTopicsRegistry.addClaimTopic(7); // Accreditation required
 ```
 
-### 5. Register Investor Identities
-
-For multi-wallet support, register wallets to identity addresses:
+### 5. Bind investor wallets to identities (AGENT_ROLE)
 
 ```solidity
 // Single wallet
 identityProxy.registerWallet(investorWallet, identityAddress);
 
-// Batch registration
+// Batch
 address[] memory wallets = new address[](3);
 wallets[0] = wallet1;
 wallets[1] = wallet2;
@@ -140,28 +154,33 @@ wallets[2] = wallet3;
 identityProxy.batchRegisterWallets(wallets, identityAddress);
 ```
 
-### 6. KYC Provider Creates Attestation
+Self-registration (investor calling `registerWallet` for their own wallet) is not supported — the caller must hold `AGENT_ROLE`.
 
-> This is the KYC provider's job — not the token issuer's. After verifying an investor's identity (off-chain KYC/AML process), the provider issues an on-chain attestation via EAS. This attestation is reusable: it works for any token that trusts this provider.
+### 6. KYC provider creates the attestation (Schema 1 v2)
 
-The KYC provider creates an attestation on EAS:
+Ten fields, in this order:
 
 ```solidity
-// Schema: address identity, uint8 kycStatus, uint8 accreditationType,
-//         uint16 countryCode, uint64 expirationTimestamp
+// Investor Eligibility v2 — the canonical Shibui payload.
+// Decoded identically by every topic policy; each policy enforces one rule.
 bytes memory data = abi.encode(
-    identityAddress,
-    1, // KYC_VERIFIED
-    2, // ACCREDITED
-    840, // USA
-    uint64(block.timestamp + 365 days)
+    identityAddress,                 // address identity
+    uint8(1),                        // kycStatus         — 1 = VERIFIED
+    uint8(0),                        // amlStatus         — 0 = CLEAR
+    uint8(0),                        // sanctionsStatus   — 0 = CLEAR
+    uint8(1),                        // sourceOfFundsStatus — 1 = VERIFIED
+    uint8(2),                        // accreditationType — e.g. US-accredited
+    uint16(840),                     // countryCode       — ISO-3166-1 numeric (USA)
+    uint64(block.timestamp + 365 days), // expirationTimestamp (data-level)
+    evidenceHash,                    // bytes32 evidenceHash — off-chain KYC file commitment
+    uint8(1)                         // verificationMethod  — provider-defined enum
 );
 
 AttestationRequest memory request = AttestationRequest({
     schema: INVESTOR_ELIGIBILITY_SCHEMA_UID,
     data: AttestationRequestData({
         recipient: identityAddress,
-        expirationTime: 0, // Use data-level expiration
+        expirationTime: 0,         // use data-level expirationTimestamp
         revocable: true,
         refUID: bytes32(0),
         data: data,
@@ -172,57 +191,45 @@ AttestationRequest memory request = AttestationRequest({
 bytes32 attestationUID = eas.attest(request);
 ```
 
-### 7. Register Attestation in Verifier
+See [`schemas/schema-definitions.md`](schemas/schema-definitions.md) for the canonical field list and semantics.
 
-Register the attestation for efficient lookup:
+### 7. Register the attestation in the verifier
 
 ```solidity
+// Caller must be the attester, or hold AGENT_ROLE on the verifier.
 verifier.registerAttestation(identityAddress, 1, attestationUID); // Topic 1 (KYC)
 ```
 
-### 8. Verify Token Transfer Eligibility
+### 8. Verify token transfer eligibility
 
-> This is the payoff. When someone tries to buy, sell, or transfer your security token, the compliance check calls `isVerified()`. It returns `true` only if the investor has valid, non-revoked, non-expired attestations for every required topic from a trusted provider. All on-chain, all automatic.
-
-The verification happens automatically during token transfers:
+Verification happens automatically via the Identity Registry when the token calls its compliance hook:
 
 ```solidity
-// Inside your token or compliance contract
-function canTransfer(address to) internal view returns (bool) {
-    return verifier.isVerified(to);
+// Inside the Identity Registry (with the upstream IIdentityVerifier extension point,
+// ERC-3643/ERC-3643#98), isVerified delegates to Shibui:
+function isVerified(address to) external view returns (bool) {
+    if (_identityVerifier != address(0)) {
+        return IIdentityVerifier(_identityVerifier).isVerified(to);
+    }
+    // default ONCHAINID path preserved when the extension point is unset
 }
 ```
 
 ## Configuration Options
 
-### Direct Wallet Mode
+### Multiple KYC providers
 
-If you don't need multi-wallet support, skip the identity proxy:
-
-```solidity
-verifier.setIdentityProxy(address(0));
-// Attestations are made directly to wallet addresses
-```
-
-### Multiple KYC Providers
-
-You can have multiple attesters for the same topic:
+You can have multiple attesters per topic (cap: 5):
 
 ```solidity
-adapter.addTrustedAttester(PROVIDER_1, topics);
-adapter.addTrustedAttester(PROVIDER_2, topics);
-// Investor can use attestation from either provider
+adapter.addTrustedAttester(PROVIDER_1, topics, authUID_1);
+adapter.addTrustedAttester(PROVIDER_2, topics, authUID_2);
+// isVerified short-circuits on the first trusted attester whose attestation passes.
 ```
 
-### Schema per Topic
+### Schema per topic
 
-Different topics can use different schemas:
-
-```solidity
-verifier.setTopicSchemaMapping(1, KYC_SCHEMA_UID);
-verifier.setTopicSchemaMapping(7, ACCREDITATION_SCHEMA_UID);
-verifier.setTopicSchemaMapping(3, COUNTRY_SCHEMA_UID);
-```
+Shibui v0.4 uses a single consolidated Investor Eligibility v2 schema for all eight production topics. Per-topic schemas remain supported by the contract API (`setTopicSchemaMapping`) for integrators whose providers prefer to split payloads — but the shipped policy modules assume Schema 1 v2 and will need replacement policies if you diverge.
 
 ## Verification Flow
 
@@ -280,24 +287,32 @@ The verifier checks both. Data-level expiration is recommended for flexibility.
 
 ## Error Handling
 
-The verifier will revert if not properly configured:
+`EASClaimVerifier` reverts on misconfiguration; `isVerified` itself never reverts on attestation state and simply returns `false`.
 
-| Error | Cause |
-|-------|-------|
-| `EASNotConfigured` | EAS address not set |
-| `TrustedIssuersAdapterNotConfigured` | Adapter not set |
-| `ClaimTopicsRegistryNotConfigured` | Registry not set |
-| `SchemaNotMappedForTopic` | Missing topic→schema mapping |
+| Error | Raised when |
+|---|---|
+| `EASNotConfigured` | `setEASAddress` never called |
+| `TrustedIssuersAdapterNotConfigured` | `setTrustedIssuersAdapter` never called |
+| `ClaimTopicsRegistryNotConfigured` | `setClaimTopicsRegistry` never called |
+| `IdentityProxyNotConfigured` | `setIdentityProxy` never called, or set to `address(0)` |
+| `SchemaNotMappedForTopic(topic)` | Required topic has no `setTopicSchemaMapping` entry |
+| `PolicyNotConfiguredForTopic(topic)` | Required topic has no `setTopicPolicy` entry |
+| `ZeroAddressNotAllowed` | Any setter passed `address(0)` where not allowed |
 
-`isVerified()` returns `false` (doesn't revert) when:
-- No attestation registered for identity/topic
-- Attestation is revoked
-- Attestation is expired
-- No trusted attesters for topic
+On the adapter:
+
+| Error | Raised when |
+|---|---|
+| `IssuerAuthSchemaUIDNotSet` | `setIssuerAuthSchemaUID` never called before `addTrustedAttester` |
+| `IssuerAuthAttestationMissing` | `authUID` unknown, wrong schema, revoked, or expired |
+| `IssuerAuthRecipientMismatch` | Schema-2 attestation `issuerAddress != attester` |
+| `IssuerAuthTopicsNotAuthorized` | Passed topics not a subset of Schema-2 `authorizedTopics` |
+
+`isVerified()` returns `false` (doesn't revert) when any required topic's attestation is missing, revoked, expired, schema-mismatched, from an untrusted attester, or fails the topic policy.
 
 ## Events
 
-Monitor these events for integration:
+Monitor these for integration and compliance trails:
 
 ```solidity
 // EASClaimVerifier
@@ -305,10 +320,13 @@ event EASAddressSet(address indexed easAddress);
 event TrustedIssuersAdapterSet(address indexed adapterAddress);
 event IdentityProxySet(address indexed proxyAddress);
 event ClaimTopicsRegistrySet(address indexed registryAddress);
-event TopicSchemaMappingSet(uint256 indexed claimTopic, bytes32 schemaUID);
+event TopicSchemaMappingSet(uint256 indexed claimTopic, bytes32 indexed schemaUID);
+event TopicPolicySet(uint256 indexed claimTopic, address indexed policy);
 event AttestationRegistered(address indexed identity, uint256 indexed claimTopic, address indexed attester, bytes32 attestationUID);
 
 // EASTrustedIssuersAdapter
+event EASAddressSet(address indexed easAddress);
+event IssuerAuthSchemaUIDSet(bytes32 indexed schemaUID);
 event TrustedAttesterAdded(address indexed attester, uint256[] claimTopics);
 event TrustedAttesterRemoved(address indexed attester);
 event AttesterTopicsUpdated(address indexed attester, uint256[] claimTopics);
@@ -316,52 +334,64 @@ event AttesterTopicsUpdated(address indexed attester, uint256[] claimTopics);
 // EASIdentityProxy
 event WalletRegistered(address indexed wallet, address indexed identity);
 event WalletRemoved(address indexed wallet, address indexed identity);
+
+// AccessControl (from OpenZeppelin) — emitted by all three contracts
+event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
+event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
 ```
 
 ## Testing Your Integration
 
-Use the provided test helpers:
+Unit and integration harnesses are under `test/`. For lightweight bring-up in your own repo, the mocks under `contracts/mocks/` cover EAS, a KYC attester, and a Claim Topics Registry:
 
 ```solidity
-import {MockEAS} from "./mocks/MockEAS.sol";
-import {MockAttester} from "./mocks/MockAttester.sol";
-import {MockClaimTopicsRegistry} from "./mocks/MockClaimTopicsRegistry.sol";
+import {MockEAS} from "../contracts/mocks/MockEAS.sol";
+import {MockAttester} from "../contracts/mocks/MockAttester.sol";
+import {MockClaimTopicsRegistry} from "../contracts/mocks/MockClaimTopicsRegistry.sol";
 
-// In your test setup
 MockEAS mockEAS = new MockEAS();
 MockAttester kycProvider = new MockAttester(address(mockEAS), "Test KYC");
 
-// Create attestation
+// Schema 1 v2 attestation (10 fields).
 bytes32 uid = kycProvider.attestInvestorEligibility(
     schemaUID,
-    recipient,
-    identityAddress,
-    1, // VERIFIED
-    0, // NONE
-    840, // USA
-    0 // No expiration
+    /* recipient */         identityAddress,
+    /* identity */          identityAddress,
+    /* kycStatus */         1,
+    /* amlStatus */         0,
+    /* sanctionsStatus */   0,
+    /* sourceOfFundsStatus*/1,
+    /* accreditationType */ 2,
+    /* countryCode */       840,
+    /* expiration */        uint64(block.timestamp + 365 days),
+    /* evidenceHash */      bytes32(0),
+    /* verificationMethod*/ 1
 );
 ```
 
-## Security Considerations
+Check [`test/integration/ERC3643Token.integration.t.sol`](../test/integration/ERC3643Token.integration.t.sol) for the full end-to-end path against a real ERC-3643 / T-REX stack.
 
-1. **Trusted Attester Management**: Only add verified KYC providers
-2. **Schema Validation**: Ensure schema UIDs match your registered schemas
-3. **Expiration**: Set reasonable expiration times for attestations
-4. **Access Control**: Only token issuer/agent should modify configurations
-5. **Audit Trail**: Monitor events for compliance reporting
+## Security considerations
+
+1. **Role hygiene.** `DEFAULT_ADMIN_ROLE` must sit on the issuer multisig. The production deploy scripts grant it, then revoke the deployer's grant atomically. Monitor `RoleGranted` / `RoleRevoked` events.
+2. **Policy discipline.** Binding the wrong `ITopicPolicy` to a topic causes mass false-accepts or false-rejects. Each policy contract exposes `topicId()` — verify that it matches before calling `setTopicPolicy`. `TopicPolicySet` is indexed and should be diff-watched in CI.
+3. **Authorizer curation.** The `TrustedIssuerResolver` gates Schema-2 writes to admin-curated authorizers. Changes to the authorizer set emit `AuthorizerAdded` / `AuthorizerRemoved` — surface these to compliance.
+4. **Attester lifecycle.** Rotate `authUID`s when attester topics change. Removing trust in a provider (`removeTrustedAttester`) instantly invalidates every investor verified only by that provider, but does not invalidate investors covered by a second trusted attester.
+5. **Expiration.** Prefer the data-level `expirationTimestamp` (on-chain enforcement by policies + verifier). The EAS `expirationTime` field is honoured as a secondary check.
+6. **Audit trail.** Schema 1 v2 carries `evidenceHash` + `verificationMethod`; persist the off-chain KYC file hashes so examiners can trace an on-chain decision back to the file the provider holds.
 
 ## Upgradeability
 
-The bridge contracts are not upgradeable by default. For upgradeable deployments:
+Shibui ships both non-upgradeable and UUPS variants:
 
-1. Use OpenZeppelin's upgradeable patterns
-2. Modify contracts to inherit from `OwnableUpgradeable`
-3. Deploy behind proxy contracts
+- `contracts/` — immutable deployments, lowest surface. Recommended where contract rotation is acceptable.
+- `contracts/upgradeable/` — `EASClaimVerifierUpgradeable`, `EASTrustedIssuersAdapterUpgradeable`, `EASIdentityProxyUpgradeable`. All `UUPSUpgradeable`, gated by `DEFAULT_ADMIN_ROLE`. Storage layouts are audited; see [`test/unit/UpgradeableContracts.t.sol`](../test/unit/UpgradeableContracts.t.sol) for the `__gap` invariant check.
+
+Pick one per deployment — do not mix upgradeable and non-upgradeable variants behind the same Identity Registry.
 
 ## Support
 
-For issues or questions:
-- Review the test suite for usage examples
-- Check the architecture documentation
-- Open an issue on the repository
+- Architecture + scope boundary: [`architecture/enforcement-boundary.md`](architecture/enforcement-boundary.md)
+- Schema details: [`schemas/schema-definitions.md`](schemas/schema-definitions.md)
+- Gas numbers: [`integration-gas.md`](integration-gas.md)
+- Issues: https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/issues
