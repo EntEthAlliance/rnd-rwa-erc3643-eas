@@ -6,6 +6,34 @@ Breaking changes land under **Changed (breaking)** and require a major or minor 
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-04-18
+
+Governance + engineering follow-ups from the structured EEA review (issues #64–#71). No behavioural change to the verifier's hot path; Shibui's runtime semantics are identical to v0.3.0. All changes are to the project's posture — license, directory structure, events, pragma pinning, and CI hygiene — so integrators pinning to v0.3.0 can upgrade without code changes, but will pick up new import paths for the wrapper and new license headers throughout.
+
+### Changed (breaking)
+
+- **Relicensed from MIT to Apache-2.0** (resolves #64). Every `.sol` file in `contracts/`, `script/`, and `test/` now carries `SPDX-License-Identifier: Apache-2.0` and a `Copyright © 2026 Enterprise Ethereum Alliance Inc.` line. Root `LICENSE` added. Both licenses are OSI-approved permissive; anyone holding a prior MIT-licensed snapshot retains MIT rights to that snapshot.
+- **`EASClaimVerifierIdentityWrapper` moved** from `contracts/` to `contracts/compat/` (resolves #68). Import path changes for anyone using Path B: `contracts/EASClaimVerifierIdentityWrapper.sol` → `contracts/compat/EASClaimVerifierIdentityWrapper.sol`. The wrapper's behaviour is unchanged; the move signals its EthTrust SL Level-1 classification (vs Level 2 for the core). New `contracts/compat/README.md` documents the boundary.
+- **`EASTrustedIssuersAdapter.setEASAddress`** now emits an `EASAddressSet` event (resolves #67). New event added to `IEASTrustedIssuersAdapter`.
+- **Solidity pragma pinned to `=0.8.24`** across all production contracts (resolves #66). Floating `^0.8.24` removed from 23 `.sol` files under `contracts/` (mocks keep the caret). Downstream projects building against Shibui sources now get deterministic bytecode.
+
+### Added
+
+- **`CHANGELOG.md`** (resolves #70) — this file. Keep-a-Changelog format.
+- **Gitleaks secret-scanning** CI job (resolves #71) on every PR and push.
+- **Gas regression guards** on `isVerified` at 1/3/5 topic configurations (resolves #69). `assertLt` ceilings set at current baseline + ~10k headroom; `docs/gas-benchmarks.md` annotated to explain the post-refactor delta is intentional (audit C-1).
+- **`contracts/compat/README.md`** — documents the Level-1 audit bar for the compat directory.
+- **New tests** for the `EASAddressSet` event: emission, zero-address reject, admin-only gating.
+
+### Changed
+
+- `docs/research/claim-topic-analysis.md` — named KYC / accreditation vendors replaced with category descriptions plus a neutrality disclaimer (resolves #65, EEA antitrust guidance).
+- `README.md` — repo layout tree updated for the `contracts/compat/` subdirectory; License section points at the new LICENSE file.
+
+### Tests
+
+- 115 tests passing (was 107 pre-follow-up). Additions: 3 adapter event tests, regression guards on gas benchmarks.
+
 ## [0.3.0] — 2026-04-17
 
 Audit-driven refactor. Multiple breaking changes; the pre-refactor API is gone. No production deployment existed at any prior version, so no migration path is provided.
