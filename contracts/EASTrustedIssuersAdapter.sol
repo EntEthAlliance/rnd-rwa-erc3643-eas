@@ -59,6 +59,7 @@ contract EASTrustedIssuersAdapter is IEASTrustedIssuersAdapter, AccessControl {
     function setEASAddress(address easAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) {
         if (easAddress == address(0)) revert ZeroAddressNotAllowed();
         _eas = IEAS(easAddress);
+        emit EASAddressSet(easAddress);
     }
 
     function getEASAddress() external view override returns (address) {
