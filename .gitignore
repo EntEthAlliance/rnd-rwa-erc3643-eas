@@ -12,4 +12,8 @@ docs/book/
 
 # Dotenv file
 .env
-.env
+
+# Foundry / soldeer lockfile — we track dependencies via git submodules
+# (see .gitmodules). The lockfile is regenerated on `forge install` and
+# drifts from reality when submodules are added/removed.
+foundry.lock
