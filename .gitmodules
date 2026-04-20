@@ -4,9 +4,6 @@
 [submodule "lib/eas-contracts"]
 	path = lib/eas-contracts
 	url = https://github.com/ethereum-attestation-service/eas-contracts
-[submodule "lib/T-REX"]
-	path = lib/T-REX
-	url = https://github.com/TokenySolutions/T-REX
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
@@ -16,3 +13,7 @@
 [submodule "lib/solidity"]
 	path = lib/solidity
 	url = https://github.com/onchain-id/solidity
+[submodule "lib/ERC-3643"]
+	path = lib/ERC-3643
+	url = https://github.com/EntEthAlliance/ERC-3643.git
+	branch = feat/pluggable-identity-verifier

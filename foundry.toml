@@ -9,6 +9,13 @@ optimizer_runs = 200
 via_ir = true
 ffi = false
 
+# lib/ERC-3643 pins `pragma solidity =0.8.17` and OZ 4.x, which cannot be mixed
+# into the same compilation unit as Shibui's 0.8.24/OZ 5.x code. The integration
+# test deploys ERC-3643 contracts from their pre-built hardhat artifacts via
+# `vm.deployCode`, so forge does not need to re-compile them. The submodule must
+# be compiled once before running the integration test:
+#     (cd lib/ERC-3643 && npx hardhat compile)
+
 
 remappings = [
     "forge-std/=lib/forge-std/src/",
@@ -16,6 +23,10 @@ remappings = [
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
 ]
+
+# Allow `vm.getCode`/`vm.deployCode` to read hardhat-built artifacts from the
+# ERC-3643 submodule at lib/ERC-3643/artifacts/...
+fs_permissions = [{ access = "read", path = "./lib/ERC-3643/artifacts" }]
 
 [profile.default.fuzz]
 runs = 256
