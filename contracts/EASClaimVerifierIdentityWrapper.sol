@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity =0.8.24;
 
 import {IIdentity, IERC735, IERC734} from "./interfaces/IIdentity.sol";
 import {IEASClaimVerifier} from "./interfaces/IEASClaimVerifier.sol";
