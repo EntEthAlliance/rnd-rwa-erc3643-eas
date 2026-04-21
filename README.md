@@ -316,6 +316,27 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 - Landing: https://entethalliance.github.io/rnd-rwa-erc3643-eas/
 - Identity solutions reference map: https://entethalliance.github.io/rnd-rwa-erc3643-eas/identity-solutions-map.html
 
+## Live demo
+
+The interactive attestation-lifecycle demo now lives in-repo at [`demo/shibui-app`](demo/shibui-app) — a Next.js 14 + wagmi + RainbowKit app that runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
+
+- `/admin` — register schemas and authorize KYC providers.
+- `/attester` — issue and revoke Investor Eligibility v2 attestations.
+- `/transfer` — watch Alice, Bob, and Carol transfer the `DemoERC3643Token` with live `isVerified()` state and revoke-triggered flips.
+
+To run locally:
+
+```bash
+cd demo/shibui-app
+cp .env.example .env.local   # add your WalletConnect projectId + Sepolia RPC
+npm install
+npm run dev
+```
+
+All on-chain addresses resolve from [`deployments/sepolia.json`](deployments/sepolia.json); populate that file after running the testnet pipeline above. See [`demo/shibui-app/README.md`](demo/shibui-app/README.md) and the full spec in [`docs/PRD_DEMO_UI.md`](docs/PRD_DEMO_UI.md).
+
+> This supersedes the previously hosted external demo at `claudyfaucant.github.io/eas-erc3643-bridge-demo/`, which sat outside the repo and was not tied to the canonical contracts.
+
 ## License
 
 Licensed under the [Apache License, Version 2.0](LICENSE).

@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@rainbow-me/rainbowkit/styles.css";
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-shibui-paper text-shibui-ink font-sans antialiased;
+}
+
+.code {
+  @apply font-mono text-sm break-all;
+}
+
+.card {
+  @apply rounded-xl border border-slate-200 bg-white p-6 shadow-sm;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors;
+}
+
+.btn-primary {
+  @apply btn bg-shibui-accent text-white hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply btn border border-slate-300 bg-white text-shibui-ink hover:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed;
+}
+
+.btn-danger {
+  @apply btn bg-shibui-err text-white hover:bg-red-700 disabled:bg-slate-300 disabled:cursor-not-allowed;
+}
+
+.input {
+  @apply w-full rounded-md border border-slate-300 px-3 py-2 text-sm font-mono focus:border-shibui-accent focus:outline-none focus:ring-1 focus:ring-shibui-accent;
+}
+
+.label {
+  @apply block text-xs font-medium uppercase tracking-wide text-slate-600 mb-1;
+}
