@@ -3,10 +3,10 @@ export const SEPOLIA_CHAIN_ID = 11155111;
 export const SEPOLIA_EAS = "0xC2679fBD37d54388Ce493F1DB75320D236e1815e" as const;
 export const SEPOLIA_SCHEMA_REGISTRY = "0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0" as const;
 
-export const INVESTOR_ELIGIBILITY_V2_SCHEMA =
+export const INVESTOR_ELIGIBILITY_SCHEMA =
   "address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sourceOfFundsStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp,bytes32 evidenceHash,uint8 verificationMethod";
 
-export const ISSUER_AUTHORIZATION_V1_SCHEMA =
+export const ISSUER_AUTHORIZATION_SCHEMA =
   "address issuerAddress,uint256[] authorizedTopics,string issuerName";
 
 export const CLAIM_TOPICS = {

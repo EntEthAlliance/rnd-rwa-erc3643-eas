@@ -96,7 +96,7 @@ function RevokeCarolControl() {
   const publicClient = usePublicClient();
   const [tx, setTx] = useState<TxState>({});
   const carolUID = deployment.demo.attestations.carolKYC;
-  const schemaUID = deployment.schemas.investorEligibilityV2;
+  const schemaUID = deployment.schemas.investorEligibility;
   const ready =
     carolUID !==
       "0x0000000000000000000000000000000000000000000000000000000000000000" &&

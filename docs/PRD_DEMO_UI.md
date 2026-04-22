@@ -49,7 +49,7 @@ Without this, the demo is a terminal window. With it, the demo is an institution
 
 **Acceptance:**
 - Connect admin wallet via wagmi/viem.
-- Click "Register schemas" → signs two EAS `register()` transactions → displays the two resulting schema UIDs (Investor Eligibility v2, Issuer Authorization v1).
+- Click "Register schemas" → signs two EAS `register()` transactions → displays the two resulting schema UIDs (Investor Eligibility, Issuer Authorization).
 - Click "Add attester" → form takes attester address + claim topics → creates Schema-2 authorization attestation → calls `addTrustedAttester(attester, topics, authUID)` on `EASTrustedIssuersAdapter`.
 - Resulting state renders as a list of active trusted attesters with their authorized topics.
 
@@ -59,7 +59,7 @@ Without this, the demo is a terminal window. With it, the demo is an institution
 
 **Acceptance:**
 - Form fields: investor wallet, KYC status, AML status, sanctions status, source of funds status, accreditation type, country code, expiration, evidence hash.
-- Field values match the Investor Eligibility v2 schema exactly — no renaming, no hidden transforms.
+- Field values match the Investor Eligibility schema exactly — no renaming, no hidden transforms.
 - Click "Sign & issue" → wallet signs EAS `attest()` → attestation UID returned.
 - Click "Register in Shibui" → calls `EASClaimVerifier.registerAttestation(identity, topic, uid)`.
 - "Revoke" action calls EAS `revoke()` and reflects the new state on next read.
@@ -123,7 +123,7 @@ Without this, the demo is a terminal window. With it, the demo is an institution
   /lib
     contracts.ts     → typed ABIs + Sepolia addresses
     eas.ts           → EAS SDK wrappers
-    schemas.ts       → Investor Eligibility v2 encoding
+    schemas.ts       → Investor Eligibility encoding
   /public
   README.md
   package.json

@@ -62,8 +62,8 @@ abstract contract BridgeHarness is Test {
     MockAttester internal authorizer;
 
     // ============ Schemas ============
-    bytes32 internal constant SCHEMA_INVESTOR_ELIGIBILITY = keccak256("InvestorEligibility_v2");
-    bytes32 internal constant SCHEMA_ISSUER_AUTHORIZATION = keccak256("IssuerAuthorization_v1");
+    bytes32 internal constant SCHEMA_INVESTOR_ELIGIBILITY = keccak256("InvestorEligibility");
+    bytes32 internal constant SCHEMA_ISSUER_AUTHORIZATION = keccak256("IssuerAuthorization");
 
     // ============ Policies ============
     KYCStatusPolicy internal kycPolicy;

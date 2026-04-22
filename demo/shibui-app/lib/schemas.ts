@@ -1,7 +1,7 @@
 import { encodeAbiParameters, keccak256, toBytes, type Hex } from "viem";
 import {
-  INVESTOR_ELIGIBILITY_V2_SCHEMA,
-  ISSUER_AUTHORIZATION_V1_SCHEMA,
+  INVESTOR_ELIGIBILITY_SCHEMA,
+  ISSUER_AUTHORIZATION_SCHEMA,
 } from "./constants";
 
 export type InvestorEligibility = {
@@ -71,6 +71,6 @@ export function evidenceHash(source: string): Hex {
 }
 
 export const SCHEMAS = {
-  investorEligibilityV2: INVESTOR_ELIGIBILITY_V2_SCHEMA,
-  issuerAuthorizationV1: ISSUER_AUTHORIZATION_V1_SCHEMA,
+  investorEligibility: INVESTOR_ELIGIBILITY_SCHEMA,
+  issuerAuthorization: ISSUER_AUTHORIZATION_SCHEMA,
 };

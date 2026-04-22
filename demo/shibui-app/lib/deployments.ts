@@ -19,8 +19,8 @@ export type Deployment = {
     policies: Record<string, Address>;
   };
   schemas: {
-    investorEligibilityV2: Hex;
-    issuerAuthorizationV1: Hex;
+    investorEligibility: Hex;
+    issuerAuthorization: Hex;
   };
   demo: {
     DemoERC3643Token: Address;
@@ -73,14 +73,14 @@ export function deploymentGaps(d: Deployment = deployment): ConfigGap[] {
     isAddressConfigured(d.shibui.EASIdentityProxy),
   );
   push(
-    "Investor Eligibility v2 schema UID",
-    "schemas.investorEligibilityV2",
-    isBytes32Configured(d.schemas.investorEligibilityV2),
+    "Investor Eligibility schema UID",
+    "schemas.investorEligibility",
+    isBytes32Configured(d.schemas.investorEligibility),
   );
   push(
-    "Issuer Authorization v1 schema UID",
-    "schemas.issuerAuthorizationV1",
-    isBytes32Configured(d.schemas.issuerAuthorizationV1),
+    "Issuer Authorization schema UID",
+    "schemas.issuerAuthorization",
+    isBytes32Configured(d.schemas.issuerAuthorization),
   );
   push(
     "DemoERC3643Token",

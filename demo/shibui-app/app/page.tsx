@@ -13,7 +13,7 @@ const SCREENS = [
     href: "/attester",
     title: "2. Attester",
     actor: "KYC / AML provider",
-    body: "Fill in the Investor Eligibility v2 form, sign the EAS attestation, and register it against the investor's identity in Shibui.",
+    body: "Fill in the Investor Eligibility form, sign the EAS attestation, and register it against the investor's identity in Shibui.",
   },
   {
     href: "/transfer",

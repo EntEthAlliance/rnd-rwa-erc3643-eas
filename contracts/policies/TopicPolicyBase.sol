@@ -8,8 +8,8 @@ import {ITopicPolicy} from "./ITopicPolicy.sol";
 /**
  * @title TopicPolicyBase
  * @author EEA Working Group
- * @notice Abstract base for Shibui topic policies that read the Investor Eligibility v2 schema.
- * @dev Schema v2 fields (in ABI-encoded order):
+ * @notice Abstract base for Shibui topic policies that read the Investor Eligibility schema.
+ * @dev Investor Eligibility fields (in ABI-encoded order):
  *        address identity,
  *        uint8  kycStatus,
  *        uint8  amlStatus,
@@ -60,7 +60,7 @@ abstract contract TopicPolicyBase is ITopicPolicy {
     uint8 internal constant ACCREDITATION_QUALIFIED_PURCHASER = 3;
     uint8 internal constant ACCREDITATION_INSTITUTIONAL = 4;
 
-    /// @notice Expected ABI-encoded length of Schema v2 payload (10 × 32).
+    /// @notice Expected ABI-encoded length of Investor Eligibility payload (10 × 32).
     uint256 internal constant EXPECTED_DATA_LENGTH = 320;
 
     // ============ Decoded payload struct ============
@@ -101,7 +101,7 @@ abstract contract TopicPolicyBase is ITopicPolicy {
     // ============ Internal helpers ============
 
     /**
-     * @notice Returns true if `data` can be decoded as a Schema v2 payload.
+     * @notice Returns true if `data` can be decoded as an Investor Eligibility payload.
      * @dev Length-safe: returns false rather than reverting on a short payload so
      *      that `validate()` can return false cleanly.
      */
@@ -110,7 +110,7 @@ abstract contract TopicPolicyBase is ITopicPolicy {
     }
 
     /**
-     * @notice Decodes a Schema v2 payload.
+     * @notice Decodes an Investor Eligibility payload.
      * @dev Caller MUST confirm `_isDecodable(data)` first. Invalid input will revert.
      */
     function _decode(bytes calldata data) internal pure returns (InvestorEligibility memory e) {

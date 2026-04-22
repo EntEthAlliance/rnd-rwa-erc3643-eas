@@ -33,8 +33,7 @@ docs/
 │   └── contract-interaction-diagrams.md
 │
 ├── schemas/
-│   ├── schema-definitions.md        # Schema 1 v2 + Schema 2 (canonical)
-│   └── schema-governance.md         # versioning + resolver policy
+│   └── schema-definitions.md        # Investor Eligibility + Issuer Authorization (canonical)
 │
 └── research/                        # forward-looking, non-canonical
     ├── gap-analysis.md              # ONCHAINID vs EAS

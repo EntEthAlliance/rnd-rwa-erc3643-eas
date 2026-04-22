@@ -122,7 +122,7 @@ Every trusted-attester change references a live EAS attestation under Schema 2 (
 
 ## Claim topics and policies
 
-Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same **Investor Eligibility v2** schema.
+Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same **Investor Eligibility** schema.
 
 | Topic ID | Name | Policy | What it enforces |
 |---:|---|---|---|
@@ -135,7 +135,7 @@ Each ERC-3643 claim topic is bound to exactly one policy module. All eight polic
 | 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
 | 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
 
-Schema 1 v2:
+Schema fields:
 
 ```
 address identity, uint8 kycStatus, uint8 amlStatus, uint8 sanctionsStatus,
@@ -173,7 +173,7 @@ contracts/
 │  └─ EASClaimVerifierIdentityWrapper.sol — read-compat shim for legacy registries
 ├─ policies/
 │  ├─ ITopicPolicy.sol                  — predicate interface
-│  ├─ TopicPolicyBase.sol               — shared Schema-v2 decoder
+│  ├─ TopicPolicyBase.sol               — shared Investor Eligibility decoder
 │  └─ (8 concrete policies, one per topic)
 ├─ resolvers/
 │  └─ TrustedIssuerResolver.sol         — gates Schema-2 writes
@@ -186,7 +186,7 @@ script/
 ├─ DeployUpgradeable.s.sol              — ERC1967Proxy-fronted UUPS
 ├─ DeployBridge.s.sol                   — non-upgradeable reference deploy
 ├─ DeployIdentityWrapper.s.sol          — per-identity Path B wrapper
-├─ RegisterSchemas.s.sol                — register Schema 1 v2 + Schema 2 on EAS
+├─ RegisterSchemas.s.sol                — register Investor Eligibility + Issuer Authorization on EAS
 ├─ ConfigureBridge.s.sol                — idempotent topic/schema/policy wiring
 ├─ AddTrustedAttester.s.sol             — CLI helper, requires AUTH_UID
 └─ SetupPilot.s.sol                     — local anvil pilot with 5 seeded investors
@@ -232,7 +232,7 @@ forge script script/SetupPilot.s.sol:SetupPilot \
   --broadcast
 ```
 
-Deploys MockEAS, the full Shibui stack (all 8 policies + resolver + Schema-2 authorizer), seeds five investors with Schema v2 attestations, and prints `isVerified()` for each.
+Deploys MockEAS, the full Shibui stack (all 8 policies + resolver + Issuer Authorization authorizer), seeds five investors with Investor Eligibility attestations, and prints `isVerified()` for each.
 
 ### Testnet pipeline
 
@@ -306,7 +306,7 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 - [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md) — what Shibui does and does not provide. **Start here if you're integrating.**
 - [`docs/architecture/identity-architecture-explained.md`](docs/architecture/identity-architecture-explained.md) — architectural walkthrough.
 - [`docs/integration-guide.md`](docs/integration-guide.md) — Path A and Path B step-by-step.
-- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) — Schema 1 v2 and Schema 2 specs.
+- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) — Investor Eligibility and Issuer Authorization specs.
 - [`docs/research/gap-analysis.md`](docs/research/gap-analysis.md) — ONCHAINID vs EAS comparison.
 - [`AUDIT.md`](AUDIT.md) — launch gate, threat model, pre-flight checklist.
 - [`PRD.md`](PRD.md) — scope and acceptance criteria.
@@ -321,7 +321,7 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 The interactive attestation-lifecycle demo now lives in-repo at [`demo/shibui-app`](demo/shibui-app) — a Next.js 14 + wagmi + RainbowKit app that runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
 
 - `/admin` — register schemas and authorize KYC providers.
-- `/attester` — issue and revoke Investor Eligibility v2 attestations.
+- `/attester` — issue and revoke Investor Eligibility attestations.
 - `/transfer` — watch Alice, Bob, and Carol transfer the `DemoERC3643Token` with live `isVerified()` state and revoke-triggered flips.
 
 To run locally:

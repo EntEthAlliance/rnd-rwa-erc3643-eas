@@ -38,7 +38,7 @@ trusted-attester list (capped at `MAX_ATTESTERS_PER_TOPIC = 5`).
 |---|---:|---|
 | `isVerified()` — 1 topic (KYC) | **31,539** | `KYCStatusPolicy.validate()` + one EAS read |
 | `isVerified()` — 3 topics (KYC + country + accreditation) | **80,083** | Three policy invocations, single attestation covers all three |
-| `isVerified()` — 5 topics (KYC + AML + country + accreditation + sanctions) | **122,090** | Five policies against one Schema-v2 payload |
+| `isVerified()` — 5 topics (KYC + AML + country + accreditation + sanctions) | **122,090** | Five policies against one Investor Eligibility payload |
 
 Linear scaling: ~22,500 gas per additional topic after the fixed setup. The
 payload-aware verifier adds overhead (the decode + predicate) vs. the
@@ -93,9 +93,9 @@ the checks that make the system regulatorily useful.
 ## Optimisation opportunities (V2)
 
 - **Policy result caching** — memoise decoded payloads across topics that share
-  Schema 1 v2 (every topic except AML/sanctions in the typical setup uses the
-  same attestation; decoding once per call instead of per topic would recover
-  ~20-30% of the gas at 3+ topics).
+  the Investor Eligibility schema (every topic except AML/sanctions in the
+  typical setup uses the same attestation; decoding once per call instead of
+  per topic would recover ~20-30% of the gas at 3+ topics).
 - **Bitmap-packed trusted-attester set** — replace the `address[]` per-topic
   list with a fixed-size slot; drops the SLOAD count at the cost of an upper
   bound on attester count.

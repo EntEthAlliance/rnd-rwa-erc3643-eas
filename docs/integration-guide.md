@@ -62,7 +62,7 @@ Use `EASClaimVerifierIdentityWrapper` (under `contracts/compat/`) as a drop-in `
 **Non-features — please read before choosing Path B:**
 - No ERC-734 keys. `addKey` / `removeKey` revert. Lost-key recovery uses the ERC-3643 token's `recoveryAddress` flow, not this wrapper.
 - No claim signatures. `getClaim` returns an empty `signature` — the attestation is authenticated by EAS at read time, not by a signature stored on the wrapper.
-- No topic policies inside `isClaimValid`. The wrapper only checks attestation existence + non-revocation + non-expiry; full payload-aware enforcement (Schema 1 v2 policy modules) only runs through Path A.
+- No topic policies inside `isClaimValid`. The wrapper only checks attestation existence + non-revocation + non-expiry; full payload-aware enforcement (Investor Eligibility policy modules) only runs through Path A.
 - O(N × M) gas profile on `getClaim` — scales with trusted-attester count × registered attestations. Fine for low-topic, low-attester deployments; avoid for deep required-topic stacks.
 - Targets EthTrust Security Level 1, not Level 2. New deployments should use Path A.
 
@@ -73,7 +73,7 @@ Use `EASClaimVerifierIdentityWrapper` (under `contracts/compat/`) as a drop-in `
 1. Deploy a Shibui core stack (verifier + adapter + identity proxy + policies + resolver) as in Path A steps 1–3.
 2. Deploy one `EASClaimVerifierIdentityWrapper` per investor identity (constructor binds the wrapper to an investor address).
 3. Register the wrapper address in `IdentityRegistryStorage` in place of an ONCHAINID contract.
-4. KYC provider attests the investor on EAS (Schema 1 v2). Call `verifier.registerAttestation(identity, topic, uid)` from an `AGENT_ROLE` holder or from the attester itself.
+4. KYC provider attests the investor on EAS (Investor Eligibility). Call `verifier.registerAttestation(identity, topic, uid)` from an `AGENT_ROLE` holder or from the attester itself.
 5. Token uses the existing verification flow — no token-side code change.
 
 ## Step-by-Step Integration (Path A)
@@ -102,10 +102,10 @@ You can use [`script/DeployBridge.s.sol`](../script/DeployBridge.s.sol) (or the 
 
 ### 2. Deploy topic policies + configure topic→schema + topic→policy mappings
 
-Shibui ships eight `ITopicPolicy` modules under `contracts/policies/` — one per production claim topic (KYC, AML, Country, Accreditation, Professional Investor, Institutional Investor, Sanctions, Source-of-Funds). Each policy decodes the Schema 1 v2 payload and enforces one rule. The deploy scripts (`DeployBridge`, `DeployTestnet`, `DeployMainnet`, `DeployUpgradeable`) instantiate all eight and call `setTopicPolicy` for each topic; wire them manually like this if you are scripting your own deploy:
+Shibui ships eight `ITopicPolicy` modules under `contracts/policies/` — one per production claim topic (KYC, AML, Country, Accreditation, Professional Investor, Institutional Investor, Sanctions, Source-of-Funds). Each policy decodes the Investor Eligibility payload and enforces one rule. The deploy scripts (`DeployBridge`, `DeployTestnet`, `DeployMainnet`, `DeployUpgradeable`) instantiate all eight and call `setTopicPolicy` for each topic; wire them manually like this if you are scripting your own deploy:
 
 ```solidity
-// All eight policies decode the same Investor Eligibility v2 schema.
+// All eight policies decode the same Investor Eligibility schema.
 verifier.setTopicSchemaMapping(1, INVESTOR_ELIGIBILITY_SCHEMA_UID); // KYC
 verifier.setTopicSchemaMapping(7, INVESTOR_ELIGIBILITY_SCHEMA_UID); // Accreditation
 
@@ -156,12 +156,12 @@ identityProxy.batchRegisterWallets(wallets, identityAddress);
 
 Self-registration (investor calling `registerWallet` for their own wallet) is not supported — the caller must hold `AGENT_ROLE`.
 
-### 6. KYC provider creates the attestation (Schema 1 v2)
+### 6. KYC provider creates the attestation (Investor Eligibility)
 
 Ten fields, in this order:
 
 ```solidity
-// Investor Eligibility v2 — the canonical Shibui payload.
+// Investor Eligibility — the canonical Shibui payload.
 // Decoded identically by every topic policy; each policy enforces one rule.
 bytes memory data = abi.encode(
     identityAddress,                 // address identity
@@ -229,7 +229,7 @@ adapter.addTrustedAttester(PROVIDER_2, topics, authUID_2);
 
 ### Schema per topic
 
-Shibui v0.4 uses a single consolidated Investor Eligibility v2 schema for all eight production topics. Per-topic schemas remain supported by the contract API (`setTopicSchemaMapping`) for integrators whose providers prefer to split payloads — but the shipped policy modules assume Schema 1 v2 and will need replacement policies if you diverge.
+Shibui v0.4 uses a single consolidated Investor Eligibility schema for all eight production topics. Per-topic schemas remain supported by the contract API (`setTopicSchemaMapping`) for integrators whose providers prefer to split payloads — but the shipped policy modules assume the Investor Eligibility schema and will need replacement policies if you diverge.
 
 ## Verification Flow
 
@@ -352,7 +352,7 @@ import {MockClaimTopicsRegistry} from "../contracts/mocks/MockClaimTopicsRegistr
 MockEAS mockEAS = new MockEAS();
 MockAttester kycProvider = new MockAttester(address(mockEAS), "Test KYC");
 
-// Schema 1 v2 attestation (10 fields).
+// Investor Eligibility attestation (10 fields).
 bytes32 uid = kycProvider.attestInvestorEligibility(
     schemaUID,
     /* recipient */         identityAddress,
@@ -378,7 +378,7 @@ Check [`test/integration/ERC3643Token.integration.t.sol`](../test/integration/ER
 3. **Authorizer curation.** The `TrustedIssuerResolver` gates Schema-2 writes to admin-curated authorizers. Changes to the authorizer set emit `AuthorizerAdded` / `AuthorizerRemoved` — surface these to compliance.
 4. **Attester lifecycle.** Rotate `authUID`s when attester topics change. Removing trust in a provider (`removeTrustedAttester`) instantly invalidates every investor verified only by that provider, but does not invalidate investors covered by a second trusted attester.
 5. **Expiration.** Prefer the data-level `expirationTimestamp` (on-chain enforcement by policies + verifier). The EAS `expirationTime` field is honoured as a secondary check.
-6. **Audit trail.** Schema 1 v2 carries `evidenceHash` + `verificationMethod`; persist the off-chain KYC file hashes so examiners can trace an on-chain decision back to the file the provider holds.
+6. **Audit trail.** The Investor Eligibility schema carries `evidenceHash` + `verificationMethod`; persist the off-chain KYC file hashes so examiners can trace an on-chain decision back to the file the provider holds.
 
 ## Upgradeability
 

@@ -42,7 +42,7 @@ sequenceDiagram
 
                 alt structural checks pass
                     Verifier->>Policy: validate(attestation)
-                    Note over Policy: decodes Schema v2 payload<br/>enforces topic rule<br/>(kycStatus, country, accreditation, ...)
+                    Note over Policy: decodes Investor Eligibility payload<br/>enforces topic rule<br/>(kycStatus, country, accreditation, ...)
                     Policy-->>Verifier: true/false
                     alt policy returns true
                         Note over Verifier: Topic satisfied — break inner loop

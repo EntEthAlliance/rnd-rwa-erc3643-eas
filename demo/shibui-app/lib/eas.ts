@@ -7,8 +7,8 @@
 import { SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import type { Hex } from "viem";
 import {
-  INVESTOR_ELIGIBILITY_V2_SCHEMA,
-  ISSUER_AUTHORIZATION_V1_SCHEMA,
+  INVESTOR_ELIGIBILITY_SCHEMA,
+  ISSUER_AUTHORIZATION_SCHEMA,
 } from "./constants";
 import type {
   InvestorEligibility,
@@ -16,7 +16,7 @@ import type {
 } from "./schemas";
 
 export function buildInvestorEligibilityData(e: InvestorEligibility): Hex {
-  const encoder = new SchemaEncoder(INVESTOR_ELIGIBILITY_V2_SCHEMA);
+  const encoder = new SchemaEncoder(INVESTOR_ELIGIBILITY_SCHEMA);
   return encoder.encodeData([
     { name: "identity", value: e.identity, type: "address" },
     { name: "kycStatus", value: e.kycStatus, type: "uint8" },
@@ -44,7 +44,7 @@ export function buildInvestorEligibilityData(e: InvestorEligibility): Hex {
 }
 
 export function buildIssuerAuthorizationData(a: IssuerAuthorization): Hex {
-  const encoder = new SchemaEncoder(ISSUER_AUTHORIZATION_V1_SCHEMA);
+  const encoder = new SchemaEncoder(ISSUER_AUTHORIZATION_SCHEMA);
   return encoder.encodeData([
     { name: "issuerAddress", value: a.issuerAddress, type: "address" },
     {

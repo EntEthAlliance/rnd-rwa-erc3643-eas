@@ -9,10 +9,10 @@ import {IEAS, AttestationRequest, AttestationRequestData} from "@eas/IEAS.sol";
  * @author EEA Working Group
  * @notice Mock attester contract for testing EAS attestation flows.
  * @dev Simulates a KYC provider or compliance attestation service.
- *      Provides helpers for creating Schema v2 (Investor Eligibility) and Schema 2
- *      (Issuer Authorization) attestations.
+ *      Provides helpers for creating Investor Eligibility (Schema 1) and
+ *      Issuer Authorization (Schema 2) attestations.
  *
- *      Investor Eligibility v2 schema (Schema 1, ABI-encoded in order):
+ *      Investor Eligibility schema (Schema 1, ABI-encoded in order):
  *        address identity,
  *        uint8   kycStatus,
  *        uint8   amlStatus,
@@ -41,10 +41,10 @@ contract MockAttester {
         name = _name;
     }
 
-    // ============ Investor Eligibility (Schema v2) ============
+    // ============ Investor Eligibility (Schema 1) ============
 
     /**
-     * @notice Creates an Investor Eligibility (Schema v2) attestation.
+     * @notice Creates an Investor Eligibility attestation.
      */
     function attestInvestorEligibility(
         bytes32 schemaUID,
@@ -86,7 +86,7 @@ contract MockAttester {
     }
 
     /**
-     * @notice Encodes a Schema v2 payload. Helper for tests.
+     * @notice Encodes an Investor Eligibility payload. Helper for tests.
      */
     function encodeInvestorEligibility(
         address identity,
@@ -115,7 +115,7 @@ contract MockAttester {
     }
 
     /**
-     * @notice Decodes a Schema v2 payload.
+     * @notice Decodes an Investor Eligibility payload.
      */
     function decodeInvestorEligibility(bytes calldata data)
         external

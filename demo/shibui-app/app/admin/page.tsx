@@ -14,8 +14,8 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { TxFeedback, type TxState } from "@/components/TxFeedback";
 import { getContracts } from "@/lib/contracts";
 import {
-  INVESTOR_ELIGIBILITY_V2_SCHEMA,
-  ISSUER_AUTHORIZATION_V1_SCHEMA,
+  INVESTOR_ELIGIBILITY_SCHEMA,
+  ISSUER_AUTHORIZATION_SCHEMA,
   DEFAULT_REQUIRED_TOPICS,
   TOPIC_LABEL,
 } from "@/lib/constants";
@@ -85,15 +85,15 @@ function RegisterSchemasPanel() {
   const [invEligState, setInvEligState] = useState<TxState>({});
   const [issuerAuthState, setIssuerAuthState] = useState<TxState>({});
   const [invEligUID, setInvEligUID] = useState<Hex | null>(
-    deployment.schemas.investorEligibilityV2 !==
+    deployment.schemas.investorEligibility !==
       "0x0000000000000000000000000000000000000000000000000000000000000000"
-      ? deployment.schemas.investorEligibilityV2
+      ? deployment.schemas.investorEligibility
       : null,
   );
   const [issuerAuthUID, setIssuerAuthUID] = useState<Hex | null>(
-    deployment.schemas.issuerAuthorizationV1 !==
+    deployment.schemas.issuerAuthorization !==
       "0x0000000000000000000000000000000000000000000000000000000000000000"
-      ? deployment.schemas.issuerAuthorizationV1
+      ? deployment.schemas.issuerAuthorization
       : null,
   );
   const { writeContractAsync } = useWriteContract();
@@ -153,12 +153,12 @@ function RegisterSchemasPanel() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <SchemaCard
-        title="Investor Eligibility v2"
-        schema={INVESTOR_ELIGIBILITY_V2_SCHEMA}
+        title="Investor Eligibility"
+        schema={INVESTOR_ELIGIBILITY_SCHEMA}
         uid={invEligUID}
         onRegister={() =>
           register(
-            INVESTOR_ELIGIBILITY_V2_SCHEMA,
+            INVESTOR_ELIGIBILITY_SCHEMA,
             zeroAddress,
             true,
             setInvEligState,
@@ -170,12 +170,12 @@ function RegisterSchemasPanel() {
         resolverHint="No resolver — policies enforce at verify time"
       />
       <SchemaCard
-        title="Issuer Authorization v1"
-        schema={ISSUER_AUTHORIZATION_V1_SCHEMA}
+        title="Issuer Authorization"
+        schema={ISSUER_AUTHORIZATION_SCHEMA}
         uid={issuerAuthUID}
         onRegister={() =>
           register(
-            ISSUER_AUTHORIZATION_V1_SCHEMA,
+            ISSUER_AUTHORIZATION_SCHEMA,
             deployment.shibui.TrustedIssuerResolver,
             true,
             setIssuerAuthState,
@@ -189,7 +189,7 @@ function RegisterSchemasPanel() {
           deployment.shibui.TrustedIssuerResolver ===
           "0x0000000000000000000000000000000000000000"
             ? "Deploy TrustedIssuerResolver first"
-            : "Resolver gates Schema-2 writes to admin-curated authorizers"
+            : "Resolver gates Issuer Authorization writes to admin-curated authorizers"
         }
       />
       <div className="md:col-span-2 card bg-slate-50">
@@ -197,8 +197,8 @@ function RegisterSchemasPanel() {
         <p className="mt-1 text-sm text-slate-700">
           Copy each UID above into{" "}
           <code className="font-mono">deployments/sepolia.json</code> under{" "}
-          <code className="font-mono">schemas.investorEligibilityV2</code> and{" "}
-          <code className="font-mono">schemas.issuerAuthorizationV1</code>, then
+          <code className="font-mono">schemas.investorEligibility</code> and{" "}
+          <code className="font-mono">schemas.issuerAuthorization</code>, then
           wire the topic-to-schema mappings with{" "}
           <code className="font-mono">
             EASClaimVerifier.setTopicSchemaMapping(topic, uid)
@@ -289,7 +289,7 @@ function AttesterPanel() {
     [topicsInput],
   );
 
-  const schemaUID = deployment.schemas.issuerAuthorizationV1;
+  const schemaUID = deployment.schemas.issuerAuthorization;
   const schemaReady =
     schemaUID !==
     "0x0000000000000000000000000000000000000000000000000000000000000000";
@@ -431,7 +431,7 @@ function AttesterPanel() {
           </button>
           {!schemaReady ? (
             <p className="text-xs text-amber-700">
-              Register Issuer Authorization v1 first (step 1 tab).
+              Register Issuer Authorization first (step 1 tab).
             </p>
           ) : null}
           <TxFeedback state={authState} />

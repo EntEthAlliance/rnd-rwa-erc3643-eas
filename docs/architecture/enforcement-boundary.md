@@ -24,7 +24,7 @@ The following primitives are the responsibility of the **token contract** (the E
 | Cross-chain attestation canonicity | One KYC on chain A does **not** automatically satisfy verification on chain B. EAS attestations are per-chain. | Deferred to Shibui V2 roadmap (attestation mirroring). |
 | Off-chain attestation verification (privacy-preserving) | Keeps sensitive KYC data out of the public ledger. | Deferred to Shibui V2 roadmap. |
 | Custom revocation logic (e.g. "revoke after N transfers") | EAS supports only binary revoke/not-revoke. Complex rules must be computed off-chain and materialised via `eas.revoke()`. | Off-chain compliance tooling. |
-| Evidence storage (KYC files, accreditation letters) | Auditors and examiners need the underlying documents, not just an on-chain hash. | Schema v2 carries `evidenceHash` + `verificationMethod`; the bytes themselves live with the KYC provider. |
+| Evidence storage (KYC files, accreditation letters) | Auditors and examiners need the underlying documents, not just an on-chain hash. | The Investor Eligibility schema carries `evidenceHash` + `verificationMethod`; the bytes themselves live with the KYC provider. |
 | Tax withholding / FATCA-CRS reporting | Reporting flows to tax authorities. | Outside Shibui's scope. |
 
 ## How to use Shibui correctly

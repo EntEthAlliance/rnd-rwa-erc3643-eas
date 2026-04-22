@@ -62,7 +62,7 @@ export default function AttesterPage() {
         <header className="space-y-2">
           <h1 className="text-2xl font-semibold">Attester · KYC operator</h1>
           <p className="text-slate-700">
-            Issue a Shibui-compatible Investor Eligibility v2 attestation, then
+            Issue a Shibui-compatible Investor Eligibility attestation, then
             register it against the investor's identity. Field values map{" "}
             <em>exactly</em> to the schema — no hidden transforms.
           </p>
@@ -84,7 +84,7 @@ function AttesterForm() {
   const publicClient = usePublicClient();
   const { writeContractAsync } = useWriteContract();
 
-  const schemaUID = deployment.schemas.investorEligibilityV2;
+  const schemaUID = deployment.schemas.investorEligibility;
   const addressOk = isAddress(form.identity);
 
   const evidence = useMemo(
@@ -201,7 +201,7 @@ function AttesterForm() {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div className="card space-y-3">
-        <h3 className="text-lg font-semibold">Investor Eligibility v2</h3>
+        <h3 className="text-lg font-semibold">Investor Eligibility</h3>
         <div>
           <label className="label">Identity address (recipient)</label>
           <input
@@ -325,7 +325,7 @@ function AttesterForm() {
           </div>
           <p className="text-sm text-slate-700">
             Wallet signs an <code className="font-mono">attest()</code> on EAS
-            using the encoded Investor Eligibility v2 payload above.
+            using the encoded Investor Eligibility payload above.
           </p>
           <button
             disabled={!isConnected || !addressOk || attestState.pending}

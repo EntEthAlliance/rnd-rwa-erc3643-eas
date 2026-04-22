@@ -14,7 +14,7 @@ Shibui replaces ERC-3643's per-investor OnchainID contract with EAS attestations
 
 ---
 
-## Schema 1 — Investor Eligibility v2
+## Schema 1 — Investor Eligibility
 
 **Schema string (exact):**
 ```
@@ -29,9 +29,9 @@ address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sou
 |---|---|---|---|---|
 | 1 | `identity` | `address` | — | The attestation recipient (ERC-3643 identity address, not wallet). |
 | 2 | `kycStatus` | `uint8` | 0=NOT_VERIFIED, 1=VERIFIED, 2=EXPIRED, 3=REVOKED, 4=PENDING | Core KYC gate. |
-| 3 | `amlStatus` | `uint8` | 0=CLEAR, 1=FLAGGED | Added in v2 (audit C-7). |
-| 4 | `sanctionsStatus` | `uint8` | 0=CLEAR, 1=HIT | Added in v2 (OFAC/EU sanctions). |
-| 5 | `sourceOfFundsStatus` | `uint8` | 0=NOT_VERIFIED, 1=VERIFIED | Added in v2 (MiFID II). |
+| 3 | `amlStatus` | `uint8` | 0=CLEAR, 1=FLAGGED | Audit C-7 requirement. |
+| 4 | `sanctionsStatus` | `uint8` | 0=CLEAR, 1=HIT | OFAC/EU sanctions gate. |
+| 5 | `sourceOfFundsStatus` | `uint8` | 0=NOT_VERIFIED, 1=VERIFIED | MiFID II source-of-funds. |
 | 6 | `accreditationType` | `uint8` | 0=NONE, 1=RETAIL_QUALIFIED, 2=ACCREDITED, 3=QUALIFIED_PURCHASER, 4=INSTITUTIONAL | Drives Reg D / Reg S / MiFID gating. |
 | 7 | `countryCode` | `uint16` | ISO 3166-1 numeric (e.g. 840=USA) | Used by `CountryAllowListPolicy`. |
 | 8 | `expirationTimestamp` | `uint64` | unix ts; 0 = never | Payload-level expiry, separate from EAS-level. |
@@ -52,7 +52,7 @@ address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sou
 
 ---
 
-## Schema 2 — Issuer Authorization v1
+## Schema 2 — Issuer Authorization
 
 **Schema string (exact):**
 ```
@@ -84,12 +84,6 @@ address issuerAddress,uint256[] authorizedTopics,string issuerName
 
 ---
 
-## Doc/code drift worth confirming
-
-[`docs/schemas/schema-definitions.md`](schemas/schema-definitions.md) line 80 lists Schema 1's resolver as `EASTrustedIssuersAdapter`. The actual registration in [`script/RegisterSchemas.s.sol`](../script/RegisterSchemas.s.sol) uses `address(0)`. The code is correct and intentional (see trade-off #5); the doc is stale. Included here so reviewers don't flag it as inconsistency, but **flagging it is a correct catch** — the doc needs fixing before the PR lands.
-
----
-
 ## What we'd like validated
 
 Short list — any "yes, fine" on these is enough:
@@ -117,8 +111,7 @@ Short list — any "yes, fine" on these is enough:
 Plain text / Slack / PR comment / email — whatever's fastest. A "LGTM, register them" is fine. A specific "change X because Y" is better. Targeted silence on any of the six questions above reads as tacit approval.
 
 **Artifacts for reference:**
-- [`docs/schemas/schema-definitions.md`](schemas/schema-definitions.md) — full spec (stale on resolver, see above)
-- [`docs/schemas/schema-governance.md`](schemas/schema-governance.md) — change control
+- [`docs/schemas/schema-definitions.md`](schemas/schema-definitions.md) — full spec
 - [`script/RegisterSchemas.s.sol`](../script/RegisterSchemas.s.sol) — actual registration call
 - [`contracts/policies/TopicPolicyBase.sol`](../contracts/policies/TopicPolicyBase.sol) — shared decoder
 - [`contracts/resolvers/TrustedIssuerResolver.sol`](../contracts/resolvers/TrustedIssuerResolver.sol) — Schema-2 gate

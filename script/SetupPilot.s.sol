@@ -21,9 +21,9 @@ import {CountryAllowListPolicy} from "../contracts/policies/CountryAllowListPoli
  *        1. Deploy MockEAS + core contracts + policies.
  *        2. Register schemas on MockEAS (UIDs are keccak-derived in the verifier / adapter
  *           config here; real deployments wire the UIDs from `RegisterSchemas`).
- *        3. Create a Schema-2 authorization attestation for the pilot KYC provider.
+ *        3. Create an Issuer Authorization attestation for the pilot KYC provider.
  *        4. addTrustedAttester with the authUID (audit C-5).
- *        5. Seed 5 investor identities with Schema-v2 attestations (audit C-7).
+ *        5. Seed 5 investor identities with Investor Eligibility attestations (audit C-7).
  *
  *      Intended for `anvil` / testnet only. Do NOT run on mainnet.
  */
@@ -32,8 +32,8 @@ contract SetupPilot is Script {
     uint256 constant TOPIC_ACCREDITATION = 7;
     uint256 constant TOPIC_COUNTRY = 3;
 
-    bytes32 constant INVESTOR_ELIGIBILITY_UID = keccak256("InvestorEligibility_v2");
-    bytes32 constant ISSUER_AUTH_UID = keccak256("IssuerAuthorization_v1");
+    bytes32 constant INVESTOR_ELIGIBILITY_UID = keccak256("InvestorEligibility");
+    bytes32 constant ISSUER_AUTH_UID = keccak256("IssuerAuthorization");
 
     function run() external {
         uint256 deployerKey = vm.envUint("PRIVATE_KEY");
