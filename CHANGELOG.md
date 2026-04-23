@@ -45,7 +45,7 @@ Audit-driven refactor. Multiple breaking changes; the pre-refactor API is gone. 
 - Admin surface migrated from OpenZeppelin `Ownable` to `AccessControl`. Roles: `DEFAULT_ADMIN_ROLE`, `OPERATOR_ROLE`, `AGENT_ROLE`. Deploy scripts transfer all roles to a multisig in production.
 - `EASClaimVerifier.setIdentityProxy(address(0))` now reverts. Identity proxy is required; there is no "wallet is its own identity" fallback.
 - `EASClaimVerifier.registerAttestation` no longer accepts `msg.sender == identity`. Only the attester or an `AGENT_ROLE` holder may register.
-- Investor Eligibility schema bumped from v1 to **v2**: adds `bytes32 evidenceHash` and `uint8 verificationMethod` to the ABI-encoded payload. The Schema UID changes as a result; any testnet v1 attestations are no longer compatible.
+- **Investor Eligibility schema** expanded to 10 fields: adds `bytes32 evidenceHash` and `uint8 verificationMethod` to the ABI-encoded payload (audit finding C-7). The schema string changes, so the registered schema UID changes too; any pre-0.3.0 testnet attestations are not compatible and must be re-issued. Greenfield — no production deployment existed at any prior version.
 
 ### Added
 

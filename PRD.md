@@ -38,7 +38,7 @@ Shibui addresses all three via a small stack of EAS-backed contracts plugged beh
 | **Compliance multisig** (`DEFAULT_ADMIN_ROLE`) | Curates Schema-2 authorizers; approves trusted-attester changes; responds to incidents. |
 | **Day-to-day operators** (`OPERATOR_ROLE`) | Bind topics to policies; manage trusted attesters; update schema mappings. |
 | **Issuer agents** (`AGENT_ROLE`) | Bind investor wallets to identities. |
-| **KYC / AML / sanctions providers** | Attest investors under Schema 1 v2; revoke when circumstances change. |
+| **KYC / AML / sanctions providers** | Attest investors under the Investor Eligibility schema; revoke when circumstances change. |
 | **Investors** | Complete KYC once with a trusted provider; no per-investor contract deployed. |
 
 ---
@@ -62,8 +62,8 @@ Shibui addresses all three via a small stack of EAS-backed contracts plugged beh
 
 **Schemas**
 
-- Schema 1 v2 — Investor Eligibility (10 fields, including `evidenceHash` and `verificationMethod` for auditability).
-- Schema 2 — Issuer Authorization (gates adapter trust changes).
+- Investor Eligibility — 10 fields, including `evidenceHash` and `verificationMethod` for auditability.
+- Issuer Authorization — gates adapter trust changes.
 
 **Administration**
 
@@ -127,7 +127,7 @@ Diagrams: [`architecture-overview`](diagrams/architecture-overview.mmd), [`trans
 ### E) Audit trail
 
 - Every state-changing admin action emits an event (setter, role grant, attester add/remove/update, schema UID changes).
-- Schema 1 v2 carries `evidenceHash` + `verificationMethod` so examiners can trace an on-chain decision back to the KYC file held off-chain by the provider.
+- The Investor Eligibility schema carries `evidenceHash` + `verificationMethod` so examiners can trace an on-chain decision back to the KYC file held off-chain by the provider.
 
 ### F) Pluggability
 
@@ -202,7 +202,7 @@ See [`test/integration/ERC3643Token.integration.t.sol`](test/integration/ERC3643
 
 - EAS is deployed on the target chain and the two Shibui schemas are registered there (see [`script/RegisterSchemas.s.sol`](script/RegisterSchemas.s.sol)).
 - The token issuer runs a compliance multisig for `DEFAULT_ADMIN_ROLE`.
-- KYC/AML providers issue attestations conforming to Schema 1 v2 ([`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md)).
+- KYC/AML providers issue attestations conforming to the Investor Eligibility schema ([`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md)).
 - Integrators accept per-chain attestation posting until cross-chain portability lands.
 
 ---
@@ -214,7 +214,7 @@ Start here:
 - [`README.md`](README.md) — one-page product overview
 - [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md) — scope boundary (what Shibui does *not* provide)
 - [`docs/integration-guide.md`](docs/integration-guide.md) — Path A and Path B integration step-by-step
-- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) — Schema 1 v2 and Schema 2 specs
+- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) — Investor Eligibility and Issuer Authorization specs
 - [`AUDIT.md`](AUDIT.md) — threat model, launch gate, pre-flight checklist
 - [`CHANGELOG.md`](CHANGELOG.md) — release history
 - [`diagrams/`](diagrams/) — current architecture diagrams

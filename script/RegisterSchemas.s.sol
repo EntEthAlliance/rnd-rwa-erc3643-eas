@@ -8,11 +8,11 @@ import {ISchemaResolver} from "@eas/resolver/ISchemaResolver.sol";
 
 /**
  * @title RegisterSchemas
- * @notice Registers the Shibui EAS schemas (Investor Eligibility v2 + Issuer Authorization).
- * @dev Post-refactor:
- *        - Investor Eligibility is v2 with evidenceHash and verificationMethod
- *          fields (audit C-7). The new schema UID differs from v1; there is no
- *          production v1 deployment so no dual-accept period is required.
+ * @notice Registers the Shibui EAS schemas (Investor Eligibility + Issuer Authorization).
+ * @dev Deployment notes:
+ *        - Investor Eligibility carries evidenceHash and verificationMethod
+ *          fields for audit traceability (audit C-7). Greenfield — no prior
+ *          production deployment, so no dual-accept period is required.
  *        - Issuer Authorization is registered with the TrustedIssuerResolver
  *          address (audit C-5). Pass it via the `ISSUER_AUTH_RESOLVER` env var.
  *          The Wallet-Identity Link schema is deferred (V2 roadmap).
@@ -25,7 +25,7 @@ contract RegisterSchemas is Script {
     address constant REGISTRY_OPTIMISM = 0x4200000000000000000000000000000000000020;
     address constant REGISTRY_ARBITRUM = 0xA310da9c5B885E7fb3fbA9D66E9Ba6Df512b78eB;
 
-    /// @notice Schema 1 v2 string (must match abi.encode layout in MockAttester / TopicPolicyBase).
+    /// @notice Investor Eligibility schema string (must match abi.encode layout in MockAttester / TopicPolicyBase).
     string constant INVESTOR_ELIGIBILITY_SCHEMA =
         "address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sourceOfFundsStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp,bytes32 evidenceHash,uint8 verificationMethod";
 
@@ -52,9 +52,9 @@ contract RegisterSchemas is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        // Investor Eligibility v2 — no resolver; policy modules enforce payload at verify time.
+        // Investor Eligibility — no resolver; policy modules enforce payload at verify time.
         investorEligibilityUID = _registerSchemaIfNeeded(registry, INVESTOR_ELIGIBILITY_SCHEMA, address(0), true);
-        console2.log("Investor Eligibility v2 UID:");
+        console2.log("Investor Eligibility UID:");
         console2.logBytes32(investorEligibilityUID);
 
         // Issuer Authorization — resolver-gated (TrustedIssuerResolver).

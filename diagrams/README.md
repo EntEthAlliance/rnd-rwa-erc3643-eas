@@ -14,7 +14,7 @@ Mermaid source files (`.mmd`) explaining Shibui's current architecture (post aud
 
 - [`transfer-verification-flow.mmd`](transfer-verification-flow.mmd) — sequence from `token.transfer` through compliance → Identity Registry → `EASClaimVerifier` → per-topic `ITopicPolicy.validate`.
 - [`revocation-flow.mmd`](revocation-flow.mmd) — attester revokes on EAS → next `isVerified` returns false → transfer blocked.
-- [`attestation-lifecycle.mmd`](attestation-lifecycle.mmd) — state machine from unverified → active → revoked / expired → renewed. Includes Schema v2 payload fields.
+- [`attestation-lifecycle.mmd`](attestation-lifecycle.mmd) — state machine from unverified → active → revoked / expired → renewed. Includes Investor Eligibility payload fields.
 - [`wallet-identity-mapping.mmd`](wallet-identity-mapping.mmd) — how multiple wallets resolve to a single identity in `EASIdentityProxy`.
 
 **People / roles:**

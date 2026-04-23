@@ -5,7 +5,7 @@
 > and jurisdiction-indexed extensions. The schemas actually deployed in
 > Shibui v0.4 are documented in
 > [`docs/schemas/schema-definitions.md`](../schemas/schema-definitions.md)
-> (Investor Eligibility v2 + Issuer Authorization). Integrators should
+> (Investor Eligibility + Issuer Authorization). Integrators should
 > build against those, not the fields proposed here.
 >
 > This proposal is retained to feed future standards-body discussions

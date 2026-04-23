@@ -28,8 +28,8 @@ flowchart LR
         A_Investor -->|"one KYC"| A_Provider1
         A_Investor -.->|"or"| A_Provider2
         A_Provider3 -.->|"screens separately"| A_Investor
-        A_Provider1 -->|"Schema-v2 attestation"| A_EAS
-        A_Provider2 -->|"Schema-v2 attestation"| A_EAS
+        A_Provider1 -->|"Investor Eligibility attestation"| A_EAS
+        A_Provider2 -->|"Investor Eligibility attestation"| A_EAS
         A_Provider3 -->|"sanctions attestation"| A_EAS
         A_EAS -->|"read by"| A_Shibui
         A_Shibui -->|"setIdentityVerifier(shibui)"| A_IR

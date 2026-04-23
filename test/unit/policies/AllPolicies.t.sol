@@ -17,7 +17,7 @@ import {AccreditationPolicy} from "../../../contracts/policies/AccreditationPoli
 /**
  * @title AllPoliciesTest
  * @notice Unit tests for the 8 Shibui topic policies.
- * @dev Tests each policy against the Schema v2 payload:
+ * @dev Tests each policy against the Investor Eligibility payload:
  *        address identity, uint8 kycStatus, uint8 amlStatus, uint8 sanctionsStatus,
  *        uint8 sourceOfFundsStatus, uint8 accreditationType, uint16 countryCode,
  *        uint64 expirationTimestamp, bytes32 evidenceHash, uint8 verificationMethod

@@ -1,0 +1,59 @@
+{
+  "$schema": "./sepolia.schema.json",
+  "chainId": 11155111,
+  "network": "sepolia",
+  "notes": "Canonical Sepolia deployment addresses for the Shibui stack. Populated by `script/DeployTestnet.s.sol` + `RegisterSchemas.s.sol` + `DeployDemo.s.sol`. Any zero address or empty bytes32 means that piece has not been deployed yet on this network.",
+  "eas": {
+    "EAS": "0xC2679fBD37d54388Ce493F1DB75320D236e1815e",
+    "SchemaRegistry": "0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0"
+  },
+  "shibui": {
+    "EASClaimVerifier": "0x0000000000000000000000000000000000000000",
+    "EASTrustedIssuersAdapter": "0x0000000000000000000000000000000000000000",
+    "EASIdentityProxy": "0x0000000000000000000000000000000000000000",
+    "ClaimTopicsRegistry": "0x0000000000000000000000000000000000000000",
+    "TrustedIssuerResolver": "0x0000000000000000000000000000000000000000",
+    "policies": {
+      "KYCStatusPolicy": "0x0000000000000000000000000000000000000000",
+      "AMLPolicy": "0x0000000000000000000000000000000000000000",
+      "SanctionsPolicy": "0x0000000000000000000000000000000000000000",
+      "SourceOfFundsPolicy": "0x0000000000000000000000000000000000000000",
+      "AccreditationPolicy": "0x0000000000000000000000000000000000000000",
+      "ProfessionalInvestorPolicy": "0x0000000000000000000000000000000000000000",
+      "InstitutionalInvestorPolicy": "0x0000000000000000000000000000000000000000",
+      "CountryAllowListPolicy": "0x0000000000000000000000000000000000000000"
+    }
+  },
+  "schemas": {
+    "investorEligibility": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "issuerAuthorization": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "demo": {
+    "DemoERC3643Token": "0x0000000000000000000000000000000000000000",
+    "investors": {
+      "alice": {
+        "wallet": "0x0000000000000000000000000000000000000000",
+        "identity": "0x0000000000000000000000000000000000000000",
+        "description": "Fully verified: KYC ok, AML clear, accredited, US"
+      },
+      "bob": {
+        "wallet": "0x0000000000000000000000000000000000000000",
+        "identity": "0x0000000000000000000000000000000000000000",
+        "description": "Missing accreditation — transfer must revert"
+      },
+      "carol": {
+        "wallet": "0x0000000000000000000000000000000000000000",
+        "identity": "0x0000000000000000000000000000000000000000",
+        "description": "KYC verified, then revoked live during the demo"
+      }
+    },
+    "attestations": {
+      "aliceKYC": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "bobKYC": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "carolKYC": "0x0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "lastUpdated": null,
+  "deployer": null,
+  "deploymentBlock": null
+}
