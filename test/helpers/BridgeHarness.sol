@@ -206,7 +206,7 @@ abstract contract BridgeHarness is Test {
         e.accreditationType = 2;
         e.countryCode = 840;
         e.expirationTimestamp = expiry;
-        e.evidenceHash = keccak256("evidence-v1");
+        e.evidenceHash = keccak256("evidence-happy-path");
         e.verificationMethod = 2; // third-party
     }
 
