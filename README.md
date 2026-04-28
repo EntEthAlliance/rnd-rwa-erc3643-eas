@@ -1,43 +1,60 @@
 # Shibui
 
-**An attestation retrieval adapter for ERC-3643 security tokens.** Shibui lets an ERC-3643 token answer *"is this wallet allowed to hold this security right now?"* from attestations issued on the [Ethereum Attestation Service](https://attest.org/) by any trusted KYC/AML/accreditation provider — without deploying a per-user identity contract or coupling the token to a single provider ecosystem.
+**Policy-aware EAS verification for ERC-3643 security tokens.** Shibui lets an ERC-3643 token answer **"is this wallet allowed to hold this security right now?"** using Ethereum Attestation Service (EAS) attestations issued by trusted compliance providers.
 
 > An open-source project by the [Enterprise Ethereum Alliance](https://entethalliance.org)
 
 ---
 
-## Why Shibui exists
+## In one sentence
 
-ERC-3643 (the security token standard) mandates an on-chain identity check on every transfer. The reference implementation (ONCHAINID) requires each investor to deploy their own identity contract, pins the token to a specific KYC-provider ecosystem, and offers no on-chain enforcement of the attestation's *contents* — only its existence.
+Shibui replaces the default ONCHAINID dependency in ERC-3643-style flows with a verifier layer that:
+- reads EAS attestations,
+- maps claim topics to schemas and policies,
+- supports multiple trusted attesters per topic, and
+- returns a single on-chain answer: `isVerified(wallet)`.
 
-That model breaks down for issuers who need any of:
+## Why it exists
 
-- **Multiple KYC providers** for the same token (geographic, redundancy, or suitability).
-- **Semantic enforcement** — blocking a wallet whose KYC is pending, expired, or whose jurisdiction is on a sanctions list.
-- **An auditable control plane** where compliance staff, not engineers, can rotate trusted providers.
-- **An evidence trail** that ties a verification decision back to the underlying KYC file a regulator will ask for.
+ERC-3643 requires an on-chain identity check on every transfer. In the reference implementation, that check depends on ONCHAINID contracts and trusted-issuer registries. That works, but it creates practical constraints for issuers who need:
 
-Shibui addresses those needs by replacing the ONCHAINID identity layer with a small stack of contracts that read EAS attestations, enforce the payload against a configurable policy per topic, and gate trust changes with a cryptographic audit trail.
+- **Multiple compliance providers** for the same token
+- **Payload-aware enforcement** rather than checking only that a claim exists
+- **Cleaner operational governance** for rotating trusted providers and policies
+- **A direct audit trail** from an on-chain verification result back to the underlying compliance evidence
+
+Shibui addresses those constraints with a compact verifier stack built around EAS attestations, explicit topic policies, and role-gated trust management.
 
 ## What it does
 
-Shibui's one public entry point is:
+Shibui's main public entry point is:
 
 ```solidity
 EASClaimVerifier.isVerified(address wallet) → bool
 ```
 
-For a transfer to be allowed, the ERC-3643 token contract calls this from its compliance hook. Shibui returns `true` only when, for **every** claim topic the token requires:
+For a transfer to be allowed, the ERC-3643 token's compliance flow calls `isVerified(wallet)`. Shibui returns `true` only if **every required claim topic** is satisfied.
 
-- The investor's identity has an EAS attestation registered for that topic, from an attester the issuer currently trusts for that topic.
-- The attestation is live (not revoked, not past its EAS-level `expirationTime`, not past its payload-level `expirationTimestamp`).
-- The attestation's decoded payload satisfies the topic's policy — e.g. `kycStatus == VERIFIED`, `countryCode` in the allow-list, `accreditationType` in the allowed set, `sanctionsStatus == CLEAR`.
+For each required topic, Shibui checks that:
+- a trusted attester exists for the topic,
+- an attestation has been registered for the investor identity,
+- the attestation is live,
+- the attestation matches the expected schema, and
+- the topic's policy validates the attestation payload.
 
-If any required topic fails any check, `isVerified` returns `false` and the transfer is blocked by the token contract.
+If any required topic fails, `isVerified` returns `false` and the token transfer is blocked.
+
+## What you get
+
+- **EAS-native compliance verification** for ERC-3643 flows
+- **Multiple trusted attesters per topic**
+- **Policy-aware validation** of attestation contents
+- **Wallet-to-identity resolution** through `EASIdentityProxy`
+- **On-chain audit trail** for trusted-attester changes through Schema-2 authorization attestations
 
 ## What it does *not* do
 
-Shibui is deliberately narrow. The following remain the responsibility of the ERC-3643 **token contract** or off-chain operational tooling:
+Shibui is deliberately narrow. The following remain outside Shibui and belong in the ERC-3643 **token contract** or off-chain operational tooling:
 
 | Primitive | Where it lives |
 |---|---|
@@ -55,7 +72,7 @@ Revoking a Shibui attestation blocks *future* transfers to/from the wallet. It d
 
 ## Schemas, claim topics, and policies
 
-The canonical source of truth for Shibui's live schema strings is [`script/RegisterSchemas.s.sol`](script/RegisterSchemas.s.sol). [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) expands those strings with field semantics, enum values, encoding examples, and workflow notes.
+The canonical source of truth for live schema strings is [`script/RegisterSchemas.s.sol`](script/RegisterSchemas.s.sol). [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) expands those strings with field semantics, enum values, encoding examples, and workflow notes.
 
 Shibui registers **two** EAS schemas today:
 
@@ -66,7 +83,7 @@ Shibui registers **two** EAS schemas today:
 
 ### Schema 1 — Investor Eligibility
 
-This is the single canonical payload every production claim topic decodes.
+This is the canonical payload decoded by all production claim-topic policies.
 
 - **Field count:** 10 ABI fields
 - **Schema string:**
@@ -105,7 +122,7 @@ Topic IDs follow the ONCHAINID claim-topic convention commonly used in ERC-3643 
 
 ### Schema 2 — Issuer Authorization
 
-This is the attestation schema that backs trusted-attester changes.
+This schema governs trusted-attester changes.
 
 - **Field count:** 3 ABI fields
 - **Schema string:**
@@ -127,9 +144,9 @@ Registration parameters for Schema 2:
 
 For expanded field semantics, enum values, and encoding examples, see [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md).
 
-## Architecture
+## How the runtime works
 
-### Runtime wiring
+### Runtime wiring at a glance
 
 ```mermaid
 flowchart LR
@@ -194,8 +211,6 @@ Every trusted-attester change references a live EAS attestation under Schema 2 (
 
 ---
 
----
-
 ## Administration
 
 Three roles, gated by OpenZeppelin `AccessControl`:
@@ -210,7 +225,17 @@ The production deploy script grants all three to the multisig atomically and ren
 
 ---
 
-## Repository layout
+## Quick links
+
+- **Integration guide:** [`docs/integration-guide.md`](docs/integration-guide.md)
+- **Schema definitions:** [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md)
+- **Enforcement boundary:** [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md)
+- **Audit gate:** [`AUDIT.md`](AUDIT.md)
+- **Sepolia demo addresses:** [`deployments/sepolia.json`](deployments/sepolia.json)
+
+---
+
+## Repository structure
 
 ```
 contracts/
@@ -264,9 +289,9 @@ deployments/
 
 ---
 
-## Two integration paths
+## Integration paths
 
-**Path A — pluggable verifier (recommended).** The token's ERC-3643 compliance module calls `EASClaimVerifier.isVerified(wallet)` directly. This gives you payload-aware verification, multi-attester resiliency, and the full admin surface.
+**Path A — pluggable verifier (recommended).** The token's ERC-3643 compliance flow delegates to `EASClaimVerifier.isVerified(wallet)`. This is the preferred integration path for new deployments.
 
 **Path B — read-compat shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations, for integrating with a pre-existing ERC-3643 Identity Registry that cannot be modified. It is **not** a drop-in replacement for ONCHAINID:
 
@@ -275,11 +300,11 @@ deployments/
 - Does not run topic policies in `isClaimValid` (only checks existence / revocation / expiration).
 - Gas profile is not suitable for hot paths without caching.
 
-Use Path A for new deployments. Use Path B only when the Identity Registry cannot be modified and the trade-offs are acceptable.
+Use Path A for new deployments. Use Path B only when the Identity Registry cannot be modified and the compatibility trade-offs are acceptable.
 
 ---
 
-## Quickstart
+## Quick start
 
 ```bash
 forge install
@@ -359,13 +384,13 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## Security
 
-- Reproducible local tests: `forge test` runs the full Foundry suite across unit, integration, and scenario coverage.
-- Mainnet deploy is gated — the script refuses to broadcast unless `AUDIT_ACKNOWLEDGED=true` is set. See [`AUDIT.md`](AUDIT.md) for the launch gate, threat model, and minimum-required pre-flight checklist.
-- Roles, not ownership. All admin actions are role-gated; production uses a compliance multisig as `DEFAULT_ADMIN_ROLE`.
+- `forge test` runs the full Foundry suite across unit, integration, and scenario coverage.
+- Mainnet deployment is gated: the script refuses to broadcast unless `AUDIT_ACKNOWLEDGED=true` is set. See [`AUDIT.md`](AUDIT.md) for the launch gate and pre-flight checklist.
+- Administrative actions are role-gated; production uses a compliance multisig as `DEFAULT_ADMIN_ROLE`.
 
 ---
 
-## Documentation
+## Documentation map
 
 - [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md) — what Shibui does and does not provide. **Start here if you're integrating.**
 - [`docs/architecture/identity-architecture-explained.md`](docs/architecture/identity-architecture-explained.md) — architectural walkthrough.
@@ -382,7 +407,7 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## Live demo
 
-The interactive attestation-lifecycle demo now lives in-repo at [`demo/shibui-app`](demo/shibui-app) — a Next.js + wagmi + RainbowKit app that runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
+The interactive demo lives in [`demo/shibui-app`](demo/shibui-app) and runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
 
 - `/admin` — register schemas and authorize KYC providers.
 - `/attester` — issue and revoke Investor Eligibility attestations.
