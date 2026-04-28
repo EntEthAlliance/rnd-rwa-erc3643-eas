@@ -1,8 +1,8 @@
-# Contract Interaction Diagrams
+# Shibui Contract Interaction Diagrams
 
 ## Overview
 
-This document describes the contract interactions in the EAS-to-ERC-3643 Identity Bridge. The corresponding Mermaid diagram source files are in the `diagrams/` directory.
+This document describes the contract interactions in Shibui. The corresponding Mermaid diagram source files are in the `diagrams/` directory.
 
 All diagrams can be rendered with any Mermaid viewer ([mermaid.live](https://mermaid.live), GitHub, VS Code extension).
 
@@ -18,7 +18,7 @@ These diagrams explain the "why" — the problem space, the before/after compari
 
 **What it shows:** How ERC-3643 identity verification works today using ONCHAINID. Illustrates the flow from investor through KYC provider to ONCHAINID contract, Identity Registry, and finally token transfer. Highlights the pain points: vendor lock-in, per-user contract deployment, no cross-chain portability.
 
-**When to reference:** When explaining why the bridge exists, or when comparing ONCHAINID to EAS.
+**When to reference:** When explaining why Shibui exists, or when comparing ONCHAINID to EAS.
 
 ### Before/After Comparison
 
@@ -85,10 +85,7 @@ Sequence diagram showing:
 
 **File:** `diagrams/dual-mode-verification.mmd`
 
-Shows the Identity Registry checking both:
-- ONCHAINID path (traditional)
-- EAS path (bridge)
-- Configurable priority/fallback behavior
+Shows the Identity Registry delegating to Shibui when configured while preserving the default ONCHAINID path when no Shibui verifier is set.
 
 ## Diagram 4: Attestation Lifecycle
 
@@ -124,10 +121,10 @@ Shows:
 | EASClaimVerifier | EASTrustedIssuersAdapter | getTrustedAttestersForTopic() | Get trusted attesters |
 | EASClaimVerifier | IEAS | getAttestation() | Fetch attestation data |
 | KYCProvider | IEAS | attest() | Create attestation |
-| Anyone | EASClaimVerifier | registerAttestation() | Register attestation for lookup |
+| Attester or AGENT_ROLE holder | EASClaimVerifier | registerAttestation() | Register attestation for lookup |
 | KYCProvider | IEAS | revoke() | Revoke attestation |
-| Owner | EASTrustedIssuersAdapter | addTrustedAttester() | Add KYC provider |
-| Agent | EASIdentityProxy | registerWallet() | Link wallet to identity |
+| OPERATOR_ROLE holder | EASTrustedIssuersAdapter | addTrustedAttester() | Add trusted attester |
+| AGENT_ROLE holder | EASIdentityProxy | registerWallet() | Link wallet to identity |
 
 ## Event Emissions
 

@@ -5,8 +5,8 @@ pragma solidity =0.8.24;
 /**
  * @title IEASClaimVerifier
  * @author EEA Working Group
- * @notice Interface for the EAS Claim Verifier contract that bridges EAS attestations to ERC-3643 compliance
- * @dev The core adapter that enables ERC-3643 security tokens to accept EAS attestations for identity verification
+ * @notice Interface for the Shibui EASClaimVerifier contract
+ * @dev The core verifier that enables ERC-3643 security tokens to accept EAS attestations for investor eligibility verification
  */
 interface IEASClaimVerifier {
     // ============ Events ============
@@ -20,7 +20,7 @@ interface IEASClaimVerifier {
     /// @param easAddress The new EAS contract address
     event EASAddressSet(address indexed easAddress);
 
-    /// @notice Emitted when the trusted issuers adapter address is updated
+    /// @notice Emitted when the trusted-attester registry adapter address is updated
     /// @param adapterAddress The new adapter address
     event TrustedIssuersAdapterSet(address indexed adapterAddress);
 
@@ -42,7 +42,7 @@ interface IEASClaimVerifier {
     /// @notice Thrown when EAS address is not configured
     error EASNotConfigured();
 
-    /// @notice Thrown when trusted issuers adapter is not configured
+    /// @notice Thrown when the trusted-attester registry adapter is not configured
     error TrustedIssuersAdapterNotConfigured();
 
     /// @notice Thrown when claim topics registry is not configured
@@ -85,7 +85,7 @@ interface IEASClaimVerifier {
     function getEASAddress() external view returns (address);
 
     /**
-     * @notice Returns the trusted issuers adapter address
+     * @notice Returns the trusted-attester registry adapter address
      * @return The adapter address
      */
     function getTrustedIssuersAdapter() external view returns (address);
@@ -118,7 +118,7 @@ interface IEASClaimVerifier {
 
     /**
      * @notice Maps an ERC-3643 claim topic to an EAS schema UID
-     * @dev Only callable by owner
+     * @dev Only callable by OPERATOR_ROLE
      * @param claimTopic The ERC-3643 claim topic ID (uint256)
      * @param schemaUID The EAS schema UID (bytes32)
      */
@@ -126,28 +126,28 @@ interface IEASClaimVerifier {
 
     /**
      * @notice Sets the EAS contract address
-     * @dev Only callable by owner
+     * @dev Only callable by OPERATOR_ROLE
      * @param easAddress The EAS contract address
      */
     function setEASAddress(address easAddress) external;
 
     /**
-     * @notice Sets the trusted issuers adapter address
-     * @dev Only callable by owner
+     * @notice Sets the trusted-attester registry adapter address
+     * @dev Only callable by OPERATOR_ROLE
      * @param adapterAddress The adapter contract address
      */
     function setTrustedIssuersAdapter(address adapterAddress) external;
 
     /**
      * @notice Sets the identity proxy address for wallet-to-identity resolution
-     * @dev Only callable by owner
+     * @dev Only callable by OPERATOR_ROLE
      * @param proxyAddress The identity proxy contract address
      */
     function setIdentityProxy(address proxyAddress) external;
 
     /**
      * @notice Sets the claim topics registry address
-     * @dev Only callable by owner
+     * @dev Only callable by OPERATOR_ROLE
      * @param registryAddress The claim topics registry contract address
      */
     function setClaimTopicsRegistry(address registryAddress) external;

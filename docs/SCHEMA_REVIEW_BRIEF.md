@@ -10,7 +10,7 @@
 
 ## Context in one paragraph
 
-Shibui replaces ERC-3643's per-investor OnchainID contract with EAS attestations: one attestation per (identity, claim-topic) pair, decoded at transfer time by `EASClaimVerifier.isVerified(wallet)`. The bridge requires *two* schemas — one for investor data, one for provider authorization — and a third optional one on the V2 roadmap. We are registering Schemas 1 and 2 on Sepolia; Schema 3 is not in scope for this review.
+Shibui replaces ERC-3643's per-investor ONCHAINID contract with EAS attestations: one attestation per (identity, claim-topic) pair, decoded at transfer time by `EASClaimVerifier.isVerified(wallet)`. The bridge requires *two* schemas — one for investor data, one for provider authorization — and a third optional one on the V2 roadmap. We are registering Schemas 1 and 2 on Sepolia; Schema 3 is not in scope for this review.
 
 ---
 
@@ -36,7 +36,7 @@ address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sou
 | 7 | `countryCode` | `uint16` | ISO 3166-1 numeric (e.g. 840=USA) | Used by `CountryAllowListPolicy`. |
 | 8 | `expirationTimestamp` | `uint64` | unix ts; 0 = never | Payload-level expiry, separate from EAS-level. |
 | 9 | `evidenceHash` | `bytes32` | keccak256 of KYC dossier | Commitment only — raw PII stays off-chain with the KYC provider. |
-| 10 | `verificationMethod` | `uint8` | 1=SELF_ATTESTED, 2=THIRD_PARTY, 3=PRO_LETTER, 4=BROKER_DEALER | Auditor-visible provenance. |
+| 10 | `verificationMethod` | `uint8` | 1=SELF_ATTESTED, 2=THIRD_PARTY, 3=PROFESSIONAL_LETTER, 4=BROKER_DEALER_FILE | Auditor-visible provenance. |
 
 **Claim-topic mapping** (topic → field read by the corresponding `ITopicPolicy`):
 - KYC (1) → `kycStatus == 1`
