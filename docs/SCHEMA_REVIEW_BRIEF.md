@@ -4,13 +4,13 @@
 
 **Scope of this review:** the two schemas below, their field set, types, resolver binding, and revocability. *Not* in scope: contract architecture, policy logic, access control, gas. Those have been audited separately.
 
-**Time budget:** ~15 minutes.
+**Estimated review time:** ~15 minutes.
 
 ---
 
 ## Context in one paragraph
 
-Shibui replaces ERC-3643's per-investor OnchainID contract with EAS attestations: one attestation per (identity, claim-topic) pair, decoded at transfer time by `EASClaimVerifier.isVerified(wallet)`. The bridge requires *two* schemas — one for investor data, one for provider authorization — and a third optional one on the V2 roadmap. We are registering Schemas 1 and 2 on Sepolia; Schema 3 is not in scope for this review.
+Shibui replaces ERC-3643's per-investor ONCHAINID contract with EAS attestations: one attestation per (identity, claim-topic) pair, decoded at transfer time by `EASClaimVerifier.isVerified(wallet)`. The bridge requires *two* schemas — one for investor data, one for provider authorization — and a third optional one on the V2 roadmap. We are registering Schemas 1 and 2 on Sepolia; Schema 3 is not in scope for this review.
 
 ---
 
@@ -36,7 +36,7 @@ address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sou
 | 7 | `countryCode` | `uint16` | ISO 3166-1 numeric (e.g. 840=USA) | Used by `CountryAllowListPolicy`. |
 | 8 | `expirationTimestamp` | `uint64` | unix ts; 0 = never | Payload-level expiry, separate from EAS-level. |
 | 9 | `evidenceHash` | `bytes32` | keccak256 of KYC dossier | Commitment only — raw PII stays off-chain with the KYC provider. |
-| 10 | `verificationMethod` | `uint8` | 1=SELF_ATTESTED, 2=THIRD_PARTY, 3=PRO_LETTER, 4=BROKER_DEALER | Auditor-visible provenance. |
+| 10 | `verificationMethod` | `uint8` | 1=SELF_ATTESTED, 2=THIRD_PARTY, 3=PROFESSIONAL_LETTER, 4=BROKER_DEALER_FILE | Auditor-visible provenance. |
 
 **Claim-topic mapping** (topic → field read by the corresponding `ITopicPolicy`):
 - KYC (1) → `kycStatus == 1`
@@ -86,7 +86,7 @@ address issuerAddress,uint256[] authorizedTopics,string issuerName
 
 ## What we'd like validated
 
-Short list — any "yes, fine" on these is enough:
+Short list of questions for review:
 
 1. **Field completeness.** Is there any compliance signal an EEA-member issuer would expect to find in this schema that's missing? (E.g., PEP status, tax residency, jurisdiction of formation for entities.)
 2. **Type economy.** Any field where the type is over- or under-sized? `countryCode` as `uint16` (ISO numeric → max 894) is deliberate, but `verificationMethod` as `uint8` may be cramped if real-world provenance signals proliferate.
@@ -108,7 +108,7 @@ Short list — any "yes, fine" on these is enough:
 
 ## How to respond
 
-Plain text / Slack / PR comment / email — whatever's fastest. A "LGTM, register them" is fine. A specific "change X because Y" is better. Targeted silence on any of the six questions above reads as tacit approval.
+Reply in whichever format is easiest. A short approval is sufficient; specific change requests are even better.
 
 **Artifacts for reference:**
 - [`docs/schemas/schema-definitions.md`](schemas/schema-definitions.md) — full spec

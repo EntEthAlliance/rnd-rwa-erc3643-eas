@@ -1,8 +1,8 @@
-# Contract Interaction Diagrams
+# Shibui Contract Interaction Diagrams
 
 ## Overview
 
-This document describes the contract interactions in the EAS-to-ERC-3643 Identity Bridge. The corresponding Mermaid diagram source files are in the `diagrams/` directory.
+This document describes the contract interactions in Shibui. The corresponding Mermaid diagram source files are in the `diagrams/` directory.
 
 All diagrams can be rendered with any Mermaid viewer ([mermaid.live](https://mermaid.live), GitHub, VS Code extension).
 
@@ -18,13 +18,13 @@ These diagrams explain the "why" — the problem space, the before/after compari
 
 **What it shows:** How ERC-3643 identity verification works today using ONCHAINID. Illustrates the flow from investor through KYC provider to ONCHAINID contract, Identity Registry, and finally token transfer. Highlights the pain points: vendor lock-in, per-user contract deployment, no cross-chain portability.
 
-**When to reference:** When explaining why the bridge exists, or when comparing ONCHAINID to EAS.
+**When to reference:** When explaining why Shibui exists, or when comparing ONCHAINID to EAS.
 
 ### Before/After Comparison
 
-**File:** `diagrams/bridge-before-after.mmd`
+**File:** `diagrams/shibui-before-after.mmd`
 
-**What it shows:** Side-by-side comparison of the identity architecture before (closed ONCHAINID system) and after (open EAS attestation layer). Shows how the bridge opens up the identity layer without changing ERC-3643 fundamentals.
+**What it shows:** Side-by-side comparison of the identity architecture before (closed ONCHAINID system) and after (open EAS attestation layer). Shows how Shibui opens up the identity layer without changing ERC-3643 fundamentals.
 
 **When to reference:** When explaining the value proposition, or in executive summaries.
 
@@ -65,7 +65,7 @@ These diagrams show the "how" — contract relationships, data flows, and verifi
 Shows all contracts and their relationships:
 - Token → Identity Registry → EASClaimVerifier → EAS.sol
 - Supporting modules: EASTrustedIssuersAdapter, EASIdentityProxy
-- Parallel ONCHAINID path for dual-mode context
+- Default ONCHAINID path remains available when no external verifier is configured
 
 ## Diagram 2: Transfer Verification Flow (EAS Path)
 
@@ -81,14 +81,11 @@ Sequence diagram showing:
 7. Returns result
 8. Transfer approved or rejected
 
-## Diagram 3: Dual Mode Verification
+## Diagram 3: Pluggable Backend Verification
 
-**File:** `diagrams/dual-mode-verification.mmd`
+**File:** `diagrams/pluggable-backend-verification.mmd`
 
-Shows the Identity Registry checking both:
-- ONCHAINID path (traditional)
-- EAS path (bridge)
-- Configurable priority/fallback behavior
+Shows the Identity Registry delegating to Shibui when configured while preserving the default ONCHAINID path when no Shibui verifier is set.
 
 ## Diagram 4: Attestation Lifecycle
 
@@ -123,11 +120,11 @@ Shows:
 | EASClaimVerifier | ClaimTopicsRegistry | getClaimTopics() | Get required topics |
 | EASClaimVerifier | EASTrustedIssuersAdapter | getTrustedAttestersForTopic() | Get trusted attesters |
 | EASClaimVerifier | IEAS | getAttestation() | Fetch attestation data |
-| KYCProvider | IEAS | attest() | Create attestation |
-| Anyone | EASClaimVerifier | registerAttestation() | Register attestation for lookup |
-| KYCProvider | IEAS | revoke() | Revoke attestation |
-| Owner | EASTrustedIssuersAdapter | addTrustedAttester() | Add KYC provider |
-| Agent | EASIdentityProxy | registerWallet() | Link wallet to identity |
+| KYC provider | IEAS | attest() | Create attestation |
+| Attester or AGENT_ROLE holder | EASClaimVerifier | registerAttestation() | Register attestation for lookup |
+| KYC provider | IEAS | revoke() | Revoke attestation |
+| OPERATOR_ROLE holder | EASTrustedIssuersAdapter | addTrustedAttester() | Add trusted attester |
+| AGENT_ROLE holder | EASIdentityProxy | registerWallet() | Link wallet to identity |
 
 ## Event Emissions
 

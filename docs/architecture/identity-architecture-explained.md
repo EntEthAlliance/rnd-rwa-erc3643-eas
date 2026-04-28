@@ -1,6 +1,6 @@
 # Identity Architecture Explained
 
-This document explains the full identity architecture story for the EAS-to-ERC-3643 bridge: how ERC-3643 identity works today, what EAS brings, and how the bridge connects them.
+This document explains the identity architecture behind Shibui: how ERC-3643 identity works today, what EAS brings, and how Shibui connects them.
 
 **Audience:** Technical readers familiar with Ethereum but who may not know ERC-3643 or EAS in detail.
 
@@ -110,15 +110,15 @@ The ecosystem has converged on EAS because it's:
 
 ---
 
-## Section 3: How the Bridge Works
+## Section 3: How Shibui Works
 
-The EAS-to-ERC-3643 bridge lets security tokens accept EAS attestations as proof of investor eligibility — without changing the ERC-3643 standard or requiring token contract modifications.
+Shibui lets security tokens accept EAS attestations as proof of investor eligibility — without changing the ERC-3643 standard.
 
 ### Architecture Overview
 
 ![Architecture Overview](../../diagrams/architecture-overview.mmd)
 
-The bridge consists of four contracts that sit between the ERC-3643 Identity Registry and EAS:
+Shibui consists of four contracts that sit between the ERC-3643 Identity Registry and EAS:
 
 | Contract | Role |
 |----------|------|
@@ -129,14 +129,14 @@ The bridge consists of four contracts that sit between the ERC-3643 Identity Reg
 
 ### Before and After
 
-![Before and After](../../diagrams/bridge-before-after.mmd)
+![Before and After](../../diagrams/shibui-before-after.mmd)
 
 **Before (closed system):**
 - Token issuer must use ONCHAINID-compatible KYC providers
 - Each investor deploys an ONCHAINID identity contract
 - Claims are locked in a proprietary format
 
-**After (open attestation layer):**
+**After (shared attestation layer):**
 - Token issuer can accept attestations from any EAS-compatible KYC provider
 - Investors reuse existing EAS attestations — no new contracts
 - Standard attestation format works across the ecosystem
@@ -147,7 +147,7 @@ The bridge consists of four contracts that sit between the ERC-3643 Identity Reg
 
 When `isVerified(wallet)` is called on the EASClaimVerifier:
 
-1. **Resolve identity** — Query `EASIdentityProxy` to map wallet → identity address. If no mapping exists, use the wallet address directly.
+1. **Resolve identity** — Query `EASIdentityProxy` to map wallet → identity address used for attestation lookup.
 
 2. **Get required topics** — Query the ERC-3643 Claim Topics Registry to get the list of required claim topics (e.g., KYC, accreditation).
 
@@ -184,42 +184,38 @@ Wallet B ──┼──► Identity 0x123 ◄── EAS Attestations
 Wallet C ──┘
 ```
 
-This mirrors ONCHAINID's multi-wallet capability but without per-user contract deployment.
+This preserves ONCHAINID-style multi-wallet behavior without per-user contract deployment.
 
 ---
 
 ## Section 4: Integration Paths
 
-The bridge supports two integration paths depending on whether you can modify the Identity Registry.
+Shibui supports two integration paths depending on whether you can modify the Identity Registry.
 
 ### Path A: Pluggable Verifier (Recommended)
 
-![Dual Mode Verification](../../diagrams/dual-mode-verification.mmd)
+![Pluggable Backend Verification](../../diagrams/pluggable-backend-verification.mmd)
 
 **When to use:** New ERC-3643 deployments or when you can modify the Identity Registry.
 
-The Identity Registry is modified to call `EASClaimVerifier.isVerified()` as an alternative verification path:
+The Identity Registry is modified to call `EASClaimVerifier.isVerified()` as a verifier path:
 
 ```solidity
 function isVerified(address userAddress) external view returns (bool) {
-    // Try ONCHAINID first (optional)
-    if (_verifyOnchainId(userAddress)) return true;
-
-    // Try EAS path
     if (address(easClaimVerifier) != address(0)) {
         return easClaimVerifier.isVerified(userAddress);
     }
 
-    return false;
+    return _verifyOnchainId(userAddress);
 }
 ```
 
 **Advantages:**
 - Clean separation of concerns
-- Can support both ONCHAINID and EAS simultaneously
+- Keeps the default ONCHAINID path available when no Shibui verifier is configured
 - Native integration with full control
 
-### Path B: Identity Wrapper (Zero-Modification)
+### Path B: Identity Wrapper (Compatibility Path)
 
 **When to use:** Existing ERC-3643 tokens already in production where you cannot modify the Identity Registry.
 

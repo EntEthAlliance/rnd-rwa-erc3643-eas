@@ -51,7 +51,7 @@ const DEFAULT_FORM: Form = {
   countryCode: COUNTRY_USA,
   expirationDays: 365,
   evidenceSource: "dossier-2026-Q2-001",
-  verificationMethod: VERIFICATION_METHOD.THIRD_PARTY_REVIEWED,
+  verificationMethod: VERIFICATION_METHOD.THIRD_PARTY,
   claimTopic: 1,
 };
 
@@ -292,8 +292,8 @@ function AttesterForm() {
           options={[
             [VERIFICATION_METHOD.SELF_ATTESTED, "SELF_ATTESTED (1)"],
             [
-              VERIFICATION_METHOD.THIRD_PARTY_REVIEWED,
-              "THIRD_PARTY_REVIEWED (2)",
+              VERIFICATION_METHOD.THIRD_PARTY,
+              "THIRD_PARTY (2)",
             ],
             [
               VERIFICATION_METHOD.PROFESSIONAL_LETTER,
