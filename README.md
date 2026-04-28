@@ -53,6 +53,78 @@ Revoking a Shibui attestation blocks *future* transfers to/from the wallet. It d
 
 ---
 
+## Schemas, claim topics, and policies
+
+The canonical source of truth for Shibui's live schema strings is [`script/RegisterSchemas.s.sol`](script/RegisterSchemas.s.sol). [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) expands those strings with field semantics, enum values, encoding examples, and workflow notes.
+
+Shibui registers **two** EAS schemas today:
+
+| # | Name | Canonical schema string source | Used by |
+|---:|---|---|---|
+| 1 | Investor Eligibility | `RegisterSchemas.s.sol` | All eight `ITopicPolicy` modules |
+| 2 | Issuer Authorization | `RegisterSchemas.s.sol` | `EASTrustedIssuersAdapter` + `TrustedIssuerResolver` |
+
+### Schema 1 — Investor Eligibility
+
+This is the single canonical payload every production claim topic decodes.
+
+- **Field count:** 10 ABI fields, not 8
+- **Schema string:**
+
+```text
+address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sourceOfFundsStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp,bytes32 evidenceHash,uint8 verificationMethod
+```
+
+| # | Field | Type | Notes |
+|---:|---|---|---|
+| 1 | `identity` | `address` | ERC-3643 identity address |
+| 2 | `kycStatus` | `uint8` | Used by `KYCStatusPolicy` |
+| 3 | `amlStatus` | `uint8` | Used by `AMLPolicy` |
+| 4 | `sanctionsStatus` | `uint8` | Used by `SanctionsPolicy` |
+| 5 | `sourceOfFundsStatus` | `uint8` | Used by `SourceOfFundsPolicy` |
+| 6 | `accreditationType` | `uint8` | Used by accreditation / professional / institutional policies |
+| 7 | `countryCode` | `uint16` | ISO 3166-1 numeric |
+| 8 | `expirationTimestamp` | `uint64` | Payload-level validity deadline |
+| 9 | `evidenceHash` | `bytes32` | Commitment to off-chain evidence |
+| 10 | `verificationMethod` | `uint8` | Provenance / review method |
+
+Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same Investor Eligibility schema.
+
+| Topic ID | Name | Policy | Predicate (matches `validate()` in code) |
+|---:|---|---|---|
+| 1 | KYC | `KYCStatusPolicy` | `kycStatus == 1` (VERIFIED) |
+| 2 | AML | `AMLPolicy` | `amlStatus == 0` (CLEAR) |
+| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in admin set; mode flag selects allow-list vs block-list |
+| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allow-set |
+| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | `accreditationType >= 1` (RETAIL_QUALIFIED or higher; MiFID II) |
+| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == 4` (INSTITUTIONAL) |
+| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == 0` (CLEAR) |
+| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == 1` (VERIFIED) |
+
+### Schema 2 — Issuer Authorization
+
+This is the attestation schema that backs trusted-attester changes.
+
+- **Field count:** 3 ABI fields, plus optional EAS-level expiration
+- **Schema string:**
+
+```text
+address issuerAddress,uint256[] authorizedTopics,string issuerName
+```
+
+| # | Field | Type | Notes |
+|---:|---|---|---|
+| 1 | `issuerAddress` | `address` | Must match the attester being authorized |
+| 2 | `authorizedTopics` | `uint256[]` | Must cover the requested topic set |
+| 3 | `issuerName` | `string` | Human-readable display name |
+
+Registration parameters for Schema 2:
+- resolver = `TrustedIssuerResolver`
+- revocable = `true`
+- EAS expiration = optional
+
+If README, `docs/schemas/schema-definitions.md`, and generated site copy ever disagree, `RegisterSchemas.s.sol` wins.
+
 ## Architecture
 
 ### Runtime wiring
@@ -120,25 +192,6 @@ Every trusted-attester change references a live EAS attestation under Schema 2 (
 
 ---
 
-## Claim topics and policies
-
-Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same **Investor Eligibility** schema.
-
-| Topic ID | Name | Policy | Predicate (matches `validate()` in code) |
-|---:|---|---|---|
-| 1 | KYC | `KYCStatusPolicy` | `kycStatus == 1` (VERIFIED) |
-| 2 | AML | `AMLPolicy` | `amlStatus == 0` (CLEAR) |
-| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in admin set; mode flag selects allow-list vs block-list |
-| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allow-set |
-| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | `accreditationType >= 1` (RETAIL_QUALIFIED or higher; MiFID II) |
-| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == 4` (INSTITUTIONAL) |
-| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == 0` (CLEAR) |
-| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == 1` (VERIFIED) |
-
-The Investor Eligibility schema is a 10-field ABI payload (`address identity`, `uint8 kycStatus`, `uint8 amlStatus`, `uint8 sanctionsStatus`, `uint8 sourceOfFundsStatus`, `uint8 accreditationType`, `uint16 countryCode`, `uint64 expirationTimestamp`, `bytes32 evidenceHash`, `uint8 verificationMethod`). `evidenceHash` commits to the off-chain KYC dossier and `verificationMethod` captures the provenance (self-attested, third-party reviewed, professional letter, broker-dealer file) — together they support post-trade audit trails without putting PII on-chain.
-
-**Canonical reference:** [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) is the source of truth — full field semantics, enum values, registration parameters, encoding examples, and the matching Issuer Authorization (Schema 2) spec. If anything in this README diverges from that doc, the doc wins.
-
 ---
 
 ## Administration
@@ -159,37 +212,37 @@ The production deploy script grants all three to the multisig atomically and ren
 
 ```
 contracts/
-├─ EASClaimVerifier.sol                — main entry point, payload-aware
+├─ EASClaimVerifier.sol                — main verifier entry point
 ├─ EASTrustedIssuersAdapter.sol        — Schema-2-gated trusted attester registry
 ├─ EASIdentityProxy.sol                — wallet ↔ identity binding
-├─ interfaces/                          — public interfaces
-├─ compat/                              — Level-1 shims (Path B)
-│  └─ EASClaimVerifierIdentityWrapper.sol — read-compat shim for legacy registries
-├─ policies/
-│  ├─ ITopicPolicy.sol                  — predicate interface
-│  ├─ TopicPolicyBase.sol               — shared Investor Eligibility decoder
-│  └─ (8 concrete policies, one per topic)
-├─ resolvers/
-│  └─ TrustedIssuerResolver.sol         — gates Schema-2 writes
-├─ upgradeable/                         — UUPS variants of the three core contracts
-└─ mocks/                                — MockEAS / MockAttester / MockClaimTopicsRegistry
+├─ compat/                             — Path B compatibility shim
+├─ demo/                               — demo ERC-3643 token used by the live app
+├─ interfaces/                         — public interfaces
+├─ mocks/                              — MockEAS / MockAttester / MockClaimTopicsRegistry
+├─ policies/                           — TopicPolicyBase + 8 concrete topic policies
+├─ resolvers/                          — TrustedIssuerResolver
+└─ upgradeable/                        — UUPS variants of the three core contracts
 
 script/
-├─ DeployMainnet.s.sol                  — gated production deploy
-├─ DeployTestnet.s.sol                  — Sepolia / Base Sepolia
-├─ DeployUpgradeable.s.sol              — ERC1967Proxy-fronted UUPS
-├─ DeployBridge.s.sol                   — non-upgradeable reference deploy
-├─ DeployIdentityWrapper.s.sol          — per-identity Path B wrapper
-├─ RegisterSchemas.s.sol                — register Investor Eligibility + Issuer Authorization on EAS
-├─ ConfigureBridge.s.sol                — idempotent topic/schema/policy wiring
-├─ AddTrustedAttester.s.sol             — CLI helper, requires AUTH_UID
-└─ SetupPilot.s.sol                     — local anvil pilot with 5 seeded investors
+├─ AddTrustedAttester.s.sol            — CLI helper, requires AUTH_UID
+├─ ConfigureBridge.s.sol               — topic/schema/policy wiring
+├─ DeployBridge.s.sol                  — non-upgradeable reference deploy
+├─ DeployIdentityWrapper.s.sol         — per-identity Path B wrapper
+├─ DeployMainnet.s.sol                 — gated production deploy
+├─ DeployTestnet.s.sol                 — Sepolia / Base Sepolia deploy
+├─ DeployUpgradeable.s.sol             — ERC1967Proxy-fronted UUPS deploy
+├─ RegisterSchemas.s.sol               — register Investor Eligibility + Issuer Authorization
+└─ SetupPilot.s.sol                    — local anvil pilot setup
 
 test/
-├─ helpers/BridgeHarness.sol            — deploys + wires full stack
-├─ unit/                                — per-contract + per-policy tests
-├─ integration/                         — revocation, dual-mode, policy-driven verification, gas
-└─ scenarios/                           — Reg D, Reg S, MiFID II, OFAC, multi-wallet lifecycle
+├─ helpers/BridgeHarness.sol           — shared harness for full-stack tests
+├─ integration/                        — revocation, gas, ERC-3643 token, policy-driven flows
+├─ scenarios/                          — investor lifecycle + compliance scenarios
+└─ unit/                               — verifier / adapter / proxy / wrapper / upgrade tests
+
+demo/
+├─ shibui-app/                         — interactive Sepolia demo app
+└─ shibui-static/                      — static positioning / GitHub Pages site
 ```
 
 ---
@@ -289,7 +342,7 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## Security
 
-- Reproducible local tests: `forge test` (107 tests passing).
+- Reproducible local tests: `forge test` against the full Foundry suite.
 - Mainnet deploy is gated — the script refuses to broadcast unless `AUDIT_ACKNOWLEDGED=true` is set. See [`AUDIT.md`](AUDIT.md) for the launch gate, threat model, and minimum-required pre-flight checklist.
 - Roles, not ownership. All admin actions are role-gated; production uses a compliance multisig as `DEFAULT_ADMIN_ROLE`.
 
@@ -312,7 +365,7 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## Live demo
 
-The interactive attestation-lifecycle demo now lives in-repo at [`demo/shibui-app`](demo/shibui-app) — a Next.js 14 + wagmi + RainbowKit app that runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
+The interactive attestation-lifecycle demo now lives in-repo at [`demo/shibui-app`](demo/shibui-app) — a Next.js + wagmi + RainbowKit app that runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
 
 - `/admin` — register schemas and authorize KYC providers.
 - `/attester` — issue and revoke Investor Eligibility attestations.
