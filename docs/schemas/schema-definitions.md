@@ -56,16 +56,16 @@ Canonical enum values live in [`contracts/policies/TopicPolicyBase.sol`](../../c
 
 ### Claim topics that decode this schema
 
-| Topic ID | Name | Policy | Predicate |
+| Topic ID | Name | Policy | Predicate (matches `validate()` in code) |
 |---:|---|---|---|
-| 1 | KYC | `KYCStatusPolicy` | `kycStatus == VERIFIED` |
-| 2 | AML | `AMLPolicy` | `amlStatus == CLEAR` |
-| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in admin list |
-| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin allow-set |
-| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | `accreditationType != 0` |
-| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == 4` |
-| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
-| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
+| 1 | KYC | `KYCStatusPolicy` | `kycStatus == 1` (VERIFIED) |
+| 2 | AML | `AMLPolicy` | `amlStatus == 0` (CLEAR) |
+| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in admin set; mode flag selects allow-list vs block-list |
+| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allow-set |
+| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | `accreditationType >= 1` (RETAIL_QUALIFIED or higher; MiFID II) |
+| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == 4` (INSTITUTIONAL) |
+| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == 0` (CLEAR) |
+| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == 1` (VERIFIED) |
 
 All eight bind to the same Investor Eligibility schema UID via `EASClaimVerifier.setTopicSchemaMapping(topicId, investorEligibilityUID)`.
 
