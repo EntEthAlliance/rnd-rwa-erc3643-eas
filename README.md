@@ -135,15 +135,9 @@ Each ERC-3643 claim topic is bound to exactly one policy module. All eight polic
 | 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
 | 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
 
-Schema fields:
+The Investor Eligibility schema is a 10-field ABI payload (`address identity`, `uint8 kycStatus`, `uint8 amlStatus`, `uint8 sanctionsStatus`, `uint8 sourceOfFundsStatus`, `uint8 accreditationType`, `uint16 countryCode`, `uint64 expirationTimestamp`, `bytes32 evidenceHash`, `uint8 verificationMethod`). `evidenceHash` commits to the off-chain KYC dossier and `verificationMethod` captures the provenance (self-attested, third-party reviewed, professional letter, broker-dealer file) — together they support post-trade audit trails without putting PII on-chain.
 
-```
-address identity, uint8 kycStatus, uint8 amlStatus, uint8 sanctionsStatus,
-uint8 sourceOfFundsStatus, uint8 accreditationType, uint16 countryCode,
-uint64 expirationTimestamp, bytes32 evidenceHash, uint8 verificationMethod
-```
-
-`evidenceHash` commits to the KYC file the provider holds off-chain; `verificationMethod` captures whether the check was self-certified, third-party-reviewed, broker-dealer-file-backed, etc. Both support post-trade audit trails without putting PII on-chain.
+**Canonical reference:** [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) is the source of truth — full field semantics, enum values, registration parameters, encoding examples, and the matching Issuer Authorization (Schema 2) spec. If anything in this README diverges from that doc, the doc wins.
 
 ---
 
