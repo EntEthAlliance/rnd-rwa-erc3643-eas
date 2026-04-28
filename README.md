@@ -215,12 +215,12 @@ The production deploy script grants all three to the multisig atomically and ren
 ```
 contracts/
 ├─ EASClaimVerifier.sol                — main verifier entry point
-├─ EASTrustedIssuersAdapter.sol        — Schema-2-gated trusted attester registry
+├─ EASTrustedIssuersAdapter.sol        — Schema-2-gated trusted-attester registry
 ├─ EASIdentityProxy.sol                — wallet ↔ identity binding
 ├─ compat/                             — Path B compatibility shim
 ├─ demo/                               — demo ERC-3643 token used by the live app
 ├─ interfaces/                         — public interfaces
-├─ mocks/                              — MockEAS / MockAttester / MockClaimTopicsRegistry
+├─ mocks/                              — Foundry test mocks
 ├─ policies/                           — TopicPolicyBase + 8 concrete topic policies
 ├─ resolvers/                          — TrustedIssuerResolver
 └─ upgradeable/                        — UUPS variants of the three core contracts
@@ -238,13 +238,28 @@ script/
 
 test/
 ├─ helpers/BridgeHarness.sol           — shared harness for full-stack tests
-├─ integration/                        — revocation, gas, ERC-3643 token, policy-driven flows
+├─ integration/                        — revocation, gas, token integration, policy-driven flows
 ├─ scenarios/                          — investor lifecycle + compliance scenarios
 └─ unit/                               — verifier / adapter / proxy / wrapper / upgrade tests
 
 demo/
 ├─ shibui-app/                         — interactive Sepolia demo app
 └─ shibui-static/                      — static positioning / GitHub Pages site
+
+diagrams/
+├─ architecture-overview.mmd           — Shibui system architecture
+├─ pluggable-backend-verification.mmd  — Identity Registry delegation model
+├─ shibui-before-after.mmd             — closed vs shared identity architecture
+├─ transfer-verification-flow.mmd      — end-to-end transfer verification flow
+└─ ...                                 — supporting strategy and lifecycle diagrams
+
+docs/
+├─ architecture/                       — architecture and integration references
+├─ research/                           — comparison and design analysis
+└─ schemas/                            — canonical schema documentation
+
+deployments/
+└─ sepolia.json                        — demo/testnet deployment addresses
 ```
 
 ---
@@ -281,7 +296,7 @@ forge script script/SetupPilot.s.sol:SetupPilot \
   --broadcast
 ```
 
-Deploys MockEAS, the full Shibui stack (all 8 policies + resolver + Issuer Authorization authorizer), seeds five investors with Investor Eligibility attestations, and prints `isVerified()` for each.
+Deploys MockEAS, the full Shibui stack, seeds five investors with Investor Eligibility attestations, and prints `isVerified()` for each.
 
 ### Testnet pipeline
 
@@ -344,7 +359,7 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## Security
 
-- Reproducible local tests: `forge test` against the full Foundry suite.
+- Reproducible local tests: `forge test` runs the full Foundry suite across unit, integration, and scenario coverage.
 - Mainnet deploy is gated — the script refuses to broadcast unless `AUDIT_ACKNOWLEDGED=true` is set. See [`AUDIT.md`](AUDIT.md) for the launch gate, threat model, and minimum-required pre-flight checklist.
 - Roles, not ownership. All admin actions are role-gated; production uses a compliance multisig as `DEFAULT_ADMIN_ROLE`.
 

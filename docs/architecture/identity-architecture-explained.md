@@ -129,7 +129,7 @@ Shibui consists of four contracts that sit between the ERC-3643 Identity Registr
 
 ### Before and After
 
-![Before and After](../../diagrams/bridge-before-after.mmd)
+![Before and After](../../diagrams/shibui-before-after.mmd)
 
 **Before (closed system):**
 - Token issuer must use ONCHAINID-compatible KYC providers
@@ -184,7 +184,7 @@ Wallet B ──┼──► Identity 0x123 ◄── EAS Attestations
 Wallet C ──┘
 ```
 
-This mirrors ONCHAINID's multi-wallet capability but without per-user contract deployment.
+This preserves ONCHAINID-style multi-wallet behavior without per-user contract deployment.
 
 ---
 
@@ -194,7 +194,7 @@ Shibui supports two integration paths depending on whether you can modify the Id
 
 ### Path A: Pluggable Verifier (Recommended)
 
-![Dual Mode Verification](../../diagrams/dual-mode-verification.mmd)
+![Pluggable Backend Verification](../../diagrams/pluggable-backend-verification.mmd)
 
 **When to use:** New ERC-3643 deployments or when you can modify the Identity Registry.
 
@@ -215,7 +215,7 @@ function isVerified(address userAddress) external view returns (bool) {
 - Keeps the default ONCHAINID path available when no Shibui verifier is configured
 - Native integration with full control
 
-### Path B: Identity Wrapper (Zero-Modification)
+### Path B: Identity Wrapper (Compatibility Path)
 
 **When to use:** Existing ERC-3643 tokens already in production where you cannot modify the Identity Registry.
 

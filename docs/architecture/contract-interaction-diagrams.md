@@ -22,7 +22,7 @@ These diagrams explain the "why" — the problem space, the before/after compari
 
 ### Before/After Comparison
 
-**File:** `diagrams/bridge-before-after.mmd`
+**File:** `diagrams/shibui-before-after.mmd`
 
 **What it shows:** Side-by-side comparison of the identity architecture before (closed ONCHAINID system) and after (open EAS attestation layer). Shows how Shibui opens up the identity layer without changing ERC-3643 fundamentals.
 
@@ -65,7 +65,7 @@ These diagrams show the "how" — contract relationships, data flows, and verifi
 Shows all contracts and their relationships:
 - Token → Identity Registry → EASClaimVerifier → EAS.sol
 - Supporting modules: EASTrustedIssuersAdapter, EASIdentityProxy
-- Parallel ONCHAINID path for dual-mode context
+- Default ONCHAINID path remains available when no external verifier is configured
 
 ## Diagram 2: Transfer Verification Flow (EAS Path)
 
@@ -81,9 +81,9 @@ Sequence diagram showing:
 7. Returns result
 8. Transfer approved or rejected
 
-## Diagram 3: Dual Mode Verification
+## Diagram 3: Pluggable Backend Verification
 
-**File:** `diagrams/dual-mode-verification.mmd`
+**File:** `diagrams/pluggable-backend-verification.mmd`
 
 Shows the Identity Registry delegating to Shibui when configured while preserving the default ONCHAINID path when no Shibui verifier is set.
 
