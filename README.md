@@ -88,18 +88,20 @@ address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sou
 | 9 | `evidenceHash` | `bytes32` | Commitment to off-chain evidence |
 | 10 | `verificationMethod` | `uint8` | Provenance / review method |
 
-Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same Investor Eligibility schema.
+Topic IDs follow the ONCHAINID claim-topic convention commonly used in ERC-3643 deployments; ERC-3643 itself does not prescribe specific numeric topic IDs. Shibui implements a subset of those topic IDs and maps each one to a policy module that validates the relevant fields of the shared Investor Eligibility schema.
 
-| Topic ID | Name | Policy | Predicate (matches `validate()` in code) |
+### ONCHAINID-style claim topic → Shibui policy mapping
+
+| Topic ID | ONCHAINID-style meaning | Shibui policy | Predicate |
 |---:|---|---|---|
-| 1 | KYC | `KYCStatusPolicy` | `kycStatus == 1` (VERIFIED) |
-| 2 | AML | `AMLPolicy` | `amlStatus == 0` (CLEAR) |
-| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in admin set; mode flag selects allow-list vs block-list |
+| 1 | KYC | `KYCStatusPolicy` | `kycStatus == VERIFIED` |
+| 2 | AML | `AMLPolicy` | `amlStatus == CLEAR` |
+| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in allow-list or block-list mode |
 | 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allow-set |
-| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | `accreditationType >= 1` (RETAIL_QUALIFIED or higher; MiFID II) |
-| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == 4` (INSTITUTIONAL) |
-| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == 0` (CLEAR) |
-| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == 1` (VERIFIED) |
+| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | any non-zero accreditation type |
+| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == INSTITUTIONAL` |
+| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
+| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
 
 ### Schema 2 — Issuer Authorization
 
