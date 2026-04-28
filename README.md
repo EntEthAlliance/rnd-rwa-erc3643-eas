@@ -211,37 +211,37 @@ The production deploy script grants all three to the multisig atomically and ren
 
 ```
 contracts/
-├─ EASClaimVerifier.sol                — main entry point, payload-aware
+├─ EASClaimVerifier.sol                — main verifier entry point
 ├─ EASTrustedIssuersAdapter.sol        — Schema-2-gated trusted attester registry
 ├─ EASIdentityProxy.sol                — wallet ↔ identity binding
-├─ interfaces/                          — public interfaces
-├─ compat/                              — Level-1 shims (Path B)
-│  └─ EASClaimVerifierIdentityWrapper.sol — read-compat shim for legacy registries
-├─ policies/
-│  ├─ ITopicPolicy.sol                  — predicate interface
-│  ├─ TopicPolicyBase.sol               — shared Investor Eligibility decoder
-│  └─ (8 concrete policies, one per topic)
-├─ resolvers/
-│  └─ TrustedIssuerResolver.sol         — gates Schema-2 writes
-├─ upgradeable/                         — UUPS variants of the three core contracts
-└─ mocks/                                — MockEAS / MockAttester / MockClaimTopicsRegistry
+├─ compat/                             — Path B compatibility shim
+├─ demo/                               — demo ERC-3643 token used by the live app
+├─ interfaces/                         — public interfaces
+├─ mocks/                              — MockEAS / MockAttester / MockClaimTopicsRegistry
+├─ policies/                           — TopicPolicyBase + 8 concrete topic policies
+├─ resolvers/                          — TrustedIssuerResolver
+└─ upgradeable/                        — UUPS variants of the three core contracts
 
 script/
-├─ DeployMainnet.s.sol                  — gated production deploy
-├─ DeployTestnet.s.sol                  — Sepolia / Base Sepolia
-├─ DeployUpgradeable.s.sol              — ERC1967Proxy-fronted UUPS
-├─ DeployBridge.s.sol                   — non-upgradeable reference deploy
-├─ DeployIdentityWrapper.s.sol          — per-identity Path B wrapper
-├─ RegisterSchemas.s.sol                — register Investor Eligibility + Issuer Authorization on EAS
-├─ ConfigureBridge.s.sol                — idempotent topic/schema/policy wiring
-├─ AddTrustedAttester.s.sol             — CLI helper, requires AUTH_UID
-└─ SetupPilot.s.sol                     — local anvil pilot with 5 seeded investors
+├─ AddTrustedAttester.s.sol            — CLI helper, requires AUTH_UID
+├─ ConfigureBridge.s.sol               — topic/schema/policy wiring
+├─ DeployBridge.s.sol                  — non-upgradeable reference deploy
+├─ DeployIdentityWrapper.s.sol         — per-identity Path B wrapper
+├─ DeployMainnet.s.sol                 — gated production deploy
+├─ DeployTestnet.s.sol                 — Sepolia / Base Sepolia deploy
+├─ DeployUpgradeable.s.sol             — ERC1967Proxy-fronted UUPS deploy
+├─ RegisterSchemas.s.sol               — register Investor Eligibility + Issuer Authorization
+└─ SetupPilot.s.sol                    — local anvil pilot setup
 
 test/
-├─ helpers/BridgeHarness.sol            — deploys + wires full stack
-├─ unit/                                — per-contract + per-policy tests
-├─ integration/                         — revocation, dual-mode, policy-driven verification, gas
-└─ scenarios/                           — Reg D, Reg S, MiFID II, OFAC, multi-wallet lifecycle
+├─ helpers/BridgeHarness.sol           — shared harness for full-stack tests
+├─ integration/                        — revocation, gas, ERC-3643 token, policy-driven flows
+├─ scenarios/                          — investor lifecycle + compliance scenarios
+└─ unit/                               — verifier / adapter / proxy / wrapper / upgrade tests
+
+demo/
+├─ shibui-app/                         — interactive Sepolia demo app
+└─ shibui-static/                      — static positioning / GitHub Pages site
 ```
 
 ---
@@ -341,7 +341,7 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## Security
 
-- Reproducible local tests: `forge test` (107 tests passing).
+- Reproducible local tests: `forge test` against the full Foundry suite.
 - Mainnet deploy is gated — the script refuses to broadcast unless `AUDIT_ACKNOWLEDGED=true` is set. See [`AUDIT.md`](AUDIT.md) for the launch gate, threat model, and minimum-required pre-flight checklist.
 - Roles, not ownership. All admin actions are role-gated; production uses a compliance multisig as `DEFAULT_ADMIN_ROLE`.
 
@@ -364,7 +364,7 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## Live demo
 
-The interactive attestation-lifecycle demo now lives in-repo at [`demo/shibui-app`](demo/shibui-app) — a Next.js 14 + wagmi + RainbowKit app that runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
+The interactive attestation-lifecycle demo now lives in-repo at [`demo/shibui-app`](demo/shibui-app) — a Next.js + wagmi + RainbowKit app that runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
 
 - `/admin` — register schemas and authorize KYC providers.
 - `/attester` — issue and revoke Investor Eligibility attestations.
