@@ -90,16 +90,16 @@ address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sou
 
 Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same Investor Eligibility schema.
 
-| Topic ID | Name | Policy | What it enforces |
+| Topic ID | Name | Policy | Predicate (matches `validate()` in code) |
 |---:|---|---|---|
-| 1 | KYC | `KYCStatusPolicy` | `kycStatus == VERIFIED` |
-| 2 | AML | `AMLPolicy` | `amlStatus == CLEAR` |
-| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in allow-list (or not in block-list, configurable) |
-| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allowed set |
-| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | any non-zero accreditation type (MiFID II) |
-| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == INSTITUTIONAL` |
-| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
-| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
+| 1 | KYC | `KYCStatusPolicy` | `kycStatus == 1` (VERIFIED) |
+| 2 | AML | `AMLPolicy` | `amlStatus == 0` (CLEAR) |
+| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in admin set; mode flag selects allow-list vs block-list |
+| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allow-set |
+| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | `accreditationType >= 1` (RETAIL_QUALIFIED or higher; MiFID II) |
+| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == 4` (INSTITUTIONAL) |
+| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == 0` (CLEAR) |
+| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == 1` (VERIFIED) |
 
 ### Schema 2 — Issuer Authorization
 
@@ -192,6 +192,7 @@ Every trusted-attester change references a live EAS attestation under Schema 2 (
 
 ---
 
+---
 
 ## Administration
 
