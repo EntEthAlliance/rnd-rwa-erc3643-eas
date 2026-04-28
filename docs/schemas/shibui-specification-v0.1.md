@@ -402,22 +402,107 @@ Human-readable display name for the authorized attester.
 **Interpretation note**  
 This field is informative only. It is intended for legibility and audit traceability.
 
-**Production guidance — LEI / vLEI anchoring**  
-In production deployments, attesters **SHOULD** provide their Legal Entity Identifier (LEI) in the `issuerName` string so that off-chain tooling can resolve the attester to a real legal entity in the GLEIF registry. This extends the audit trail beyond an Ethereum address to a globally recognized legal-entity identifier.
+### 6.2.4 Attester Identity Anchors
 
-Recommended formatting examples:
+This subsection is **non-normative**. It does not change the live schema string.
 
-- `Acme KYC Services | LEI: 5493001KJTIIGC8Y1R12`
-- `Acme KYC Services | vLEI: 5493001KJTIIGC8Y1R12`
+Schema 2's `issuerName` field is free text today. In production, however, attesters are typically regulated legal entities whose identity should be verifiable against an authoritative registry or identity system. Different jurisdictions and ecosystems rely on different identity anchors. The purpose of this subsection is to give implementers a consistent way to declare **which identity system anchors a given attester**, without forcing one universal choice.
 
-Where an implementation needs cleaner separation, a future schema revision may introduce a dedicated optional LEI field. In the current live schema, the recommended approach is to carry the LEI in `issuerName` and resolve it off-chain.
+#### Anchor model
 
-Off-chain tooling consuming Schema 2 SHOULD:
+Shibui treats attester identity anchors as **pluggable**.
 
-1. parse the LEI from `issuerName` where present;  
-2. resolve it against the GLEIF registry or equivalent authoritative resolver;  
-3. confirm the legal entity exists and is active;  
-4. record the resolved legal name alongside the attester address in compliance and audit logs.
+- **LEI / vLEI** is the recommended default for global institutional use.  
+- Other anchors may also be legitimate and legally meaningful in their own context, including:  
+  - eIDAS-qualified trust or supervisory identifiers,  
+  - national regulator license numbers,  
+  - W3C DIDs,  
+  - jurisdiction-specific public registries.
+
+The specification therefore recognizes plurality. It does not require a single mandatory anchor type.
+
+#### Tagging convention
+
+Because `issuerName` is free text, any anchor included there SHOULD be machine-parseable and unambiguous.
+
+Recommended direction:
+
+- a short prefix tag, followed by `:`, followed by the anchor value  
+- human-readable entity name may appear before or after the tagged anchor, provided the tagged component remains unambiguous
+
+Illustrative examples:
+
+- `Acme KYC Services | lei:5493001KJTIIGC8Y1R12`  
+- `Acme KYC Services | vlei:5493001KJTIIGC8Y1R12`  
+- `Acme KYC Services | eidas:EU-TSP-123456`  
+- `Acme KYC Services | did:did:web:acme.example`  
+- `Acme KYC Services | x-fca:123456`
+
+Recognized tag families in v0.1:
+
+- `lei:` — Legal Entity Identifier  
+- `vlei:` — verifiable LEI or equivalent LEI-derived verifiable credential reference  
+- `eidas:` — eIDAS-related trust or supervisory identifier  
+- `did:` — W3C Decentralized Identifier  
+- `x-{name}:` — implementation-defined extension tag for other anchor systems
+
+The exact formatting around the tag is left to implementers, but the tag itself SHOULD be deterministic and easy to parse.
+
+#### Resolution expectations
+
+Anchor resolution is always **off-chain**. The on-chain attestation only carries the tagged identity reference.
+
+Verifiers consuming Schema 2 SHOULD resolve anchors as follows:
+
+- `lei:` → resolve against GLEIF or an equivalent authoritative LEI source; confirm the entity exists and is active  
+- `vlei:` → resolve using the relevant vLEI verification flow or issuer trust chain anchored to the LEI ecosystem  
+- `eidas:` → resolve against the relevant EU trust list, supervisory registry, or equivalent authoritative source  
+- `did:` → resolve using a conformant DID resolver and validate the current DID document / method rules  
+- `x-{name}:` → resolve using the documented procedure for that custom anchor family
+
+Implementers SHOULD record the resolved legal or organizational name alongside the attester address in compliance and audit logs.
+
+#### Lifecycle guidance
+
+Anchor status is part of the trusted-attester review process.
+
+Examples of lifecycle events include:
+
+- LEI not renewed  
+- regulator license revoked or suspended  
+- eIDAS trust status changed  
+- DID deactivated or rotated beyond recognized control
+
+These events SHOULD be treated as off-chain trust and governance signals. They do **not** replace EAS revocation and they do **not** automatically change on-chain state by themselves. Instead, implementers should incorporate anchor-status review into the process that decides whether an attester remains approved under Schema 2 governance.
+
+#### What the anchor does and does not do
+
+The anchor binds an attester address to an identifiable legal or organizational entity.
+
+It does **not**:
+
+- authorize the attester — authorization remains governed by `authorizedTopics` and Schema 2 workflows  
+- validate the factual content of investor attestations — that remains the role of Schema 1 and its policy layer  
+- move resolution on-chain — verification stays off-chain in this revision
+
+The anchor is therefore an identity-binding mechanism, not an authorization mechanism and not a truth-validation mechanism.
+
+#### Extensibility
+
+The recognized anchor set is open-ended. New identity systems will emerge.
+
+To preserve interoperability, new anchor types should be introduced by:
+
+1. defining a stable machine-readable tag;  
+2. documenting the authoritative resolution method;  
+3. documenting status / lifecycle expectations;  
+4. documenting how the anchor maps to a legal or organizational identity.
+
+Adding a new anchor family should not break existing implementations. Consumers that do not recognize a tag may ignore it, flag it for manual review, or treat it according to issuer policy.
+
+#### Recommended default
+
+For globally oriented institutional deployments, LEI / vLEI remains the recommended default because it aligns well with existing regulatory and financial-market practice. But it is a recommendation, not a mandate.
 
 ### 6.3 Operational meaning
 
