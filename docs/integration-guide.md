@@ -2,9 +2,9 @@
 
 > **Scope reminder.** Shibui is an **attestation retrieval adapter**, not a full identity layer. Token-side primitives (forced transfer, freeze, recovery) live in the ERC-3643 token contract. See [`architecture/enforcement-boundary.md`](architecture/enforcement-boundary.md).
 >
-> **Cross-chain.** EAS attestations are **per-chain** today. An investor verified on chain A must be re-attested on chain B. Multi-chain attestation portability is on the V2 roadmap and is **not** a property of the current implementation.
+> **Cross-chain.** EAS attestations are **per-chain**. An investor verified on chain A must be re-attested on chain B. Multi-chain attestation portability is on the V2 roadmap and is **not** a property of the current implementation.
 >
-> **Path B caveats.** `EASClaimVerifierIdentityWrapper` is a **read-compat shim** for legacy ERC-3643 deployments whose Identity Registry cannot be modified. It does not run topic policies in `isClaimValid`, returns empty signatures from `getClaim`, and has an unfavourable gas profile. New deployments should use Path A. See the wrapper's NatSpec under `contracts/compat/` for the full list of non-features.
+> **Path B limitations.** `EASClaimVerifierIdentityWrapper` is a **read-compat shim** for legacy ERC-3643 deployments whose Identity Registry cannot be modified. It does not run topic policies in `isClaimValid`, returns empty signatures from `getClaim`, and has a higher gas profile than Path A. New deployments should use Path A. See the wrapper's NatSpec under `contracts/compat/` for the full list of limitations.
 
 
 ## What you'll achieve
@@ -53,13 +53,13 @@ Integrate `EASClaimVerifier` as the backend the ERC-3643 Identity Registry deleg
 4. Add trusted attesters — each with an EAS Schema-2 `authUID` (see Step 3 below).
 5. Call `identityRegistry.setIdentityVerifier(address(verifier))` on the Identity Registry.
 
-### Path B: Identity Wrapper (read-compat shim, legacy only)
+### Path B: Identity Wrapper (read-compat shim for existing deployments)
 
 > **"We have an ERC-3643 token already in production. We cannot modify the Identity Registry, but we want to start accepting EAS attestations."**
 
-Use `EASClaimVerifierIdentityWrapper` (under `contracts/compat/`) as a drop-in `IIdentity` replacement — one wrapper per investor identity. The wrapper presents an ONCHAINID-shaped surface whose `isClaimValid` delegates to `EASClaimVerifier` for the attestation existence check.
+Use `EASClaimVerifierIdentityWrapper` (under `contracts/compat/`) as an `IIdentity`-compatible wrapper — one wrapper per investor identity. The wrapper presents an ONCHAINID-shaped surface whose `isClaimValid` delegates to `EASClaimVerifier` for the attestation existence check.
 
-**Non-features — please read before choosing Path B:**
+**Path B limitations:**
 - No ERC-734 keys. `addKey` / `removeKey` revert. Lost-key recovery uses the ERC-3643 token's `recoveryAddress` flow, not this wrapper.
 - No claim signatures. `getClaim` returns an empty `signature` — the attestation is authenticated by EAS at read time, not by a signature stored on the wrapper.
 - No topic policies inside `isClaimValid`. The wrapper only checks attestation existence + non-revocation + non-expiry; full payload-aware enforcement (Investor Eligibility policy modules) only runs through Path A.
@@ -154,7 +154,7 @@ wallets[2] = wallet3;
 identityProxy.batchRegisterWallets(wallets, identityAddress);
 ```
 
-Self-registration (investor calling `registerWallet` for their own wallet) is not supported — the caller must hold `AGENT_ROLE`.
+Self-registration (an investor calling `registerWallet` for their own wallet) is not supported — the caller must hold `AGENT_ROLE`.
 
 ### 6. KYC provider creates the attestation (Investor Eligibility)
 
@@ -308,7 +308,7 @@ On the adapter:
 | `IssuerAuthRecipientMismatch` | Schema-2 attestation `issuerAddress != attester` |
 | `IssuerAuthTopicsNotAuthorized` | Passed topics not a subset of Schema-2 `authorizedTopics` |
 
-`isVerified()` returns `false` (doesn't revert) when any required topic's attestation is missing, revoked, expired, schema-mismatched, from an untrusted attester, or fails the topic policy.
+`isVerified()` returns `false` (rather than reverting) when any required topic's attestation is missing, revoked, expired, schema-mismatched, from an untrusted attester, or fails the topic policy.
 
 ## Events
 

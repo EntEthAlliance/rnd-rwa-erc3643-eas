@@ -45,8 +45,8 @@ Shibui is deliberately narrow. The following remain the responsibility of the ER
 | Freeze / partial freeze (sanctions) | ERC-3643 token |
 | Lost-key recovery | ERC-3643 token `recoveryAddress` flow |
 | Lock-ups, per-investor caps, ownership limits | ERC-3643 compliance modules |
-| Cross-chain attestation canonicity | Per-chain today — re-attest per chain |
-| Off-chain / privacy-preserving attestation verification | Not supported today |
+| Cross-chain attestation canonicity | Per-chain — re-attest per chain |
+| Off-chain / privacy-preserving attestation verification | Not supported |
 | Tax withholding, FATCA / CRS reporting | Off-chain |
 
 Revoking a Shibui attestation blocks *future* transfers to/from the wallet. It does not move, freeze, or recover tokens already held. See [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md).
@@ -253,14 +253,14 @@ demo/
 
 **Path A — pluggable verifier (recommended).** The token's ERC-3643 compliance module calls `EASClaimVerifier.isVerified(wallet)` directly. This gives you payload-aware verification, multi-attester resiliency, and the full admin surface.
 
-**Path B — read-compat shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations, for integrating with a pre-existing ERC-3643 Identity Registry that can't be modified. It is **not** a drop-in replacement for ONCHAINID:
+**Path B — read-compat shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations, for integrating with a pre-existing ERC-3643 Identity Registry that cannot be modified. It is **not** a drop-in replacement for ONCHAINID:
 
 - Does not implement ERC-734 key management (no `addKey`, no recovery).
 - Does not return real attester signatures from `getClaim` (returns empty bytes).
 - Does not run topic policies in `isClaimValid` (only checks existence / revocation / expiration).
 - Gas profile is not suitable for hot paths without caching.
 
-Use Path A for new deployments. Use Path B only if you genuinely cannot modify the Identity Registry, and understand the trade-offs.
+Use Path A for new deployments. Use Path B only when the Identity Registry cannot be modified and the trade-offs are acceptable.
 
 ---
 
@@ -384,7 +384,7 @@ npm run dev
 
 All on-chain addresses resolve from [`deployments/sepolia.json`](deployments/sepolia.json); populate that file after running the testnet pipeline above. See [`demo/shibui-app/README.md`](demo/shibui-app/README.md) and the full spec in [`docs/PRD_DEMO_UI.md`](docs/PRD_DEMO_UI.md).
 
-> This supersedes the previously hosted external demo at `claudyfaucant.github.io/eas-erc3643-bridge-demo/`, which sat outside the repo and was not tied to the canonical contracts.
+> This replaces the previously hosted external demo at `claudyfaucant.github.io/eas-erc3643-bridge-demo/`, which was maintained outside the repo and not tied to the canonical contracts.
 
 ## License
 

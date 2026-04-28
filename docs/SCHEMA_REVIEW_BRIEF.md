@@ -78,9 +78,9 @@ address issuerAddress,uint256[] authorizedTopics,string issuerName
 
 1. **Why revocable, not immutable?** — Compliance events (sanctions listing, KYC expiry, wallet compromise) require immediate invalidation. Immutable attestations would force a full re-mint at the token level.
 2. **Why `evidenceHash` instead of raw data?** — GDPR / MiCA / Reg BI: PII on-chain is a non-starter. The hash commits to a specific document set; the KYC provider holds the preimage for a regulator request.
-3. **Why `uint8` for enums that only need `bool`?** — Future-proofing. AML today is clear/flagged; tomorrow it's a four-band risk score. Cost of the extra 7 bits: nothing (ABI-packed into a 32-byte word regardless).
+3. **Why `uint8` for enums that only need `bool`?** — Future flexibility. AML today is clear/flagged; a later revision could require a broader risk scale. The additional bits do not change the ABI word size.
 4. **Why not a dedicated `ITopicPolicy` per schema field?** — We have one; it's called `TopicPolicyBase` and it decodes the full struct once per `isVerified()` call. Splitting the schema would mean N decodes. Benchmarked: single decode is measurably cheaper.
-5. **Why no resolver on Schema 1?** — An `onAttest` resolver would force the KYC provider to pay gas for every attestation at the Ethereum L1 rate, and the gate it would provide (attester is in the trusted set) is already enforced at `EASClaimVerifier.registerAttestation()`. Lazy > eager here.
+5. **Why no resolver on Schema 1?** — An `onAttest` resolver would require the KYC provider to pay gas for every attestation at the Ethereum L1 rate, while the same trust check is already enforced at `EASClaimVerifier.registerAttestation()`. The design therefore validates at registration time rather than at attestation-write time.
 
 ---
 
