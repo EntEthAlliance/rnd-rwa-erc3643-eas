@@ -68,7 +68,7 @@ Shibui registers **two** EAS schemas today:
 
 This is the single canonical payload every production claim topic decodes.
 
-- **Field count:** 10 ABI fields, not 8
+- **Field count:** 10 ABI fields
 - **Schema string:**
 
 ```text
@@ -105,7 +105,7 @@ Each ERC-3643 claim topic is bound to exactly one policy module. All eight polic
 
 This is the attestation schema that backs trusted-attester changes.
 
-- **Field count:** 3 ABI fields, plus optional EAS-level expiration
+- **Field count:** 3 ABI fields
 - **Schema string:**
 
 ```text
@@ -123,7 +123,7 @@ Registration parameters for Schema 2:
 - revocable = `true`
 - EAS expiration = optional
 
-If README, `docs/schemas/schema-definitions.md`, and generated site copy ever disagree, `RegisterSchemas.s.sol` wins.
+For expanded field semantics, enum values, and encoding examples, see [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md).
 
 ## Architecture
 
