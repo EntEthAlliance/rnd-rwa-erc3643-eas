@@ -80,7 +80,7 @@ Revoking a Shibui attestation blocks *future* transfers to or from the wallet. I
 
 ## Schemas, claim topics, and policies
 
-The canonical source of truth for live schema strings is [`script/RegisterSchemas.s.sol`](script/RegisterSchemas.s.sol). [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) expands those strings with field semantics, enum values, encoding examples, and workflow notes.
+The canonical source of truth for live schema strings is [`script/RegisterSchemas.s.sol`](script/RegisterSchemas.s.sol). [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) expands those strings with field semantics, enum values, encoding examples, and workflow notes. The semantic and profile layer lives in [`docs/schemas/shibui-semantics-catalog-v0.1.md`](docs/schemas/shibui-semantics-catalog-v0.1.md) and [`docs/schemas/shibui-conformance-profiles-v0.2.md`](docs/schemas/shibui-conformance-profiles-v0.2.md).
 
 Shibui registers **two** EAS schemas today:
 
