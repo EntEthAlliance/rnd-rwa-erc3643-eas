@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document compares legacy ONCHAINID capabilities with the current Shibui architecture built on Ethereum Attestation Service (EAS). It focuses on the remaining functional gaps and how Shibui addresses them in its current runtime model. Historical designs that are no longer part of Shibui have been removed to avoid reader confusion.
+This document compares legacy ONCHAINID capabilities with the current Shibui architecture built on Ethereum Attestation Service (EAS). It focuses on the remaining functional gaps and how the current Shibui runtime addresses them.
 
 ## Comparison summary
 
@@ -30,7 +30,7 @@ ONCHAINID supports multi-wallet identity through the identity contract model. Sh
 Canonical Shibui posture:
 - wallet binding is handled by `EASIdentityProxy`
 - wallet registration is agent-mediated
-- reader-facing docs should not describe wallet-as-identity fallback or self-registration as current behavior
+- wallet-as-identity fallback and self-registration are not part of the current reader-facing architecture
 
 **Status:** Solved by `EASIdentityProxy`.
 

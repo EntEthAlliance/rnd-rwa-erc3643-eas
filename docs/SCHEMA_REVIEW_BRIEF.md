@@ -4,7 +4,7 @@
 
 **Scope of this review:** the two schemas below, their field set, types, resolver binding, and revocability. *Not* in scope: contract architecture, policy logic, access control, gas. Those have been audited separately.
 
-**Time budget:** ~15 minutes.
+**Estimated review time:** ~15 minutes.
 
 ---
 
@@ -86,7 +86,7 @@ address issuerAddress,uint256[] authorizedTopics,string issuerName
 
 ## What we'd like validated
 
-Short list — any "yes, fine" on these is enough:
+Short list of questions for review:
 
 1. **Field completeness.** Is there any compliance signal an EEA-member issuer would expect to find in this schema that's missing? (E.g., PEP status, tax residency, jurisdiction of formation for entities.)
 2. **Type economy.** Any field where the type is over- or under-sized? `countryCode` as `uint16` (ISO numeric → max 894) is deliberate, but `verificationMethod` as `uint8` may be cramped if real-world provenance signals proliferate.
@@ -108,7 +108,7 @@ Short list — any "yes, fine" on these is enough:
 
 ## How to respond
 
-Plain text / Slack / PR comment / email — whatever's fastest. A "LGTM, register them" is fine. A specific "change X because Y" is better. Targeted silence on any of the six questions above reads as tacit approval.
+Reply in whichever format is easiest. A short approval is sufficient; specific change requests are even better.
 
 **Artifacts for reference:**
 - [`docs/schemas/schema-definitions.md`](schemas/schema-definitions.md) — full spec

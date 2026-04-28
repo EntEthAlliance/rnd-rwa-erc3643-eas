@@ -4,7 +4,7 @@
 
 ## Overview
 
-Shibui enables ERC-3643 security tokens to accept Ethereum Attestation Service (EAS) attestations as an investor-eligibility backend. It is a verifier layer that integrates with ERC-3643 identity and claim-topic infrastructure while keeping runtime semantics explicit: role-based administration, policy-aware verification, and identity resolution through `EASIdentityProxy`.
+Shibui enables ERC-3643 security tokens to accept Ethereum Attestation Service (EAS) attestations for investor eligibility. It integrates with ERC-3643 identity and claim-topic infrastructure through a verifier layer built around role-based administration, policy-aware verification, and identity resolution through `EASIdentityProxy`.
 
 ## Component inventory
 
@@ -83,7 +83,7 @@ function isVerified(address userAddress) external view returns (bool) {
 
 **When to use:** existing ERC-3643 deployments that cannot change the Identity Registry and need a compatibility layer.
 
-`EASClaimVerifierIdentityWrapper` is a read-compat shim, not the preferred production path for new deployments.
+`EASClaimVerifierIdentityWrapper` is a compatibility shim for existing deployments, not the preferred path for new integrations.
 
 **Trade-offs**
 - more complex than Path A

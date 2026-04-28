@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the canonical runtime data flow for Shibui. Current contract roles, schema strings, and verification semantics are authoritative. Historical alternatives such as wallet-as-identity fallback, investor self-registration, or ungated trusted-attester configuration are intentionally omitted.
+This document describes the current Shibui runtime flow. Roles, schema strings, and verification semantics follow the deployed contract design.
 
 ## Operation 1: Register wallet-to-identity mapping
 
@@ -10,7 +10,7 @@ This document describes the canonical runtime data flow for Shibui. Current cont
 Link a wallet address to an identity address so attestations issued to the identity are recognized for linked wallets.
 
 ### Participants
-- **AGENT_ROLE holder**: initiates the mapping
+- **AGENT_ROLE holder**: registers the mapping
 - **EASIdentityProxy**: stores wallet → identity mappings
 
 ### Flow
@@ -50,7 +50,7 @@ AGENT_ROLE holder
 A trusted attester creates a Shibui-compatible Investor Eligibility attestation for an investor identity.
 
 ### Participants
-- **Trusted attester**: creates the EAS attestation
+- **Trusted attester**: issues the EAS attestation
 - **EAS.sol**: stores the attestation
 - **EASClaimVerifier**: registers the attestation for topic-based lookup
 

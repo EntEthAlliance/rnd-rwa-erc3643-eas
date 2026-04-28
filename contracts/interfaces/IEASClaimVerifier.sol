@@ -5,8 +5,8 @@ pragma solidity =0.8.24;
 /**
  * @title IEASClaimVerifier
  * @author EEA Working Group
- * @notice Interface for the Shibui EASClaimVerifier contract
- * @dev The core verifier that enables ERC-3643 security tokens to accept EAS attestations for investor eligibility verification
+ * @notice Interface for the Shibui claim verifier
+ * @dev Enables ERC-3643 security tokens to evaluate investor eligibility using EAS attestations
  */
 interface IEASClaimVerifier {
     // ============ Events ============
@@ -154,9 +154,8 @@ interface IEASClaimVerifier {
 
     /**
      * @notice Binds a policy module to a claim topic (audit finding C-1).
-     * @dev Only callable by an operator role. Passing `address(0)` clears the
-     *      binding; `isVerified()` will then reject any required topic that
-     *      lacks a bound policy.
+     * @dev Only callable by OPERATOR_ROLE. Passing `address(0)` clears the binding;
+     *      `isVerified()` then rejects any required topic that lacks a bound policy.
      * @param claimTopic The ERC-3643 claim topic ID
      * @param policy An ITopicPolicy implementation, or zero to clear
      */

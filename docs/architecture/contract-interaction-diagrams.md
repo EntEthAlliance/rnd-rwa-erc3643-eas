@@ -24,7 +24,7 @@ These diagrams explain the "why" — the problem space, the before/after compari
 
 **File:** `diagrams/bridge-before-after.mmd`
 
-**What it shows:** Side-by-side comparison of the identity architecture before (closed ONCHAINID system) and after (open EAS attestation layer). Shows how the bridge opens up the identity layer without changing ERC-3643 fundamentals.
+**What it shows:** Side-by-side comparison of the identity architecture before (closed ONCHAINID system) and after (open EAS attestation layer). Shows how Shibui opens up the identity layer without changing ERC-3643 fundamentals.
 
 **When to reference:** When explaining the value proposition, or in executive summaries.
 
@@ -120,9 +120,9 @@ Shows:
 | EASClaimVerifier | ClaimTopicsRegistry | getClaimTopics() | Get required topics |
 | EASClaimVerifier | EASTrustedIssuersAdapter | getTrustedAttestersForTopic() | Get trusted attesters |
 | EASClaimVerifier | IEAS | getAttestation() | Fetch attestation data |
-| KYCProvider | IEAS | attest() | Create attestation |
+| KYC provider | IEAS | attest() | Create attestation |
 | Attester or AGENT_ROLE holder | EASClaimVerifier | registerAttestation() | Register attestation for lookup |
-| KYCProvider | IEAS | revoke() | Revoke attestation |
+| KYC provider | IEAS | revoke() | Revoke attestation |
 | OPERATOR_ROLE holder | EASTrustedIssuersAdapter | addTrustedAttester() | Add trusted attester |
 | AGENT_ROLE holder | EASIdentityProxy | registerWallet() | Link wallet to identity |
 

@@ -110,7 +110,7 @@ The ecosystem has converged on EAS because it's:
 
 ---
 
-## Section 3: How the Bridge Works
+## Section 3: How Shibui Works
 
 Shibui lets security tokens accept EAS attestations as proof of investor eligibility — without changing the ERC-3643 standard.
 
@@ -118,7 +118,7 @@ Shibui lets security tokens accept EAS attestations as proof of investor eligibi
 
 ![Architecture Overview](../../diagrams/architecture-overview.mmd)
 
-The bridge consists of four contracts that sit between the ERC-3643 Identity Registry and EAS:
+Shibui consists of four contracts that sit between the ERC-3643 Identity Registry and EAS:
 
 | Contract | Role |
 |----------|------|
@@ -136,7 +136,7 @@ The bridge consists of four contracts that sit between the ERC-3643 Identity Reg
 - Each investor deploys an ONCHAINID identity contract
 - Claims are locked in a proprietary format
 
-**After (open attestation layer):**
+**After (shared attestation layer):**
 - Token issuer can accept attestations from any EAS-compatible KYC provider
 - Investors reuse existing EAS attestations — no new contracts
 - Standard attestation format works across the ecosystem
@@ -198,7 +198,7 @@ Shibui supports two integration paths depending on whether you can modify the Id
 
 **When to use:** New ERC-3643 deployments or when you can modify the Identity Registry.
 
-The Identity Registry is modified to call `EASClaimVerifier.isVerified()` as an alternative verification path:
+The Identity Registry is modified to call `EASClaimVerifier.isVerified()` as a verifier path:
 
 ```solidity
 function isVerified(address userAddress) external view returns (bool) {
