@@ -31,11 +31,9 @@ export default function AdminPage() {
     <ConfigurationGate required={["adapter"]}>
       <div className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold">Admin · issuer console</h1>
+          <h1 className="text-2xl font-semibold">Admin · issuer operations</h1>
           <p className="text-slate-700">
-            Bootstrap the compliance layer: register the two EAS schemas, then
-            authorize KYC providers as trusted attesters. Every action is a
-            normal Sepolia transaction signed by your connected wallet.
+            Set up the Shibui control layer: register the two EAS schemas, then authorize compliance providers as trusted attesters. Each action is a standard Sepolia transaction signed by the connected wallet.
           </p>
         </header>
 
@@ -44,7 +42,7 @@ export default function AdminPage() {
             1. Register schemas
           </TabButton>
           <TabButton active={panel === "attester"} onClick={() => setPanel("attester")}>
-            2. Authorize attester
+            2. Authorize trusted attester
           </TabButton>
         </div>
 
@@ -167,7 +165,7 @@ function RegisterSchemasPanel() {
         }
         state={invEligState}
         disabled={!isConnected}
-        resolverHint="No resolver — policies enforce at verify time"
+        resolverHint="No resolver — policy checks apply at verification time"
       />
       <SchemaCard
         title="Issuer Authorization"
@@ -189,17 +187,16 @@ function RegisterSchemasPanel() {
           deployment.shibui.TrustedIssuerResolver ===
           "0x0000000000000000000000000000000000000000"
             ? "Deploy TrustedIssuerResolver first"
-            : "Resolver gates Issuer Authorization writes to admin-curated authorizers"
+            : "Resolver restricts Issuer Authorization writes to admin-curated authorizers"
         }
       />
       <div className="md:col-span-2 card bg-slate-50">
         <h3 className="text-sm font-semibold">After registering</h3>
         <p className="mt-1 text-sm text-slate-700">
-          Copy each UID above into{" "}
+          Record each UID above in{" "}
           <code className="font-mono">deployments/sepolia.json</code> under{" "}
           <code className="font-mono">schemas.investorEligibility</code> and{" "}
-          <code className="font-mono">schemas.issuerAuthorization</code>, then
-          wire the topic-to-schema mappings with{" "}
+          <code className="font-mono">schemas.issuerAuthorization</code>, then wire the topic-to-schema mappings with{" "}
           <code className="font-mono">
             EASClaimVerifier.setTopicSchemaMapping(topic, uid)
           </code>

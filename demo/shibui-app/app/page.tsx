@@ -7,7 +7,7 @@ const SCREENS = [
     href: "/admin",
     title: "1. Admin",
     actor: "Issuer · EEA compliance staff",
-    body: "Register the two EAS schemas and authorize a KYC provider as a trusted attester. Without this, the token has no compliance layer.",
+    body: "Register the two EAS schemas and authorize a KYC provider as a trusted attester. This establishes the policy and trust layer used by the token.",
   },
   {
     href: "/attester",
@@ -19,7 +19,7 @@ const SCREENS = [
     href: "/transfer",
     title: "3. Transfer",
     actor: "Reviewer",
-    body: "Watch three pre-seeded investors transfer the demo ERC-3643 token — Alice succeeds, Bob reverts, Carol flips after a revoke.",
+    body: "Observe three pre-seeded investors with different eligibility states — Alice succeeds, Bob fails policy checks, and Carol flips after a revoke.",
   },
 ];
 
@@ -32,18 +32,14 @@ export default function Home() {
       <section className="space-y-3">
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-semibold tracking-tight">
-            Shibui compliance demo
+            Shibui demo
           </h1>
           <StatusBadge tone={allDeployed ? "ok" : "warn"}>
             {allDeployed ? "Sepolia ready" : "Needs deployment"}
           </StatusBadge>
         </div>
         <p className="max-w-3xl text-slate-700">
-          Three screens, one decision surface. Institutions evaluating Shibui
-          want to see who authorizes attesters, what fields an attestation
-          carries, and how revocation resolves in real time. This demo renders
-          those moments directly against the canonical contracts on Sepolia —
-          no mocks in the happy path.
+          Three screens, one operating flow. Institutions evaluating Shibui want to see who authorizes trusted attesters, what an eligibility attestation contains, and how revocation changes transfer eligibility in real time. This demo renders those moments directly against the canonical contracts on Sepolia.
         </p>
       </section>
 
@@ -75,7 +71,7 @@ export default function Home() {
           <code className="font-mono">
             script/DeployTestnet.s.sol
           </code>{" "}
-          before driving the flow.
+          before using the demo flow.
         </p>
         {allDeployed ? (
           <div className="flex items-center gap-2">
@@ -101,8 +97,7 @@ export default function Home() {
       <section className="card space-y-3">
         <h2 className="text-lg font-semibold">Architecture at a glance</h2>
         <p className="text-sm text-slate-700">
-          Shibui answers a single question from the ERC-3643 token's compliance
-          hook:
+          Shibui answers a single question from the ERC-3643 token's compliance flow:
         </p>
         <pre className="rounded-md bg-slate-900 p-4 text-sm text-slate-100">
 {`EASClaimVerifier.isVerified(wallet) → bool`}

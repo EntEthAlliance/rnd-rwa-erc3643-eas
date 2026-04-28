@@ -1,14 +1,14 @@
 # Shibui Demo UI
 
-A first-party, in-repo demo of the Shibui attestation lifecycle on Sepolia.
+A first-party, in-repo demo of the Shibui investor-eligibility flow on Sepolia.
 
 Three screens, three actors, one decision surface:
 
 | Screen | Actor | Primary action |
 |---|---|---|
-| `/admin` | Issuer / EEA | Register schemas, add trusted attesters |
-| `/attester` | KYC provider | Issue + revoke investor attestations |
-| `/transfer` | Reviewer | Watch Alice succeed, Bob revert, Carol flip after revoke |
+| `/admin` | Issuer / compliance team | Register schemas, authorize trusted attesters |
+| `/attester` | Compliance provider | Issue and revoke investor attestations |
+| `/transfer` | Reviewer / operator | Observe live eligibility outcomes for seeded investors |
 
 Full product spec: [`docs/PRD_DEMO_UI.md`](../../docs/PRD_DEMO_UI.md).
 
@@ -19,7 +19,7 @@ Full product spec: [`docs/PRD_DEMO_UI.md`](../../docs/PRD_DEMO_UI.md).
 - Node.js 20+
 - A funded Sepolia wallet (MetaMask, Rabby, etc.)
 - A WalletConnect Cloud projectId (free at https://cloud.walletconnect.com)
-- The Shibui stack deployed on Sepolia — see [root `README.md`](../../README.md) testnet section
+- The Shibui stack deployed on Sepolia — see the testnet section in the [root `README.md`](../../README.md)
 
 ## Local run
 
@@ -89,4 +89,4 @@ All on-chain addresses are resolved from [`deployments/sepolia.json`](../../depl
 
 ## Deprecation of the external demo
 
-This app replaces `claudyfaucant.github.io/eas-erc3643-bridge-demo/`. The earlier external site was not tied to the canonical contracts; this one is.
+This app replaces `claudyfaucant.github.io/eas-erc3643-bridge-demo/`. The earlier external site was not tied to the canonical contracts; this demo is.
