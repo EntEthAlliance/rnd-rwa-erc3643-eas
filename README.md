@@ -53,6 +53,78 @@ Revoking a Shibui attestation blocks *future* transfers to/from the wallet. It d
 
 ---
 
+## Schemas, claim topics, and policies
+
+The canonical source of truth for Shibui's live schema strings is [`script/RegisterSchemas.s.sol`](script/RegisterSchemas.s.sol). [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) expands those strings with field semantics, enum values, encoding examples, and workflow notes.
+
+Shibui registers **two** EAS schemas today:
+
+| # | Name | Canonical schema string source | Used by |
+|---:|---|---|---|
+| 1 | Investor Eligibility | `RegisterSchemas.s.sol` | All eight `ITopicPolicy` modules |
+| 2 | Issuer Authorization | `RegisterSchemas.s.sol` | `EASTrustedIssuersAdapter` + `TrustedIssuerResolver` |
+
+### Schema 1 — Investor Eligibility
+
+This is the single canonical payload every production claim topic decodes.
+
+- **Field count:** 10 ABI fields, not 8
+- **Schema string:**
+
+```text
+address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sourceOfFundsStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp,bytes32 evidenceHash,uint8 verificationMethod
+```
+
+| # | Field | Type | Notes |
+|---:|---|---|---|
+| 1 | `identity` | `address` | ERC-3643 identity address |
+| 2 | `kycStatus` | `uint8` | Used by `KYCStatusPolicy` |
+| 3 | `amlStatus` | `uint8` | Used by `AMLPolicy` |
+| 4 | `sanctionsStatus` | `uint8` | Used by `SanctionsPolicy` |
+| 5 | `sourceOfFundsStatus` | `uint8` | Used by `SourceOfFundsPolicy` |
+| 6 | `accreditationType` | `uint8` | Used by accreditation / professional / institutional policies |
+| 7 | `countryCode` | `uint16` | ISO 3166-1 numeric |
+| 8 | `expirationTimestamp` | `uint64` | Payload-level validity deadline |
+| 9 | `evidenceHash` | `bytes32` | Commitment to off-chain evidence |
+| 10 | `verificationMethod` | `uint8` | Provenance / review method |
+
+Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same Investor Eligibility schema.
+
+| Topic ID | Name | Policy | What it enforces |
+|---:|---|---|---|
+| 1 | KYC | `KYCStatusPolicy` | `kycStatus == VERIFIED` |
+| 2 | AML | `AMLPolicy` | `amlStatus == CLEAR` |
+| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in allow-list (or not in block-list, configurable) |
+| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allowed set |
+| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | any non-zero accreditation type (MiFID II) |
+| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == INSTITUTIONAL` |
+| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
+| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
+
+### Schema 2 — Issuer Authorization
+
+This is the attestation schema that backs trusted-attester changes.
+
+- **Field count:** 3 ABI fields, plus optional EAS-level expiration
+- **Schema string:**
+
+```text
+address issuerAddress,uint256[] authorizedTopics,string issuerName
+```
+
+| # | Field | Type | Notes |
+|---:|---|---|---|
+| 1 | `issuerAddress` | `address` | Must match the attester being authorized |
+| 2 | `authorizedTopics` | `uint256[]` | Must cover the requested topic set |
+| 3 | `issuerName` | `string` | Human-readable display name |
+
+Registration parameters for Schema 2:
+- resolver = `TrustedIssuerResolver`
+- revocable = `true`
+- EAS expiration = optional
+
+If README, `docs/schemas/schema-definitions.md`, and generated site copy ever disagree, `RegisterSchemas.s.sol` wins.
+
 ## Architecture
 
 ### Runtime wiring
@@ -120,26 +192,6 @@ Every trusted-attester change references a live EAS attestation under Schema 2 (
 
 ---
 
-## Claim topics and policies
-
-Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same **Investor Eligibility** schema.
-
-| Topic ID | Name | Policy | What it enforces |
-|---:|---|---|---|
-| 1 | KYC | `KYCStatusPolicy` | `kycStatus == VERIFIED` |
-| 2 | AML | `AMLPolicy` | `amlStatus == CLEAR` |
-| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in allow-list (or not in block-list, configurable) |
-| 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allowed set |
-| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | any non-zero accreditation type (MiFID II) |
-| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == INSTITUTIONAL` |
-| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
-| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
-
-The Investor Eligibility schema is a 10-field ABI payload (`address identity`, `uint8 kycStatus`, `uint8 amlStatus`, `uint8 sanctionsStatus`, `uint8 sourceOfFundsStatus`, `uint8 accreditationType`, `uint16 countryCode`, `uint64 expirationTimestamp`, `bytes32 evidenceHash`, `uint8 verificationMethod`). `evidenceHash` commits to the off-chain KYC dossier and `verificationMethod` captures the provenance (self-attested, third-party reviewed, professional letter, broker-dealer file) — together they support post-trade audit trails without putting PII on-chain.
-
-**Canonical reference:** [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) is the source of truth — full field semantics, enum values, registration parameters, encoding examples, and the matching Issuer Authorization (Schema 2) spec. If anything in this README diverges from that doc, the doc wins.
-
----
 
 ## Administration
 
