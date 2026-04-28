@@ -5,7 +5,7 @@ This folder contains a **single-page, presentation-ready site** for Shibui.
 **Canonical intro (used on the page):**
 > "Shibui is an open-source identity standard built on Ethereum Attestation Service (EAS), designed to give tokenized assets a shared, interoperable language for investor eligibility."
 
-It is written for a **broad bank / TradFi audience** (institutional, concise, low-jargon), with a primary CTA to **join the working group**.
+It is written for an institutional audience, with concise, low-jargon language and a primary CTA to **join the working group**.
 
 ## Visual components (built-in)
 
@@ -36,7 +36,7 @@ Then open <http://127.0.0.1:8000/>.
 The page includes a mailto CTA:
 - `mailto:shibui-working-group@yourdomain.tld`
 
-Before publishing externally, replace this with the real working-group contact.
+Before external publication, replace this with the working-group contact.
 
 ## Export to PDF
 
@@ -47,7 +47,7 @@ This page includes **print styles** (A4/Letter friendly) for clean PDF export.
 3. Destination → **Save as PDF**
 4. Recommended settings:
    - Paper: **Letter** or **A4**
-   - Background graphics: **On** (keeps subtle borders)
+   - Background graphics: **On** (preserves subtle borders)
 
 ## Notes
 

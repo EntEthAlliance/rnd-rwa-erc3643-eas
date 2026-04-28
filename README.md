@@ -45,8 +45,8 @@ Shibui is deliberately narrow. The following remain the responsibility of the ER
 | Freeze / partial freeze (sanctions) | ERC-3643 token |
 | Lost-key recovery | ERC-3643 token `recoveryAddress` flow |
 | Lock-ups, per-investor caps, ownership limits | ERC-3643 compliance modules |
-| Cross-chain attestation canonicity | Per-chain today — re-attest per chain |
-| Off-chain / privacy-preserving attestation verification | Not supported today |
+| Cross-chain attestation canonicity | Per-chain — re-attest per chain |
+| Off-chain / privacy-preserving attestation verification | Not supported |
 | Tax withholding, FATCA / CRS reporting | Off-chain |
 
 Revoking a Shibui attestation blocks *future* transfers to/from the wallet. It does not move, freeze, or recover tokens already held. See [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md).
@@ -68,7 +68,7 @@ Shibui registers **two** EAS schemas today:
 
 This is the single canonical payload every production claim topic decodes.
 
-- **Field count:** 10 ABI fields, not 8
+- **Field count:** 10 ABI fields
 - **Schema string:**
 
 ```text
@@ -88,24 +88,26 @@ address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sou
 | 9 | `evidenceHash` | `bytes32` | Commitment to off-chain evidence |
 | 10 | `verificationMethod` | `uint8` | Provenance / review method |
 
-Each ERC-3643 claim topic is bound to exactly one policy module. All eight policies decode the same Investor Eligibility schema.
+Topic IDs follow the ONCHAINID claim-topic convention commonly used in ERC-3643 deployments; ERC-3643 itself does not prescribe specific numeric topic IDs. Shibui implements a subset of those topic IDs and maps each one to a policy module that validates the relevant fields of the shared Investor Eligibility schema.
 
-| Topic ID | Name | Policy | Predicate (matches `validate()` in code) |
+### ONCHAINID-style claim topic → Shibui policy mapping
+
+| Topic ID | ONCHAINID-style meaning | Shibui policy | Predicate |
 |---:|---|---|---|
-| 1 | KYC | `KYCStatusPolicy` | `kycStatus == 1` (VERIFIED) |
-| 2 | AML | `AMLPolicy` | `amlStatus == 0` (CLEAR) |
-| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in admin set; mode flag selects allow-list vs block-list |
+| 1 | KYC | `KYCStatusPolicy` | `kycStatus == VERIFIED` |
+| 2 | AML | `AMLPolicy` | `amlStatus == CLEAR` |
+| 3 | COUNTRY | `CountryAllowListPolicy` | `countryCode` in allow-list or block-list mode |
 | 7 | ACCREDITATION | `AccreditationPolicy` | `accreditationType` in admin-configured allow-set |
-| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | `accreditationType >= 1` (RETAIL_QUALIFIED or higher; MiFID II) |
-| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == 4` (INSTITUTIONAL) |
-| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == 0` (CLEAR) |
-| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == 1` (VERIFIED) |
+| 9 | PROFESSIONAL | `ProfessionalInvestorPolicy` | any non-zero accreditation type |
+| 10 | INSTITUTIONAL | `InstitutionalInvestorPolicy` | `accreditationType == INSTITUTIONAL` |
+| 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
+| 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
 
 ### Schema 2 — Issuer Authorization
 
 This is the attestation schema that backs trusted-attester changes.
 
-- **Field count:** 3 ABI fields, plus optional EAS-level expiration
+- **Field count:** 3 ABI fields
 - **Schema string:**
 
 ```text
@@ -123,7 +125,7 @@ Registration parameters for Schema 2:
 - revocable = `true`
 - EAS expiration = optional
 
-If README, `docs/schemas/schema-definitions.md`, and generated site copy ever disagree, `RegisterSchemas.s.sol` wins.
+For expanded field semantics, enum values, and encoding examples, see [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md).
 
 ## Architecture
 
@@ -251,14 +253,14 @@ demo/
 
 **Path A — pluggable verifier (recommended).** The token's ERC-3643 compliance module calls `EASClaimVerifier.isVerified(wallet)` directly. This gives you payload-aware verification, multi-attester resiliency, and the full admin surface.
 
-**Path B — read-compat shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations, for integrating with a pre-existing ERC-3643 Identity Registry that can't be modified. It is **not** a drop-in replacement for ONCHAINID:
+**Path B — read-compat shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations, for integrating with a pre-existing ERC-3643 Identity Registry that cannot be modified. It is **not** a drop-in replacement for ONCHAINID:
 
 - Does not implement ERC-734 key management (no `addKey`, no recovery).
 - Does not return real attester signatures from `getClaim` (returns empty bytes).
 - Does not run topic policies in `isClaimValid` (only checks existence / revocation / expiration).
 - Gas profile is not suitable for hot paths without caching.
 
-Use Path A for new deployments. Use Path B only if you genuinely cannot modify the Identity Registry, and understand the trade-offs.
+Use Path A for new deployments. Use Path B only when the Identity Registry cannot be modified and the trade-offs are acceptable.
 
 ---
 
@@ -382,7 +384,7 @@ npm run dev
 
 All on-chain addresses resolve from [`deployments/sepolia.json`](deployments/sepolia.json); populate that file after running the testnet pipeline above. See [`demo/shibui-app/README.md`](demo/shibui-app/README.md) and the full spec in [`docs/PRD_DEMO_UI.md`](docs/PRD_DEMO_UI.md).
 
-> This supersedes the previously hosted external demo at `claudyfaucant.github.io/eas-erc3643-bridge-demo/`, which sat outside the repo and was not tied to the canonical contracts.
+> This replaces the previously hosted external demo at `claudyfaucant.github.io/eas-erc3643-bridge-demo/`, which was maintained outside the repo and not tied to the canonical contracts.
 
 ## License
 

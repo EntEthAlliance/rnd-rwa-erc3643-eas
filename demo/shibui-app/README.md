@@ -89,4 +89,4 @@ All on-chain addresses are resolved from [`deployments/sepolia.json`](../../depl
 
 ## Deprecation of the external demo
 
-This app supersedes `claudyfaucant.github.io/eas-erc3643-bridge-demo/`. That external site is not tied to the canonical contracts; this one is.
+This app replaces `claudyfaucant.github.io/eas-erc3643-bridge-demo/`. The earlier external site was not tied to the canonical contracts; this one is.
