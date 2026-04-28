@@ -139,6 +139,19 @@
     white-space: nowrap;
   }
 
+  .intro-copy {
+    padding: 14px 32px 0;
+    max-width: 980px;
+    color: var(--text-dim);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .intro-copy strong {
+    color: var(--text-bright);
+    font-weight: 500;
+  }
+
   /* FILTERS */
   .filter-bar {
     padding: 14px 32px;
@@ -458,10 +471,14 @@
       <a href="./index.html#story">Story</a>
       <a href="./index.html#how">How it works</a>
       <a class="active" href="./identity-solutions-map.html">Reference map</a>
-      <span class="count-pill" id="countBadge">28 solutions</span>
+      <span class="count-pill" id="countBadge">30 solutions</span>
     </nav>
   </div>
 </header>
+
+<div class="intro-copy">
+  <strong>Reference Map.</strong> This solutions map is a global reference view of identity, KYC, compliance, and credential systems relevant to digital assets and tokenized finance. It brings together major identity solutions from across the world — from on-chain protocols and credential standards to traditional finance infrastructure, institutional platforms, and regulatory pilots — so readers can compare how each approach handles trust, portability, privacy, and adoption.
+</div>
 
 <div class="filter-bar">
   <span class="filter-label">Filter</span>
@@ -943,7 +960,7 @@
     </div>
   </div>
   <div class="card-links">
-    <a class="card-link" href="https://swift-verify.com/our-solutions/compliance-and-shared-services/financial-crime-compliance/kyc-registry.html" target="_blank">SWIFT Registry</a>
+    <a class="card-link" href="https://www.swift.com/products/kyc-registry" target="_blank">SWIFT Registry</a>
   </div>
 </div>
 
@@ -1060,6 +1077,34 @@
   <div class="card-links">
     <a class="card-link" href="https://www.sec.gov/files/tm/no-action/dtc-nal-121125.pdf" target="_blank">SEC No-Action Letter</a>
     <a class="card-link" href="https://www.dtcc.com" target="_blank">DTCC</a>
+  </div>
+</div>
+
+
+<div class="card cat-institutional" data-cat="institutional" data-text="Visa Tokenized Asset Platform VTAP bank stablecoin tokenized deposit institutional settlement">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Visa Tokenized Asset Platform (VTAP)</span>
+    <div class="card-tags"><span class="tag tag-institutional">Platform</span><span class="tag tag-institutional">Payments</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Visa</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Early bank adoption</span>
+  </div>
+  <div class="card-desc">Visa Tokenized Asset Platform is Visa’s infrastructure layer for helping banks issue and manage fiat-backed tokens, tokenized deposits, and programmable money flows. The identity model is institution-centric: access is anchored in regulated financial institutions, their customer onboarding, and Visa-mediated network rules rather than open, portable public credentials. VTAP is relevant to the map because it represents how global payment networks may extend trusted identity, policy controls, and settlement permissions into tokenized asset environments.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Important strategic move by Visa into tokenized money infrastructure, with pilots and bank-focused positioning around stablecoins and tokenized deposits. Strong signal that card-network rails are converging with digital asset identity and control layers.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Still emerging and partner-led. Public details on credential portability, open standards support, and interoperability with on-chain identity frameworks remain limited. Focus appears to be institutional issuance and payments rather than reusable investor identity across tokenized securities markets.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://usa.visa.com/solutions/crypto/visa-tokenized-asset-platform.html" target="_blank">Visa VTAP</a>
   </div>
 </div>
 
@@ -1241,6 +1286,34 @@
     <a class="card-link" href="https://notabene.id" target="_blank">Notabene</a>
     <a class="card-link" href="https://verifyvasp.com" target="_blank">VerifyVASP</a>
     <a class="card-link" href="https://sygna.io" target="_blank">Sygna</a>
+  </div>
+</div>
+
+
+<div class="card cat-travelrule" data-cat="travelrule" data-text="Mastercard Crypto Credential identity verification travel rule blockchain payments">
+  <div class="card-accent-bar"></div>
+  <div class="card-head">
+    <span class="card-name">Mastercard Crypto Credential</span>
+    <div class="card-tags"><span class="tag tag-travelrule">Credential</span><span class="tag tag-travelrule">Payments</span></div>
+  </div>
+  <div class="card-led"><span class="led-dot"></span>Led by Mastercard</div>
+  <div class="adoption-bar">
+    <div class="adoption-dots"><span class="adot filled"></span><span class="adot filled"></span><span class="adot filled"></span><span class="adot"></span><span class="adot"></span></div>
+    <span class="adoption-text">Early network adoption</span>
+  </div>
+  <div class="card-desc">A Mastercard-led credentialing framework for digital asset transfers that verifies counterparties and helps users send assets only to eligible recipients. The system is designed to attach identity, compliance, and verification signals to blockchain payment flows, reducing the risk of misdirected transfers and supporting policy controls across participating exchanges and wallet providers. It reflects a card-network approach to trusted identity layers for crypto payments.</div>
+  <div class="card-meta">
+    <div class="meta-block">
+      <div class="meta-label">Adoption</div>
+      <div class="meta-value adoption">Backed by Mastercard's global payments network and launched with ecosystem partners for credentialed digital asset transfers. Important signal that mainstream payment networks are moving into verifiable crypto identity infrastructure.</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Limitations</div>
+      <div class="meta-value limitation">Partner-network dependent rather than open and universal. Limited public detail on schema interoperability and on-chain composability. Primarily focused on payment transfer safety, not a full portable identity stack for tokenized securities or institutional DvP.</div>
+    </div>
+  </div>
+  <div class="card-links">
+    <a class="card-link" href="https://www.mastercard.com/global/en/business/payments/consumer-payments/next-gen-payments/digital-asset-solutions/crypto-credential.html" target="_blank">Mastercard</a>
   </div>
 </div>
 
