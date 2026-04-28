@@ -252,6 +252,31 @@ The attester must document the legal or policy basis for the assigned bucket.
 
 This is the field where issuer policy matters most. The schema intentionally compresses several jurisdiction-specific legal concepts into one portable eligibility field.
 
+##### Tier and regime clarification
+
+`accreditationType` is best understood as a **tier indicator**, not a **regime tag**.
+
+That means:
+
+- the enum signals the level or class of investor treatment being asserted;  
+- it does **not** by itself identify the legal regime under which that treatment was determined;  
+- regime context must be supplied by the issuer policy, provider conformance materials, or the off-chain dossier referenced by `evidenceHash`.
+
+This distinction matters because the enum intentionally mixes labels that come from different regulatory traditions. For example:
+
+- `ACCREDITED` is anchored in US private-offering practice;  
+- `RETAIL_QUALIFIED` is better read as a lower-tier non-institutional qualification bucket that may arise in EU or issuer-defined contexts;  
+- `QUALIFIED_PURCHASER` is a higher-threshold US category;  
+- `INSTITUTIONAL` is a portable top-tier bucket often interpreted through entity or per se professional treatment.
+
+Current Shibui policy modules are therefore the layer that applies regime context in practice:
+
+- `AccreditationPolicy` interprets the enum through an issuer-configured allow-set;  
+- `ProfessionalInvestorPolicy` interprets the enum as a threshold rule for professional treatment;  
+- `InstitutionalInvestorPolicy` interprets the enum as an institutional-only threshold.
+
+In other words, the enum provides the portable classification tier, while policy modules and issuer configuration provide the legal and commercial meaning for a specific deployment.
+
 ---
 
 #### 5.2.7 `countryCode`
@@ -377,6 +402,23 @@ Human-readable display name for the authorized attester.
 **Interpretation note**  
 This field is informative only. It is intended for legibility and audit traceability.
 
+**Production guidance — LEI / vLEI anchoring**  
+In production deployments, attesters **SHOULD** provide their Legal Entity Identifier (LEI) in the `issuerName` string so that off-chain tooling can resolve the attester to a real legal entity in the GLEIF registry. This extends the audit trail beyond an Ethereum address to a globally recognized legal-entity identifier.
+
+Recommended formatting examples:
+
+- `Acme KYC Services | LEI: 5493001KJTIIGC8Y1R12`
+- `Acme KYC Services | vLEI: 5493001KJTIIGC8Y1R12`
+
+Where an implementation needs cleaner separation, a future schema revision may introduce a dedicated optional LEI field. In the current live schema, the recommended approach is to carry the LEI in `issuerName` and resolve it off-chain.
+
+Off-chain tooling consuming Schema 2 SHOULD:
+
+1. parse the LEI from `issuerName` where present;  
+2. resolve it against the GLEIF registry or equivalent authoritative resolver;  
+3. confirm the legal entity exists and is active;  
+4. record the resolved legal name alongside the attester address in compliance and audit logs.
+
 ### 6.3 Operational meaning
 
 A Schema-2 record means:
@@ -410,14 +452,80 @@ Any issuer approving a Shibui attester should ask for the following disclosures:
 
 1. legal entity name  
 2. attester address  
-3. covered jurisdictions  
-4. covered topic IDs  
-5. `countryCode` interpretation  
-6. sanctions-list coverage statement  
-7. accreditation / professional-classification mapping statement  
-8. `evidenceHash` construction rule  
-9. refresh and revocation cadence  
-10. dominant `verificationMethod` usage
+3. LEI or vLEI, where available  
+4. covered jurisdictions  
+5. covered topic IDs  
+6. `countryCode` interpretation  
+7. sanctions-list coverage statement  
+8. accreditation / professional-classification mapping statement  
+9. `evidenceHash` construction rule  
+10. refresh and revocation cadence  
+11. dominant `verificationMethod` usage
+
+### 7.2 Non-normative extension fields for richer jurisdictional context
+
+The on-chain schemas remain intentionally compact. If an issuer needs richer jurisdictional or classification detail, that information SHOULD be encoded in the off-chain dossier referenced by `evidenceHash`.
+
+This section is non-normative. It does not change the on-chain schema. Its purpose is to prevent ecosystem fragmentation by giving implementers a common shape for extended metadata.
+
+Typical cases where extension fields may be needed include:
+
+- multiple relevant countries for one subject;  
+- separate residence, domicile, tax residence, incorporation, or formation fields;  
+- regime-specific legal classification details;  
+- statute, rule, or annex citations supporting the asserted investor tier;  
+- richer sanctions-screening coverage statements.
+
+#### Recommended off-chain JSON structure
+
+```json
+{
+  "subject": {
+    "type": "natural_person_or_entity",
+    "identityAddress": "0x..."
+  },
+  "jurisdiction": {
+    "primaryCountryCode": 840,
+    "residenceCountryCodes": [840],
+    "taxResidenceCountryCodes": [840],
+    "incorporationCountryCode": null,
+    "domicileCountryCode": null
+  },
+  "classification": {
+    "shibuiAccreditationType": "ACCREDITED",
+    "regime": "US_REG_D_501",
+    "regimeTierLabel": "accredited_investor",
+    "statuteCitations": [
+      "17 CFR 230.501"
+    ]
+  },
+  "screening": {
+    "sanctionsCoverage": ["OFAC", "EU"],
+    "amlProgram": "provider_defined_program"
+  },
+  "attester": {
+    "legalName": "Acme KYC Services",
+    "lei": "5493001KJTIIGC8Y1R12",
+    "attesterAddress": "0x..."
+  },
+  "evidence": {
+    "verificationMethod": "THIRD_PARTY",
+    "dossierVersion": "1.0",
+    "createdAt": "2026-04-28T00:00:00Z"
+  }
+}
+```
+
+#### Interpretation guidance
+
+- `primaryCountryCode` should match the on-chain `countryCode` when present.  
+- `shibuiAccreditationType` should match the on-chain enum value.  
+- `regime` and `regimeTierLabel` provide the context the on-chain enum does not carry.  
+- `statuteCitations` identify the legal basis for the asserted classification where relevant.  
+- `sanctionsCoverage` identifies the list universe behind a `sanctionsStatus` outcome.  
+- `lei` anchors the attester to a legal entity where available.
+
+Issuers and providers may extend this structure, but SHOULD preserve these top-level sections if they want maximum interoperability across Shibui integrations.
 
 ---
 
