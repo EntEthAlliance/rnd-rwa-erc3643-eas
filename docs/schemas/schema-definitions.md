@@ -5,9 +5,8 @@ truth is [`script/RegisterSchemas.s.sol`](../../script/RegisterSchemas.s.sol);
 this document explains each field's meaning and how the policy modules consume
 it. If anything here diverges from the script, the script wins.
 
-Companion documents:
-- [`shibui-semantics-catalog-v0.1.md`](./shibui-semantics-catalog-v0.1.md) — semantic interpretation of the live schemas.
-- [`shibui-conformance-profiles-v0.1.md`](./shibui-conformance-profiles-v0.1.md) — illustrative provider / jurisdiction conformance mappings.
+Companion document:
+- [`shibui-specification-v0.1.md`](./shibui-specification-v0.1.md) — consolidated specification covering schema meaning, policy interpretation, and illustrative application guidance.
 
 Shibui registers two schemas today:
 
