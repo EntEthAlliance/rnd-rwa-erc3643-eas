@@ -7,7 +7,7 @@ it. If anything here diverges from the script, the script wins.
 
 Companion documents:
 - [`shibui-semantics-catalog-v0.1.md`](./shibui-semantics-catalog-v0.1.md) — semantic interpretation of the live schemas.
-- [`shibui-conformance-profiles-v0.2.md`](./shibui-conformance-profiles-v0.2.md) — illustrative provider / jurisdiction conformance mappings.
+- [`shibui-conformance-profiles-v0.1.md`](./shibui-conformance-profiles-v0.1.md) — illustrative provider / jurisdiction conformance mappings.
 
 Shibui registers two schemas today:
 

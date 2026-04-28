@@ -708,7 +708,7 @@ In plain English: **Schema 2 is the bridge between governance approval and machi
 
 ---
 
-# 7. Open issues for v0.2+
+# 7. Open issues for future revisions
 
 This first version is intentionally practical and close to the live code. It still leaves open design questions:
 
@@ -722,7 +722,7 @@ This first version is intentionally practical and close to the live code. It sti
 
 # 8. Recommended next step
 
-If this direction is right, the best v0.2 move is **not** to touch the live schemas yet. It is to add a second document:
+If this direction is right, the best next move is **not** to touch the live schemas yet. It is to add a second document:
 
 - `docs/schemas/shibui-conformance-profiles.md`
 

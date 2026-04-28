@@ -1,4 +1,4 @@
-# Shibui Conformance Profiles v0.2
+# Shibui Conformance Profiles v0.1
 
 > **Status:** EEA working draft
 > **Document class:** Informative conformance-profile reference
