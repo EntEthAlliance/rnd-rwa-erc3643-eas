@@ -65,7 +65,7 @@ export function InvestorCard({
         onClick={() => refetch()}
         className="text-xs text-slate-500 hover:text-slate-800"
       >
-        ↻ Refresh verification state
+        ↻ Refresh eligibility state
       </button>
     </div>
   );

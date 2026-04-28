@@ -44,7 +44,7 @@ export function ConfigurationGate({
           <StatusBadge tone="warn">Not deployed</StatusBadge>
           <div className="space-y-2">
             <h3 className="font-semibold">
-              This page needs contracts on Sepolia before it can run.
+              This page needs Sepolia deployment data before it can run.
             </h3>
             <p className="text-sm text-slate-700">
               Populate the following fields in{" "}
@@ -70,7 +70,7 @@ export function ConfigurationGate({
               </code>{" "}
               +{" "}
               <code className="font-mono">script/deploy/DeployDemo.s.sol</code>{" "}
-              — see the demo README.
+              — see the demo README for the full setup sequence.
             </p>
           </div>
         </div>

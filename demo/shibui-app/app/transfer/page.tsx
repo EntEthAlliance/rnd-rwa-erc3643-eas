@@ -21,13 +21,9 @@ export default function TransferPage() {
     <ConfigurationGate required={["verifier", "token"]}>
       <div className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold">Transfer · live demo</h1>
+          <h1 className="text-2xl font-semibold">Transfer · eligibility outcomes</h1>
           <p className="max-w-3xl text-slate-700">
-            Three pre-seeded investors with different compliance states. Every
-            card reads <code className="font-mono">isVerified()</code> directly
-            from Sepolia. Hit "Transfer" to attempt a small transfer of the
-            demo ERC-3643 token — Shibui's compliance layer decides live
-            whether it lands.
+            Three pre-seeded investors with different eligibility states. Every card reads <code className="font-mono">isVerified()</code> directly from Sepolia. Use the transfer action to test whether the demo ERC-3643 token accepts or rejects the transfer in real time.
           </p>
         </header>
 
@@ -82,7 +78,7 @@ function InvestorPanel({ id, name }: { id: InvestorKey; name: string }) {
         onClick={transferTo}
         disabled={!connected || tx.pending}
       >
-        {tx.pending ? "Transferring…" : `Transfer 1 token → ${name}`}
+        {tx.pending ? "Submitting…" : `Transfer 1 token to  ${name}`}
       </button>
       <TxFeedback state={tx} />
       {id === "carol" ? <RevokeCarolControl /> : null}
@@ -132,7 +128,7 @@ function RevokeCarolControl() {
         onClick={revoke}
         disabled={!ready || tx.pending}
       >
-        {tx.pending ? "Revoking…" : "Revoke Carol's KYC"}
+        {tx.pending ? "Revoking…" : "Revoke Carol's attestation"}
       </button>
       {!ready ? (
         <p className="text-xs text-amber-700">
@@ -166,7 +162,7 @@ function TokenBalanceRow() {
     <div className="card flex items-center justify-between">
       <div>
         <div className="text-xs uppercase tracking-wide text-slate-500">
-          Your balance
+          Connected wallet balance
         </div>
         <div className="mt-1 text-lg font-semibold">
           {balance !== undefined
@@ -185,19 +181,19 @@ function TokenBalanceRow() {
 function ScenarioHints() {
   return (
     <div className="card space-y-2 bg-slate-50">
-      <h3 className="text-sm font-semibold">What you should see</h3>
+      <h3 className="text-sm font-semibold">Expected outcomes</h3>
       <ul className="ml-5 list-disc space-y-1 text-sm text-slate-700">
         <li>
           <strong>Alice</strong> — all topics satisfied. Transfer lands, tx hash
           linked to Etherscan.
         </li>
         <li>
-          <strong>Bob</strong> — missing the accreditation topic, so{" "}
+          <strong>Bob</strong> — fails the accreditation requirement, so{" "}
           <code className="font-mono">isVerified</code> returns false and the
-          token's compliance hook reverts the transfer with a decoded reason.
+          token compliance check reverts the transfer with a decoded reason.
         </li>
         <li>
-          <strong>Carol</strong> — starts verified. Click "Revoke Carol's KYC"
+          <strong>Carol</strong> — starts verified. Click "Revoke Carol's attestation"
           and within one poll the card flips to{" "}
           <code className="font-mono">isVerified = false</code>; any subsequent
           transfer reverts.
