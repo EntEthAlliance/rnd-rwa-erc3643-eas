@@ -107,6 +107,25 @@ Schema 2 is the governance and audit-trail schema used to authorize trusted atte
 2. `authorizedTopics`  
 3. `issuerName`
 
+### 4.3 How to read Shibui data
+
+A Shibui attestation should be read in three steps:
+
+1. **Read the data** — decode the schema fields exactly as written.  
+2. **Read the semantic meaning** — interpret what each value is intended to say in compliance terms.  
+3. **Read the policy mapping** — determine how the current Shibui policy modules and issuer configuration use that value.
+
+A simple rule of thumb:
+
+- **Schema 1** answers: *what eligibility facts are being asserted about this identity?*  
+- **Schema 2** answers: *who is allowed to make which types of assertions?*
+
+Another useful distinction:
+
+- the **data** is the raw field value;  
+- the **mapping** is how that value is interpreted by a policy module or issuer rule;  
+- the **recommendation** is what the specification suggests issuers and providers should disclose or document off-chain to make the attestation auditable and interoperable.
+
 ---
 
 ## 5. Schema 1 — Investor Eligibility
@@ -123,6 +142,40 @@ Schema 1 expresses the current compliance posture of a specific ERC-3643 identit
 A single Schema-1 attestation may satisfy multiple claim topics because regulated onboarding commonly produces all of these outcomes together.
 
 ### 5.2 Field definitions
+
+### 5.2A Schema 1 at a glance
+
+The table below is the shortest concrete summary of what Schema 1 means in practice.
+
+| Field | Data carried on-chain | Semantic meaning | Typical policy use | Recommended off-chain disclosure |
+|---|---|---|---|---|
+| `identity` | ERC-3643 identity address | the compliance subject | binds all checks to one identity | how wallets are linked to identity |
+| `kycStatus` | KYC outcome enum | whether KYC is complete/current | `KYCStatusPolicy` | KYC standard used, refresh cadence |
+| `amlStatus` | AML outcome enum | whether AML review is blocking or clear | `AMLPolicy` | AML program / review basis |
+| `sanctionsStatus` | sanctions outcome enum | whether sanctions screening is blocking or clear | `SanctionsPolicy` | sanctions lists / screening coverage |
+| `sourceOfFundsStatus` | source-of-funds outcome enum | whether source of funds was verified | `SourceOfFundsPolicy` | what evidence standard was used |
+| `accreditationType` | investor-category enum | portable investor tier | `AccreditationPolicy`, `ProfessionalInvestorPolicy`, `InstitutionalInvestorPolicy` | regime context and legal basis |
+| `countryCode` | ISO numeric code | primary country used for eligibility gating | `CountryAllowListPolicy` | what country concept is encoded |
+| `expirationTimestamp` | Unix timestamp | payload freshness deadline | all Schema-1 topic policies | refresh cycle |
+| `evidenceHash` | bytes32 commitment | reference to supporting dossier | not directly enforced | dossier structure and retention policy |
+| `verificationMethod` | provenance enum | how the eligibility outcome was established | not directly enforced | dominant evidence pathway |
+
+#### Concrete Schema-1 example
+
+A provider could encode the following practical meaning:
+
+- `identity` = ERC-3643 identity for Investor A  
+- `kycStatus = VERIFIED`  
+- `amlStatus = CLEAR`  
+- `sanctionsStatus = CLEAR`  
+- `sourceOfFundsStatus = VERIFIED`  
+- `accreditationType = ACCREDITED`  
+- `countryCode = 840`  
+- `expirationTimestamp = 1798416000`  
+- `evidenceHash = keccak256(dossier)`  
+- `verificationMethod = THIRD_PARTY`
+
+That does **not** mean "Investor A is globally approved for everything." It means Shibui has a compact data package from which different policy modules can answer narrower questions such as: "is KYC valid?", "is sanctions status clear?", or "does the issuer accept this accreditation tier?"
 
 #### 5.2.1 `identity`
 
@@ -338,6 +391,23 @@ In v0.1 this field is informative. It improves auditability and trust transparen
 
 The current production policy modules interpret Schema 1 as follows:
 
+### 5.3A Field-to-policy mapping
+
+This table shows the concrete chain from **data** to **mapping** to **runtime behavior**.
+
+| Data field | Example value | Semantic reading | Policy / verifier action |
+|---|---|---|---|
+| `kycStatus` | `VERIFIED` | KYC is complete and current | KYC topic can pass if the payload is fresh and the attester is trusted |
+| `amlStatus` | `CLEAR` | no blocking AML issue | AML topic can pass if the payload is fresh and the attester is trusted |
+| `sanctionsStatus` | `CLEAR` | no blocking sanctions issue | sanctions topic can pass if the payload is fresh and the attester is trusted |
+| `sourceOfFundsStatus` | `VERIFIED` | source of funds reviewed and accepted | source-of-funds topic can pass if the payload is fresh and the attester is trusted |
+| `countryCode` | `840` | provider's primary country classification is US | country policy decides allow / block based on issuer configuration |
+| `accreditationType` | `ACCREDITED` | portable investor tier corresponding to accredited-style treatment | issuer-configured accreditation policy decides whether that tier is sufficient |
+| `accreditationType` | `INSTITUTIONAL` | institutional-only tier | institutional policy can pass if the payload is fresh and the attester is trusted |
+| `expirationTimestamp` | future ts | payload still current | all topic checks fail once the payload is stale |
+
+This is the core semantic model of Shibui: the schema carries a compact set of reusable compliance facts, and the policy modules decide which facts matter for a specific token or distribution rule.
+
 | Topic ID | Topic | Required semantic outcome |
 |---:|---|---|
 | 1 | KYC | `kycStatus = VERIFIED` and payload fresh |
@@ -530,6 +600,20 @@ Examples:
 - what legal test was used before setting `accreditationType = ACCREDITED` or `INSTITUTIONAL`?
 
 For that reason, Shibui adoption should include a short conformance appendix or onboarding note per provider.
+
+### 7.1 Recommended provider disclosure checklist
+
+### 7.0 What issuers should actually do
+
+For practical adoption, the recommended Shibui workflow is:
+
+1. approve a trusted attester through Schema 2;  
+2. require that attester to disclose its identity anchor and resolution method;  
+3. require a short provider conformance note covering country meaning, sanctions coverage, and accreditation mapping;  
+4. verify that the Schema-1 values being asserted are sufficient for the issuer's actual transfer restrictions;  
+5. keep the richer jurisdiction and dossier detail off-chain, tied to `evidenceHash`.
+
+In short: **put the minimum portable facts on-chain, and put the nuance in a documented off-chain dossier.**
 
 ### 7.1 Recommended provider disclosure checklist
 
