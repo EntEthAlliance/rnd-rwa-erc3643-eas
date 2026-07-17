@@ -8,25 +8,25 @@
     "SchemaRegistry": "0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0"
   },
   "shibui": {
-    "EASClaimVerifier": "0x0000000000000000000000000000000000000000",
-    "EASTrustedIssuersAdapter": "0x0000000000000000000000000000000000000000",
-    "EASIdentityProxy": "0x0000000000000000000000000000000000000000",
+    "EASClaimVerifier": "0xD096e49B67E20BFF6FA25A235F79E4Cc64342153",
+    "EASTrustedIssuersAdapter": "0x8011cc16757da380b23E24f5191A4FD5f43cE860",
+    "EASIdentityProxy": "0xc30647819F63131d2c1a8e1dd167D951806a30fE",
     "ClaimTopicsRegistry": "0x0000000000000000000000000000000000000000",
-    "TrustedIssuerResolver": "0x0000000000000000000000000000000000000000",
+    "TrustedIssuerResolver": "0x6bBafA0011E82F526A780340F78f47325e667f9a",
     "policies": {
-      "KYCStatusPolicy": "0x0000000000000000000000000000000000000000",
-      "AMLPolicy": "0x0000000000000000000000000000000000000000",
-      "SanctionsPolicy": "0x0000000000000000000000000000000000000000",
-      "SourceOfFundsPolicy": "0x0000000000000000000000000000000000000000",
-      "AccreditationPolicy": "0x0000000000000000000000000000000000000000",
-      "ProfessionalInvestorPolicy": "0x0000000000000000000000000000000000000000",
-      "InstitutionalInvestorPolicy": "0x0000000000000000000000000000000000000000",
-      "CountryAllowListPolicy": "0x0000000000000000000000000000000000000000"
+      "KYCStatusPolicy": "0xddD2Bf48bb5808316e19C30633BeAB24a649Fd38",
+      "AMLPolicy": "0xbE8553F116AC86EfE1B97B956B7244ad3a9F672c",
+      "SanctionsPolicy": "0x005DDaEFCA205B9228B21FF24fF4852a6029a395",
+      "SourceOfFundsPolicy": "0xa7A7e6617e3C2fC65846bE201A58e022D5016B9f",
+      "AccreditationPolicy": "0x29Bf1EA5569FA594aaD3e17d9EaeA2bE689593Db",
+      "ProfessionalInvestorPolicy": "0xb9fc34D8eCE78f8B1A128f4C2E239Fd09a13fC37",
+      "InstitutionalInvestorPolicy": "0x4212b432B864132012b3cccA3e9eeb508f09Ff2C",
+      "CountryAllowListPolicy": "0xcab325aD02348BFDfC3b5E7C93f00fFfc177bc45"
     }
   },
   "schemas": {
-    "investorEligibility": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "issuerAuthorization": "0x0000000000000000000000000000000000000000000000000000000000000000"
+    "investorEligibility": "0x5019b2b649bf839cdd038826df5476a2390c90144384dae5174c2851ae1d414c",
+    "issuerAuthorization": "0x8b49c224cbec63563e7dcc0d6da7789b721cfe12212e615a658c13d931d9d7c8"
   },
   "demo": {
     "DemoERC3643Token": "0x0000000000000000000000000000000000000000",
@@ -39,7 +39,7 @@
       "bob": {
         "wallet": "0x0000000000000000000000000000000000000000",
         "identity": "0x0000000000000000000000000000000000000000",
-        "description": "Missing accreditation — transfer must revert"
+        "description": "Missing accreditation \u2014 transfer must revert"
       },
       "carol": {
         "wallet": "0x0000000000000000000000000000000000000000",
@@ -53,7 +53,7 @@
       "carolKYC": "0x0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
-  "lastUpdated": null,
-  "deployer": null,
+  "lastUpdated": "2026-07-17T19:14:42Z",
+  "deployer": "0x94141fc8B83e318F071F41ddcadB99bBC90fD5e3",
   "deploymentBlock": null
 }
