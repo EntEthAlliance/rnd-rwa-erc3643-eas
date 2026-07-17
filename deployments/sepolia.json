@@ -11,7 +11,7 @@
     "EASClaimVerifier": "0xD096e49B67E20BFF6FA25A235F79E4Cc64342153",
     "EASTrustedIssuersAdapter": "0x8011cc16757da380b23E24f5191A4FD5f43cE860",
     "EASIdentityProxy": "0xc30647819F63131d2c1a8e1dd167D951806a30fE",
-    "ClaimTopicsRegistry": "0x0000000000000000000000000000000000000000",
+    "ClaimTopicsRegistry": "0x57106c43EF054ADce39541478208f83213011DA5",
     "TrustedIssuerResolver": "0x6bBafA0011E82F526A780340F78f47325e667f9a",
     "policies": {
       "KYCStatusPolicy": "0xddD2Bf48bb5808316e19C30633BeAB24a649Fd38",
@@ -39,28 +39,33 @@
     "DemoERC3643Token": "0x0000000000000000000000000000000000000000",
     "investors": {
       "alice": {
-        "wallet": "0x0000000000000000000000000000000000000000",
-        "identity": "0x0000000000000000000000000000000000000000",
-        "description": "Fully verified: KYC ok, AML clear, accredited, US"
+        "wallet": "0xf44cE3d13371C21DEb7f88c152b20854E1243c75",
+        "identity": "0xf44cE3d13371C21DEb7f88c152b20854E1243c75",
+        "description": "Fully verified: KYC ok, AML clear, accredited, US",
+        "isVerified": true
       },
       "bob": {
-        "wallet": "0x0000000000000000000000000000000000000000",
-        "identity": "0x0000000000000000000000000000000000000000",
-        "description": "Missing accreditation \u2014 transfer must revert"
+        "wallet": "0xb8358f1143aC522557bf97E395321eC86545b880",
+        "identity": "0xb8358f1143aC522557bf97E395321eC86545b880",
+        "description": "Missing accreditation \u2014 transfer must revert",
+        "isVerified": false
       },
       "carol": {
-        "wallet": "0x0000000000000000000000000000000000000000",
-        "identity": "0x0000000000000000000000000000000000000000",
-        "description": "KYC verified, then revoked live during the demo"
+        "wallet": "0xd0E6d675127F8d648FAa00dC522E1BE26aBC0c8d",
+        "identity": "0xd0E6d675127F8d648FAa00dC522E1BE26aBC0c8d",
+        "description": "KYC verified, then revoked live during the demo",
+        "isVerified": true,
+        "revokeCommand": "cast send 0xC2679fBD37d54388Ce493F1DB75320D236e1815e \"revoke(((bytes32),(bytes32,uint256)))\" \"((0x5019b2b649bf839cdd038826df5476a2390c90144384dae5174c2851ae1d414c),(0x93db63ff202ab16c678b79cec075dd740c58238c4202c786e660eb2ba0966d8a,0))\" --private-key $PRIVATE_KEY --rpc-url $RPC_URL"
       }
     },
     "attestations": {
-      "aliceKYC": "0x0000000000000000000000000000000000000000000000000000000000000000",
-      "bobKYC": "0x0000000000000000000000000000000000000000000000000000000000000000",
-      "carolKYC": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      "aliceInvestorEligibility": "0x1cc05e0aadf7bd01f3aae959dca287ebd7a0e2044f37f1c86dcdf5eb58d48ff4",
+      "bobInvestorEligibility": "0x6c2b3f636370bfa90d37350eeeda1dfc71af26bdba9c04c00a1f2718aa15fe92",
+      "carolInvestorEligibility": "0x93db63ff202ab16c678b79cec075dd740c58238c4202c786e660eb2ba0966d8a",
+      "adminIssuerAuthorization": "0xf051370260b8e77cac8d0c7e2abbb182384854d428c5afb0ae2f4a37d0281710"
     }
   },
-  "lastUpdated": "2026-07-17T19:14:42Z",
+  "lastUpdated": "2026-07-17T21:15:00Z",
   "deployer": "0x94141fc8B83e318F071F41ddcadB99bBC90fD5e3",
   "deploymentBlock": null
 }
