@@ -22,6 +22,13 @@
       "ProfessionalInvestorPolicy": "0xb9fc34D8eCE78f8B1A128f4C2E239Fd09a13fC37",
       "InstitutionalInvestorPolicy": "0x4212b432B864132012b3cccA3e9eeb508f09Ff2C",
       "CountryAllowListPolicy": "0xcab325aD02348BFDfC3b5E7C93f00fFfc177bc45"
+    },
+    "vlei": {
+      "VLEILegalEntityPolicy": "0x0000000000000000000000000000000000000000",
+      "VLEIAuthorizedRolePolicy": "0x0000000000000000000000000000000000000000",
+      "bridgeSchemaUID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "topicVLEILegalEntity": 15,
+      "topicVLEIAuthorizedRole": 16
     }
   },
   "schemas": {
