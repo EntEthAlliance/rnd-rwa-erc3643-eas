@@ -46,9 +46,9 @@ contract DemoERC3643Token is ERC20, AccessControl {
     }
 
     function _update(address from, address to, uint256 value) internal override {
-        // Mints (from=0) and burns (to=0) skip the compliance gate — same as
-        // the T-REX reference. Transfers between wallets must both sides be
-        // verified under Shibui's current policy set.
+        // Mints skip the SENDER check (from=0) but the recipient must be
+        // verified; burns skip the RECIPIENT check (to=0). Matches T-REX
+        // semantics: tokens can only ever be delivered to verified investors.
         if (from != address(0) && !claimVerifier.isVerified(from)) {
             revert DemoTransferBlocked(from, "Sender not verified");
         }

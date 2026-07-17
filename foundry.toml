@@ -26,7 +26,10 @@ remappings = [
 
 # Allow `vm.getCode`/`vm.deployCode` to read hardhat-built artifacts from the
 # ERC-3643 submodule at lib/ERC-3643/artifacts/...
-fs_permissions = [{ access = "read", path = "./lib/ERC-3643/artifacts" }]
+fs_permissions = [
+    { access = "read", path = "./lib/ERC-3643/artifacts" },
+    { access = "read-write", path = "./deployments" },
+]
 
 [profile.default.fuzz]
 runs = 256
