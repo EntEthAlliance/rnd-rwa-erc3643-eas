@@ -44,6 +44,11 @@ import {ClaimTopicsRegistry} from "../contracts/ClaimTopicsRegistry.sol";
  *        KYC_POLICY, AML_POLICY, SANCTIONS_POLICY, SOF_POLICY,
  *        PROFESSIONAL_POLICY, INSTITUTIONAL_POLICY, COUNTRY_POLICY,
  *        ACCREDITATION_POLICY   — each optional; skipped if unset.
+ *
+ *        VLEI_BRIDGE_SCHEMA_UID — optional; when set together with
+ *        VLEI_LE_POLICY / VLEI_ROLE_POLICY, wires topics 15/16 (PR #98
+ *        vlei-to-eas integration) to the bridge schema and VLEIPolicy
+ *        instances. All three are skipped when the schema UID is unset.
  */
 contract ConfigureBridge is Script {
     uint256 constant TOPIC_KYC = 1;
@@ -54,6 +59,8 @@ contract ConfigureBridge is Script {
     uint256 constant TOPIC_INSTITUTIONAL = 10;
     uint256 constant TOPIC_SANCTIONS = 13;
     uint256 constant TOPIC_SOURCE_OF_FUNDS = 14;
+    uint256 constant TOPIC_VLEI_LEGAL_ENTITY = 15;
+    uint256 constant TOPIC_VLEI_AUTHORIZED_ROLE = 16;
 
     address constant EAS_SEPOLIA = 0xC2679fBD37d54388Ce493F1DB75320D236e1815e;
     address constant EAS_BASE_SEPOLIA = 0x4200000000000000000000000000000000000021;
@@ -124,6 +131,17 @@ contract ConfigureBridge is Script {
         _bindIfSet(verifier, TOPIC_INSTITUTIONAL, "INSTITUTIONAL_POLICY");
         _bindIfSet(verifier, TOPIC_COUNTRY, "COUNTRY_POLICY");
         _bindIfSet(verifier, TOPIC_ACCREDITATION, "ACCREDITATION_POLICY");
+
+        console2.log("--- vLEI topics 15/16 (optional, PR #98) ---");
+        bytes32 vleiSchema = vm.envOr("VLEI_BRIDGE_SCHEMA_UID", bytes32(0));
+        if (vleiSchema != bytes32(0)) {
+            verifier.setTopicSchemaMapping(TOPIC_VLEI_LEGAL_ENTITY, vleiSchema);
+            verifier.setTopicSchemaMapping(TOPIC_VLEI_AUTHORIZED_ROLE, vleiSchema);
+            _bindIfSet(verifier, TOPIC_VLEI_LEGAL_ENTITY, "VLEI_LE_POLICY");
+            _bindIfSet(verifier, TOPIC_VLEI_AUTHORIZED_ROLE, "VLEI_ROLE_POLICY");
+        } else {
+            console2.log("Skipped (VLEI_BRIDGE_SCHEMA_UID unset)");
+        }
 
         vm.stopBroadcast();
 
