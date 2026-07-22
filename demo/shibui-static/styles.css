@@ -32,9 +32,9 @@ body{
   font-family:var(--sans);
   color:var(--text);
   background:
-    radial-gradient(1200px 700px at 15% 10%, rgba(97,168,255,.20), transparent 60%),
-    radial-gradient(900px 500px at 85% 0%, rgba(155,123,255,.14), transparent 55%),
-    radial-gradient(900px 600px at 40% 95%, rgba(96,242,194,.08), transparent 60%),
+    radial-gradient(1200px 700px at 15% 10%, rgba(98,126,234,.20), transparent 60%),
+    radial-gradient(900px 500px at 85% 0%, rgba(143,168,255,.14), transparent 55%),
+    radial-gradient(900px 600px at 40% 95%, rgba(0,212,170,.08), transparent 60%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
 }
 
