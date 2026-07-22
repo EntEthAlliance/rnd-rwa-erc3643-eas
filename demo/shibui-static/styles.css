@@ -12,17 +12,17 @@
   --text:#EAF0FF;
   --muted:rgba(234,240,255,.72);
   --muted2:rgba(234,240,255,.58);
-  --brand:#61A8FF;
-  --brand2:#9B7BFF;
-  --ok:#60F2C2;
-  --warn:#FFD46A;
+  --brand:#627eea;
+  --brand2:#8fa8ff;
+  --ok:#00d4aa;
+  --warn:#fbbf24;
   --shadow: 0 18px 60px rgba(0,0,0,.45);
   --radius:18px;
   --radius2:24px;
   --max:1120px;
 
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 }
 
 *{box-sizing:border-box}
