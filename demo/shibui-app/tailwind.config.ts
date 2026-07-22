@@ -8,9 +8,9 @@ const config: Config = {
         shibui: {
           ink: "#0b1221",
           paper: "#f7f8fb",
-          accent: "#2f6fed",
-          ok: "#15803d",
-          warn: "#b45309",
+          accent: "#627eea",
+          ok: "#00d4aa",
+          warn: "#fbbf24",
           err: "#b91c1c",
         },
       },
