@@ -48,9 +48,18 @@ a:hover{text-decoration:underline}
 
 .container{max-width:var(--max);margin:0 auto;padding:0 18px}
 
+/* EEA token bridge (Tier B) — maps Shibui local vars to --eea-* */
+:root {
+  --brand:   var(--eea-accent);
+  --brand2:  var(--eea-accent-hover);
+  --ok:      var(--eea-success);
+  --warn:    var(--eea-warning);
+  --shadow:  var(--eea-shadow-lg);
+}
+
 /* Topbar */
 .topbar{
-  position:sticky; top:0; z-index:50;
+  position:sticky; top:var(--eea-nav-height,52px); z-index:50;
   background:rgba(7,10,18,.60);
   border-bottom:1px solid rgba(255,255,255,.08);
   backdrop-filter: blur(14px);
