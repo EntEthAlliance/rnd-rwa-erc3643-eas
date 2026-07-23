@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <!-- EEA-PAGES Analytics (GT-PL9524M) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=GT-PL9524M"></script>
@@ -12,6 +12,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Identity Solutions — Shibui Reference Map</title>
+<link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/tokens.css">
+<link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/nav.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 
@@ -37,8 +39,10 @@
     --max-width: 1200px;
     --stroke: rgba(255,255,255,0.10);
     --muted: rgba(232,240,248,0.62);
-    --brand: #61A8FF;
-    --brand2: #9B7BFF;
+
+    /* EEA token bridge (Tier B) */
+    --brand:   var(--eea-accent, #627eea);
+    --brand2:  var(--eea-accent-hover, #8fa8ff);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -55,7 +59,7 @@
   /* TOP PANEL (match main Shibui site) */
   .topbar {
     position: sticky;
-    top: 0;
+    top: var(--eea-nav-height, 52px);
     z-index: 200;
     background: rgba(7,10,18,0.88);
     backdrop-filter: blur(16px);
@@ -463,6 +467,20 @@
 </style>
 </head>
 <body>
+
+<nav class="eea-unified-nav">
+  <a class="eea-unified-nav-brand" href="https://entethalliance.org">
+    <span>EEA</span>
+    <span>Enterprise <em>Ethereum</em> Alliance</span>
+  </a>
+  <div class="eea-unified-nav-links">
+    <a href="https://entethalliance.github.io/">Hub</a>
+    <a href="./index.html">Shibui</a>
+    <a href="./identity-solutions-map.html" class="active">Reference map</a>
+    <a href="./demo/">Live demo</a>
+  </div>
+  <button class="eea-unified-nav-toggle" aria-label="Toggle theme">🌙</button>
+</nav>
 
 <header class="topbar" id="top">
   <div class="topbar-inner">
@@ -1382,5 +1400,6 @@
     updateVisibility();
   }
 </script>
+<script src="https://entethalliance.github.io/eea-design-system/nav.js"></script>
 </body>
 </html>

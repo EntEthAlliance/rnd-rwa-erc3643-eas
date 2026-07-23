@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <!-- EEA-PAGES Analytics (GT-PL9524M) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=GT-PL9524M"></script>
@@ -16,10 +16,26 @@
   <meta name="description" content="Shibui: a shared identity primitive for tokenized assets. Verify once, use everywhere." />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/tokens.css">
+  <link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/base.css">
+  <link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/nav.css">
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
+
+  <nav class="eea-unified-nav">
+    <a class="eea-unified-nav-brand" href="https://entethalliance.org">
+      <span>EEA</span>
+      <span>Enterprise <em>Ethereum</em> Alliance</span>
+    </a>
+    <div class="eea-unified-nav-links">
+      <a href="https://entethalliance.github.io/">Hub</a>
+      <a href="./index.html" class="active">Shibui</a>
+      <a href="./identity-solutions-map.html">Reference map</a>
+      <a href="./demo/">Live demo</a>
+    </div>
+    <button class="eea-unified-nav-toggle" aria-label="Toggle theme">🌙</button>
+  </nav>
 
   <header class="topbar" id="top">
     <div class="topbar-inner">
@@ -622,5 +638,6 @@
   </footer>
 
   <script src="./app.js" defer></script>
+  <script src="https://entethalliance.github.io/eea-design-system/nav.js"></script>
 </body>
 </html>
