@@ -4,26 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Identity Solutions — Shibui Reference Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/tokens.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 
+  /* EEA token bridge — local names resolve from the canonical --eea-* set.
+     See DESIGN.md, "Bridge pattern (Tier B reference)". */
   :root {
-    --bg: #0a0c0f;
-    --surface: #111418;
-    --border: #1e2530;
-    --border-bright: #2e3a4a;
-    --text: #c8d4e0;
-    --text-dim: #5a6a7a;
-    --text-bright: #e8f0f8;
-    --accent: #00c8a0;
-    --accent-dim: rgba(0,200,160,0.12);
-    --accent-mid: rgba(0,200,160,0.25);
-    --red: #e05050;
-    --yellow: #d4a843;
-    --blue: #4a9cd4;
-    --purple: #9a7ad4;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
+    --bg:            var(--eea-bg);
+    --surface:       var(--eea-bg-card);
+    --border:        var(--eea-border-solid);
+    --border-bright: var(--eea-text-3);
+    --text:          var(--eea-text-2);
+    --text-dim:      var(--eea-text-3);
+    --text-bright:   var(--eea-text);
+    --accent:        var(--eea-accent);
+    --accent-dim:    var(--eea-accent-bg);
+    --accent-mid:    rgba(98, 126, 234, 0.25);
+    --red:           var(--eea-danger);
+    --yellow:        var(--eea-warning);
+    --blue:          var(--eea-info);
+    --purple:        #9a7ad4;   /* domain semantic — no design-system equivalent */
+    --orange:        #d47a4a;   /* domain semantic — Travel Rule category */
+    --mono:          var(--eea-font-mono);
+    --sans:          var(--eea-font);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -74,7 +80,7 @@
     color: var(--text-dim);
     border: 1px solid var(--border);
     padding: 3px 8px;
-    border-radius: 2px;
+    border-radius: var(--eea-radius-xs);
   }
 
   .intro-copy {
@@ -117,7 +123,7 @@
     font-size: 10px;
     padding: 4px 10px;
     cursor: pointer;
-    border-radius: 2px;
+    border-radius: var(--eea-radius-xs);
     transition: all 0.15s;
     letter-spacing: 0.05em;
   }
@@ -133,7 +139,7 @@
     font-family: var(--mono);
     font-size: 11px;
     padding: 5px 12px;
-    border-radius: 2px;
+    border-radius: var(--eea-radius-xs);
     width: 200px;
     outline: none;
   }
@@ -160,7 +166,7 @@
     cursor: pointer;
   }
 
-  .card:hover { background: #141a22; }
+  .card:hover { background: var(--eea-bg-hover); }
 
   .card-accent-bar {
     position: absolute;
@@ -174,7 +180,7 @@
   .cat-traditional .card-accent-bar { background: var(--yellow); }
   .cat-institutional .card-accent-bar { background: var(--purple); }
   .cat-pilot .card-accent-bar { background: var(--red); }
-  .cat-travelrule .card-accent-bar { background: #d47a4a; }
+  .cat-travelrule .card-accent-bar { background: var(--orange); }
 
   /* Card header */
   .card-head {
@@ -210,12 +216,12 @@
     white-space: nowrap;
   }
 
-  .tag-onchain { background: rgba(0,200,160,0.1); color: var(--accent); border: 1px solid rgba(0,200,160,0.2); }
-  .tag-credential { background: rgba(74,156,212,0.1); color: var(--blue); border: 1px solid rgba(74,156,212,0.2); }
-  .tag-traditional { background: rgba(212,168,67,0.1); color: var(--yellow); border: 1px solid rgba(212,168,67,0.2); }
-  .tag-institutional { background: rgba(154,122,212,0.1); color: var(--purple); border: 1px solid rgba(154,122,212,0.2); }
-  .tag-pilot { background: rgba(224,80,80,0.1); color: var(--red); border: 1px solid rgba(224,80,80,0.2); }
-  .tag-travelrule { background: rgba(212,122,74,0.1); color: #d47a4a; border: 1px solid rgba(212,122,74,0.2); }
+  .tag-onchain { background: var(--eea-accent-bg); color: var(--eea-accent-hover); border: 1px solid rgba(98,126,234,0.25); }
+  .tag-credential { background: var(--eea-info-bg); color: var(--eea-info); border: 1px solid rgba(0,180,216,0.25); }
+  .tag-traditional { background: var(--eea-warning-bg); color: var(--eea-warning); border: 1px solid rgba(251,191,36,0.25); }
+  .tag-institutional { background: rgba(154,122,212,0.12); color: var(--purple); border: 1px solid rgba(154,122,212,0.25); }
+  .tag-pilot { background: var(--eea-danger-bg); color: var(--eea-danger); border: 1px solid rgba(255,107,107,0.25); }
+  .tag-travelrule { background: rgba(212,122,74,0.12); color: var(--orange); border: 1px solid rgba(212,122,74,0.25); }
 
   .card-led {
     font-family: var(--mono);
@@ -250,9 +256,9 @@
   }
 
   .meta-block {
-    background: rgba(255,255,255,0.02);
+    background: var(--eea-bg-raised);
     border: 1px solid var(--border);
-    border-radius: 2px;
+    border-radius: var(--eea-radius-xs);
     padding: 8px 10px;
   }
 
@@ -272,7 +278,7 @@
   }
 
   .meta-value.adoption { color: var(--accent); }
-  .meta-value.limitation { color: #c8a060; }
+  .meta-value.limitation { color: var(--eea-warning); }
 
   /* Links */
   .card-links {
@@ -288,7 +294,7 @@
     text-decoration: none;
     border: 1px solid var(--border);
     padding: 3px 8px;
-    border-radius: 2px;
+    border-radius: var(--eea-radius-xs);
     transition: all 0.15s;
     display: flex;
     align-items: center;
@@ -1232,6 +1238,16 @@
   <span>github.com/EntEthAlliance/rnd-rwa-erc3643-eas</span>
 </footer>
 
+<script>
+  // Honour the theme chosen on the main Shibui page (same design-system storage key).
+  (function () {
+    var stored = localStorage.getItem('eea-theme');
+    var theme = (stored === 'dark' || stored === 'light')
+      ? stored
+      : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 <script>
   let activeFilter = 'all';
   let searchTerm = '';
