@@ -1,0 +1,56 @@
+name: Pages sync
+
+# Publishes the static site: copies demo/shibui-static's pages to the
+# gh-pages branch root, which GitHub Pages serves at
+# https://entethalliance.github.io/rnd-rwa-erc3643-eas/.
+# Only the two page files are synced — the demo export (demo/, _next/)
+# and diagrams/ on gh-pages are left untouched.
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "demo/shibui-static/index.html"
+      - "demo/shibui-static/identity-solutions-map.html"
+      - ".github/workflows/pages-sync.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync static pages to gh-pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out master
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Check out gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+
+      - name: Copy pages
+        run: |
+          cp source/demo/shibui-static/index.html site/index.html
+          cp source/demo/shibui-static/identity-solutions-map.html site/identity-solutions-map.html
+
+      - name: Commit and push
+        working-directory: site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html identity-solutions-map.html
+          if git diff --cached --quiet; then
+            echo "gh-pages already up to date."
+          else
+            git commit -m "chore(pages): sync static pages from ${GITHUB_SHA::7}"
+            git push
+          fi

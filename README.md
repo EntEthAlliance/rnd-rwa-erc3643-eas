@@ -279,7 +279,7 @@ test/
 
 demo/
 ├─ shibui-app/                         — interactive Sepolia demo app
-└─ shibui-static/                      — static positioning / GitHub Pages site
+└─ shibui-static/                      — public site source (synced to gh-pages)
 
 diagrams/
 ├─ architecture-overview.mmd           — Shibui system architecture
