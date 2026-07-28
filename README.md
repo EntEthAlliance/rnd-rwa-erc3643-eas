@@ -1,54 +1,37 @@
-# Shibui — Static Positioning Page
+# Shibui — Public Site (GitHub Pages)
 
-This folder contains a **single-page, presentation-ready site** for Shibui.
+This branch is the published site at
+<https://entethalliance.github.io/rnd-rwa-erc3643-eas/>.
 
-**Canonical intro (used on the page):**
-> "Shibui is an open-source identity standard built on Ethereum Attestation Service (EAS), designed to give tokenized assets a shared, interoperable language for investor eligibility."
+## Pages
 
-It is written for a **broad bank / TradFi audience** (institutional, concise, low-jargon), with a primary CTA to **join the working group**.
+- `index.html` — the Shibui main page. Built on the hosted
+  [EEA design system](https://entethalliance.github.io/eea-design-system/)
+  (Tier B: `tokens.css`, `base.css`, `nav.css`, `components.css`) with the
+  unified EEA nav, a sticky section nav with scroll spy, a light/dark theme
+  toggle (`eea-theme` localStorage key, dark default) and print styles.
+- `identity-solutions-map.html` — the identity solutions reference map,
+  token-bridged onto the same design system. Reads the shared `eea-theme`
+  key so the theme carries across pages.
+- `demo/` — static export of the Next.js demo app
+  (`demo/shibui-app` on `master`), deployed separately.
 
-## Visual components (built-in)
+The source of truth for the two static pages is `demo/shibui-static/` on
+`master`; changes land there first and are then published here.
 
-The page includes lightweight, responsive diagrams (inline SVG/CSS — no external libraries):
-- Compounding network effect timeline
-- “Babel of verification” (duplicated onboarding)
-- Before/after operational flow
-- Working-group governance map
-- What vs How architecture separation (standards vs implementations)
+## Run locally
 
-## Run
-
-### Option A — open directly
-Open `index.html` in a browser.
-
-### Option B — local server
 ```bash
-cd demo/shibui-static
 python3 -m http.server 8000
 ```
+
 Then open <http://127.0.0.1:8000/>.
-
-## Customize the working-group CTA
-
-The page includes a mailto CTA:
-- `mailto:shibui-working-group@yourdomain.tld`
-
-Before publishing externally, replace this with the real working-group contact.
-
-## Export to PDF
-
-This page includes **print styles** (A4/Letter friendly) for clean PDF export.
-
-1. Open the page
-2. Browser menu → **Print…**
-3. Destination → **Save as PDF**
-4. Recommended settings:
-   - Paper: **Letter** or **A4**
-   - Background graphics: **On** (keeps subtle borders)
 
 ## Notes
 
-- Static HTML/CSS/JS (GitHub Pages friendly)
-- No wallet connection
-- No RPC / chain calls
-- No build step
+- Static HTML/CSS/JS — no build step; the only external requests are
+  Google Fonts and the design-system stylesheets.
+- Analytics: EEA-PAGES Google tag (GT-PL9524M) in both pages' heads.
+- Section 07 deliberately does **not** announce a working group — the page
+  tests interest. Do not reintroduce a working-group CTA or placeholder
+  mailto.
