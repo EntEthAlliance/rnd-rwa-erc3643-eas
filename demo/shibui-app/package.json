@@ -2,7 +2,7 @@
   "name": "shibui-demo-app",
   "version": "0.1.0",
   "private": true,
-  "description": "Shibui demo UI — attestation lifecycle walkthrough on Sepolia",
+  "description": "Shibui demo UI — investor-eligibility walkthrough on Sepolia",
   "scripts": {
     "sync:deployments": "node scripts/sync-deployments.mjs",
     "predev": "npm run sync:deployments",

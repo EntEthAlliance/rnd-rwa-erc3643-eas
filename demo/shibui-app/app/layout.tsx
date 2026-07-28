@@ -5,9 +5,9 @@ import { Providers } from "./providers";
 import { Nav } from "@/components/Nav";
 
 export const metadata: Metadata = {
-  title: "Shibui Demo — Attestation lifecycle on Sepolia",
+  title: "Shibui Demo — Investor-eligibility flow on Sepolia",
   description:
-    "Walk through schema registration, attester authorization, attestation issuance, and compliance-gated transfers for ERC-3643 tokens on Sepolia.",
+    "Walk through schema registration, trusted-attester authorization, attestation issuance, and compliance-gated ERC-3643 transfers on Sepolia.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

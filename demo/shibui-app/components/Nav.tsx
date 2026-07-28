@@ -6,9 +6,10 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const ROUTES = [
   { href: "/", label: "Overview" },
-  { href: "/admin", label: "Admin" },
-  { href: "/attester", label: "Attester" },
-  { href: "/transfer", label: "Transfer" },
+  { href: "/demo", label: "Demo" },
+  { href: "/demo/admin", label: "Admin" },
+  { href: "/demo/attester", label: "Attester" },
+  { href: "/demo/transfer", label: "Transfer" },
 ];
 
 export function Nav() {
@@ -26,7 +27,9 @@ export function Nav() {
           <nav className="flex items-center gap-1">
             {ROUTES.map((r) => {
               const active =
-                r.href === "/" ? pathname === "/" : pathname?.startsWith(r.href);
+                r.href === "/" || r.href === "/demo"
+                  ? pathname === r.href
+                  : pathname?.startsWith(r.href);
               return (
                 <Link
                   key={r.href}

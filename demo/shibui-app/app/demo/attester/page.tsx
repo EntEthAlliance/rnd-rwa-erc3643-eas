@@ -51,7 +51,7 @@ const DEFAULT_FORM: Form = {
   countryCode: COUNTRY_USA,
   expirationDays: 365,
   evidenceSource: "dossier-2026-Q2-001",
-  verificationMethod: VERIFICATION_METHOD.THIRD_PARTY_REVIEWED,
+  verificationMethod: VERIFICATION_METHOD.THIRD_PARTY,
   claimTopic: 1,
 };
 
@@ -60,7 +60,7 @@ export default function AttesterPage() {
     <ConfigurationGate required={["verifier", "schemas"]}>
       <div className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold">Attester · KYC operator</h1>
+          <h1 className="text-2xl font-semibold">Attester · compliance provider</h1>
           <p className="text-slate-700">
             Issue a Shibui-compatible Investor Eligibility attestation, then
             register it against the investor's identity. Field values map{" "}
@@ -292,8 +292,8 @@ function AttesterForm() {
           options={[
             [VERIFICATION_METHOD.SELF_ATTESTED, "SELF_ATTESTED (1)"],
             [
-              VERIFICATION_METHOD.THIRD_PARTY_REVIEWED,
-              "THIRD_PARTY_REVIEWED (2)",
+              VERIFICATION_METHOD.THIRD_PARTY,
+              "THIRD_PARTY (2)",
             ],
             [
               VERIFICATION_METHOD.PROFESSIONAL_LETTER,
@@ -320,19 +320,18 @@ function AttesterForm() {
       <div className="space-y-4">
         <div className="card space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Step 1. Sign & issue</h3>
+            <h3 className="text-lg font-semibold">Step 1. Issue attestation</h3>
             {uid ? <StatusBadge tone="ok">Issued</StatusBadge> : null}
           </div>
           <p className="text-sm text-slate-700">
-            Wallet signs an <code className="font-mono">attest()</code> on EAS
-            using the encoded Investor Eligibility payload above.
+            Submit an <code className="font-mono">attest()</code> transaction to EAS using the Investor Eligibility payload above.
           </p>
           <button
             disabled={!isConnected || !addressOk || attestState.pending}
             onClick={sign}
             className="btn-primary"
           >
-            {attestState.pending ? "Signing…" : "Sign & issue"}
+            {attestState.pending ? "Issuing…" : "Issue attestation"}
           </button>
           <TxFeedback state={attestState} />
           {uid ? (
