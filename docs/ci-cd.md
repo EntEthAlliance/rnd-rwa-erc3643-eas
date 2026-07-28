@@ -25,6 +25,20 @@ If a PR touches any contract-related path (e.g. `contracts/**`, `src/**`, `test/
 
 ---
 
+## Publishing (GitHub Pages)
+
+The public site at <https://entethalliance.github.io/rnd-rwa-erc3643-eas/> is served
+from the **`gh-pages` branch**. Two workflows write to it:
+
+- **`pages-sync.yml`** — on pushes to `master` touching `demo/shibui-static/`'s pages,
+  copies `index.html` and `identity-solutions-map.html` to the `gh-pages` root.
+  `demo/shibui-static/` on `master` is the source of truth; don't edit the pages on
+  `gh-pages` directly.
+- **`demo-build.yml`** — builds the Next.js demo (`demo/shibui-app`) as a static
+  export. The demo lives under `demo/` on `gh-pages`, separate from the synced pages.
+
+---
+
 ## Why this exists
 Foundry tests are valuable for contract safety, but unnecessary for doc/site-only PRs.
 This setup preserves safety while reducing cycle time for publishing and content updates.
