@@ -14,30 +14,42 @@
 <title>Identity Solutions — Shibui Reference Map</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/tokens.css">
+<link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/editorial.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kode+Mono:wght@400;500;600&display=swap');
 
-  /* EEA token bridge — local names resolve from the canonical --eea-* set.
-     See DESIGN.md, "Bridge pattern (Tier B reference)". */
+  /* EEA token bridge — local names resolve from the editorial family
+     (--eea-ed-*) declared by editorial.css. Category colours are darkened
+     ink partners so they stay legible as text on the paper ground. */
   :root {
-    --bg:            var(--eea-bg);
-    --surface:       var(--eea-bg-card);
-    --border:        var(--eea-border-solid);
-    --border-bright: var(--eea-text-3);
-    --text:          var(--eea-text-2);
-    --text-dim:      var(--eea-text-3);
-    --text-bright:   var(--eea-text);
-    --accent:        var(--eea-accent);
-    --accent-dim:    var(--eea-accent-bg);
-    --accent-mid:    rgba(98, 126, 234, 0.25);
-    --red:           var(--eea-danger);
-    --yellow:        var(--eea-warning);
-    --blue:          var(--eea-info);
-    --purple:        #9a7ad4;   /* domain semantic — no design-system equivalent */
-    --orange:        #d47a4a;   /* domain semantic — Travel Rule category */
-    --mono:          var(--eea-font-mono);
-    --sans:          var(--eea-font);
+    --bg:            var(--eea-ed-page);
+    --surface:       var(--eea-ed-ground);
+    --border:        var(--eea-ed-line);
+    --border-bright: var(--eea-ed-ink-mute);
+    --text:          #3A423D;
+    --text-dim:      var(--eea-ed-ink-soft);
+    --text-bright:   var(--eea-ed-ink);
+    --accent:        var(--eea-ed-accent);
+    --accent-dim:    rgba(31, 92, 74, 0.10);
+    --accent-mid:    rgba(31, 92, 74, 0.25);
+    --red:           #9B413C;
+    --yellow:        #765A00;
+    --blue:          #2A5A74;
+    --purple:        #794287;   /* domain semantic — Institutional category */
+    --orange:        #94491B;   /* domain semantic — Travel Rule category */
+    --mono:          var(--eea-ed-font-mono);
+    --sans:          var(--eea-ed-font);
+    /* Legacy --eea-* names still referenced below */
+    --eea-bg-raised:   var(--eea-ed-rule);
+    --eea-bg-hover:    var(--eea-ed-rule);
+    --eea-accent-bg:   rgba(31, 92, 74, 0.10);
+    --eea-accent-hover:var(--eea-ed-accent-deep);
+    --eea-info:        var(--blue);
+    --eea-info-bg:     rgba(42, 90, 116, 0.10);
+    --eea-warning:     var(--yellow);
+    --eea-warning-bg:  rgba(118, 90, 0, 0.10);
+    --eea-danger:      var(--red);
+    --eea-danger-bg:   rgba(155, 65, 60, 0.10);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -62,7 +74,6 @@
     top: 0;
     background: var(--bg);
     z-index: 100;
-    backdrop-filter: blur(8px);
   }
 
   .logo {
@@ -88,7 +99,6 @@
     color: var(--text-dim);
     border: 1px solid var(--border);
     padding: 3px 8px;
-    border-radius: var(--eea-radius-xs);
   }
 
   .intro-copy {
@@ -131,7 +141,6 @@
     font-size: 10px;
     padding: 4px 10px;
     cursor: pointer;
-    border-radius: var(--eea-radius-xs);
     transition: all 0.15s;
     letter-spacing: 0.05em;
   }
@@ -147,7 +156,6 @@
     font-family: var(--mono);
     font-size: 11px;
     padding: 5px 12px;
-    border-radius: var(--eea-radius-xs);
     width: 200px;
     outline: none;
   }
@@ -220,16 +228,15 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2px 6px;
-    border-radius: 1px;
     white-space: nowrap;
   }
 
-  .tag-onchain { background: var(--eea-accent-bg); color: var(--eea-accent-hover); border: 1px solid rgba(98,126,234,0.25); }
-  .tag-credential { background: var(--eea-info-bg); color: var(--eea-info); border: 1px solid rgba(0,180,216,0.25); }
-  .tag-traditional { background: var(--eea-warning-bg); color: var(--eea-warning); border: 1px solid rgba(251,191,36,0.25); }
-  .tag-institutional { background: rgba(154,122,212,0.12); color: var(--purple); border: 1px solid rgba(154,122,212,0.25); }
-  .tag-pilot { background: var(--eea-danger-bg); color: var(--eea-danger); border: 1px solid rgba(255,107,107,0.25); }
-  .tag-travelrule { background: rgba(212,122,74,0.12); color: var(--orange); border: 1px solid rgba(212,122,74,0.25); }
+  .tag-onchain { background: var(--eea-accent-bg); color: var(--eea-accent-hover); border: 1px solid rgba(31,92,74,0.25); }
+  .tag-credential { background: var(--eea-info-bg); color: var(--eea-info); border: 1px solid rgba(42,90,116,0.25); }
+  .tag-traditional { background: var(--eea-warning-bg); color: var(--eea-warning); border: 1px solid rgba(118,90,0,0.25); }
+  .tag-institutional { background: rgba(121,66,135,0.10); color: var(--purple); border: 1px solid rgba(121,66,135,0.25); }
+  .tag-pilot { background: var(--eea-danger-bg); color: var(--eea-danger); border: 1px solid rgba(155,65,60,0.25); }
+  .tag-travelrule { background: rgba(148,73,27,0.10); color: var(--orange); border: 1px solid rgba(148,73,27,0.25); }
 
   .card-led {
     font-family: var(--mono);
@@ -243,7 +250,6 @@
 
   .led-dot {
     width: 4px; height: 4px;
-    border-radius: 50%;
     background: var(--text-dim);
     flex-shrink: 0;
   }
@@ -266,7 +272,6 @@
   .meta-block {
     background: var(--eea-bg-raised);
     border: 1px solid var(--border);
-    border-radius: var(--eea-radius-xs);
     padding: 8px 10px;
   }
 
@@ -302,7 +307,6 @@
     text-decoration: none;
     border: 1px solid var(--border);
     padding: 3px 8px;
-    border-radius: var(--eea-radius-xs);
     transition: all 0.15s;
     display: flex;
     align-items: center;
@@ -331,7 +335,6 @@
 
   .adot {
     width: 6px; height: 6px;
-    border-radius: 1px;
     background: var(--border-bright);
   }
 
@@ -390,7 +393,7 @@
   }
 </style>
 </head>
-<body>
+<body class="eea-editorial">
 
 <header>
   <span class="logo">Shibui</span>
@@ -1246,16 +1249,6 @@
   <span>github.com/EntEthAlliance/rnd-rwa-erc3643-eas</span>
 </footer>
 
-<script>
-  // Honour the theme chosen on the main Shibui page (same design-system storage key).
-  (function () {
-    var stored = localStorage.getItem('eea-theme');
-    var theme = (stored === 'dark' || stored === 'light')
-      ? stored
-      : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    document.documentElement.setAttribute('data-theme', theme);
-  })();
-</script>
 <script>
   let activeFilter = 'all';
   let searchTerm = '';
