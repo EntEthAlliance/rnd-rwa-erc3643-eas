@@ -20,7 +20,7 @@ export function Nav() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-lg font-semibold tracking-tight">Shibui</span>
-            <span className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+            <span className="bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
               Demo · Sepolia
             </span>
           </Link>
@@ -35,7 +35,7 @@ export function Nav() {
                   key={r.href}
                   href={r.href}
                   className={
-                    "rounded-md px-3 py-1.5 text-sm font-medium transition-colors " +
+                    "px-3 py-1.5 text-sm font-medium transition-colors " +
                     (active
                       ? "bg-slate-100 text-shibui-ink"
                       : "text-slate-600 hover:text-shibui-ink")

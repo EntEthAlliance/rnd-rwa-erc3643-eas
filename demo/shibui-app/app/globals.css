@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kode+Mono:wght@400;500;600&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,15 +19,15 @@ body {
 }
 
 .card {
-  @apply rounded-xl border border-slate-200 bg-white p-6 shadow-sm;
+  @apply border border-slate-200 bg-white p-6;
 }
 
 .btn {
-  @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors;
+  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors;
 }
 
 .btn-primary {
-  @apply btn bg-shibui-accent text-white hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed;
+  @apply btn bg-shibui-accent text-white hover:bg-shibui-accentDeep disabled:bg-slate-300 disabled:cursor-not-allowed;
 }
 
 .btn-secondary {
@@ -33,11 +35,11 @@ body {
 }
 
 .btn-danger {
-  @apply btn bg-shibui-err text-white hover:bg-red-700 disabled:bg-slate-300 disabled:cursor-not-allowed;
+  @apply btn bg-shibui-err text-white hover:bg-shibui-errDeep disabled:bg-slate-300 disabled:cursor-not-allowed;
 }
 
 .input {
-  @apply w-full rounded-md border border-slate-300 px-3 py-2 text-sm font-mono focus:border-shibui-accent focus:outline-none focus:ring-1 focus:ring-shibui-accent;
+  @apply w-full border border-slate-300 px-3 py-2 text-sm font-mono focus:border-shibui-accent focus:outline-none focus:ring-1 focus:ring-shibui-accent;
 }
 
 .label {

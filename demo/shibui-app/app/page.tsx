@@ -39,7 +39,7 @@ export default function LandingPage() {
       <section>
         <Link
           href="/demo"
-          className="inline-flex items-center gap-2 rounded-lg bg-shibui-accent px-6 py-3 text-white font-medium hover:opacity-90 transition"
+          className="inline-flex items-center gap-2 bg-shibui-accent px-6 py-3 text-white font-medium hover:bg-shibui-accentDeep transition"
         >
           Open the live demo →
         </Link>

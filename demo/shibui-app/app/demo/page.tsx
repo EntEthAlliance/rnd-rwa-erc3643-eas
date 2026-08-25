@@ -48,7 +48,7 @@ export default function Home() {
           <Link
             key={s.href}
             href={s.href}
-            className="card hover:border-shibui-accent hover:shadow-md transition"
+            className="card hover:border-shibui-accent transition"
           >
             <div className="text-xs uppercase tracking-wide text-slate-500">
               {s.actor}
@@ -99,7 +99,7 @@ export default function Home() {
         <p className="text-sm text-slate-700">
           Shibui answers a single question from the ERC-3643 token's compliance flow:
         </p>
-        <pre className="rounded-md bg-slate-900 p-4 text-sm text-slate-100">
+        <pre className="bg-slate-900 p-4 text-sm text-slate-100">
 {`EASClaimVerifier.isVerified(wallet) → bool`}
         </pre>
         <p className="text-sm text-slate-700">

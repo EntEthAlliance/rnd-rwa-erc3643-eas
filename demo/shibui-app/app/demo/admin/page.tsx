@@ -66,7 +66,7 @@ function TabButton({
       type="button"
       onClick={onClick}
       className={
-        "rounded-t-md px-4 py-2 text-sm font-medium transition-colors " +
+        "px-4 py-2 text-sm font-medium transition-colors " +
         (active
           ? "bg-white text-shibui-ink border border-slate-200 border-b-white -mb-px"
           : "text-slate-500 hover:text-shibui-ink")
@@ -234,7 +234,7 @@ function SchemaCard({
           <StatusBadge tone="neutral">Not yet registered</StatusBadge>
         )}
       </div>
-      <pre className="overflow-auto rounded bg-slate-900 p-3 text-xs text-slate-100">
+      <pre className="overflow-auto bg-slate-900 p-3 text-xs text-slate-100">
         {schema}
       </pre>
       <p className="text-xs text-slate-600">{resolverHint}</p>

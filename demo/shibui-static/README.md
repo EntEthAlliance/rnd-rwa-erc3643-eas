@@ -9,9 +9,9 @@ This folder is the source of truth for the Shibui public site, published at
   problem, the approach, the claim-topic reference, and a call to signal
   interest. Built on the hosted
   [EEA design system](https://entethalliance.github.io/eea-design-system/)
-  (Tier B: `tokens.css`, `base.css`, `nav.css`, `components.css`) with the
-  unified EEA nav, a sticky section nav with scroll spy, a light/dark theme
-  toggle and print styles.
+  editorial family (`editorial.css`, with a local bridge mapping the page's
+  legacy `--eea-*` names onto the `--eea-ed-*` tokens), the editorial site
+  bar, a sticky section nav with scroll spy and print styles.
 - `identity-solutions-map.html` — the identity solutions reference map,
   token-bridged onto the same design system. Must stay a sibling of
   `index.html` so the relative link resolves.
@@ -44,8 +44,8 @@ works.
 
 ## Content rules
 
-- Theme: dark is the default; light applies via `[data-theme="light"]`,
-  persisted under the design system's `eea-theme` localStorage key.
+- Theme: light only — the editorial family has no dark counterpart and no
+  theme toggle.
 - Section 07 deliberately does **not** announce a working group — the page
   tests interest. Do not reintroduce a working-group CTA or a placeholder
   mailto.
