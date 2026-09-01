@@ -1,0 +1,21 @@
+name: Humanizer check
+
+on:
+  pull_request:
+    paths:
+      - "**/*.html"
+      - "**/*.htm"
+      - "**/*.md"
+      - "**/*.mdx"
+
+jobs:
+  humanizer-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=200
+      - name: Check for em/en dashes and curly quotes in added content
+        run: python3 .github/scripts/check_humanizer.py
