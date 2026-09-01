@@ -70,7 +70,7 @@ Shibui is deliberately narrow. The following remain outside Shibui and belong in
 | Freeze / partial freeze (sanctions) | ERC-3643 token |
 | Lost-key recovery | ERC-3643 token `recoveryAddress` flow |
 | Lock-ups, per-investor caps, ownership limits | ERC-3643 compliance modules |
-| Cross-chain attestation canonicity | Per-chain — re-attest per chain |
+| Cross-chain attestation canonicity | Per-chain: re-attest per chain |
 | Off-chain / privacy-preserving attestation verification | Not supported |
 | Tax withholding, FATCA / CRS reporting | Off-chain |
 
@@ -89,7 +89,7 @@ Shibui registers **two** EAS schemas today:
 | 1 | Investor Eligibility | `RegisterSchemas.s.sol` | All eight `ITopicPolicy` modules |
 | 2 | Issuer Authorization | `RegisterSchemas.s.sol` | `EASTrustedIssuersAdapter` + `TrustedIssuerResolver` |
 
-### Schema 1 — Investor Eligibility
+### Schema 1: Investor Eligibility
 
 This is the canonical payload decoded by all production claim-topic policies.
 
@@ -128,7 +128,7 @@ Topic IDs follow the ONCHAINID claim-topic convention commonly used in ERC-3643 
 | 13 | SANCTIONS_CHECK | `SanctionsPolicy` | `sanctionsStatus == CLEAR` |
 | 14 | SOURCE_OF_FUNDS | `SourceOfFundsPolicy` | `sourceOfFundsStatus == VERIFIED` |
 
-### Schema 2 — Issuer Authorization
+### Schema 2: Issuer Authorization
 
 This schema governs trusted-attester changes.
 
@@ -180,7 +180,7 @@ flowchart LR
 
 For a single `isVerified(wallet)` call:
 
-1. **Resolve the investor's identity.** `EASIdentityProxy.getIdentity(wallet)` returns the identity address. The proxy is required — there is no "wallet is its own identity" fallback.
+1. **Resolve the investor's identity.** `EASIdentityProxy.getIdentity(wallet)` returns the identity address. The proxy is required: there is no "wallet is its own identity" fallback.
 2. **Enumerate required topics** from `ClaimTopicsRegistry.getClaimTopics()`.
 3. **For each required topic**, the verifier:
    - Looks up the bound `ITopicPolicy` (e.g. `KYCStatusPolicy` for topic 1). No policy bound → verification reverts with `PolicyNotConfiguredForTopic`.
@@ -301,9 +301,9 @@ deployments/
 
 ## Integration paths
 
-**Path A — pluggable verifier (recommended).** The token's ERC-3643 compliance flow delegates to `EASClaimVerifier.isVerified(wallet)`. This is the preferred integration path for new deployments.
+**Path A: pluggable verifier (recommended).** The token's ERC-3643 compliance flow delegates to `EASClaimVerifier.isVerified(wallet)`. This is the preferred integration path for new deployments.
 
-**Path B — compatibility shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations for deployments where the Identity Registry cannot be modified. It is **not** a full replacement for ONCHAINID:
+**Path B: compatibility shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations for deployments where the Identity Registry cannot be modified. It is **not** a full replacement for ONCHAINID:
 
 - Does not implement ERC-734 key management (no `addKey`, no recovery).
 - Does not return real attester signatures from `getClaim` (returns empty bytes).
@@ -381,9 +381,9 @@ The script transfers all admin roles to the multisig and renounces the deployer'
 
 | Operation | Gas |
 |---|---:|
-| `isVerified` — 1 topic | 31,539 |
-| `isVerified` — 3 topics | 80,083 |
-| `isVerified` — 5 topics | 122,090 |
+| `isVerified`: 1 topic | 31,539 |
+| `isVerified`: 3 topics | 80,083 |
+| `isVerified`: 5 topics | 122,090 |
 | `registerAttestation` | 53,393 |
 | `addTrustedAttester` (Schema-2 gated) | 201,533 |
 | `registerWallet` | 79,029 |
@@ -402,13 +402,13 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 ## Documentation map
 
-- [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md) — what Shibui does and does not provide. **Start here if you're integrating.**
-- [`docs/architecture/identity-architecture-explained.md`](docs/architecture/identity-architecture-explained.md) — architectural walkthrough.
-- [`docs/integration-guide.md`](docs/integration-guide.md) — Path A and Path B step-by-step.
-- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) — Investor Eligibility and Issuer Authorization specs.
-- [`docs/research/gap-analysis.md`](docs/research/gap-analysis.md) — ONCHAINID vs EAS comparison.
-- [`AUDIT.md`](AUDIT.md) — launch gate, threat model, pre-flight checklist.
-- [`PRD.md`](PRD.md) — scope and acceptance criteria.
+- [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md): what Shibui does and does not provide. **Start here if you're integrating.**
+- [`docs/architecture/identity-architecture-explained.md`](docs/architecture/identity-architecture-explained.md): architectural walkthrough.
+- [`docs/integration-guide.md`](docs/integration-guide.md): Path A and Path B step-by-step.
+- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md): Investor Eligibility and Issuer Authorization specs.
+- [`docs/research/gap-analysis.md`](docs/research/gap-analysis.md): ONCHAINID vs EAS comparison.
+- [`AUDIT.md`](AUDIT.md): launch gate, threat model, pre-flight checklist.
+- [`PRD.md`](PRD.md): scope and acceptance criteria.
 
 ## Live site
 
@@ -419,9 +419,9 @@ Full report and reproduction instructions in [`docs/gas-benchmarks.md`](docs/gas
 
 The interactive demo lives in [`demo/shibui-app`](demo/shibui-app) and runs against the Shibui contracts on Sepolia. Three screens cover the full flow:
 
-- `/admin` — register schemas and authorize KYC providers.
-- `/attester` — issue and revoke Investor Eligibility attestations.
-- `/transfer` — watch Alice, Bob, and Carol transfer the `DemoERC3643Token` with live `isVerified()` state and revoke-triggered flips.
+- `/admin`: register schemas and authorize KYC providers.
+- `/attester`: issue and revoke Investor Eligibility attestations.
+- `/transfer`: watch Alice, Bob, and Carol transfer the `DemoERC3643Token` with live `isVerified()` state and revoke-triggered flips.
 
 To run locally:
 

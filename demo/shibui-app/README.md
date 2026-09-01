@@ -19,7 +19,7 @@ Full product spec: [`docs/PRD_DEMO_UI.md`](../../docs/PRD_DEMO_UI.md).
 - Node.js 20+
 - A funded Sepolia wallet (MetaMask, Rabby, etc.)
 - A WalletConnect Cloud projectId (free at https://cloud.walletconnect.com)
-- The Shibui stack deployed on Sepolia — see the testnet section in the [root `README.md`](../../README.md)
+- The Shibui stack deployed on Sepolia: see the testnet section in the [root `README.md`](../../README.md)
 
 ## Local run
 
@@ -38,7 +38,7 @@ Open http://localhost:3000.
 | Var | Default | Purpose |
 |---|---|---|
 | `NEXT_PUBLIC_SEPOLIA_RPC_URL` | `https://rpc.sepolia.org` | Read/write RPC endpoint |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | — | Required for RainbowKit walletconnect connector |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` |: | Required for RainbowKit walletconnect connector |
 
 ## Deployment addresses
 
@@ -64,14 +64,14 @@ All on-chain addresses are resolved from [`deployments/sepolia.json`](../../depl
    ```
 4. Copy every address + schema UID + demo-token address into `deployments/sepolia.json`.
 5. Seed Alice / Bob / Carol (wallets, identities, attestations) into the `demo.investors` and `demo.attestations` blocks.
-6. Run `npm run dev` — the configuration-gate banners will disappear as fields fill in.
+6. Run `npm run dev`: the configuration-gate banners will disappear as fields fill in.
 
 ## Scripts
 
-- `npm run dev` — Next.js dev server on :3000
-- `npm run build` — production build
-- `npm run typecheck` — `tsc --noEmit`
-- `npm run lint` — Next.js ESLint
+- `npm run dev`: Next.js dev server on :3000
+- `npm run build`: production build
+- `npm run typecheck`: `tsc --noEmit`
+- `npm run lint`: Next.js ESLint
 
 ## Stack
 
@@ -85,7 +85,7 @@ All on-chain addresses are resolved from [`deployments/sepolia.json`](../../depl
 
 - Not mainnet-ready. `DemoERC3643Token` is labeled demo-only and skips ModularCompliance, OnchainID, recovery, partial freeze.
 - Not a production admin console. No multi-sig, no RBAC UI.
-- Not a replacement for the audited `isVerified()` path — this UI visualizes it, the contracts enforce it.
+- Not a replacement for the audited `isVerified()` path: this UI visualizes it, the contracts enforce it.
 
 ## Deprecation of the external demo
 

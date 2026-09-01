@@ -1,7 +1,7 @@
 # Deployment runbook
 
 How to deploy, repair, and verify a Shibui stack on a testnet. The canonical
-record of what is deployed lives in `deployments/` — if it is not reflected
+record of what is deployed lives in `deployments/`: if it is not reflected
 there, it is not deployed.
 
 ## Principles
@@ -30,7 +30,7 @@ forge script script/DeploySepolia.s.sol \
 
 Optional env: `ADMIN_ADDRESS` (defaults to deployer), `EAS_ADDRESS` and
 `SCHEMA_REGISTRY` (auto-detected on Sepolia and Base Sepolia),
-`REQUIRED_TOPICS` (defaults to `1,2,13` — KYC, AML, Sanctions).
+`REQUIRED_TOPICS` (defaults to `1,2,13`: KYC, AML, Sanctions).
 
 Then verify (read-only, no broadcast):
 
@@ -97,7 +97,7 @@ forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_SEPOLIA"
 ```
 
 A red run means the published manifest points at a stack that cannot verify
-anyone — treat it as a broken build of the product, because for any
+anyone: treat it as a broken build of the product, because for any
 integrator, it is.
 
 ## Known gaps (tracked as follow-ups)

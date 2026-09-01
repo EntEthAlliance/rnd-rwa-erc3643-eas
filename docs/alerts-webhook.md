@@ -21,8 +21,8 @@ No auto-reply is posted to GitHub.
 
 Set these in **GitHub → Settings → Secrets and variables → Actions**:
 
-- `EEA_AGENT_TELEGRAM_BOT_TOKEN` — Telegram bot token used for alerts
-- `EEA_AGENT_TELEGRAM_CHAT_ID` — EEA agent channel chat id (e.g., `-100...`)
+- `EEA_AGENT_TELEGRAM_BOT_TOKEN`: Telegram bot token used for alerts
+- `EEA_AGENT_TELEGRAM_CHAT_ID`: EEA agent channel chat id (e.g., `-100...`)
 
 ## Trigger events
 

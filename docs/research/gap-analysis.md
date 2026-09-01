@@ -19,7 +19,7 @@ This document compares legacy ONCHAINID capabilities with the current Shibui arc
 
 ## Dimension 1: Key management
 
-ONCHAINID includes ERC-734 key management. Shibui does not attempt to reproduce that feature because it is outside the verifier's scope. Shibui answers the compliance question — whether a given investor identity satisfies the required claim topics — rather than the wallet-recovery or key-governance question.
+ONCHAINID includes ERC-734 key management. Shibui does not attempt to reproduce that feature because it is outside the verifier's scope. Shibui answers the compliance question: whether a given investor identity satisfies the required claim topics: rather than the wallet-recovery or key-governance question.
 
 **Status:** Out of scope.
 

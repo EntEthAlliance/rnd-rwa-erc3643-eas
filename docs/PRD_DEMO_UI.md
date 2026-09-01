@@ -1,4 +1,4 @@
-# PRD — Shibui Demo UI (Sepolia)
+# PRD: Shibui Demo UI (Sepolia)
 
 **Status:** Draft
 **Owner:** EEA R&D
@@ -10,15 +10,15 @@
 
 ## 1. Problem
 
-The Shibui monorepo ships working contracts, 200+ passing tests, and a pilot script that deploys 5 hardcoded investors on Sepolia. A reviewer can inspect Etherscan transactions after the fact, but they cannot **see the decision surface** — who issues an attestation, what fields it carries, who authorizes the attester, how revocation takes effect in real time.
+The Shibui monorepo ships working contracts, 200+ passing tests, and a pilot script that deploys 5 hardcoded investors on Sepolia. A reviewer can inspect Etherscan transactions after the fact, but they cannot **see the decision surface**: who issues an attestation, what fields it carries, who authorizes the attester, how revocation takes effect in real time.
 
 A separately hosted demo exists at `claudyfaucant.github.io/eas-erc3643-bridge-demo/`. It is not in this repository, not tied to the canonical contracts, and not reproducible from the repo alone. That violates the project's own discipline: **"If it is not in Git, it does not exist."**
 
 Institutions evaluating Shibui need a first-party, reproducible UI that renders the three moments that matter:
 
-1. **Admin setup** — register schemas and authorize attesters.
-2. **Attestation issuance** — populate investor data and sign.
-3. **Transfer verification** — see allow/block resolve on-chain.
+1. **Admin setup**: register schemas and authorize attesters.
+2. **Attestation issuance**: populate investor data and sign.
+3. **Transfer verification**: see allow/block resolve on-chain.
 
 Without this, the demo is a terminal window. With it, the demo is an institutional walkthrough.
 
@@ -28,7 +28,7 @@ Without this, the demo is a terminal window. With it, the demo is an institution
 
 - Ship a reproducible demo UI in `/demo` inside this repo.
 - Cover the full lifecycle: schema registration → attester authorization → attestation issuance → transfer verification → revocation.
-- Run against Sepolia with deployed Shibui contracts — no mock data in the happy path.
+- Run against Sepolia with deployed Shibui contracts: no mock data in the happy path.
 - Pass the "laptop test": an EEA member bank can drive the demo themselves in under 10 minutes.
 
 ## 3. Non-goals
@@ -37,7 +37,7 @@ Without this, the demo is a terminal window. With it, the demo is an institution
 - Replacing the external demo site; this is the canonical one going forward.
 - Custody, key management, or wallet creation inside the UI.
 - Bulk operations, CSV imports, or analytics dashboards.
-- Writing or modifying contracts — this PR is UI-only.
+- Writing or modifying contracts: this PR is UI-only.
 
 ---
 
@@ -59,7 +59,7 @@ Without this, the demo is a terminal window. With it, the demo is an institution
 
 **Acceptance:**
 - Form fields: investor wallet, KYC status, AML status, sanctions status, source of funds status, accreditation type, country code, expiration, evidence hash.
-- Field values match the Investor Eligibility schema exactly — no renaming, no hidden transforms.
+- Field values match the Investor Eligibility schema exactly: no renaming, no hidden transforms.
 - Click "Sign & issue" → wallet signs EAS `attest()` → attestation UID returned.
 - Click "Register in Shibui" → calls `EASClaimVerifier.registerAttestation(identity, topic, uid)`.
 - "Revoke" action calls EAS `revoke()` and reflects the new state on next read.
@@ -91,7 +91,7 @@ Without this, the demo is a terminal window. With it, the demo is an institution
 
 ### Out of scope
 
-- UUPS proxy upgrades (parked — separate workstream per `docs/execution/mvp-uups-execution-plan.md`).
+- UUPS proxy upgrades (parked: separate workstream per `docs/execution/mvp-uups-execution-plan.md`).
 - Mainnet gating (no `AUDIT_ACKNOWLEDGED` path in the UI).
 - Dark mode polish, accessibility audit beyond basic keyboard nav.
 - Internationalization.
@@ -106,9 +106,9 @@ Without this, the demo is a terminal window. With it, the demo is an institution
 |---|---|---|
 | Framework | Next.js 14 (app router) | Static export works on GitHub Pages; keeps demo hosting trivial. |
 | Wallet | wagmi v2 + viem + RainbowKit | Current standard for EVM dApps; no vendor lock-in. |
-| EAS | `@ethereum-attestation-service/eas-sdk` | Official SDK — aligns with "standard over custom." |
+| EAS | `@ethereum-attestation-service/eas-sdk` | Official SDK: aligns with "standard over custom." |
 | Styling | Tailwind + minimal component library | No custom design system; keep surface small. |
-| State | React Query (built into wagmi) | No Redux, no Zustand — scope is too small. |
+| State | React Query (built into wagmi) | No Redux, no Zustand: scope is too small. |
 
 ### 6.2 Directory layout
 
@@ -138,7 +138,7 @@ Without this, the demo is a terminal window. With it, the demo is an institution
 | Add attester | `EASTrustedIssuersAdapter` | `addTrustedAttester(attester, topics, authUID)` |
 | Issue attestation | EAS | `attest(AttestationRequest)` |
 | Register attestation | `EASClaimVerifier` | `registerAttestation(identity, topic, uid)` |
-| Check verification | `EASClaimVerifier` | `isVerified(wallet)` — view |
+| Check verification | `EASClaimVerifier` | `isVerified(wallet)`: view |
 | Revoke | EAS | `revoke(RevocationRequest)` |
 | Demo transfer | `DemoERC3643Token` | `transfer(to, amount)` |
 
@@ -167,7 +167,7 @@ This directly answers the open question from review: **where does investor data 
 - [ ] Admin flow: schema registration completes end-to-end on a fresh Sepolia deployment.
 - [ ] Attester flow: issuing and revoking an attestation updates `isVerified()` on next read.
 - [ ] Transfer flow: Alice succeeds, Bob reverts with compliance error, Carol flips after revoke.
-- [ ] `forge test` still passes — no contract regressions.
+- [ ] `forge test` still passes: no contract regressions.
 - [ ] README in `/demo` documents env vars, local run, and Sepolia deploy.
 - [ ] CI added to `.github/workflows` for `demo` build check.
 - [ ] External demo URL in main README updated or removed, depending on hosting decision.
@@ -206,7 +206,7 @@ Reviewer with a funded Sepolia wallet and no prior repo knowledge can:
 
 1. Does the existing external demo at `claudyfaucant.github.io/eas-erc3643-bridge-demo/` have source we should port, or start clean?
 2. Should the demo token be its own repo, or vendored into `/contracts/demo`?
-3. Who hosts the Sepolia-deployed instance — GitHub Pages off this repo, or EEA infrastructure?
+3. Who hosts the Sepolia-deployed instance: GitHub Pages off this repo, or EEA infrastructure?
 4. Do we want a "reset demo" admin button that re-seeds Alice/Bob/Carol for the next presenter?
 
 ---
@@ -215,4 +215,4 @@ Reviewer with a funded Sepolia wallet and no prior repo knowledge can:
 
 - Integrate with the single-script Sepolia token-transfer demo once built (blocker 2 in `PRD_EXECUTION_REPORT_2026-04-08.md`).
 - Wire UUPS proxy upgrade flow into admin console once Gate C of the UUPS plan lands.
-- Add Base Sepolia, Arbitrum Sepolia as selectable networks — validate multi-chain claim per README.
+- Add Base Sepolia, Arbitrum Sepolia as selectable networks: validate multi-chain claim per README.

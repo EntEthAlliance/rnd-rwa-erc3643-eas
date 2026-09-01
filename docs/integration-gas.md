@@ -17,7 +17,7 @@ number. The effect shows up in the callers that read it:
 | Upstream baseline (before the extension)      |                    195,248 | hardhat test run on `main`, pre-branch |
 | With extension, verifier unset (`address(0)`) |                    197,367 | hardhat test run on `feat/pluggable-identity-verifier` |
 
-Delta per call: **~+2,119 gas** — one additional `SLOAD` to read the new
+Delta per call: **~+2,119 gas**: one additional `SLOAD` to read the new
 `_identityVerifier` slot at the top of `isVerified`, which is `0` in the
 default case. No branch taken.
 
