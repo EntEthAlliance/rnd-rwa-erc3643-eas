@@ -1,4 +1,4 @@
-# AUDIT.md — Security Audit Scope and Mainnet Readiness Gate
+# AUDIT.md: Security Audit Scope and Mainnet Readiness Gate
 
 ## Purpose
 This file defines the mandatory audit scope and launch gates for mainnet deployment.
@@ -67,7 +67,7 @@ Mainnet deployment is blocked by default until audit readiness is explicitly ack
 ## 3) Audit Timeline (proposed)
 
 - **Week 0:** scope freeze, code freeze candidate, artifacts handoff
-- **Week 1–2:** auditor review + issue triage
+- **Week 1-2:** auditor review + issue triage
 - **Week 3:** remediation and re-review of critical/high findings
 - **Week 4:** final report, launch recommendation, sign-off
 

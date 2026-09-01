@@ -28,9 +28,9 @@ A fund manager launches a tokenised US Treasury product on Base using ERC-3643. 
 
 Before integration, ensure you have:
 
-1. **Deployed EAS infrastructure** on the target chain — EAS is live on [Ethereum, Base, Arbitrum, Optimism, and common testnets](https://docs.attest.org/docs/quick--start/contracts).
-2. **Registered schemas** — Run [`script/RegisterSchemas.s.sol`](../script/RegisterSchemas.s.sol); schemas documented in [`schemas/schema-definitions.md`](schemas/schema-definitions.md).
-3. **Deployed Shibui contracts** — see below.
+1. **Deployed EAS infrastructure** on the target chain: EAS is live on [Ethereum, Base, Arbitrum, Optimism, and common testnets](https://docs.attest.org/docs/quick--start/contracts).
+2. **Registered schemas**: Run [`script/RegisterSchemas.s.sol`](../script/RegisterSchemas.s.sol); schemas documented in [`schemas/schema-definitions.md`](schemas/schema-definitions.md).
+3. **Deployed Shibui contracts**: see below.
 4. **At least one trusted KYC / compliance provider** attesting under the Investor Eligibility schema.
 
 ## Integration Paths
@@ -50,31 +50,31 @@ Integrate `EASClaimVerifier` as the backend the ERC-3643 Identity Registry deleg
 1. Deploy the Shibui contracts (see [`script/DeployBridge.s.sol`](../script/DeployBridge.s.sol) or the testnet/mainnet scripts).
 2. Register the two EAS schemas (`script/RegisterSchemas.s.sol`).
 3. Wire the verifier: adapter, identity proxy, Claim Topics Registry, topic-schema mappings, topic-policy mappings.
-4. Add trusted attesters — each with an EAS Schema-2 `authUID` (see Step 3 below).
+4. Add trusted attesters: each with an EAS Schema-2 `authUID` (see Step 3 below).
 5. Call `identityRegistry.setIdentityVerifier(address(verifier))` on the Identity Registry.
 
 ### Path B: Identity Wrapper (read-compat shim for existing deployments)
 
 > **"We have an ERC-3643 token already in production. We cannot modify the Identity Registry, but we want to start accepting EAS attestations."**
 
-Use `EASClaimVerifierIdentityWrapper` (under `contracts/compat/`) as an `IIdentity`-compatible wrapper — one wrapper per investor identity. The wrapper presents an ONCHAINID-shaped surface whose `isClaimValid` delegates to `EASClaimVerifier` for the attestation existence check.
+Use `EASClaimVerifierIdentityWrapper` (under `contracts/compat/`) as an `IIdentity`-compatible wrapper: one wrapper per investor identity. The wrapper presents an ONCHAINID-shaped surface whose `isClaimValid` delegates to `EASClaimVerifier` for the attestation existence check.
 
 **Path B limitations:**
 - No ERC-734 keys. `addKey` / `removeKey` revert. Lost-key recovery uses the ERC-3643 token's `recoveryAddress` flow, not this wrapper.
-- No claim signatures. `getClaim` returns an empty `signature` — the attestation is authenticated by EAS at read time, not by a signature stored on the wrapper.
+- No claim signatures. `getClaim` returns an empty `signature`: the attestation is authenticated by EAS at read time, not by a signature stored on the wrapper.
 - No topic policies inside `isClaimValid`. The wrapper only checks attestation existence + non-revocation + non-expiry; full payload-aware enforcement (Investor Eligibility policy modules) only runs through Path A.
-- O(N × M) gas profile on `getClaim` — scales with trusted-attester count × registered attestations. Fine for low-topic, low-attester deployments; avoid for deep required-topic stacks.
+- O(N × M) gas profile on `getClaim`: scales with trusted-attester count × registered attestations. Fine for low-topic, low-attester deployments; avoid for deep required-topic stacks.
 - Targets EthTrust Security Level 1, not Level 2. New deployments should use Path A.
 
 **When to use:** only when the Identity Registry cannot be modified *and* you accept the caveats above.
 
 **Steps:**
 
-1. Deploy a Shibui core stack (verifier + adapter + identity proxy + policies + resolver) as in Path A steps 1–3.
+1. Deploy a Shibui core stack (verifier + adapter + identity proxy + policies + resolver) as in Path A steps 1-3.
 2. Deploy one `EASClaimVerifierIdentityWrapper` per investor identity (constructor binds the wrapper to an investor address).
 3. Register the wrapper address in `IdentityRegistryStorage` in place of an ONCHAINID contract.
 4. KYC provider attests the investor on EAS (Investor Eligibility). Call `verifier.registerAttestation(identity, topic, uid)` from an `AGENT_ROLE` holder or from the attester itself.
-5. Token uses the existing verification flow — no token-side code change.
+5. Token uses the existing verification flow: no token-side code change.
 
 ## Step-by-Step Integration (Path A)
 
@@ -102,7 +102,7 @@ You can use [`script/DeployBridge.s.sol`](../script/DeployBridge.s.sol) (or the 
 
 ### 2. Deploy topic policies + configure topic→schema + topic→policy mappings
 
-Shibui ships eight `ITopicPolicy` modules under `contracts/policies/` — one per production claim topic (KYC, AML, Country, Accreditation, Professional Investor, Institutional Investor, Sanctions, Source-of-Funds). Each policy decodes the Investor Eligibility payload and enforces one rule. The deploy scripts (`DeployBridge`, `DeployTestnet`, `DeployMainnet`, `DeployUpgradeable`) instantiate all eight and call `setTopicPolicy` for each topic; wire them manually like this if you are scripting your own deploy:
+Shibui ships eight `ITopicPolicy` modules under `contracts/policies/`: one per production claim topic (KYC, AML, Country, Accreditation, Professional Investor, Institutional Investor, Sanctions, Source-of-Funds). Each policy decodes the Investor Eligibility payload and enforces one rule. The deploy scripts (`DeployBridge`, `DeployTestnet`, `DeployMainnet`, `DeployUpgradeable`) instantiate all eight and call `setTopicPolicy` for each topic; wire them manually like this if you are scripting your own deploy:
 
 ```solidity
 // All eight policies decode the same Investor Eligibility schema.
@@ -114,7 +114,7 @@ verifier.setTopicPolicy(1, address(kycStatusPolicy));
 verifier.setTopicPolicy(7, address(accreditationPolicy));
 ```
 
-`isVerified` reverts with `PolicyNotConfiguredForTopic(topic)` if a required topic has no policy bound — there is no implicit accept path.
+`isVerified` reverts with `PolicyNotConfiguredForTopic(topic)` if a required topic has no policy bound: there is no implicit accept path.
 
 ### 3. Add trusted attesters (Schema-2 gated)
 
@@ -131,7 +131,7 @@ topics[1] = 7; // Accreditation
 adapter.addTrustedAttester(KYC_PROVIDER_ADDRESS, topics, authUID);
 ```
 
-Up to `MAX_ATTESTERS_PER_TOPIC = 5` attesters per topic are supported. Adding a provider never invalidates investors covered by a different provider — `isVerified` short-circuits on the first trusted attester whose attestation clears the structural and policy checks.
+Up to `MAX_ATTESTERS_PER_TOPIC = 5` attesters per topic are supported. Adding a provider never invalidates investors covered by a different provider: `isVerified` short-circuits on the first trusted attester whose attestation clears the structural and policy checks.
 
 ### 4. Configure required topics
 
@@ -154,7 +154,7 @@ wallets[2] = wallet3;
 identityProxy.batchRegisterWallets(wallets, identityAddress);
 ```
 
-Self-registration (an investor calling `registerWallet` for their own wallet) is not supported — the caller must hold `AGENT_ROLE`.
+Self-registration (an investor calling `registerWallet` for their own wallet) is not supported: the caller must hold `AGENT_ROLE`.
 
 ### 6. KYC provider creates the attestation (Investor Eligibility)
 
@@ -229,7 +229,7 @@ adapter.addTrustedAttester(PROVIDER_2, topics, authUID_2);
 
 ### Schema per topic
 
-Shibui v0.4 uses a single consolidated Investor Eligibility schema for all eight production topics. Per-topic schemas remain supported by the contract API (`setTopicSchemaMapping`) for integrators whose providers prefer to split payloads — but the shipped policy modules assume the Investor Eligibility schema and will need replacement policies if you diverge.
+Shibui v0.4 uses a single consolidated Investor Eligibility schema for all eight production topics. Per-topic schemas remain supported by the contract API (`setTopicSchemaMapping`) for integrators whose providers prefer to split payloads: but the shipped policy modules assume the Investor Eligibility schema and will need replacement policies if you diverge.
 
 ## Verification Flow
 
@@ -244,9 +244,9 @@ When `isVerified(address)` is called:
    - Validate: not revoked, not expired (EAS + data level)
 4. **Return Result**: True only if all topics are satisfied
 
-## Revocation — Real-Time Compliance Enforcement
+## Revocation: Real-Time Compliance Enforcement
 
-> An investor fails an AML check. A sanctions list is updated. A KYC provider is compromised. In all these cases, you need to **immediately** block the investor from trading — not wait for a manual review cycle.
+> An investor fails an AML check. A sanctions list is updated. A KYC provider is compromised. In all these cases, you need to **immediately** block the investor from trading: not wait for a manual review cycle.
 
 ### By Attester: Revoke a Specific Investor
 
@@ -374,8 +374,8 @@ Check [`test/integration/ERC3643Token.integration.t.sol`](../test/integration/ER
 ## Security considerations
 
 1. **Role hygiene.** `DEFAULT_ADMIN_ROLE` must sit on the issuer multisig. The production deploy scripts grant it, then revoke the deployer's grant atomically. Monitor `RoleGranted` / `RoleRevoked` events.
-2. **Policy discipline.** Binding the wrong `ITopicPolicy` to a topic causes mass false-accepts or false-rejects. Each policy contract exposes `topicId()` — verify that it matches before calling `setTopicPolicy`. `TopicPolicySet` is indexed and should be diff-watched in CI.
-3. **Authorizer curation.** The `TrustedIssuerResolver` gates Schema-2 writes to admin-curated authorizers. Changes to the authorizer set emit `AuthorizerAdded` / `AuthorizerRemoved` — surface these to compliance.
+2. **Policy discipline.** Binding the wrong `ITopicPolicy` to a topic causes mass false-accepts or false-rejects. Each policy contract exposes `topicId()`: verify that it matches before calling `setTopicPolicy`. `TopicPolicySet` is indexed and should be diff-watched in CI.
+3. **Authorizer curation.** The `TrustedIssuerResolver` gates Schema-2 writes to admin-curated authorizers. Changes to the authorizer set emit `AuthorizerAdded` / `AuthorizerRemoved`: surface these to compliance.
 4. **Attester lifecycle.** Rotate `authUID`s when attester topics change. Removing trust in a provider (`removeTrustedAttester`) instantly invalidates every investor verified only by that provider, but does not invalidate investors covered by a second trusted attester.
 5. **Expiration.** Prefer the data-level `expirationTimestamp` (on-chain enforcement by policies + verifier). The EAS `expirationTime` field is honoured as a secondary check.
 6. **Audit trail.** The Investor Eligibility schema carries `evidenceHash` + `verificationMethod`; persist the off-chain KYC file hashes so examiners can trace an on-chain decision back to the file the provider holds.
@@ -384,10 +384,10 @@ Check [`test/integration/ERC3643Token.integration.t.sol`](../test/integration/ER
 
 Shibui ships both non-upgradeable and UUPS variants:
 
-- `contracts/` — immutable deployments, lowest surface. Recommended where contract rotation is acceptable.
-- `contracts/upgradeable/` — `EASClaimVerifierUpgradeable`, `EASTrustedIssuersAdapterUpgradeable`, `EASIdentityProxyUpgradeable`. All `UUPSUpgradeable`, gated by `DEFAULT_ADMIN_ROLE`. Storage layouts are audited; see [`test/unit/UpgradeableContracts.t.sol`](../test/unit/UpgradeableContracts.t.sol) for the `__gap` invariant check.
+- `contracts/`: immutable deployments, lowest surface. Recommended where contract rotation is acceptable.
+- `contracts/upgradeable/`: `EASClaimVerifierUpgradeable`, `EASTrustedIssuersAdapterUpgradeable`, `EASIdentityProxyUpgradeable`. All `UUPSUpgradeable`, gated by `DEFAULT_ADMIN_ROLE`. Storage layouts are audited; see [`test/unit/UpgradeableContracts.t.sol`](../test/unit/UpgradeableContracts.t.sol) for the `__gap` invariant check.
 
-Pick one per deployment — do not mix upgradeable and non-upgradeable variants behind the same Identity Registry.
+Pick one per deployment: do not mix upgradeable and non-upgradeable variants behind the same Identity Registry.
 
 ## Support
 

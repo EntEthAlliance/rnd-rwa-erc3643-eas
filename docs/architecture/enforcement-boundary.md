@@ -17,9 +17,9 @@ The following primitives are the responsibility of the **token contract** (the E
 
 | Primitive | Why it matters | Where it lives |
 |---|---|---|
-| `forcedTransfer` | Court-ordered movement of tokens without the holder's signature. Without it, a regulator cannot enforce an order. | ERC-3643 `Token.forcedTransfer()` — agent-gated. |
-| Account freeze / partial freeze | OFAC or sanctions compliance often requires freezing specific balances immediately, not just blocking future transfers. | ERC-3643 `Token.freezePartialTokens()` — agent-gated. |
-| Recovery address | Lost-key recovery binds a replacement wallet to the same investor identity. | ERC-3643 `Token.recoveryAddress()` flow — uses the token's Identity Registry directly. |
+| `forcedTransfer` | Court-ordered movement of tokens without the holder's signature. Without it, a regulator cannot enforce an order. | ERC-3643 `Token.forcedTransfer()`: agent-gated. |
+| Account freeze / partial freeze | OFAC or sanctions compliance often requires freezing specific balances immediately, not just blocking future transfers. | ERC-3643 `Token.freezePartialTokens()`: agent-gated. |
+| Recovery address | Lost-key recovery binds a replacement wallet to the same investor identity. | ERC-3643 `Token.recoveryAddress()` flow: uses the token's Identity Registry directly. |
 | Lock-up schedules, per-investor caps, ownership limits | Reg D 506(b) 35-investor rule, holding-period restrictions, concentration limits. | ERC-3643 compliance modules; outside Shibui's scope. |
 | Cross-chain attestation canonicity | One KYC on chain A does **not** automatically satisfy verification on chain B. EAS attestations are per-chain. | Deferred to Shibui V2 roadmap (attestation mirroring). |
 | Off-chain attestation verification (privacy-preserving) | Keeps sensitive KYC data out of the public ledger. | Deferred to Shibui V2 roadmap. |

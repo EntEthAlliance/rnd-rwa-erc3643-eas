@@ -12,7 +12,7 @@ Current numbers reflect the cost of payload-aware verification (audit C-1):
 module per required claim topic. This is **deliberately** more expensive than
 the pre-refactor "claim exists and attester is trusted" check, because the
 old path could not distinguish `kycStatus = VERIFIED` from `kycStatus =
-PENDING` — a regulatory non-starter. The numbers below are the floor for a
+PENDING`: a regulatory non-starter. The numbers below are the floor for a
 regulatorily honest check, not a target to drive down.
 
 To guard against *unintentional* regressions, `GasBenchmark.t.sol` locks
@@ -20,9 +20,9 @@ in ceilings via `assertLt` with ~10k headroom above each current reading:
 
 | Operation | Current | Ceiling (asserted in test) |
 |---|---:|---:|
-| `isVerified` — 1 topic | 31,539 | 45,000 |
-| `isVerified` — 3 topics | 80,083 | 95,000 |
-| `isVerified` — 5 topics | 122,090 | 140,000 |
+| `isVerified`: 1 topic | 31,539 | 45,000 |
+| `isVerified`: 3 topics | 80,083 | 95,000 |
+| `isVerified`: 5 topics | 122,090 | 140,000 |
 
 If those asserts fire, either a legitimate optimisation landed (bump the
 ceiling down) or a regression slipped in (investigate before merge).
@@ -36,9 +36,9 @@ trusted-attester list (capped at `MAX_ATTESTERS_PER_TOPIC = 5`).
 
 | Operation | Gas | Notes |
 |---|---:|---|
-| `isVerified()` — 1 topic (KYC) | **31,539** | `KYCStatusPolicy.validate()` + one EAS read |
-| `isVerified()` — 3 topics (KYC + country + accreditation) | **80,083** | Three policy invocations, single attestation covers all three |
-| `isVerified()` — 5 topics (KYC + AML + country + accreditation + sanctions) | **122,090** | Five policies against one Investor Eligibility payload |
+| `isVerified()`: 1 topic (KYC) | **31,539** | `KYCStatusPolicy.validate()` + one EAS read |
+| `isVerified()`: 3 topics (KYC + country + accreditation) | **80,083** | Three policy invocations, single attestation covers all three |
+| `isVerified()`: 5 topics (KYC + AML + country + accreditation + sanctions) | **122,090** | Five policies against one Investor Eligibility payload |
 
 Linear scaling: ~22,500 gas per additional topic after the fixed setup. The
 payload-aware verifier adds overhead (the decode + predicate) vs. the
@@ -86,20 +86,20 @@ incorrect (it could not distinguish `kycStatus = VERIFIED` from
 | `isVerified(3 topics)` | ~57,309 | 80,083 | +40% |
 | `isVerified(5 topics)` | ~86,808 | 122,090 | +41% |
 
-The jump at 3+ topics reflects the per-topic policy invocation cost — expected
+The jump at 3+ topics reflects the per-topic policy invocation cost: expected
 and acceptable given that the pre-refactor numbers were achieved by skipping
 the checks that make the system regulatorily useful.
 
 ## Optimisation opportunities (V2)
 
-- **Policy result caching** — memoise decoded payloads across topics that share
+- **Policy result caching**: memoise decoded payloads across topics that share
   the Investor Eligibility schema (every topic except AML/sanctions in the
   typical setup uses the same attestation; decoding once per call instead of
   per topic would recover ~20-30% of the gas at 3+ topics).
-- **Bitmap-packed trusted-attester set** — replace the `address[]` per-topic
+- **Bitmap-packed trusted-attester set**: replace the `address[]` per-topic
   list with a fixed-size slot; drops the SLOAD count at the cost of an upper
   bound on attester count.
-- **Off-chain attestation verification** — move from "registered on-chain" to
+- **Off-chain attestation verification**: move from "registered on-chain" to
   "presented via signed proof", so verification reads a single proof instead of
   N EAS attestations. Deferred to V2.
 

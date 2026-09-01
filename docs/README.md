@@ -1,6 +1,6 @@
 # Documentation
 
-Production docs for Shibui — the payload-aware identity verifier backend for ERC-3643 security tokens. See the [repo README](../README.md) for the one-page product overview.
+Production docs for Shibui: the payload-aware identity verifier backend for ERC-3643 security tokens. See the [repo README](../README.md) for the one-page product overview.
 
 ## Start here
 

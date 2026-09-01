@@ -8,14 +8,14 @@ This document explains the identity architecture behind Shibui: how ERC-3643 ide
 
 ## Section 1: How ERC-3643 Identity Works Today
 
-ERC-3643 (also known as T-REX) is the leading standard for regulated security tokens on Ethereum. At its core, it requires that every token transfer be validated against a compliance framework — and that compliance framework relies on identity verification.
+ERC-3643 (also known as T-REX) is the leading standard for regulated security tokens on Ethereum. At its core, it requires that every token transfer be validated against a compliance framework: and that compliance framework relies on identity verification.
 
 ### The ONCHAINID Model
 
 ERC-3643 uses [ONCHAINID](https://github.com/onchain-id/solidity) for identity, which implements two Ethereum standards:
 
 - **ERC-734 (Key Management):** Each identity is a smart contract that manages cryptographic keys with different purposes (management, action, claim signing, encryption)
-- **ERC-735 (Claims):** The identity contract stores "claims" — signed statements about the identity holder, issued by trusted third parties
+- **ERC-735 (Claims):** The identity contract stores "claims": signed statements about the identity holder, issued by trusted third parties
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -35,13 +35,13 @@ When someone tries to transfer a security token, the following happens:
 
 ![Current ERC-3643 Identity Flow](../../diagrams/current-erc3643-identity.mmd)
 
-1. **Token transfer initiated** — User calls `transfer()` on the ERC-3643 token
-2. **Compliance check triggered** — Token calls the Compliance Module
-3. **Identity lookup** — Compliance Module calls Identity Registry's `isVerified(wallet)`
-4. **Identity resolution** — Identity Registry looks up the ONCHAINID contract for that wallet
-5. **Claim retrieval** — For each required claim topic (KYC, accreditation, etc.), fetch claims from the ONCHAINID contract
-6. **Issuer validation** — For each claim, verify the issuer is in the Trusted Issuers Registry and call `isClaimValid()` on the issuer
-7. **Result** — If all required claims are valid and from trusted issuers, transfer proceeds
+1. **Token transfer initiated**: User calls `transfer()` on the ERC-3643 token
+2. **Compliance check triggered**: Token calls the Compliance Module
+3. **Identity lookup**: Compliance Module calls Identity Registry's `isVerified(wallet)`
+4. **Identity resolution**: Identity Registry looks up the ONCHAINID contract for that wallet
+5. **Claim retrieval**: For each required claim topic (KYC, accreditation, etc.), fetch claims from the ONCHAINID contract
+6. **Issuer validation**: For each claim, verify the issuer is in the Trusted Issuers Registry and call `isClaimValid()` on the issuer
+7. **Result**: If all required claims are valid and from trusted issuers, transfer proceeds
 
 ### The Pain Points
 
@@ -49,10 +49,10 @@ While ONCHAINID works, it creates several challenges:
 
 | Pain Point | Impact |
 |------------|--------|
-| **Per-user contract deployment** | Every investor needs their own ONCHAINID smart contract deployed — gas costs and complexity |
+| **Per-user contract deployment** | Every investor needs their own ONCHAINID smart contract deployed: gas costs and complexity |
 | **Vendor lock-in** | Only KYC providers that support the ONCHAINID claim format can participate |
 | **Limited provider ecosystem** | Smaller market of compatible identity providers means less competition and higher costs |
-| **No cross-chain portability** | An ONCHAINID on Ethereum doesn't help on Base or Arbitrum — investors must re-verify |
+| **No cross-chain portability** | An ONCHAINID on Ethereum doesn't help on Base or Arbitrum: investors must re-verify |
 | **Proprietary claim format** | ERC-735 claims are specific to ONCHAINID; credentials from other systems don't work |
 
 ---
@@ -84,17 +84,17 @@ An attestation is simply a signed statement on-chain: "I (the attester) attest t
 
 EAS has become the attestation standard for major protocols and platforms:
 
-- **Coinbase** — Uses EAS for Coinbase Verifications (onchain KYC)
-- **Optimism** — Uses EAS for governance attestations and identity
-- **Gitcoin Passport** — Issues EAS attestations for sybil resistance
-- **Base** — Native EAS integration for identity and reputation
+- **Coinbase**: Uses EAS for Coinbase Verifications (onchain KYC)
+- **Optimism**: Uses EAS for governance attestations and identity
+- **Gitcoin Passport**: Issues EAS attestations for sybil resistance
+- **Base**: Native EAS integration for identity and reputation
 
 The ecosystem has converged on EAS because it's:
 
-- **Multi-chain** — Deployed on Ethereum, Base, Arbitrum, Optimism, and more
-- **Open** — Anyone can create attestations; anyone can verify them
-- **Composable** — Attestations can reference each other; schemas are reusable
-- **Schema-based** — Flexible data structures without protocol upgrades
+- **Multi-chain**: Deployed on Ethereum, Base, Arbitrum, Optimism, and more
+- **Open**: Anyone can create attestations; anyone can verify them
+- **Composable**: Attestations can reference each other; schemas are reusable
+- **Schema-based**: Flexible data structures without protocol upgrades
 
 ### EAS vs ONCHAINID Claims: Key Differences
 
@@ -112,7 +112,7 @@ The ecosystem has converged on EAS because it's:
 
 ## Section 3: How Shibui Works
 
-Shibui lets security tokens accept EAS attestations as proof of investor eligibility — without changing the ERC-3643 standard.
+Shibui lets security tokens accept EAS attestations as proof of investor eligibility: without changing the ERC-3643 standard.
 
 ### Architecture Overview
 
@@ -122,7 +122,7 @@ Shibui consists of four contracts that sit between the ERC-3643 Identity Registr
 
 | Contract | Role |
 |----------|------|
-| **EASClaimVerifier** | Core verification logic — checks if a wallet has valid EAS attestations for all required claim topics |
+| **EASClaimVerifier** | Core verification logic: checks if a wallet has valid EAS attestations for all required claim topics |
 | **EASTrustedIssuersAdapter** | Manages which EAS attester addresses are trusted for which claim topics |
 | **EASIdentityProxy** | Maps wallet addresses to identity addresses for multi-wallet support |
 | **EASClaimVerifierIdentityWrapper** | (Path B only) IIdentity-compatible wrapper for zero-modification integration |
@@ -138,7 +138,7 @@ Shibui consists of four contracts that sit between the ERC-3643 Identity Registr
 
 **After (shared attestation layer):**
 - Token issuer can accept attestations from any EAS-compatible KYC provider
-- Investors reuse existing EAS attestations — no new contracts
+- Investors reuse existing EAS attestations: no new contracts
 - Standard attestation format works across the ecosystem
 
 ### The Verification Flow Step by Step
@@ -147,9 +147,9 @@ Shibui consists of four contracts that sit between the ERC-3643 Identity Registr
 
 When `isVerified(wallet)` is called on the EASClaimVerifier:
 
-1. **Resolve identity** — Query `EASIdentityProxy` to map wallet → identity address used for attestation lookup.
+1. **Resolve identity**: Query `EASIdentityProxy` to map wallet → identity address used for attestation lookup.
 
-2. **Get required topics** — Query the ERC-3643 Claim Topics Registry to get the list of required claim topics (e.g., KYC, accreditation).
+2. **Get required topics**: Query the ERC-3643 Claim Topics Registry to get the list of required claim topics (e.g., KYC, accreditation).
 
 3. **For each required topic:**
    - Get the EAS schema UID mapped to this topic
@@ -164,7 +164,7 @@ When `isVerified(wallet)` is called on the EASClaimVerifier:
    - Not revoked (`revocationTime == 0`)
    - Not expired (both EAS-level and data-level expiration)
 
-5. **Return result** — `true` only if every required topic has at least one valid attestation from a trusted attester.
+5. **Return result**: `true` only if every required topic has at least one valid attestation from a trusted attester.
 
 ### Multi-Wallet Identity
 
@@ -232,7 +232,7 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
 
 **Advantages:**
 - Works with deployed ERC-3643 tokens without any contract changes
-- Drop-in replacement — register wrapper address in IdentityRegistryStorage
+- Drop-in replacement: register wrapper address in IdentityRegistryStorage
 - Backwards compatible
 
 **Trade-offs:**
@@ -250,13 +250,13 @@ contract EASClaimVerifierIdentityWrapper is IIdentity {
 
 EAS provides immediate, on-chain revocation. When a KYC provider needs to revoke access:
 
-1. **AML alert triggered** — Investor fails ongoing compliance check
-2. **Attestation revoked** — KYC provider calls `EAS.revoke(attestationUID)`
-3. **Revocation recorded** — EAS sets `revocationTime = block.timestamp`
-4. **Transfer blocked** — Next `isVerified()` check sees revocation, returns `false`
-5. **Immediate effect** — Investor cannot buy, sell, or receive the token
+1. **AML alert triggered**: Investor fails ongoing compliance check
+2. **Attestation revoked**: KYC provider calls `EAS.revoke(attestationUID)`
+3. **Revocation recorded**: EAS sets `revocationTime = block.timestamp`
+4. **Transfer blocked**: Next `isVerified()` check sees revocation, returns `false`
+5. **Immediate effect**: Investor cannot buy, sell, or receive the token
 
-This happens automatically and on-chain — no manual intervention, no delays.
+This happens automatically and on-chain: no manual intervention, no delays.
 
 ### Provider Trust Management
 
@@ -273,7 +273,7 @@ adapter.addTrustedAttester(kycProviderAddress, topics);
 adapter.removeTrustedAttester(kycProviderAddress);
 ```
 
-Removing a trusted attester immediately invalidates all attestations from that provider — useful if a provider is compromised or loses their license.
+Removing a trusted attester immediately invalidates all attestations from that provider: useful if a provider is compromised or loses their license.
 
 ### Attestation Lifecycle
 
@@ -281,21 +281,21 @@ Removing a trusted attester immediately invalidates all attestations from that p
 
 An attestation goes through these states:
 
-1. **Created** — KYC provider issues attestation via EAS
-2. **Registered** — Attestation UID registered in EASClaimVerifier for efficient lookup
-3. **Active** — Investor can hold and transfer tokens
-4. **Verified** — Each transfer triggers re-verification (checks revocation and expiration)
-5. **Revoked** — Provider revokes; investor immediately blocked
-6. **Expired** — Attestation passes expiration timestamp; investor blocked until re-verification
+1. **Created**: KYC provider issues attestation via EAS
+2. **Registered**: Attestation UID registered in EASClaimVerifier for efficient lookup
+3. **Active**: Investor can hold and transfer tokens
+4. **Verified**: Each transfer triggers re-verification (checks revocation and expiration)
+5. **Revoked**: Provider revokes; investor immediately blocked
+6. **Expired**: Attestation passes expiration timestamp; investor blocked until re-verification
 
 ### Why This Matters for Regulated Securities
 
 Security tokens have strict compliance requirements:
 
-- **Real-time enforcement** — Regulators expect immediate action when an investor fails compliance
-- **Audit trail** — Every attestation and revocation is recorded on-chain
-- **Provider accountability** — Clear record of which provider issued which attestation
-- **Cross-token coordination** — Revoke once, affect all tokens using that attestation
+- **Real-time enforcement**: Regulators expect immediate action when an investor fails compliance
+- **Audit trail**: Every attestation and revocation is recorded on-chain
+- **Provider accountability**: Clear record of which provider issued which attestation
+- **Cross-token coordination**: Revoke once, affect all tokens using that attestation
 
 The bridge maintains these guarantees while opening up the identity layer.
 
@@ -368,9 +368,9 @@ For V1, attestations are created per-chain. This is simple and matches how token
 - Audit trail of all attestations and revocations
 
 **What you care about:**
-- Regulatory compliance — every investor properly verified
-- Provider flexibility — not locked into one KYC vendor
-- Operational efficiency — automated verification, no manual review
+- Regulatory compliance: every investor properly verified
+- Provider flexibility: not locked into one KYC vendor
+- Operational efficiency: automated verification, no manual review
 
 ### KYC / Identity Provider
 
@@ -386,9 +386,9 @@ For V1, attestations are created per-chain. This is simple and matches how token
 - Revocation requests and compliance alerts
 
 **What you care about:**
-- Market access — your attestations accepted by many tokens
-- Reputation — accurate verifications, timely revocations
-- Efficiency — verify once, attestation works everywhere
+- Market access: your attestations accepted by many tokens
+- Reputation: accurate verifications, timely revocations
+- Efficiency: verify once, attestation works everywhere
 
 ### Investor
 
@@ -403,9 +403,9 @@ For V1, attestations are created per-chain. This is simple and matches how token
 - Expiration dates for re-verification
 
 **What you care about:**
-- Convenience — KYC once, access many tokens
-- Privacy — only necessary information shared
-- Portability — attestations work across chains and tokens
+- Convenience: KYC once, access many tokens
+- Privacy: only necessary information shared
+- Portability: attestations work across chains and tokens
 
 ### Compliance Officer
 
@@ -421,16 +421,16 @@ For V1, attestations are created per-chain. This is simple and matches how token
 - Historical audit trail
 
 **What you care about:**
-- Regulatory compliance — meet all requirements
-- Audit readiness — complete on-chain records
-- Rapid response — immediate effect when revoking access
+- Regulatory compliance: meet all requirements
+- Audit readiness: complete on-chain records
+- Rapid response: immediate effect when revoking access
 
 ---
 
 ## Further Reading
 
-- [System Architecture](system-architecture.md) — Technical component reference and dependencies
-- [Data Flow](data-flow.md) — Operation-by-operation data flows
-- [Integration Guide](../integration-guide.md) — Step-by-step integration instructions
-- [Schema Definitions](../schemas/schema-definitions.md) — EAS schema specifications
-- [Gap Analysis](../research/gap-analysis.md) — Detailed ONCHAINID vs EAS comparison
+- [System Architecture](system-architecture.md): Technical component reference and dependencies
+- [Data Flow](data-flow.md): Operation-by-operation data flows
+- [Integration Guide](../integration-guide.md): Step-by-step integration instructions
+- [Schema Definitions](../schemas/schema-definitions.md): EAS schema specifications
+- [Gap Analysis](../research/gap-analysis.md): Detailed ONCHAINID vs EAS comparison
