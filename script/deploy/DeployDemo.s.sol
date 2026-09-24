@@ -28,12 +28,7 @@ contract DeployDemo is Script {
 
         vm.startBroadcast(pk);
 
-        DemoERC3643Token token = new DemoERC3643Token(
-            "Shibui Demo Token",
-            "sDEMO",
-            verifier,
-            admin
-        );
+        DemoERC3643Token token = new DemoERC3643Token("Shibui Demo Token", "sDEMO", verifier, admin);
 
         // Seed the deployer with 1_000 tokens so the demo can sink transfers.
         token.mint(admin, 1_000 ether);

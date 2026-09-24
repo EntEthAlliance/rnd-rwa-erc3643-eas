@@ -142,8 +142,7 @@ contract DemoFlowTest is BridgeHarness {
         vm.prank(address(demoKYC));
         eas.revoke(
             RevocationRequest({
-                schema: SCHEMA_INVESTOR_ELIGIBILITY,
-                data: RevocationRequestData({uid: carolUID, value: 0})
+                schema: SCHEMA_INVESTOR_ELIGIBILITY, data: RevocationRequestData({uid: carolUID, value: 0})
             })
         );
     }
