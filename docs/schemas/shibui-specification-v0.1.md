@@ -14,9 +14,9 @@ Shibui uses Ethereum Attestation Service (EAS) to express investor-eligibility a
 
 The architecture has three layers:
 
-1. **Schema strings** — define the bytes stored in EAS attestations.  
-2. **Contracts and policies** — define what is accepted on-chain.  
-3. **This specification** — defines what those bytes are intended to mean in real-world compliance and onboarding terms.
+1. **Schema strings**: define the bytes stored in EAS attestations.  
+2. **Contracts and policies**: define what is accepted on-chain.  
+3. **This specification**: defines what those bytes are intended to mean in real-world compliance and onboarding terms.
 
 The practical goal is interoperability. A token issuer should be able to read an attestation from one provider and interpret it in a way that is consistent with another provider using the same Shibui schema.
 
@@ -40,12 +40,12 @@ The following rules apply throughout this draft:
 
 This draft relies on the following external sources as the main policy and terminology anchors:
 
-- **FATF Recommendation 10** — customer due diligence baseline for KYC and source-of-funds expectations  
-- **ISO 3166-1 numeric** — country-code reference  
-- **SEC Regulation D / Rule 501** — US accredited-investor reference  
-- **US qualified purchaser framework** — higher-threshold US investor-category reference  
-- **MiFID II Annex II** — EU professional-client reference  
-- **OFAC and equivalent sanctions authorities** — sanctions-screening reference
+- **FATF Recommendation 10**: customer due diligence baseline for KYC and source-of-funds expectations  
+- **ISO 3166-1 numeric**: country-code reference  
+- **SEC Regulation D / Rule 501**: US accredited-investor reference  
+- **US qualified purchaser framework**: higher-threshold US investor-category reference  
+- **MiFID II Annex II**: EU professional-client reference  
+- **OFAC and equivalent sanctions authorities**: sanctions-screening reference
 
 ### Shibui implementation references
 
@@ -64,7 +64,7 @@ When this document refers to a **Shibui canonical enum**, it means the enum is c
 
 ## 4. The two live Shibui schemas
 
-### 4.1 Schema 1 — Investor Eligibility
+### 4.1 Schema 1: Investor Eligibility
 
 **Exact live schema string**
 
@@ -89,7 +89,7 @@ Schema 1 is the single canonical eligibility payload decoded by the current Shib
 9. `evidenceHash`  
 10. `verificationMethod`
 
-### 4.2 Schema 2 — Issuer Authorization
+### 4.2 Schema 2: Issuer Authorization
 
 **Exact live schema string**
 
@@ -111,9 +111,9 @@ Schema 2 is the governance and audit-trail schema used to authorize trusted atte
 
 A Shibui attestation should be read in three steps:
 
-1. **Read the data** — decode the schema fields exactly as written.  
-2. **Read the semantic meaning** — interpret what each value is intended to say in compliance terms.  
-3. **Read the policy mapping** — determine how the current Shibui policy modules and issuer configuration use that value.
+1. **Read the data**: decode the schema fields exactly as written.  
+2. **Read the semantic meaning**: interpret what each value is intended to say in compliance terms.  
+3. **Read the policy mapping**: determine how the current Shibui policy modules and issuer configuration use that value.
 
 A simple rule of thumb:
 
@@ -128,7 +128,7 @@ Another useful distinction:
 
 ---
 
-## 5. Schema 1 — Investor Eligibility
+## 5. Schema 1: Investor Eligibility
 
 ### 5.1 Purpose
 
@@ -423,7 +423,7 @@ This means Shibui currently treats Schema 1 as a shared multi-topic eligibility 
 
 ---
 
-## 6. Schema 2 — Issuer Authorization
+## 6. Schema 2: Issuer Authorization
 
 ### 6.1 Purpose
 
@@ -510,11 +510,11 @@ Illustrative examples:
 
 Recognized tag families in v0.1:
 
-- `lei:` — Legal Entity Identifier  
-- `vlei:` — verifiable LEI or equivalent LEI-derived verifiable credential reference  
-- `eidas:` — eIDAS-related trust or supervisory identifier  
-- `did:` — W3C Decentralized Identifier  
-- `x-{name}:` — implementation-defined extension tag for other anchor systems
+- `lei:`: Legal Entity Identifier  
+- `vlei:`: verifiable LEI or equivalent LEI-derived verifiable credential reference  
+- `eidas:`: eIDAS-related trust or supervisory identifier  
+- `did:`: W3C Decentralized Identifier  
+- `x-{name}:`: implementation-defined extension tag for other anchor systems
 
 The exact formatting around the tag is left to implementers, but the tag itself SHOULD be deterministic and easy to parse.
 
@@ -551,9 +551,9 @@ The anchor binds an attester address to an identifiable legal or organizational 
 
 It does **not**:
 
-- authorize the attester — authorization remains governed by `authorizedTopics` and Schema 2 workflows  
-- validate the factual content of investor attestations — that remains the role of Schema 1 and its policy layer  
-- move resolution on-chain — verification stays off-chain in this revision
+- authorize the attester: authorization remains governed by `authorizedTopics` and Schema 2 workflows  
+- validate the factual content of investor attestations: that remains the role of Schema 1 and its policy layer  
+- move resolution on-chain: verification stays off-chain in this revision
 
 The anchor is therefore an identity-binding mechanism, not an authorization mechanism and not a truth-validation mechanism.
 
@@ -702,18 +702,18 @@ Issuers and providers may extend this structure, but SHOULD preserve these top-l
 
 This section is informative. It is included to show how the specification can be applied in practice. It is not an endorsement of any provider.
 
-### 8.1 Profile A — US private-offering workflow
+### 8.1 Profile A: US private-offering workflow
 
 **Representative provider model:** Parallel Markets-style onboarding and 506(c) accreditation workflow  
 **Representative jurisdiction:** United States
 
 **Typical fit within Shibui**
 
-- `kycStatus` — KYC outcome after onboarding review  
-- `amlStatus` — AML outcome where in scope  
-- `sanctionsStatus` — sanctions screening result  
-- `accreditationType` — often `ACCREDITED`, `QUALIFIED_PURCHASER`, or `INSTITUTIONAL` depending on the investor and offering  
-- `verificationMethod` — often `THIRD_PARTY`, or `PROFESSIONAL_LETTER` where classification depends materially on a professional attestation
+- `kycStatus`: KYC outcome after onboarding review  
+- `amlStatus`: AML outcome where in scope  
+- `sanctionsStatus`: sanctions screening result  
+- `accreditationType`: often `ACCREDITED`, `QUALIFIED_PURCHASER`, or `INSTITUTIONAL` depending on the investor and offering  
+- `verificationMethod`: often `THIRD_PARTY`, or `PROFESSIONAL_LETTER` where classification depends materially on a professional attestation
 
 **Issuer cautions**
 
@@ -721,7 +721,7 @@ This section is informative. It is included to show how the specification can be
 - `sourceOfFundsStatus` should not be assumed unless the workflow includes that review.  
 - `PROFESSIONAL` under MiFID-style logic should not be inferred automatically from US accreditation.
 
-### 8.2 Profile B — Global KYC / AML screening workflow with EU distribution context
+### 8.2 Profile B: Global KYC / AML screening workflow with EU distribution context
 
 **Representative provider model:** Sumsub-style verification platform  
 **Representative jurisdiction:** multi-jurisdiction, illustrated here with EU-facing token distribution
@@ -738,7 +738,7 @@ This section is informative. It is included to show how the specification can be
 - EU professional-client treatment and US accredited-investor treatment are not automatically interchangeable.  
 - The issuer should document its chosen equivalence rule.
 
-### 8.3 Jurisdiction note — United States
+### 8.3 Jurisdiction note: United States
 
 Investor.gov describes accredited investors as investors eligible to participate in offerings relying on exemptions such as Rule 506 of Regulation D, with the term defined in Rule 501 of Regulation D.
 
@@ -751,7 +751,7 @@ Investor.gov describes accredited investors as investors eligible to participate
 | qualified purchaser | `QUALIFIED_PURCHASER` |
 | institutional entity under issuer policy | `INSTITUTIONAL` |
 
-### 8.4 Jurisdiction note — European Union
+### 8.4 Jurisdiction note: European Union
 
 MiFID II Annex II describes professional clients as clients with the experience, knowledge, and expertise to make their own investment decisions and properly assess risk, including specified regulated entities, large undertakings meeting size thresholds, governments/central banks, and other institutional investors.
 

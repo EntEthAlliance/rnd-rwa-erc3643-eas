@@ -1,4 +1,4 @@
-# Shibui — Product Specification
+# Shibui: Product Specification
 
 **Status:** `v0.4.0-rc1` pre-release
 **License:** Apache-2.0
@@ -24,7 +24,7 @@ ERC-3643 mandates an on-chain identity check on every transfer. The reference pa
 
 1. **Vendor coupling.** Only ONCHAINID-compatible providers can participate. There is no clean way to plug in an EAS-based, ZK-based, or future identity backend.
 2. **No on-chain payload enforcement.** The default path checks *whether* a claim was issued by a trusted issuer, not *what the claim says*. A pending KYC, an expired accreditation, or a restricted jurisdiction can pass `isVerified` as long as the credential exists.
-3. **No auditable trust-change trail.** Adding or removing a trusted KYC provider is an on-chain state change with no cryptographic authorisation artifact — compliance teams get the event but no signed record of who authorised the change.
+3. **No auditable trust-change trail.** Adding or removing a trusted KYC provider is an on-chain state change with no cryptographic authorisation artifact: compliance teams get the event but no signed record of who authorised the change.
 
 Shibui addresses all three via a small stack of EAS-backed contracts plugged behind the ERC-3643 Identity Registry.
 
@@ -49,21 +49,21 @@ Shibui addresses all three via a small stack of EAS-backed contracts plugged beh
 
 **Core contracts**
 
-- `EASClaimVerifier` — payload-aware verification entry point.
-- `EASTrustedIssuersAdapter` — Schema-2-gated per-topic attester trust.
-- `EASIdentityProxy` — wallet → identity binding under `AGENT_ROLE`.
-- `TrustedIssuerResolver` — EAS schema resolver that gates Schema-2 writes to admin-curated authorizers.
-- 8 `ITopicPolicy` modules — one per production-use ERC-3643 claim topic (KYC, AML, country allow-list, accreditation, professional, institutional, sanctions, source-of-funds).
+- `EASClaimVerifier`: payload-aware verification entry point.
+- `EASTrustedIssuersAdapter`: Schema-2-gated per-topic attester trust.
+- `EASIdentityProxy`: wallet → identity binding under `AGENT_ROLE`.
+- `TrustedIssuerResolver`: EAS schema resolver that gates Schema-2 writes to admin-curated authorizers.
+- 8 `ITopicPolicy` modules: one per production-use ERC-3643 claim topic (KYC, AML, country allow-list, accreditation, professional, institutional, sanctions, source-of-funds).
 - UUPS upgradeable variants of the three core contracts.
 
 **Read-compat shim (Path B)**
 
-- `EASClaimVerifierIdentityWrapper` — lives under `contracts/compat/`, targeted at EthTrust SL **Level 1**. Bridges to legacy Identity Registries that cannot be modified. Documented non-features: no ERC-734 keys, no topic policies in `isClaimValid`, no signature verification, O(N×M) gas profile. Use Path A for new deployments.
+- `EASClaimVerifierIdentityWrapper`: lives under `contracts/compat/`, targeted at EthTrust SL **Level 1**. Bridges to legacy Identity Registries that cannot be modified. Documented non-features: no ERC-734 keys, no topic policies in `isClaimValid`, no signature verification, O(N×M) gas profile. Use Path A for new deployments.
 
 **Schemas**
 
-- Investor Eligibility — 10 fields, including `evidenceHash` and `verificationMethod` for auditability.
-- Issuer Authorization — gates adapter trust changes.
+- Investor Eligibility: 10 fields, including `evidenceHash` and `verificationMethod` for auditability.
+- Issuer Authorization: gates adapter trust changes.
 
 **Administration**
 
@@ -211,10 +211,10 @@ See [`test/integration/ERC3643Token.integration.t.sol`](test/integration/ERC3643
 
 Start here:
 
-- [`README.md`](README.md) — one-page product overview
-- [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md) — scope boundary (what Shibui does *not* provide)
-- [`docs/integration-guide.md`](docs/integration-guide.md) — Path A and Path B integration step-by-step
-- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md) — Investor Eligibility and Issuer Authorization specs
-- [`AUDIT.md`](AUDIT.md) — threat model, launch gate, pre-flight checklist
-- [`CHANGELOG.md`](CHANGELOG.md) — release history
-- [`diagrams/`](diagrams/) — current architecture diagrams
+- [`README.md`](README.md): one-page product overview
+- [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md): scope boundary (what Shibui does *not* provide)
+- [`docs/integration-guide.md`](docs/integration-guide.md): Path A and Path B integration step-by-step
+- [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md): Investor Eligibility and Issuer Authorization specs
+- [`AUDIT.md`](AUDIT.md): threat model, launch gate, pre-flight checklist
+- [`CHANGELOG.md`](CHANGELOG.md): release history
+- [`diagrams/`](diagrams/): current architecture diagrams

@@ -1,4 +1,4 @@
-# PR: Demo integration — seeding, regression suite, VLEIPolicy tests, vLEI wiring
+# PR: Demo integration: seeding, regression suite, VLEIPolicy tests, vLEI wiring
 
 **Base:** `deploy/sepolia` (`87009d1`) · **Head:** `fix/sepolia-deploy-wiring` · **2 commits**
 
@@ -17,31 +17,30 @@ Simplest-solution choices, made deliberately:
 - **Identity = wallet.** `EASIdentityProxy.getIdentity` already falls back to
   self-identity for unregistered wallets, so the demo needs zero proxy
   registrations. The orphaned draft's `registerWallet` block was dead code
-  (its `== address(0)` guard can never be true) — removed.
+  (its `== address(0)` guard can never be true): removed.
 - **No core-contract changes.** Fail-closed on empty topics stays a
   follow-up through the audit gate (guarded operationally by
   `VerifyDeployment`).
 
-## Commit 1 — `fix(deploy)` (carried, rebased onto `87009d1`)
+## Commit 1: `fix(deploy)` (carried, rebased onto `87009d1`)
 
 Wiring fix + `ClaimTopicsRegistry` + orchestrated `DeploySepolia` +
 `VerifyDeployment` smoke test + runbook. Unchanged from prior review; see
 `docs/deployment-runbook.md`.
 
-## Commit 2 — `feat(demo)`
+## Commit 2: `feat(demo)`
 
 ### `script/SeedDemo.s.sol` (new)
-Seeds the three demo investors on **real** EAS (Sepolia / Base Sepolia) —
-previously only the MockEAS-only `SetupPilot` existed. Single admin key acts
+Seeds the three demo investors on **real** EAS (Sepolia / Base Sepolia): previously only the MockEAS-only `SetupPilot` existed. Single admin key acts
 as authorizer → Schema-2 self-authorization → trusted attester →
 InvestorEligibility attestation per investor → per-topic registration.
 Idempotent per step; prints wallets + UIDs to paste into
 `deployments/sepolia.json#demo`. Also fixes a latent demo-breaker: the
 deployed `AccreditationPolicy` allow-set is **empty** (DeployTestnet ships it
-that way), so even Alice would fail topic 7 — the script allows type 2
+that way), so even Alice would fail topic 7: the script allows type 2
 (ACCREDITED) when missing.
 
-### `test/scenarios/DemoFlow.t.sol` (new — the demo regression suite)
+### `test/scenarios/DemoFlow.t.sol` (new: the demo regression suite)
 7 tests locking the demo storylines end-to-end on `BridgeHarness` +
 `DemoERC3643Token`:
 - Alice verified; transfer Alice→Carol clears.
@@ -53,19 +52,19 @@ that way), so even Alice would fail topic 7 — the script allows type 2
 
 ### `contracts/demo/DemoERC3643Token.sol` (comment-only fix)
 The test suite caught a contradiction: the comment claimed "mints skip the
-compliance gate" but the code checks the recipient on mint — and the **code**
+compliance gate" but the code checks the recipient on mint: and the **code**
 is correct (T-REX semantics: tokens are only ever delivered to verified
 investors). Comment corrected to match behavior; zero bytecode change.
 
 ### `test/unit/policies/VLEIPolicy.t.sol` (new)
 PR #98 shipped `VLEIPolicy` with no tests. 10 tests covering all four
 validate() gates: decode safety (empty, malformed, and a cross-schema
-InvestorEligibility payload — none revert, all return false), zero-SAID
+InvestorEligibility payload: none revert, all return false), zero-SAID
 rejection, staleness including the exact-boundary case, credType matching,
 constructor guards.
 
 ### `script/ConfigureBridge.s.sol` (extended)
-PR #98 added topics 15/16 but nothing wires them — without a
+PR #98 added topics 15/16 but nothing wires them: without a
 `setTopicSchemaMapping` + `setTopicPolicy` for those topics, the verifier
 rejects every vLEI attestation. Added as env-gated optional wiring
 (`VLEI_BRIDGE_SCHEMA_UID`, `VLEI_LE_POLICY`, `VLEI_ROLE_POLICY`); fully
@@ -76,15 +75,15 @@ skipped when unset, so nothing changes for non-vLEI deployments.
 | Finding | Disposition |
 |---|---|
 | `VLEIPolicy` untested | 10 unit tests added (this PR) |
-| Topics 15/16 unwired — vLEI attestations unusable | Optional wiring in `ConfigureBridge` (this PR) |
-| Revocation/expiry not checked in policy | Correct by design — verified the verifier core checks `revocationTime`/`expirationTime` before invoking any policy (`EASClaimVerifier.sol:239-240`) |
-| `_tryDecode` external with underscore prefix; callable by anyone | Harmless (pure, no state); lint-level. Left as-is to keep this PR out of PR #98's diff — note for a cleanup pass |
+| Topics 15/16 unwired: vLEI attestations unusable | Optional wiring in `ConfigureBridge` (this PR) |
+| Revocation/expiry not checked in policy | Correct by design: verified the verifier core checks `revocationTime`/`expirationTime` before invoking any policy (`EASClaimVerifier.sol:239-240`) |
+| `_tryDecode` external with underscore prefix; callable by anyone | Harmless (pure, no state); lint-level. Left as-is to keep this PR out of PR #98's diff: note for a cleanup pass |
 | `deployments/sepolia.json#shibui.vlei` placeholders zero | Stays zero until VLEIPolicy instances deploy; `ConfigureBridge` env vars are the fill-in path |
 
 ## Test evidence
 
 - Full regression: **11 suites, 113 tests, 0 failed** (integration suite
-  excluded — requires pre-built ERC-3643 hardhat artifacts, unchanged by
+  excluded: requires pre-built ERC-3643 hardhat artifacts, unchanged by
   this PR).
 - New coverage: `ClaimTopicsRegistry` 10/10, `VLEIPolicy` 10/10,
   `DemoFlow` 7/7.
@@ -115,7 +114,7 @@ cast send $EAS "revoke((bytes32,(bytes32,uint256)))" "($SCHEMA_UID,($CAROL_UID,0
   --private-key $PRIVATE_KEY --rpc-url "$RPC_SEPOLIA"
 ```
 
-Note `REQUIRED_TOPICS=1,2,7,13` — topic 7 (ACCREDITATION) must be in the
+Note `REQUIRED_TOPICS=1,2,7,13`: topic 7 (ACCREDITATION) must be in the
 required set or Bob's storyline has no teeth. Paste SeedDemo's printed
 wallets/UIDs into `deployments/sepolia.json#demo` in the same PR that
 records the seeding.

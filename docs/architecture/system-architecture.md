@@ -133,13 +133,13 @@ Shibui returns `true` only if every required topic is satisfied.
 
 ## Schemas
 
-### Schema 1 — Investor Eligibility
+### Schema 1: Investor Eligibility
 
 ```text
 address identity,uint8 kycStatus,uint8 amlStatus,uint8 sanctionsStatus,uint8 sourceOfFundsStatus,uint8 accreditationType,uint16 countryCode,uint64 expirationTimestamp,bytes32 evidenceHash,uint8 verificationMethod
 ```
 
-### Schema 2 — Issuer Authorization
+### Schema 2: Issuer Authorization
 
 ```text
 address issuerAddress,uint256[] authorizedTopics,string issuerName

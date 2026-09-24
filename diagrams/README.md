@@ -6,7 +6,7 @@ The diagrams are rendered inline below. Source `.mmd` files live in this directo
 
 ---
 
-## Architecture — what lives where and who controls it
+## Architecture: what lives where and who controls it
 
 ### Architecture overview
 
@@ -159,7 +159,7 @@ flowchart TD
     style OCID fill:#e1bee7,stroke:#7b1fa2
 ```
 
-### Shibui — before / after
+### Shibui: before / after
 
 Single-vendor identity stack vs. pluggable backend with payload-aware verification. Source: [`shibui-before-after.mmd`](shibui-before-after.mmd).
 
@@ -212,7 +212,7 @@ flowchart LR
 
 ---
 
-## Behavioural flows — what happens on a transfer / revocation
+## Behavioural flows: what happens on a transfer / revocation
 
 ### Transfer verification flow
 
@@ -615,7 +615,7 @@ flowchart TB
 
 ## Rendering
 
-GitHub renders the `mermaid` code blocks above inline. To edit the raw sources, open the linked `.mmd` files directly — viewers such as [Mermaid Live Editor](https://mermaid.live/) or the VS Code *Mermaid Preview* extension render them standalone.
+GitHub renders the `mermaid` code blocks above inline. To edit the raw sources, open the linked `.mmd` files directly: viewers such as [Mermaid Live Editor](https://mermaid.live/) or the VS Code *Mermaid Preview* extension render them standalone.
 
 ## Scope note
 

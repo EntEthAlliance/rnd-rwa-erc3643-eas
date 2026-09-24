@@ -12,7 +12,7 @@ To keep iteration fast, CI is **path-aware**.
 
 ### Docs / website-only changes
 If a PR only touches docs/site paths (e.g. `docs/**`, `diagrams/**`, `**/*.md`, `demo/**`), CI will:
-- ✅ run a lightweight job that reports “skipping Foundry”
+- ✅ run a lightweight job that reports "skipping Foundry"
 - ⏭️ **skip** Foundry build/test/coverage/gas
 
 ### Contract-related changes
@@ -30,11 +30,11 @@ If a PR touches any contract-related path (e.g. `contracts/**`, `src/**`, `test/
 The public site at <https://entethalliance.github.io/rnd-rwa-erc3643-eas/> is served
 from the **`gh-pages` branch**. Two workflows write to it:
 
-- **`pages-sync.yml`** — on pushes to `master` touching `demo/shibui-static/`'s pages,
+- **`pages-sync.yml`**: on pushes to `master` touching `demo/shibui-static/`'s pages,
   copies `index.html` and `identity-solutions-map.html` to the `gh-pages` root.
   `demo/shibui-static/` on `master` is the source of truth; don't edit the pages on
   `gh-pages` directly.
-- **`demo-build.yml`** — builds the Next.js demo (`demo/shibui-app`) as a static
+- **`demo-build.yml`**: builds the Next.js demo (`demo/shibui-app`) as a static
   export. The demo lives under `demo/` on `gh-pages`, separate from the synced pages.
 
 ---

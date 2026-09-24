@@ -2,7 +2,7 @@
 
 **Type:** Feature
 **Scope:** `/demo/shibui-app` (new), `/contracts/demo/DemoERC3643Token.sol` (new), `/script/deploy/DeployDemo.s.sol` (new), `/deployments/sepolia.json` (new), `README.md`, `.github/workflows/demo-build.yml` (new), `docs/PRD_DEMO_UI.md` (new)
-**Status:** Ready — scaffolding + working UI + PRD + demo token in this PR
+**Status:** Ready: scaffolding + working UI + PRD + demo token in this PR
 
 Closes #TBD
 Related: `docs/PRD_EXECUTION_REPORT_2026-04-08.md` (follow-up item 2)
@@ -11,19 +11,19 @@ Related: `docs/PRD_EXECUTION_REPORT_2026-04-08.md` (follow-up item 2)
 
 ## Why
 
-The repo ships working contracts and a scripted pilot, but institutional reviewers evaluating Shibui cannot see the decision surface — who authorizes attesters, who issues attestations, how revocation resolves in real time. The external demo at `claudyfaucant.github.io/eas-erc3643-bridge-demo/` sits outside the repo, which violates the project's own rule: *"If it is not in Git, it does not exist."*
+The repo ships working contracts and a scripted pilot, but institutional reviewers evaluating Shibui cannot see the decision surface: who authorizes attesters, who issues attestations, how revocation resolves in real time. The external demo at `claudyfaucant.github.io/eas-erc3643-bridge-demo/` sits outside the repo, which violates the project's own rule: *"If it is not in Git, it does not exist."*
 
 This PR brings the demo in-house so the repo is self-contained and institutionally presentable.
 
 ## What this PR does
 
-1. Adds `docs/PRD_DEMO_UI.md` — full product spec for the demo UI.
+1. Adds `docs/PRD_DEMO_UI.md`: full product spec for the demo UI.
 2. Scaffolds `/demo/shibui-app` as a Next.js 14 app with three wired routes: `/admin`, `/attester`, `/transfer`.
 3. Wires wagmi v2 + viem + RainbowKit + `@ethereum-attestation-service/eas-sdk`.
-4. Adds `deployments/sepolia.json` — single source of truth for contract addresses, consumed by the UI at build time via a sync hook.
-5. Adds `contracts/demo/DemoERC3643Token.sol` — minimal ERC-3643-shaped token that gates transfers on `EASClaimVerifier.isVerified()`.
-6. Adds `script/deploy/DeployDemo.s.sol` — forge script to deploy + mint the demo token on Sepolia.
-7. Adds `.github/workflows/demo-build.yml` — CI check for typecheck, lint, and build on every demo-path change.
+4. Adds `deployments/sepolia.json`: single source of truth for contract addresses, consumed by the UI at build time via a sync hook.
+5. Adds `contracts/demo/DemoERC3643Token.sol`: minimal ERC-3643-shaped token that gates transfers on `EASClaimVerifier.isVerified()`.
+6. Adds `script/deploy/DeployDemo.s.sol`: forge script to deploy + mint the demo token on Sepolia.
+7. Adds `.github/workflows/demo-build.yml`: CI check for typecheck, lint, and build on every demo-path change.
 8. Updates root `README.md` with a "Live demo" section pointing at the in-repo path.
 9. Leaves the existing `demo/shibui-static/` presentation site intact (no route collision).
 
@@ -37,7 +37,7 @@ Three screens map 1:1 to the three actors in the compliance lifecycle:
 | `/attester` | KYC provider | Issue + revoke investor attestations |
 | `/transfer` | Reviewer | Watch Alice succeed, Bob revert, Carol flip after revoke |
 
-All contract interactions run against Sepolia. The UI reads every address from `deployments/sepolia.json` — there is one source of truth. Until that file is populated, each page renders a `ConfigurationGate` banner listing exactly which addresses / schema UIDs are still missing.
+All contract interactions run against Sepolia. The UI reads every address from `deployments/sepolia.json`: there is one source of truth. Until that file is populated, each page renders a `ConfigurationGate` banner listing exactly which addresses / schema UIDs are still missing.
 
 Full design rationale, user stories, and acceptance criteria: `docs/PRD_DEMO_UI.md`.
 
@@ -117,13 +117,13 @@ demo/shibui-app/
 
 ## Files changed
 
-- `README.md` — new "Live demo" section pointing to `/demo/shibui-app`.
+- `README.md`: new "Live demo" section pointing to `/demo/shibui-app`.
 
 ## Reviewer checklist
 
 - [ ] PRD scope matches the three user stories we actually need
 - [ ] No mainnet paths touched
-- [ ] No audited contracts modified — only `contracts/demo/` is new
+- [ ] No audited contracts modified: only `contracts/demo/` is new
 - [ ] CI passes (forge + demo build)
 - [ ] README "Live demo" section consistent with new `/demo/shibui-app`
 - [ ] `DemoERC3643Token` clearly labeled demo-only in name and revert message
@@ -131,15 +131,15 @@ demo/shibui-app/
 
 ## Rollout plan
 
-1. **This PR** — PRD + scaffolding + working UI + demo token + CI (reversible, no production impact).
-2. **Next PR** — populate `deployments/sepolia.json` with actual Sepolia addresses after a clean testnet deployment.
-3. **Next PR** — host the Sepolia-connected UI on GitHub Pages off this repo (or EEA infra).
-4. **Next PR** — replace the external `claudyfaucant.github.io` link site-wide.
+1. **This PR**: PRD + scaffolding + working UI + demo token + CI (reversible, no production impact).
+2. **Next PR**: populate `deployments/sepolia.json` with actual Sepolia addresses after a clean testnet deployment.
+3. **Next PR**: host the Sepolia-connected UI on GitHub Pages off this repo (or EEA infra).
+4. **Next PR**: replace the external `claudyfaucant.github.io` link site-wide.
 
 ## Risks
 
 - `DemoERC3643Token` is deliberately not a full T-REX implementation. Risk is mitigated by the name, revert messages, and explicit docs. It must never be deployed to mainnet.
-- `deployments/sepolia.json` being committed with zero addresses is intentional — the UI gates on this and the CI build survives it. After real deployment, the file gets overwritten.
+- `deployments/sepolia.json` being committed with zero addresses is intentional: the UI gates on this and the CI build survives it. After real deployment, the file gets overwritten.
 - The demo signs real Sepolia transactions from the operator's wallet. The README explicitly warns never to reuse that wallet on mainnet.
 
 ## References

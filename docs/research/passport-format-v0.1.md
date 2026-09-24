@@ -13,17 +13,17 @@
 > direction. It is explicitly exploratory.
 
 ## What this is
-Shibui is about **agreement on the passport format** — the Ethereum-native equivalent of what ICAO standardized for physical passports: a **simple, machine-readable core** that any border gate (token) can scan the same way.
+Shibui is about **agreement on the passport format**: the Ethereum-native equivalent of what ICAO standardized for physical passports: a **simple, machine-readable core** that any border gate (token) can scan the same way.
 
 In practice, that means:
-- a small set of **canonical EAS schemas** (the “passport format”)
+- a small set of **canonical EAS schemas** (the "passport format")
 - clear **versioning rules**
 - clear **required fields** (so verification is interoperable)
 
 ## What this is NOT
 Shibui does **not** standardize the operational lifecycle:
 - how an institution performs KYC/KYB
-- renewals / re-issuance / “lost passport” handling
+- renewals / re-issuance / "lost passport" handling
 - who holds legal liability
 
 Those remain the responsibility of the institution that issues the stamp.
@@ -41,11 +41,11 @@ Those remain the responsibility of the institution that issues the stamp.
 ## Canonical schemas (v0.1)
 We standardize **two** EAS schemas:
 
-1) **Holder Passport Stamp** — facts about the holder (person/entity)
-2) **Asset Passport Profile** — what rules apply to a given asset (token/regime)
+1) **Holder Passport Stamp**: facts about the holder (person/entity)
+2) **Asset Passport Profile**: what rules apply to a given asset (token/regime)
 
 ### 1) Holder Passport Stamp (v0.1)
-**Intent:** “What is true about this holder, as asserted by an institution?”
+**Intent:** "What is true about this holder, as asserted by an institution?"
 
 **Recommended schema name:**
 `shibui.holder_passport_stamp.v0_1`
@@ -64,16 +64,16 @@ We standardize **two** EAS schemas:
 
 **Optional extensions (non-canonical, allowed):**
 - `risk_band` (uint8)
-- `evidence_ref` (bytes32) — hash/pointer to off-chain evidence
+- `evidence_ref` (bytes32): hash/pointer to off-chain evidence
 - `sanctions_screened` (bool)
 
 **Notes:**
-- This stamp is **portable**: it can be used across many assets, subject to each asset’s profile.
+- This stamp is **portable**: it can be used across many assets, subject to each asset's profile.
 
 ---
 
 ### 2) Asset Passport Profile (v0.1)
-**Intent:** “What does this asset require at the border?”
+**Intent:** "What does this asset require at the border?"
 
 **Recommended schema name:**
 `shibui.asset_passport_profile.v0_1`
@@ -92,7 +92,7 @@ We standardize **two** EAS schemas:
 - `revocation_ref` (bytes32)
 
 **Optional extensions (allowed):**
-- `transfer_restrictions_ref` (bytes32) — pointer to detailed rule set (off-chain or on-chain)
+- `transfer_restrictions_ref` (bytes32): pointer to detailed rule set (off-chain or on-chain)
 
 **Notes:**
 - This profile is typically **asset-specific** (and may vary by jurisdiction/regime).
@@ -114,14 +114,14 @@ Rules:
 
 ---
 
-## “ICAO-style machine-readable block” (reader-friendly explanation)
+## "ICAO-style machine-readable block" (reader-friendly explanation)
 Physical passports work globally because ICAO standardized a **small machine-readable core** that scanners understand everywhere.
 
-Shibui’s equivalent is:
+Shibui's equivalent is:
 - a small set of **EAS schemas** with
 - a stable **required-field core**
 
-So any token, venue, or compliance contract can “scan the passport” the same way.
+So any token, venue, or compliance contract can "scan the passport" the same way.
 
 ---
 

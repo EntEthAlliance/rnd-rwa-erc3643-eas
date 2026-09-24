@@ -10,7 +10,7 @@ All diagrams can be rendered with any Mermaid viewer ([mermaid.live](https://mer
 
 ## Context & Strategy Diagrams
 
-These diagrams explain the "why" — the problem space, the before/after comparison, and how different stakeholders interact with the system.
+These diagrams explain the "why": the problem space, the before/after comparison, and how different stakeholders interact with the system.
 
 ### Current ERC-3643 Identity
 
@@ -56,7 +56,7 @@ These diagrams explain the "why" — the problem space, the before/after compari
 
 ## Technical Architecture Diagrams
 
-These diagrams show the "how" — contract relationships, data flows, and verification logic.
+These diagrams show the "how": contract relationships, data flows, and verification logic.
 
 ## Diagram 1: Architecture Overview
 

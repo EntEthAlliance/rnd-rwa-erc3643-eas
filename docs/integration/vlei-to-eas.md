@@ -5,7 +5,7 @@
 `vlei-to-eas` (repo: `AlexeyKrasnoperov/vlei-to-eas`) is a Next.js bridge application
 that translates GLEIF vLEI credentials into EAS attestations on-chain.
 
-**Input:** vLEI credentials — GLEIF organizational identity credentials based on the
+**Input:** vLEI credentials: GLEIF organizational identity credentials based on the
 KERI (Key Event Receipt Infrastructure) protocol. Three credential types are relevant:
 
 | Type | Name | Meaning |
@@ -145,7 +145,7 @@ cast send $EAS_CLAIM_VERIFIER \
 ## What Is NOT Handled by This Integration
 
 - **Actual deployment:** `VLEILegalEntityPolicy` and `VLEIAuthorizedRolePolicy` addresses
-  in `deployments/sepolia.json` are currently zero — they have not been deployed yet.
+  in `deployments/sepolia.json` are currently zero: they have not been deployed yet.
 - **ConfigureBridge wiring:** The vlei-to-eas bridge has not been configured to target
   Sepolia's `EASClaimVerifier` and the registered schema UID. This comes in the next PR.
 - **Topic 16 OOR support:** Only `"ECR"` is configured by default. A second `VLEIPolicy`

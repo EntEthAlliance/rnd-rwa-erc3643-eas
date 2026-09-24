@@ -2,7 +2,7 @@
 
 Compatibility shims. **Not** part of the production verification path.
 
-Contracts under this directory are targeted at EEA EthTrust Security Level **1**, not Level 2. They exist to unblock specific integration cases where the primary Shibui contracts (under `contracts/`) cannot be wired directly — typically because an existing ERC-3643 deployment's Identity Registry Storage is immutable and its on-chain `IIdentity` expectations must be satisfied by a shim.
+Contracts under this directory are targeted at EEA EthTrust Security Level **1**, not Level 2. They exist to unblock specific integration cases where the primary Shibui contracts (under `contracts/`) cannot be wired directly: typically because an existing ERC-3643 deployment's Identity Registry Storage is immutable and its on-chain `IIdentity` expectations must be satisfied by a shim.
 
 Do not use anything in this directory for a new deployment. Use the payload-aware verifier in the parent `contracts/` directory (Path A integration) instead. See [`docs/integration-guide.md`](../../docs/integration-guide.md) for the decision matrix.
 
@@ -18,7 +18,7 @@ Read-compat shim that exposes EAS attestations behind the `IIdentity` / ERC-735 
 - `getClaim` iterates the (attester × topic) space bounded by `MAX_ATTESTERS × MAX_TOPICS_PER_ATTESTER` = 50 × 15 = 750 combinations per call. Not suitable for hot paths without an external cache.
 - `identityAddress` is immutable; no recovery flow.
 
-Every one of these is documented in the contract's NatSpec, and is asserted by `test/unit/EASClaimVerifierIdentityWrapper.t.sol` — the tests exist specifically to prevent silent regressions that would elevate the shim to a role it shouldn't play.
+Every one of these is documented in the contract's NatSpec, and is asserted by `test/unit/EASClaimVerifierIdentityWrapper.t.sol`: the tests exist specifically to prevent silent regressions that would elevate the shim to a role it shouldn't play.
 
 ## Audit bar
 
