@@ -29,11 +29,7 @@ contract VLEIPolicyTest is Test {
         att.data = data;
     }
 
-    function _vleiData(string memory credType, bytes32 said, uint64 verifiedAt)
-        internal
-        pure
-        returns (bytes memory)
-    {
+    function _vleiData(string memory credType, bytes32 said, uint64 verifiedAt) internal pure returns (bytes memory) {
         return abi.encode(
             "5493001KJTIIGC8Y1R12", // lei
             "Example Corp GmbH", // legalName
@@ -60,14 +56,12 @@ contract VLEIPolicyTest is Test {
     }
 
     function test_stale_attestation_fails() public view {
-        bytes memory data =
-            _vleiData("LE", keccak256("said"), uint64(block.timestamp - MAX_STALENESS - 1));
+        bytes memory data = _vleiData("LE", keccak256("said"), uint64(block.timestamp - MAX_STALENESS - 1));
         assertFalse(policy.validate(_attestation(data)));
     }
 
     function test_boundary_exactly_at_staleness_passes() public view {
-        bytes memory data =
-            _vleiData("LE", keccak256("said"), uint64(block.timestamp - MAX_STALENESS));
+        bytes memory data = _vleiData("LE", keccak256("said"), uint64(block.timestamp - MAX_STALENESS));
         assertTrue(policy.validate(_attestation(data)));
     }
 
@@ -88,8 +82,16 @@ contract VLEIPolicyTest is Test {
         // Cross-schema contamination guard: a valid InvestorEligibility payload
         // must not decode as a vLEI credential.
         bytes memory wrongSchema = abi.encode(
-            address(0xBEEF), uint8(1), uint8(0), uint8(0), uint8(1), uint8(2),
-            uint16(840), uint64(block.timestamp + 365 days), keccak256("ev"), uint8(2)
+            address(0xBEEF),
+            uint8(1),
+            uint8(0),
+            uint8(0),
+            uint8(1),
+            uint8(2),
+            uint16(840),
+            uint64(block.timestamp + 365 days),
+            keccak256("ev"),
+            uint8(2)
         );
         assertFalse(policy.validate(_attestation(wrongSchema)));
     }

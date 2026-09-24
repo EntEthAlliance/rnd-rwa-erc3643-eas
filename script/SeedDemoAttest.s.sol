@@ -29,13 +29,13 @@ contract SeedDemoAttest is Script {
         bytes32 invSchema = vm.envBytes32("INVESTOR_ELIGIBILITY_SCHEMA_UID");
 
         address alice = vm.envOr("ALICE_WALLET", vm.addr(uint256(keccak256("shibui.demo.alice"))));
-        address bob   = vm.envOr("BOB_WALLET",   vm.addr(uint256(keccak256("shibui.demo.bob"))));
-        address carol = vm.envOr("CAROL_WALLET",  vm.addr(uint256(keccak256("shibui.demo.carol"))));
+        address bob = vm.envOr("BOB_WALLET", vm.addr(uint256(keccak256("shibui.demo.bob"))));
+        address carol = vm.envOr("CAROL_WALLET", vm.addr(uint256(keccak256("shibui.demo.carol"))));
 
         vm.startBroadcast(key);
 
         _attest(eas, invSchema, alice, "alice", 2);
-        _attest(eas, invSchema, bob,   "bob",   0);
+        _attest(eas, invSchema, bob, "bob", 0);
         _attest(eas, invSchema, carol, "carol", 2);
 
         vm.stopBroadcast();
@@ -46,9 +46,7 @@ contract SeedDemoAttest is Script {
         console2.log("=> Parse UIDs from the 3 Attested events above, then run SeedDemoRegister.s.sol");
     }
 
-    function _attest(IEAS eas, bytes32 schema, address wallet, string memory label, uint8 accreditationType)
-        internal
-    {
+    function _attest(IEAS eas, bytes32 schema, address wallet, string memory label, uint8 accreditationType) internal {
         eas.attest(
             AttestationRequest({
                 schema: schema,
@@ -59,15 +57,15 @@ contract SeedDemoAttest is Script {
                     refUID: bytes32(0),
                     data: abi.encode(
                         wallet,
-                        uint8(1),  // kycStatus = VERIFIED
-                        uint8(0),  // amlStatus = CLEAR
-                        uint8(0),  // sanctionsStatus = CLEAR
-                        uint8(1),  // sourceOfFundsStatus = VERIFIED
+                        uint8(1), // kycStatus = VERIFIED
+                        uint8(0), // amlStatus = CLEAR
+                        uint8(0), // sanctionsStatus = CLEAR
+                        uint8(1), // sourceOfFundsStatus = VERIFIED
                         accreditationType,
                         uint16(840), // US
                         uint64(block.timestamp + 365 days),
                         keccak256(abi.encodePacked("demo-evidence-", label)),
-                        uint8(2)   // verificationMethod = third-party
+                        uint8(2) // verificationMethod = third-party
                     ),
                     value: 0
                 })

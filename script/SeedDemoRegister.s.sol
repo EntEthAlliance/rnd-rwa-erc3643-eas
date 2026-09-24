@@ -22,11 +22,11 @@ import {EASClaimVerifier} from "../contracts/EASClaimVerifier.sol";
  *           ALICE_UID / BOB_UID / CAROL_UID
  */
 contract SeedDemoRegister is Script {
-    uint256 constant TOPIC_KYC            = 1;
-    uint256 constant TOPIC_AML            = 2;
-    uint256 constant TOPIC_COUNTRY        = 3;
-    uint256 constant TOPIC_ACCREDITATION  = 7;
-    uint256 constant TOPIC_SANCTIONS      = 13;
+    uint256 constant TOPIC_KYC = 1;
+    uint256 constant TOPIC_AML = 2;
+    uint256 constant TOPIC_COUNTRY = 3;
+    uint256 constant TOPIC_ACCREDITATION = 7;
+    uint256 constant TOPIC_SANCTIONS = 13;
     uint256 constant TOPIC_SOURCE_OF_FUNDS = 14;
 
     function run() external {
@@ -35,11 +35,11 @@ contract SeedDemoRegister is Script {
         EASClaimVerifier verifier = EASClaimVerifier(vm.envAddress("VERIFIER_ADDRESS"));
 
         address alice = vm.envOr("ALICE_WALLET", vm.addr(uint256(keccak256("shibui.demo.alice"))));
-        address bob   = vm.envOr("BOB_WALLET",   vm.addr(uint256(keccak256("shibui.demo.bob"))));
-        address carol = vm.envOr("CAROL_WALLET",  vm.addr(uint256(keccak256("shibui.demo.carol"))));
+        address bob = vm.envOr("BOB_WALLET", vm.addr(uint256(keccak256("shibui.demo.bob"))));
+        address carol = vm.envOr("CAROL_WALLET", vm.addr(uint256(keccak256("shibui.demo.carol"))));
 
         bytes32 aliceUID = vm.envBytes32("ALICE_UID");
-        bytes32 bobUID   = vm.envBytes32("BOB_UID");
+        bytes32 bobUID = vm.envBytes32("BOB_UID");
         bytes32 carolUID = vm.envBytes32("CAROL_UID");
 
         uint256[] memory topics = new uint256[](6);
@@ -53,8 +53,8 @@ contract SeedDemoRegister is Script {
         vm.startBroadcast(key);
 
         _register(verifier, alice, topics, aliceUID, "alice");
-        _register(verifier, bob,   topics, bobUID,   "bob");
-        _register(verifier, carol, topics, carolUID,  "carol");
+        _register(verifier, bob, topics, bobUID, "bob");
+        _register(verifier, carol, topics, carolUID, "carol");
 
         vm.stopBroadcast();
 
