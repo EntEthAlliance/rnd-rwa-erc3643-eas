@@ -1,0 +1,26 @@
+name: Humanizer auto-fix
+
+on:
+  pull_request:
+    paths:
+      - "**/*.html"
+      - "**/*.htm"
+      - "**/*.md"
+      - "**/*.mdx"
+
+permissions:
+  contents: write
+
+jobs:
+  humanizer-autofix:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=200
+      - name: Auto-fix em/en dashes and curly quotes in added content
+        run: python3 .github/scripts/fix_humanizer.py
