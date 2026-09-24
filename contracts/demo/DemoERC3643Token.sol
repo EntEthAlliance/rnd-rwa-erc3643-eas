@@ -28,12 +28,9 @@ contract DemoERC3643Token is ERC20, AccessControl {
 
     error DemoTransferBlocked(address account, string reason);
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        address claimVerifier_,
-        address admin
-    ) ERC20(name_, symbol_) {
+    constructor(string memory name_, string memory symbol_, address claimVerifier_, address admin)
+        ERC20(name_, symbol_)
+    {
         require(claimVerifier_ != address(0), "verifier=0");
         claimVerifier = IEASClaimVerifier(claimVerifier_);
         _grantRole(DEFAULT_ADMIN_ROLE, admin);

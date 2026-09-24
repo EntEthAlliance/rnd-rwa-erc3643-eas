@@ -88,9 +88,8 @@ contract VLEIPolicy is ITopicPolicy {
         // abi.decode reverts on malformed input; wrap in a low-level call to catch that.
         // We encode the call to this contract's internal decode helper and staticcall it
         // so any revert is caught cleanly.
-        (bool ok, bytes memory result) = address(this).staticcall(
-            abi.encodeWithSelector(this._tryDecode.selector, attestation.data)
-        );
+        (bool ok, bytes memory result) =
+            address(this).staticcall(abi.encodeWithSelector(this._tryDecode.selector, attestation.data));
         if (!ok || result.length == 0) return false;
 
         (lei, legalName, credType, keriAid, vleiSaid, verifiedAt) =
@@ -98,7 +97,9 @@ contract VLEIPolicy is ITopicPolicy {
 
         // Silence unused variable warnings — lei/legalName/keriAid are decoded for
         // completeness but only credType, vleiSaid, and verifiedAt drive policy logic.
-        lei; legalName; keriAid;
+        lei;
+        legalName;
+        keriAid;
 
         // 1. Credential must have been verified by GLEIF (non-zero SAID).
         if (vleiSaid == bytes32(0)) return false;
@@ -121,7 +122,14 @@ contract VLEIPolicy is ITopicPolicy {
     function _tryDecode(bytes calldata data)
         external
         pure
-        returns (string memory lei, string memory legalName, string memory credType, string memory keriAid, bytes32 vleiSaid, uint64 verifiedAt)
+        returns (
+            string memory lei,
+            string memory legalName,
+            string memory credType,
+            string memory keriAid,
+            bytes32 vleiSaid,
+            uint64 verifiedAt
+        )
     {
         (lei, legalName, credType, keriAid, vleiSaid, verifiedAt) =
             abi.decode(data, (string, string, string, string, bytes32, uint64));
