@@ -132,7 +132,7 @@
     <p class="eea-label">Enterprise Ethereum Alliance &middot; R&amp;D</p>
     <div style="display:flex;gap:3rem;flex-wrap:wrap;align-items:flex-start">
       <div style="flex:1 1 520px;min-width:0">
-        <h1 style="font-size:2.5rem;font-weight:700;line-height:1.2;color:var(--eea-text);margin:0 0 1rem">A shared standard for <em style="font-style:normal;color:var(--eea-accent)">investor eligibility</em> in tokenized markets</h1>
+        <h1 style="font-size:2.5rem;font-weight:700;line-height:1.2;color:var(--eea-text);margin:0 0 1rem">A proposed shared model for <em style="font-style:normal;color:var(--eea-accent)">investor eligibility</em> in tokenized markets</h1>
         <p style="font-size:1.1rem;line-height:1.6;color:var(--eea-text-2);margin:0 0 1.5rem;max-width:44ch">Shibui is an open-source attestation adapter for ERC&#8209;3643 security tokens. It lets a token answer <em>"may this wallet hold this security right now?"</em> from attestations issued on the Ethereum Attestation Service by any trusted KYC, AML or accreditation provider.</p>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
           <a class="eea-btn eea-btn--primary" href="#sec-02">Read the problem</a>
@@ -155,9 +155,9 @@
 
     <div class="eea-grid" style="margin-top:3rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
       <div class="eea-card eea-card--accent" style="gap:0.5rem">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Claim topic policies</p>
+        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Eligibility topics</p>
         <p style="font-size:2rem;font-weight:700;line-height:1.2;color:var(--eea-text);margin:0">8</p>
-        <p class="eea-card-desc">One canonical payload, eight independently configurable predicates.</p>
+        <p class="eea-card-desc">One 10-field EAS payload, eight independently enforceable eligibility policies.</p>
       </div>
       <div class="eea-card eea-card--accent" style="gap:0.5rem;--eea-card-accent:var(--eea-success)">
         <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Networks reachable today</p>
@@ -201,7 +201,7 @@
       <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">Opening statement</h2>
     </div>
     <div style="margin-top:1.5rem;max-width:72ch;display:flex;flex-direction:column;gap:1rem">
-      <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0">ERC&#8209;3643 mandates an on&#8209;chain identity check on every transfer of a security token. The reference implementation requires each investor to deploy their own identity contract, pins the token to one KYC&#8209;provider ecosystem, and enforces only that an attestation <em>exists</em>, never what it says.</p>
+      <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0">ERC&#8209;3643 checks investor eligibility on the transfer path. Its reference implementation links investor wallets to ONCHAINID identity contracts and checks required claims from trusted issuers. It supports multiple trusted issuers; identity deployment and management depend on the onboarding flow. Shibui adds explicit validation of a shared eligibility payload against topic policies.</p>
       <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0">Shibui replaces that identity layer with a small stack of contracts that read EAS attestations, enforce each payload against a configurable policy per claim topic, and gate trust changes with a cryptographic audit trail.</p>
       <blockquote style="margin:0.5rem 0 0;padding:1rem 1.5rem;border-left:3px solid var(--eea-accent);background:var(--eea-accent-bg-light)">
         <p style="font-size:1.125rem;line-height:1.4;color:var(--eea-text);margin:0">Tokenization scales settlement. Shared identity semantics scale distribution, the same way shared messaging standards did.</p>
@@ -231,14 +231,14 @@
       </div>
     </div>
 
-    <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:2rem 0 0.75rem">Issuer-by-issuer vs. shared standard</p>
+    <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:2rem 0 0.75rem">Issuer-by-issuer vs. proposed shared model</p>
     <div style="border:1px solid var(--eea-border);overflow-x:auto;background:var(--eea-bg-card)">
       <table style="width:100%;border-collapse:collapse;min-width:640px">
         <thead>
           <tr style="background:var(--eea-bg-raised)">
             <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Capability</th>
             <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Issuer-by-issuer</th>
-            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Shared standard</th>
+            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Proposed shared model</th>
           </tr>
         </thead>
         <tbody>
@@ -259,7 +259,7 @@
           </tr>
           <tr>
             <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Provider choice</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">One provider ecosystem per token</td>
+            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Bespoke provider integrations per token</td>
             <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Many trusted attesters per topic, rotatable</td>
           </tr>
         </tbody>
@@ -281,7 +281,7 @@
           <p style="font-size:1.125rem;font-weight:600;line-height:1.4;color:var(--eea-text);margin:0">Standardize what eligibility means</p>
         </div>
         <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:0.75rem">
-          <p class="eea-card-desc" style="font-size:1rem">One canonical EAS payload, ten ABI fields covering KYC, AML, sanctions, source of funds, accreditation type, country and expiry, decoded identically by every topic policy.</p>
+          <p class="eea-card-desc" style="font-size:1rem">One canonical EAS payload with ten ABI fields: investor identity, KYC status, AML status, sanctions status, source-of-funds status, accreditation type, country code, expiration timestamp, evidence hash and verification method. Every topic policy decodes this same payload; fields may support multiple topics or carry shared metadata.</p>
           <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
             <span class="eea-tag eea-tag--accent">Shared semantics</span>
             <span class="eea-tag eea-tag--accent">Comparable evidence</span>
@@ -333,8 +333,8 @@
         <div style="background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Investor submits documents</p></div>
         <div style="width:1px;height:1rem;background:var(--eea-border-solid);margin-left:1.5rem"></div>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Issuer A onboarding</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">own identity contract</p></div>
-          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Issuer B onboarding</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">own provider ecosystem</p></div>
+          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Issuer A onboarding</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">identity registration</p></div>
+          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Issuer B onboarding</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">bespoke provider integration</p></div>
         </div>
         <div style="width:1px;height:1rem;background:var(--eea-border-solid);margin-left:1.5rem"></div>
         <div style="background:var(--eea-warning-bg);border:1px solid rgba(118,90,0,0.25);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-warning);margin:0">Manual reconciliation on every update</p><p style="font-family:var(--eea-font-mono);font-size:0.75rem;color:var(--eea-warning);opacity:.8;margin:0.25rem 0 0">expiry &middot; revocation &middot; sanctions</p></div>
@@ -344,17 +344,17 @@
       <div class="eea-card" style="gap:0;border-color:rgba(31,92,74,0.25)">
         <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0 0 1rem">With Shibui</p>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Investor verified once</p></div>
+          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Investor attested per chain</p></div>
           <div style="flex:1 1 120px;background:var(--eea-success-bg);border:1px solid rgba(31,92,74,0.25);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-success);margin:0">Trusted attester</p><p style="font-size:0.75rem;color:var(--eea-success);opacity:.8;margin:0.25rem 0 0">authorized on-chain</p></div>
         </div>
         <div style="width:1px;height:1rem;background:var(--eea-accent);margin-left:1.5rem"></div>
-        <div style="background:var(--eea-accent-bg);border:1px solid rgba(31,92,74,0.25);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">EAS attestation, Investor Eligibility</p><p style="font-family:var(--eea-font-mono);font-size:0.75rem;color:var(--eea-accent-hover);margin:0.25rem 0 0">10 fields &middot; evidenceHash &middot; expiry</p></div>
+        <div style="background:var(--eea-accent-bg);border:1px solid rgba(31,92,74,0.25);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">EAS attestation, Investor Eligibility</p><p style="font-family:var(--eea-font-mono);font-size:0.75rem;color:var(--eea-accent-hover);margin:0.25rem 0 0">10 fields, including evidenceHash and expiry</p></div>
         <div style="width:1px;height:1rem;background:var(--eea-accent);margin-left:1.5rem"></div>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
           <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Token A</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">requires KYC + country</p></div>
           <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Token B</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">requires KYC + accreditation</p></div>
         </div>
-        <p style="font-size:0.8rem;color:var(--eea-accent-hover);margin:1rem 0 0">One credential, many tokens, updates enforced at transfer time.</p>
+        <p style="font-size:0.8rem;color:var(--eea-accent-hover);margin:1rem 0 0">One attestation per chain, reusable across tokens whose trust and policy requirements it satisfies, with updates enforced at transfer time.</p>
       </div>
     </div>
   </section>
@@ -494,7 +494,7 @@
         </tbody>
       </table>
     </div>
-    <p style="font-size:0.8rem;line-height:1.6;color:var(--eea-text-3);margin:1rem 0 0">Topic identifiers follow the ERC&#8209;3643 claim-topic convention. Canonical schema strings live in <code style="font-family:var(--eea-font-mono);font-size:0.8rem">script/RegisterSchemas.s.sol</code>. The source-system column is reference material on typical industry providers, the actual vendor is issuer-selected and not endorsed by the EEA.</p>
+    <p style="font-size:0.8rem;line-height:1.6;color:var(--eea-text-3);margin:1rem 0 0">ERC&#8209;3643 does not prescribe numeric topic IDs. This implementation follows an ONCHAINID-style convention commonly used in ERC&#8209;3643 deployments. Canonical schema strings live in <code style="font-family:var(--eea-font-mono);font-size:0.8rem">script/RegisterSchemas.s.sol</code>. The source-system column is reference material on typical industry providers, the actual vendor is issuer-selected and not endorsed by the EEA.</p>
 
     <div class="eea-card" style="margin-top:1.5rem;gap:1rem">
       <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Acronym key</p>
