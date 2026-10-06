@@ -4,6 +4,8 @@ End-to-end gas numbers captured while proving the pluggable `IIdentityVerifier`
 extension point on `EntEthAlliance/ERC-3643` branch
 `feat/pluggable-identity-verifier` (commit pinned via `lib/ERC-3643` submodule).
 
+**Status:** These are historical measurements of the experimental EEA fork. [Upstream PR #98](https://github.com/ERC-3643/ERC-3643/pull/98) remains an unmerged draft as of October 6, 2026. They do not benchmark ONCHAINID's separately merged EAS claim adapter or establish production deployment. See [integration status](erc3643-status.md).
+
 All numbers come from `forge test`/`npx hardhat test` runs on a clean
 compilation; no warm-cache or repeat-call optimisation assumed.
 

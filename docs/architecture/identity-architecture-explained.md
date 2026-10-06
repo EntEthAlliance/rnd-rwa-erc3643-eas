@@ -1,12 +1,12 @@
 # Identity Architecture Explained
 
-This document explains the identity architecture behind Shibui: how ERC-3643 identity works today, what EAS brings, and how Shibui connects them.
+This document explains the identity architecture behind Shibui: the legacy ERC-3643 identity flow, what EAS brings, and the experimental Shibui integration. For current upstream developments, including ONCHAINID v3's separate EAS claim adapter, read [integration status](../erc3643-status.md). The registry extension discussed here is not merged upstream.
 
 **Audience:** Technical readers familiar with Ethereum but who may not know ERC-3643 or EAS in detail.
 
 ---
 
-## Section 1: How ERC-3643 Identity Works Today
+## Section 1: The Legacy ERC-3643 Identity Flow
 
 ERC-3643 (also known as T-REX) is the leading standard for regulated security tokens on Ethereum. At its core, it requires that every token transfer be validated against a compliance framework: and that compliance framework relies on identity verification.
 
@@ -50,10 +50,10 @@ While ONCHAINID works, it creates several challenges:
 | Pain Point | Impact |
 |------------|--------|
 | **Per-user contract deployment** | Every investor needs their own ONCHAINID smart contract deployed: gas costs and complexity |
-| **Vendor lock-in** | Only KYC providers that support the ONCHAINID claim format can participate |
-| **Limited provider ecosystem** | Smaller market of compatible identity providers means less competition and higher costs |
-| **No cross-chain portability** | An ONCHAINID on Ethereum doesn't help on Base or Arbitrum: investors must re-verify |
-| **Proprietary claim format** | ERC-735 claims are specific to ONCHAINID; credentials from other systems don't work |
+| **Provider integration** | Multiple trusted issuers are supported; custom claim issuers can bridge external credential formats |
+| **Provider interoperability** | Shared eligibility semantics still require agreement across providers and issuers |
+| **Chain-local verification** | Identity addresses and credentials require chain-specific deployment and validation |
+| **Claim representation** | ERC-735 is a standard claim interface; custom issuers can validate other credential sources |
 
 ---
 
@@ -303,11 +303,11 @@ The bridge maintains these guarantees while opening up the identity layer.
 
 ## Section 6: Multi-Chain Vision
 
-### One KYC, Many Chains
+### Separate Attestations on Each Chain
 
 ![Multi-Chain Reuse](../../diagrams/multi-chain-reuse.mmd)
 
-EAS is deployed on multiple chains with the same interface. An investor verified once can have attestations on every chain where they hold security tokens:
+EAS is deployed on multiple chains with the same interface. A provider may reuse off-chain evidence where appropriate, but must issue a separate attestation on every chain where the investor holds security tokens. Shibui reads only the local EAS deployment:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -346,7 +346,7 @@ For V1, attestations are created per-chain. This is simple and matches how token
 2. KYC provider issues attestation on each chain where investor holds tokens
 3. Each token's bridge verifies against its local EAS
 
-**V2 roadmap** includes cross-chain attestation bridging via LayerZero or similar, enabling true "verify once, valid everywhere."
+**V2 research** may explore cross-chain attestation portability. No bridging or globally valid verification is provided by the current implementation.
 
 ---
 
@@ -388,7 +388,7 @@ For V1, attestations are created per-chain. This is simple and matches how token
 **What you care about:**
 - Market access: your attestations accepted by many tokens
 - Reputation: accurate verifications, timely revocations
-- Efficiency: verify once, attestation works everywhere
+- Efficiency: reuse evidence where appropriate and attest separately on each chain
 
 ### Investor
 
@@ -403,9 +403,9 @@ For V1, attestations are created per-chain. This is simple and matches how token
 - Expiration dates for re-verification
 
 **What you care about:**
-- Convenience: KYC once, access many tokens
+- Convenience: reuse a live attestation across tokens on the same chain when their trust and policy requirements match
 - Privacy: only necessary information shared
-- Portability: attestations work across chains and tokens
+- Portability: reusable within a chain; separate attestations are required across chains
 
 ### Compliance Officer
 
