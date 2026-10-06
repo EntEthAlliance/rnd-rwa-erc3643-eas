@@ -2,633 +2,396 @@
 <html lang="en">
 <head>
 <!-- EEA-PAGES Analytics (GT-PL9524M) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=GT-PL9524M"></script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=GT-PL9524M"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'GT-PL9524M');
 </script>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Shibui, Interoperable Investor Eligibility for Tokenized Assets</title>
-<meta name="description" content="Shibui is an open-source attestation adapter for ERC-3643 security tokens, letting a token evaluate investor eligibility from Ethereum Attestation Service attestations issued by any trusted KYC, AML or accreditation provider." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;family=Kode+Mono:wght@400;500;600&amp;display=swap" />
-<link rel="stylesheet" href="https://hub.entethalliance.org/eea-design-system/editorial.css" />
+<meta content="Shibui is an open-source attestation adapter for ERC-3643 security tokens, letting a token evaluate investor eligibility from Ethereum Attestation Service attestations issued by any trusted KYC, AML or accreditation provider." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://hub.entethalliance.org/eea-design-system/editorial.css" rel="stylesheet"/>
 <style>
-  html{scroll-behavior:smooth}
-  section[id]{scroll-margin-top:64px}
-  th{text-align:left}
+/* Keep the shared EEA masthead; give the article a consistent reading system. */
+:root {
+  --eea-ed-font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ink: #202925;
+  --muted: #52615a;
+  --green: #1f5c4a;
+  --line: #d7ded8;
+  --paper: #fcfcf9;
+  --wash: #f1f5f0;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body.shibui-page { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--eea-ed-font); font-size: 16px; line-height: 1.7; }
+.page-width { width: min(100% - 64px, 1040px); margin-inline: auto; }
+a { color: var(--green); text-underline-offset: 4px; }
+a:hover { text-decoration: underline; }
+a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--green); outline-offset: 5px; }
+.skip-link { position: fixed; top: -100px; left: 24px; padding: 12px; background: var(--paper); z-index: 1100; }
+.skip-link:focus { top: 12px; }
+#shibui-sectionnav { position: sticky; top: 0; z-index: 900; border-bottom: 1px solid var(--line); background: var(--paper); }
+#shibui-sectionnav > div { display: flex; gap: 32px; overflow-x: auto; }
+#shibui-sectionnav a { flex-shrink: 0; padding: 16px 0 13px; font-size: 14px; font-weight: 500; color: var(--muted); border-bottom: 3px solid transparent; text-decoration: none; }
+#shibui-sectionnav a[aria-current] { color: var(--green); border-bottom-color: var(--green); }
+section[id] { scroll-margin-top: 92px; }
+.hero { padding: 80px 0 0; }
+.eyebrow { margin: 0 0 16px; color: var(--green); font-size: 14px; font-weight: 600; }
+h1, h2, h3 { color: var(--ink); letter-spacing: -.025em; line-height: 1.2; }
+h1 { max-width: 820px; font-size: clamp(36px, 4.5vw, 58px); font-weight: 600; margin: 0 0 28px; }
+h2 { font-size: clamp(27px, 3vw, 36px); font-weight: 600; margin: 0 0 24px; }
+h3 { font-size: 19px; font-weight: 600; margin: 0 0 12px; line-height: 1.4; }
+p { margin: 0 0 18px; }
+.lead { font-size: 23px; color: var(--ink); line-height: 1.5; margin-bottom: 16px; }
+.hero-description { max-width: 65ch; font-size: 18px; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 20px; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 20px; min-height: 46px; padding: 10px 18px; border: 1px solid var(--green); border-radius: 4px; font-size: 14px; font-weight: 600; text-decoration: none; }
+.button:hover { text-decoration: none; background: var(--wash); }
+.button.primary { color: #fff; background: var(--green); }
+.button.primary:hover { background: #174636; }
+.button.secondary { color: var(--green); background: transparent; border-color: var(--line); }
+.metadata { font-size: 13px; color: var(--muted); }
+.metadata span { margin-inline: 7px; }
+.project-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 20px 0 0; font-size: 14px; }
+.integration-status { border-left: 2px solid var(--line); padding-left: 16px; margin: 28px 0; font-size: 14px; color: var(--muted); }
+.integration-status p { margin-bottom: 10px; }
+.integration-status p:last-child { margin-bottom: 0; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin: 48px 0 0; padding: 28px 0; border-block: 1px solid var(--line); }
+.facts > div { display: flex; flex-direction: column; }
+.facts dt { color: var(--muted); font-size: 14px; }
+.facts dd { order: -1; margin: 0 0 4px; font-size: 34px; font-weight: 600; line-height: 1.3; }
+.section { padding-top: 64px; margin-top: 64px; border-top: 1px solid var(--line); }
+.prose { max-width: 68ch; }
+.prose p:last-child { margin-bottom: 0; }
+.columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin: 32px 0; }
+.columns p { color: var(--muted); }
+.columns ul, .columns ol { padding-left: 20px; margin: 0; }
+li { padding-left: 4px; margin-bottom: 10px; }
+.note, .related { font-size: 14px; color: var(--muted); }
+.related { margin: 20px 0 0; }
+.disclosure { border-bottom: 1px solid var(--line); margin-top: 20px; }
+.disclosure > summary { padding: 16px 0; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--green); }
+.disclosure > :not(summary) { margin: 8px 0 24px; }
+summary:hover { text-decoration: underline; text-underline-offset: 4px; }
+.steps { padding: 0; margin: 36px 0 0; list-style: none; counter-reset: steps; }
+.steps > li { counter-increment: steps; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 20px; padding: 24px 0; margin: 0; border-top: 1px solid var(--line); }
+.steps > li::before { content: counter(steps, decimal-leading-zero); font-size: 14px; color: var(--green); font-weight: 600; padding-top: 3px; }
+.steps > li > div { max-width: 68ch; }
+.steps p { color: var(--muted); margin: 0; }
+.field-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 36px; padding-left: 24px; }
+.field-list li { font-size: 15px; }
+.comparison { padding: 28px; background: var(--wash); border-radius: 4px; }
+.comparison .note { margin: 16px 0 0; }
+.entry-point { display: flex; flex-direction: column; gap: 8px; border-left: 3px solid var(--green); padding: 12px 20px; margin: 28px 0; background: var(--wash); }
+.entry-point span { font-size: 13px; color: var(--muted); }
+.entry-point p { margin: 0; font-size: 14px; }
+code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .9em; overflow-wrap: anywhere; }
+.table-scroll { overflow-x: auto; margin: 24px 0; }
+table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 14px; }
+#sec-06 table { min-width: 850px; }
+caption { text-align: left; font-size: 14px; font-weight: 600; color: var(--muted); margin: 0 0 16px; }
+th, td { text-align: left; vertical-align: top; padding: 16px 12px; border-bottom: 1px solid var(--line); line-height: 1.6; }
+thead th { font-weight: 600; background: var(--wash); }
+th:first-child, td:first-child { padding-left: 12px; }
+tbody th { font-weight: 600; }
+#sec-06 th:nth-child(1) { width: 5%; }
+#sec-06 th:nth-child(2) { width: 20%; }
+#sec-06 th:nth-child(3) { width: 32%; }
+td p { margin: 0; }
+.source-detail summary { cursor: pointer; font-size: 14px; color: var(--green); }
+.source-detail p { margin-top: 10px; color: var(--muted); }
+.acronyms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 32px; }
+.acronyms p { margin: 0; font-size: 14px; }
+.resources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin: 32px 0; }
+.resource { border-top: 2px solid var(--line); padding-top: 20px; text-decoration: none; display: flex; flex-direction: column; }
+.resource:hover { border-color: var(--green); text-decoration: none; }
+.resource:hover h3 { text-decoration: underline; text-underline-offset: 4px; }
+.resource p { color: var(--muted); font-size: 15px; flex: 1; }
+.resource span { font-size: 14px; font-weight: 500; }
+footer { display: flex; gap: 24px; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); margin-top: 64px; padding: 32px 0; font-size: 13px; color: var(--muted); }
+footer p { margin: 0; }
+footer a { flex-shrink: 0; }
+@media (max-width: 700px) {
+ .page-width { width: calc(100% - 40px); }
+ #shibui-sectionnav > div { gap: 24px; }
+ .hero { padding-top: 40px; }
+ .lead { font-size: 20px; }
+ .hero-description { font-size: 16px; }
+ .facts { gap: 16px; margin-top: 32px; }
+ .facts dt { font-size: 12px; }
+ .facts dd { font-size: 28px; }
+ .section { padding-top: 40px; margin-top: 40px; }
+ .columns, .resources { grid-template-columns: 1fr; gap: 28px; }
+ .comparison { padding: 20px; }
+ .field-list, .acronyms { grid-template-columns: 1fr; }
+ .steps > li { grid-template-columns: 28px minmax(0, 1fr); gap: 12px; }
+ footer { flex-direction: column; gap: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+ .eea-site-bar, #shibui-sectionnav, .skip-link, .actions { display: none; }
+ .page-width { width: 100%; }
+ body.shibui-page { background: #fff; }
+ .hero, .section { padding-top: 24px; margin-top: 24px; }
+ .table-scroll { overflow: visible; }
+ table, #sec-06 table { min-width: 0; }
+ h2, h3, summary { break-after: avoid; }
+}
 
-  /* Editorial bridge, the legacy --eea-* names this page uses resolve onto
-     the editorial family tokens (--eea-ed-*) declared by editorial.css. */
-  :root{
-    --eea-bg:var(--eea-ed-page);
-    --eea-bg-raised:var(--eea-ed-rule);
-    --eea-bg-card:var(--eea-ed-ground);
-    --eea-bg-hover:var(--eea-ed-rule);
-    --eea-text:var(--eea-ed-ink);
-    --eea-text-2:#3A423D;
-    --eea-text-3:var(--eea-ed-ink-soft);
-    --eea-border:var(--eea-ed-line);
-    --eea-border-solid:var(--eea-ed-line);
-    --eea-accent:var(--eea-ed-accent);
-    --eea-accent-hover:var(--eea-ed-accent-deep);
-    --eea-accent-bg:rgba(31,92,74,0.10);
-    --eea-accent-bg-light:rgba(31,92,74,0.06);
-    --eea-success:#1F5C4A;
-    --eea-success-bg:rgba(31,92,74,0.10);
-    --eea-warning:#765A00;
-    --eea-warning-bg:rgba(118,90,0,0.10);
-    --eea-danger:#9B413C;
-    --eea-danger-bg:rgba(155,65,60,0.10);
-    --eea-info:#2A5A74;
-    --eea-info-bg:rgba(42,90,116,0.10);
-    --eea-font:var(--eea-ed-font);
-    --eea-font-mono:var(--eea-ed-font-mono);
-  }
 
-  /* Base (previously base.css), hard edges, no shadows */
-  *,*::before,*::after{box-sizing:border-box}
-  body{margin:0;min-height:100vh;font-size:1rem}
-  h1,h2,h3{margin:0 0 1rem;color:var(--eea-text)}
-  p{margin:0 0 1rem;color:var(--eea-text-2);line-height:1.6}
-  a{color:var(--eea-accent);text-decoration:none}
-  a:hover{text-decoration:underline}
-  code,pre{font-family:var(--eea-font-mono);font-size:0.9em}
-  :focus-visible{outline:2px solid var(--eea-ed-accent);outline-offset:2px}
-
-  /* Components (previously components.css), rendered in the editorial family */
-  .eea-label{font-family:var(--eea-font-mono);font-size:var(--eea-ed-label-lg);font-weight:500;letter-spacing:var(--eea-ed-track);text-transform:uppercase;color:var(--eea-accent);margin:0 0 0.5rem}
-  .eea-badge{display:inline-flex;align-items:center;padding:0.2rem 0.7rem;font-family:var(--eea-font-mono);font-size:var(--eea-ed-label);font-weight:600;letter-spacing:var(--eea-ed-track);background:var(--eea-accent-bg);color:var(--eea-accent);border:1px solid rgba(31,92,74,0.25)}
-  .eea-card{position:relative;background:var(--eea-bg-card);border:1px solid var(--eea-border);padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem}
-  .eea-card--accent::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--eea-card-accent,var(--eea-accent))}
-  .eea-card--interactive{cursor:pointer;transition:border-color 0.2s ease}
-  .eea-card--interactive:hover{border-color:var(--eea-accent)}
-  .eea-card--interactive:hover .eea-card-link{text-decoration:underline}
-  .eea-card-title{font-size:1.125rem;font-weight:600;color:var(--eea-text);margin:0;line-height:1.4}
-  .eea-card-desc{font-size:0.875rem;color:var(--eea-text-2);line-height:1.6;margin:0;flex:1}
-  .eea-card-link{display:inline-flex;align-items:center;gap:6px;color:var(--eea-accent);font-size:0.9rem;font-weight:500;text-decoration:none}
-  .eea-card-link:hover{text-decoration:underline}
-  .eea-tag{display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.6rem;font-family:var(--eea-font-mono);font-size:var(--eea-ed-label);font-weight:500;letter-spacing:var(--eea-ed-track-tight);line-height:1.3;background:var(--eea-bg-raised);color:var(--eea-text-2);border:1px solid var(--eea-border);white-space:nowrap;text-decoration:none}
-  a.eea-tag:hover{border-color:var(--eea-accent);color:var(--eea-accent);text-decoration:none}
-  .eea-tag--accent{background:var(--eea-accent-bg);color:var(--eea-accent);border-color:rgba(31,92,74,0.25)}
-  .eea-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.5rem 1.1rem;font-family:var(--eea-font);font-size:0.875rem;font-weight:500;line-height:1;cursor:pointer;border:1px solid transparent;text-decoration:none;transition:background 0.15s ease,border-color 0.15s ease,color 0.15s ease;white-space:nowrap;user-select:none}
-  .eea-btn:hover{text-decoration:none}
-  .eea-btn--primary{background:var(--eea-accent);color:var(--eea-ed-ground);border-color:var(--eea-accent)}
-  .eea-btn--primary:hover{background:var(--eea-ed-accent-deep);border-color:var(--eea-ed-accent-deep)}
-  .eea-btn--secondary{background:transparent;color:var(--eea-text-2);border-color:var(--eea-border-solid)}
-  .eea-btn--secondary:hover{color:var(--eea-text);border-color:var(--eea-text-3);background:var(--eea-bg-hover)}
-  .eea-btn--sm{padding:0.35rem 0.75rem;font-size:0.75rem}
-  .eea-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
-  .eea-footer{margin-top:4rem;padding:2rem 0;border-top:1px solid var(--eea-border);font-size:0.75rem;color:var(--eea-text-3)}
-  .eea-footer a{color:var(--eea-accent)}
-
-  @media print{
-    @page{margin:14mm}
-    .eea-site-bar,#shibui-sectionnav{display:none !important}
-    body{padding-top:0 !important;background:#fff;color:#000}
-    section{break-inside:avoid}
-  }
+/* Match article typography in the shared masthead, without changing its links. */
+.shibui-page .eea-site-bar { background: var(--paper); border-bottom: 1px solid var(--line); }
+.shibui-page .eea-site-bar-inner { max-width: 1104px; padding-inline: 32px; }
+.shibui-page .eea-site-id-name, .shibui-page .eea-site-links a { font-family: var(--eea-ed-font); text-transform: none; letter-spacing: 0; font-size: 13px; }
+.mobile-table-hint { display: none; }
+@media (max-width: 700px) {
+ .shibui-page .eea-site-bar-inner { padding-inline: 20px; }
+ .mobile-table-hint { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+}
 </style>
 </head>
-<body class="eea-editorial">
+<body class="eea-editorial shibui-page">
+
+<a class="skip-link" href="#main">Skip to content</a>
 <header class="eea-site-bar">
-  <div class="eea-site-bar-inner">
-    <a class="eea-site-id" href="https://entethalliance.github.io/">
-      <span class="eea-site-id-stack">
-        <span class="eea-site-id-name">Enterprise Ethereum Alliance</span>
-        <span class="eea-site-id-bars" aria-hidden="true"><i></i><i></i><i></i></span>
-      </span>
-    </a>
-    <nav class="eea-site-links" aria-label="Shibui">
-      <a href="https://entethalliance.github.io/">Hub</a>
-      <a href="index.html" aria-current="page">Shibui</a>
-      <a href="identity-solutions-map.html">Reference map</a>
-      <a href="demo/attester.html">Live demo</a>
-      <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas">Repo</a>
-    </nav>
-  </div>
-</header>
-
-<div id="shibui-sectionnav" style="position:sticky;top:0;z-index:900;background:var(--eea-bg);border-bottom:1px solid var(--eea-border)">
-  <div style="max-width:1200px;margin-inline:auto;padding:0.5rem 2rem;display:flex;flex-wrap:wrap;gap:0.25rem;overflow-x:auto">
-    <a href="#sec-01" style="display:flex;gap:0.4rem;align-items:baseline;padding:0.35rem 0.7rem;font-size:0.85rem;color:var(--eea-text);background:var(--eea-accent-bg);white-space:nowrap"><span style="font-family:var(--eea-font-mono);font-size:0.75rem;opacity:.7">01</span><span>Overview</span></a>
-    <a href="#sec-02" style="display:flex;gap:0.4rem;align-items:baseline;padding:0.35rem 0.7rem;font-size:0.85rem;color:var(--eea-text-3);background:transparent;white-space:nowrap"><span style="font-family:var(--eea-font-mono);font-size:0.75rem;opacity:.7">02</span><span>Problem</span></a>
-    <a href="#sec-03" style="display:flex;gap:0.4rem;align-items:baseline;padding:0.35rem 0.7rem;font-size:0.85rem;color:var(--eea-text-3);background:transparent;white-space:nowrap"><span style="font-family:var(--eea-font-mono);font-size:0.75rem;opacity:.7">03</span><span>Approach</span></a>
-    <a href="#sec-04" style="display:flex;gap:0.4rem;align-items:baseline;padding:0.35rem 0.7rem;font-size:0.85rem;color:var(--eea-text-3);background:transparent;white-space:nowrap"><span style="font-family:var(--eea-font-mono);font-size:0.75rem;opacity:.7">04</span><span>Before / after</span></a>
-    <a href="#sec-05" style="display:flex;gap:0.4rem;align-items:baseline;padding:0.35rem 0.7rem;font-size:0.85rem;color:var(--eea-text-3);background:transparent;white-space:nowrap"><span style="font-family:var(--eea-font-mono);font-size:0.75rem;opacity:.7">05</span><span>Standard vs. stack</span></a>
-    <a href="#sec-06" style="display:flex;gap:0.4rem;align-items:baseline;padding:0.35rem 0.7rem;font-size:0.85rem;color:var(--eea-text-3);background:transparent;white-space:nowrap"><span style="font-family:var(--eea-font-mono);font-size:0.75rem;opacity:.7">06</span><span>Claim topics</span></a>
-    <a href="#sec-07" style="display:flex;gap:0.4rem;align-items:baseline;padding:0.35rem 0.7rem;font-size:0.85rem;color:var(--eea-text-3);background:transparent;white-space:nowrap"><span style="font-family:var(--eea-font-mono);font-size:0.75rem;opacity:.7">07</span><span>Signal interest</span></a>
-    <a href="#sec-08" style="display:flex;gap:0.4rem;align-items:baseline;padding:0.35rem 0.7rem;font-size:0.85rem;color:var(--eea-text-3);background:transparent;white-space:nowrap"><span style="font-family:var(--eea-font-mono);font-size:0.75rem;opacity:.7">08</span><span>Resources</span></a>
-  </div>
+<div class="eea-site-bar-inner">
+<a class="eea-site-id" href="https://entethalliance.github.io/">
+<span class="eea-site-id-stack">
+<span class="eea-site-id-name">Enterprise Ethereum Alliance</span>
+<span aria-hidden="true" class="eea-site-id-bars"><i></i><i></i><i></i></span>
+</span>
+</a>
+<nav aria-label="Shibui" class="eea-site-links">
+<a href="https://entethalliance.github.io/">Hub</a>
+<a aria-current="page" href="index.html">Shibui</a>
+<a href="identity-solutions-map.html">Reference map</a>
+<a href="demo/attester.html">Live demo</a>
+<a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas">Repo</a>
+</nav>
 </div>
+</header>
+<nav id="shibui-sectionnav" aria-label="On this page">
+ <div class="page-width"><a href="#sec-01" aria-current="true">Overview</a><a href="#sec-03">How it works</a><a href="#sec-06">Eligibility topics</a><a href="#sec-07">Get involved</a><a href="#sec-08">Resources</a></div>
+</nav>
+<main id="main" class="page-width">
+ <section id="sec-01" class="hero" aria-labelledby="hero-title">
+  <p class="eyebrow">Shibui / EEA research</p>
+  <h1 id="hero-title">A shared model for<br>investor eligibility</h1>
+  <p class="lead">May this wallet hold this security right now?</p>
+  <p class="hero-description">Shibui is an open-source attestation adapter for ERC-3643 security tokens. This proposed model lets tokens evaluate investor eligibility using Ethereum Attestation Service (EAS) attestations from trusted KYC, AML or accreditation providers.</p>
+  <div class="actions"><a class="button primary" href="#sec-03">See how it works <span aria-hidden="true">↓</span></a><a class="button secondary" href="#sec-07">Share your requirements</a></div>
+  <p class="metadata">Research artifact <span aria-hidden="true">·</span> v0.4.0, April 2026 <span aria-hidden="true">·</span> Apache-2.0</p>
+  <nav class="project-links" aria-label="Project references">
+   <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/master/docs/schemas/shibui-specification-v0.1.md" target="_blank" rel="noopener noreferrer">Read the Shibui spec ↗</a>
+   <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a>
+   <a href="https://github.com/ERC-3643/ERC-3643/pull/98" target="_blank" rel="noopener noreferrer">ERC-3643 proposal (draft) ↗</a>
+  </nav>
+  <dl class="facts"><div><dt>Eligibility topics</dt><dd>8</dd></div><div><dt>Fields in one EAS payload</dt><dd>10</dd></div><div><dt>EAS mainnet networks</dt><dd>11</dd></div></dl>
+  <details class="disclosure">
+   <summary>How Shibui fits into ERC-3643</summary>
+   <div class="prose"><p>ERC-3643 checks investor eligibility on the transfer path. Its reference implementation links investor wallets to ONCHAINID identity contracts and checks required claims from trusted issuers. It supports multiple trusted issuers; identity deployment and management depend on the onboarding flow.</p><p>Shibui replaces that identity layer with a small stack of contracts that read EAS attestations, validate the shared payload against a configurable policy per claim topic, and gate trust changes with a cryptographic audit trail.</p></div>
+  </details>
+ </section>
 
-<main style="max-width:1200px;margin-inline:auto;padding:4rem 2rem 0">
+ <section id="sec-02" class="section" aria-labelledby="problem-title">
+  <p class="eyebrow">The problem</p><h2 id="problem-title">Distribution breaks on one question</h2>
+  <div class="prose"><p>Tokenization modernizes issuance and settlement. Distribution still stalls on <strong>who may hold the asset, and when</strong>, because every participant answers that question in its own dialect.</p></div>
+  <div class="columns"><div><h3>Eligibility is fragmented</h3><p>Each issuer defines "KYC", "accredited" and "qualified purchaser" differently. Investors repeat identical checks per token and per venue. Expiry, revocation and sanctions updates are applied by hand.</p></div><div><h3>The cost lands on distribution</h3><p>Slower onboarding, higher servicing cost, inconsistent evidence across jurisdictions, and a compliance posture that depends on manual reconciliation rather than on the token itself.</p></div></div>
+  <details class="disclosure"><summary>Compare issuer-by-issuer onboarding with the proposed model</summary><div class="table-scroll" role="region" aria-label="Onboarding comparison" tabindex="0"><table><caption>Issuer-by-issuer vs. proposed shared model</caption>
+<thead>
+<tr>
+<th scope="col">Capability</th>
+<th scope="col">Issuer-by-issuer</th>
+<th scope="col">Proposed shared model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Onboarding</th>
+<td>Repeated checks and bespoke integrations</td>
+<td>Reusable evidence recognized across assets</td>
+</tr>
+<tr>
+<th scope="row">Eligibility updates</th>
+<td>Manual, slow propagation</td>
+<td>Expiry and revocation enforced on the hot path</td>
+</tr>
+<tr>
+<th scope="row">Oversight</th>
+<td>Fragmented evidence trails</td>
+<td>Common definitions and an <code>evidenceHash</code> per claim</td>
+</tr>
+<tr>
+<th scope="row">Provider choice</th>
+<td>Bespoke provider integrations per token</td>
+<td>Many trusted attesters per topic, rotatable</td>
+</tr>
+</tbody>
+</table></div></details>
+  <p class="related">Read the argument: <a href="https://www.linkedin.com/pulse/passport-problem-why-tokenized-markets-need-shared-identity-meslem-iryvf/" target="_blank" rel="noopener noreferrer">The Passport Problem ↗</a></p>
+ </section>
 
-  <section id="sec-01" data-screen-label="Overview">
-    <p class="eea-label">Enterprise Ethereum Alliance &middot; R&amp;D</p>
-    <div style="display:flex;gap:3rem;flex-wrap:wrap;align-items:flex-start">
-      <div style="flex:1 1 520px;min-width:0">
-        <h1 style="font-size:2.5rem;font-weight:700;line-height:1.2;color:var(--eea-text);margin:0 0 1rem">A shared standard for <em style="font-style:normal;color:var(--eea-accent)">investor eligibility</em> in tokenized markets</h1>
-        <p style="font-size:1.1rem;line-height:1.6;color:var(--eea-text-2);margin:0 0 1.5rem;max-width:44ch">Shibui is an open-source attestation adapter for ERC&#8209;3643 security tokens. It lets a token answer <em>"may this wallet hold this security right now?"</em> from attestations issued on the Ethereum Attestation Service by any trusted KYC, AML or accreditation provider.</p>
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-          <a class="eea-btn eea-btn--primary" href="#sec-02">Read the problem</a>
-          <a class="eea-btn eea-btn--secondary" href="#sec-07">Signal interest</a>
-        </div>
-      </div>
-      <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:0.75rem">
-        <div class="eea-card" style="gap:0.5rem">
-          <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Public entry point</p>
-          <code style="font-family:var(--eea-font-mono);font-size:0.95rem;color:var(--eea-accent-hover);background:var(--eea-accent-bg);border:1px solid rgba(31,92,74,0.25);padding:0.5rem 0.7rem;display:block;overflow-x:auto">isVerified(address wallet) &rarr; bool</code>
-          <p style="font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);margin:0">Called by the token's compliance hook on every transfer.</p>
-        </div>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          <span class="eea-tag">Apache&#8209;2.0</span>
-          <span class="eea-tag">v0.4.0 &middot; April 2026</span>
-          <span class="eea-tag eea-tag--accent">Research artifact</span>
-        </div>
-      </div>
-    </div>
+ <section id="sec-03" class="section" aria-labelledby="approach-title">
+  <p class="eyebrow">How it works</p><h2 id="approach-title">One payload. Three responsibilities.</h2>
+  <p class="prose">One 10-field EAS payload is evaluated through eight independently enforceable eligibility policies.</p>
+  <ol class="steps">
+   <li><div><h3>Standardize what eligibility means</h3><p>Every topic policy decodes the same Investor Eligibility payload. Fields may support multiple topics or carry shared metadata, so eight topics do not mean eight fields.</p><details class="disclosure"><summary>See all 10 payload fields</summary><ol class="field-list"><li>Investor identity</li><li>KYC status</li><li>AML status</li><li>Sanctions status</li><li>Source-of-funds status</li><li>Accreditation type</li><li>Country code (ISO 3166)</li><li>Expiration timestamp</li><li>Evidence hash</li><li>Verification method</li></ol></details></div></li>
+   <li><div><h3>Let issuers choose who they trust</h3><p>Each token recognizes its own set of trusted attesters per claim topic. Adding one requires a live Issuer Authorization attestation, so trust changes leave a cryptographic trail. Administration is role-gated, with multisig governance in production.</p></div></li>
+   <li><div><h3>Make change predictable</h3><p>Revocation, EAS-level expiry and payload-level expiry are checked on the transfer path. Revoking a claim blocks future transfers immediately; it does not move, freeze or recover tokens already held.</p></div></li>
+  </ol>
+ </section>
 
-    <div class="eea-grid" style="margin-top:3rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-      <div class="eea-card eea-card--accent" style="gap:0.5rem">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Claim topic policies</p>
-        <p style="font-size:2rem;font-weight:700;line-height:1.2;color:var(--eea-text);margin:0">8</p>
-        <p class="eea-card-desc">One canonical payload, eight independently configurable predicates.</p>
-      </div>
-      <div class="eea-card eea-card--accent" style="gap:0.5rem;--eea-card-accent:var(--eea-success)">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Networks reachable today</p>
-        <p style="font-size:2rem;font-weight:700;line-height:1.2;color:var(--eea-text);margin:0">11</p>
-        <p class="eea-card-desc">EAS mainnet deployments Shibui can be deployed against unchanged.</p>
-      </div>
-      <div class="eea-card eea-card--accent" style="gap:0.5rem;--eea-card-accent:var(--eea-info)">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Built on</p>
-        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.25rem">
-          <a class="eea-tag" href="https://attest.org" target="_blank" rel="noopener noreferrer">Ethereum Attestation Service &#8599;</a>
-          <a class="eea-tag" href="https://eips.ethereum.org/EIPS/eip-3643" target="_blank" rel="noopener noreferrer">ERC&#8209;3643 &#8599;</a>
-          <a class="eea-tag" href="https://entethalliance.org/specs/ethtrust-sl/" target="_blank" rel="noopener noreferrer">EthTrust SL Level&nbsp;2 &#8599;</a>
-        </div>
-      </div>
-    </div>
+ <section id="sec-04" class="section" aria-labelledby="reuse-title">
+  <p class="eyebrow">In practice</p><h2 id="reuse-title">Same controls, less duplication</h2>
+  <div class="columns comparison"><div><h3>Issuer-by-issuer</h3><ol><li>An investor submits documents.</li><li>Issuer A registers the identity; Issuer B builds its own provider integration.</li><li>Each issuer reconciles expiry, revocation and sanctions updates.</li></ol><p class="note">Duplicated checks, slow propagation.</p></div><div><h3>With Shibui</h3><ol><li>A trusted, on-chain authorized attester issues an Investor Eligibility attestation per chain.</li><li>The payload contains 10 fields, including evidence hash and expiry.</li><li>Token A checks KYC + country. Token B checks KYC + accreditation.</li></ol><p class="note">Reusable across tokens whose trust and policy requirements it satisfies. Updates are enforced at transfer time.</p></div></div>
+  <details class="disclosure"><summary>Networks and underlying standards</summary><div class="prose"><p>The same contracts read the same two schemas wherever EAS is deployed. Attestations are per-chain: investors are re-attested on each chain rather than bridged.</p><p>Ethereum, Base, Arbitrum One, Arbitrum Nova, Optimism, Polygon, zkSync, Scroll, Linea, Blast and Celo.</p><p class="note">Plus Sepolia, Base Sepolia, Optimism Sepolia, Arbitrum Goerli, Polygon Amoy, Scroll Sepolia and Linea Goerli testnets.</p><p><a href="https://docs.attest.org/docs/quick--start/contracts" target="_blank" rel="noopener noreferrer">EAS deployments ↗</a></p><p>Built on <a href="https://attest.org" target="_blank" rel="noopener noreferrer">Ethereum Attestation Service</a> and <a href="https://eips.ethereum.org/EIPS/eip-3643" target="_blank" rel="noopener noreferrer">ERC-3643</a>, with <a href="https://entethalliance.org/specs/ethtrust-sl/" target="_blank" rel="noopener noreferrer">EthTrust SL Level 2</a>.</p></div></details>
+ </section>
 
-    <div class="eea-card" style="margin-top:0.75rem;gap:0.75rem">
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:baseline;justify-content:space-between">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Natively interoperable, wherever EAS is deployed</p>
-        <a class="eea-card-link" href="https://docs.attest.org/docs/quick--start/contracts" target="_blank" rel="noopener noreferrer">EAS deployments &rarr;</a>
-      </div>
-      <p class="eea-card-desc">Shibui adds no chain-specific assumptions: the same contracts read the same two schemas on every network where the EAS registry lives. Attestations are per-chain, so an investor is re-attested per chain rather than bridged.</p>
-      <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-        <span class="eea-tag eea-tag--accent">Ethereum</span>
-        <span class="eea-tag eea-tag--accent">Base</span>
-        <span class="eea-tag eea-tag--accent">Arbitrum One</span>
-        <span class="eea-tag eea-tag--accent">Arbitrum Nova</span>
-        <span class="eea-tag eea-tag--accent">Optimism</span>
-        <span class="eea-tag eea-tag--accent">Polygon</span>
-        <span class="eea-tag eea-tag--accent">zkSync</span>
-        <span class="eea-tag eea-tag--accent">Scroll</span>
-        <span class="eea-tag eea-tag--accent">Linea</span>
-        <span class="eea-tag eea-tag--accent">Blast</span>
-        <span class="eea-tag eea-tag--accent">Celo</span>
-      </div>
-      <p style="font-size:0.75rem;color:var(--eea-text-3);margin:0">Plus Sepolia, Base Sepolia, Optimism Sepolia, Arbitrum Goerli, Polygon Amoy, Scroll Sepolia and Linea Goerli testnets.</p>
-    </div>
+ <section id="sec-05" class="section" aria-labelledby="scope-title">
+  <p class="eyebrow">Scope</p><h2 id="scope-title">A shared language. Your implementation.</h2>
+  <div class="columns"><div><h3>Defined by this model</h3><ul><li>Claim topics and their policies</li><li>Investor Eligibility payload, 10 fields</li><li>Update semantics and evidence hash</li></ul></div><div><h3>Chosen by each issuer</h3><ul><li>Which attesters you trust, per topic</li><li>Identity / KYC backend and wallet flows</li><li>Governance and operating model</li></ul></div></div>
+  <p class="note prose">Forced transfers, freezes, lost-key recovery, lock-ups and holder caps remain with the token contract. Cross-chain canonicity and tax / FATCA / CRS reporting are outside Shibui's scope.</p>
+ </section>
 
-    <div style="margin-top:4rem;display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap">
-      <span class="eea-badge">01</span>
-      <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">Opening statement</h2>
-    </div>
-    <div style="margin-top:1.5rem;max-width:72ch;display:flex;flex-direction:column;gap:1rem">
-      <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0">ERC&#8209;3643 mandates an on&#8209;chain identity check on every transfer of a security token. The reference implementation requires each investor to deploy their own identity contract, pins the token to one KYC&#8209;provider ecosystem, and enforces only that an attestation <em>exists</em>, never what it says.</p>
-      <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0">Shibui replaces that identity layer with a small stack of contracts that read EAS attestations, enforce each payload against a configurable policy per claim topic, and gate trust changes with a cryptographic audit trail.</p>
-      <blockquote style="margin:0.5rem 0 0;padding:1rem 1.5rem;border-left:3px solid var(--eea-accent);background:var(--eea-accent-bg-light)">
-        <p style="font-size:1.125rem;line-height:1.4;color:var(--eea-text);margin:0">Tokenization scales settlement. Shared identity semantics scale distribution, the same way shared messaging standards did.</p>
-      </blockquote>
-    </div>
-  </section>
+ <section id="sec-06" class="section" aria-labelledby="topics-title">
+  <p class="eyebrow">Technical reference</p><h2 id="topics-title">Eight eligibility topics, one shared payload</h2>
+  <div class="prose"><p>A token requires a subset of these topics. <code>isVerified</code> returns true only when every required topic has a live attestation from a currently trusted attester whose payload satisfies the topic's policy.</p></div>
+  <div class="entry-point"><span>Public entry point</span><code>isVerified(address wallet) → bool</code><p>Called by the token's compliance hook on every transfer.</p></div>
+  <p class="note">Provider examples expand in the last column. The verifier reads the attestation payload; it never queries those source systems directly.</p>
+  <p class="mobile-table-hint">Scroll the table sideways to see rules and source systems.</p>
+  <div class="table-scroll" role="region" aria-label="Eligibility topic policies" tabindex="0"><table><caption>Eight eligibility topics shipped in v0.4.0</caption>
+<thead>
+<tr>
+<th scope="col">ID</th>
+<th scope="col">Topic</th>
+<th scope="col">Rule enforced on payload</th>
+<th scope="col">Source system of record</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<th scope="row">KYC</th>
+<td>kycStatus == VERIFIED</td>
+<td><details class="source-detail"><summary>Identity verification vendor</summary>
+<p>e.g. Entrust Identity Verification (formerly Onfido), Jumio, Trulioo, document + biometric check at onboarding.</p>
+</details></td>
+</tr>
+<tr>
+<td>02</td>
+<th scope="row">AML</th>
+<td>amlStatus == CLEAR</td>
+<td><details class="source-detail"><summary>AML screening engine</summary>
+<p>e.g. LSEG World-Check (formerly Refinitiv / Thomson Reuters), ComplyAdvantage, LexisNexis Bridger Insight.</p>
+</details></td>
+</tr>
+<tr>
+<td>03</td>
+<th scope="row">Country</th>
+<td>countryCode in allow-list or block-list</td>
+<td>
+<span>Same record as KYC</span>
+<p>Residence / citizenship captured in the same onboarding record, no independent system.</p>
+</td>
+</tr>
+<tr>
+<td>07</td>
+<th scope="row">Accreditation</th>
+<td>accreditationType in admin allow-set</td>
+<td><details class="source-detail"><summary>Third-party accreditation verifier</summary>
+<p>Law-firm or CPA qualification letter, or the broker-dealer's own suitability file. No single dominant vendor, often manual.</p>
+</details></td>
+</tr>
+<tr>
+<td>09</td>
+<th scope="row">Professional investor</th>
+<td>accreditationType != 0</td>
+<td>
+<span>Derived, not a source</span>
+<p>Threshold read on the accreditation record above. Flag any vendor pitching this as a separate feed.</p>
+</td>
+</tr>
+<tr>
+<td>10</td>
+<th scope="row">Institutional investor</th>
+<td>accreditationType == INSTITUTIONAL</td>
+<td>
+<span>Derived, not a source</span>
+<p>Same accreditation record, highest tier. Not independently sourced.</p>
+</td>
+</tr>
+<tr>
+<td>13</td>
+<th scope="row">Sanctions check</th>
+<td>sanctionsStatus == CLEAR</td>
+<td><details class="source-detail"><summary>Sanctions / PEP screening engine</summary>
+<p>Same engines as AML, LSEG World-Check, ComplyAdvantage, Dow Jones Risk &amp; Compliance, screened against OFAC, UN and EU consolidated lists.</p>
+</details></td>
+</tr>
+<tr>
+<td>14</td>
+<th scope="row">Source of funds</th>
+<td>sourceOfFundsStatus == VERIFIED</td>
+<td><details class="source-detail"><summary>Enhanced Due Diligence (EDD) file</summary>
+<p>Held inside the AML platform or a dedicated case-management tool (e.g. NICE Actimize). Triggered for high-value or high-risk investors.</p>
+</details></td>
+</tr>
+</tbody>
+</table></div>
+  <p class="note prose">ERC-3643 does not prescribe numeric topic IDs. This implementation follows an ONCHAINID-style convention commonly used in ERC-3643 deployments. Canonical schema strings live in <code>script/RegisterSchemas.s.sol</code>. Provider examples are reference material, issuer-selected and not endorsed by the EEA.</p>
+  <aside class="integration-status prose" aria-label="ERC-3643 integration status">
+   <p><strong>ERC-3643 integration status</strong> · Checked <time datetime="2026-10-06">October 6, 2026</time></p>
+   <p>Shibui's <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/pull/63" target="_blank" rel="noopener noreferrer">integration and tests</a> are merged in its own repository; the proposed <a href="https://github.com/ERC-3643/ERC-3643/pull/98" target="_blank" rel="noopener noreferrer">registry extension</a> remains an unmerged draft upstream. Following the <a href="https://github.com/ERC-3643/ERC-3643/issues/95" target="_blank" rel="noopener noreferrer">ERC-3643 discussion</a>, ONCHAINID separately <a href="https://github.com/T-REX-Network/ONCHAINID/pull/31" target="_blank" rel="noopener noreferrer">merged an EAS claim adapter</a> that retains its identity and claim model. That adapter does not adopt Shibui's eligibility policies. Shibui remains a research model, not an adopted ERC-3643 standard.</p>
+  </aside>
+  <details class="disclosure"><summary>Acronym key</summary><div class="acronyms"><p><strong>KYC</strong>, Know Your Customer</p><p><strong>AML</strong>, Anti-Money Laundering</p><p><strong>PEP</strong>, Politically Exposed Person</p><p><strong>OFAC</strong>, Office of Foreign Assets Control (US Treasury)</p><p><strong>EDD</strong>, Enhanced Due Diligence</p><p><strong>EAS</strong>, Ethereum Attestation Service</p><p><strong>ERC‑3643</strong>, T‑REX permissioned security-token standard</p><p><strong>UID</strong>, Unique Identifier (schema / attestation)</p></div></details>
+ </section>
 
-  <section id="sec-02" data-screen-label="The problem" style="margin-top:5rem">
-    <p class="eea-label">The problem</p>
-    <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap">
-      <span class="eea-badge">02</span>
-      <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">Distribution breaks on one question</h2>
-    </div>
-    <div style="margin-top:1.5rem;max-width:72ch">
-      <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0">Tokenization modernizes issuance and settlement. Distribution still stalls on <strong style="color:var(--eea-text)">who may hold the asset, and when</strong>, because every participant answers that question in its own dialect.</p>
-      <p style="font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);margin:1rem 0 0">Longer form: <a href="https://www.linkedin.com/pulse/passport-problem-why-tokenized-markets-need-shared-identity-meslem-iryvf/" target="_blank" rel="noopener noreferrer">The Passport Problem, why tokenized markets need shared identity</a></p>
-    </div>
+ <section id="sec-07" class="section" aria-labelledby="interest-title">
+  <p class="eyebrow">Get involved</p><h2 id="interest-title">Is this worth solving together?</h2>
+  <div class="prose"><p>There is no working group yet, and no commitment being asked for. Shibui is a research artifact: a reference implementation built to find out whether shared eligibility semantics are a problem the market actually wants solved together.</p><p>If you are an issuer, asset manager, venue, transfer agent, KYC or accreditation provider re-onboarding the same investors token by token, we want to hear from you.</p><h3>Tell us what would need to work</h3><p>Do the eight topics match your requirements? Which fields are wrong or missing? What evidence expectations could you sign off on?</p><p>A note, a comment, or a conversation is enough. If enough participants signal interest, the EEA can convene a group. If not, this stays a public reference.</p></div>
+  <div class="actions"><a class="button primary" href="https://entethalliance.org/contact/" target="_blank" rel="noopener noreferrer">Signal interest ↗</a><a class="button secondary" href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/issues" target="_blank" rel="noopener noreferrer">Comment on the repo ↗</a></div>
+ </section>
 
-    <div class="eea-grid" style="margin-top:1.5rem;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-      <div class="eea-card">
-        <p class="eea-card-title">Eligibility is fragmented</p>
-        <p class="eea-card-desc">Each issuer defines "KYC", "accredited" and "qualified purchaser" differently. Investors repeat identical checks per token and per venue. Expiry, revocation and sanctions updates are applied by hand.</p>
-      </div>
-      <div class="eea-card">
-        <p class="eea-card-title">The cost lands on distribution</p>
-        <p class="eea-card-desc">Slower onboarding, higher servicing cost, inconsistent evidence across jurisdictions, and a compliance posture that depends on manual reconciliation rather than on the token itself.</p>
-      </div>
-    </div>
-
-    <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:2rem 0 0.75rem">Issuer-by-issuer vs. shared standard</p>
-    <div style="border:1px solid var(--eea-border);overflow-x:auto;background:var(--eea-bg-card)">
-      <table style="width:100%;border-collapse:collapse;min-width:640px">
-        <thead>
-          <tr style="background:var(--eea-bg-raised)">
-            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Capability</th>
-            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Issuer-by-issuer</th>
-            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Shared standard</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Onboarding</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Repeated checks and bespoke integrations</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Reusable evidence recognized across assets</td>
-          </tr>
-          <tr>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Eligibility updates</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Manual, slow propagation</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Expiry and revocation enforced on the hot path</td>
-          </tr>
-          <tr>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Oversight</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Fragmented evidence trails</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Common definitions and an <code style="font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-accent-hover)">evidenceHash</code> per claim</td>
-          </tr>
-          <tr>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Provider choice</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">One provider ecosystem per token</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;line-height:1.6;color:var(--eea-text-2);vertical-align:top">Many trusted attesters per topic, rotatable</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section id="sec-03" data-screen-label="Approach" style="margin-top:5rem">
-    <p class="eea-label">Approach</p>
-    <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap">
-      <span class="eea-badge">03</span>
-      <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">A deliberately small core</h2>
-    </div>
-
-    <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:1.5rem">
-      <div class="eea-card" style="flex-direction:row;flex-wrap:wrap;gap:2rem">
-        <div style="flex:0 0 260px;min-width:0">
-          <p style="font-family:var(--eea-font-mono);font-size:0.75rem;color:var(--eea-text-3);margin:0 0 0.5rem">01</p>
-          <p style="font-size:1.125rem;font-weight:600;line-height:1.4;color:var(--eea-text);margin:0">Standardize what eligibility means</p>
-        </div>
-        <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:0.75rem">
-          <p class="eea-card-desc" style="font-size:1rem">One canonical EAS payload, ten ABI fields covering KYC, AML, sanctions, source of funds, accreditation type, country and expiry, decoded identically by every topic policy.</p>
-          <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-            <span class="eea-tag eea-tag--accent">Shared semantics</span>
-            <span class="eea-tag eea-tag--accent">Comparable evidence</span>
-            <span class="eea-tag eea-tag--accent">ISO&nbsp;3166 jurisdictions</span>
-          </div>
-        </div>
-      </div>
-      <div class="eea-card" style="flex-direction:row;flex-wrap:wrap;gap:2rem">
-        <div style="flex:0 0 260px;min-width:0">
-          <p style="font-family:var(--eea-font-mono);font-size:0.75rem;color:var(--eea-text-3);margin:0 0 0.5rem">02</p>
-          <p style="font-size:1.125rem;font-weight:600;line-height:1.4;color:var(--eea-text);margin:0">Let issuers choose who they trust</p>
-        </div>
-        <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:0.75rem">
-          <p class="eea-card-desc" style="font-size:1rem">Each token recognizes its own set of trusted attesters per claim topic. Adding one requires a live Issuer&nbsp;Authorization attestation, so trust changes leave a cryptographic trail rather than a config diff.</p>
-          <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-            <span class="eea-tag eea-tag--accent">No vendor lock-in</span>
-            <span class="eea-tag eea-tag--accent">Role-gated admin</span>
-            <span class="eea-tag eea-tag--accent">Multisig in production</span>
-          </div>
-        </div>
-      </div>
-      <div class="eea-card" style="flex-direction:row;flex-wrap:wrap;gap:2rem">
-        <div style="flex:0 0 260px;min-width:0">
-          <p style="font-family:var(--eea-font-mono);font-size:0.75rem;color:var(--eea-text-3);margin:0 0 0.5rem">03</p>
-          <p style="font-size:1.125rem;font-weight:600;line-height:1.4;color:var(--eea-text);margin:0">Make change predictable</p>
-        </div>
-        <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:0.75rem">
-          <p class="eea-card-desc" style="font-size:1rem">Revocation, EAS-level expiry and payload-level expiry are all checked on the transfer path. Revoking a claim blocks future transfers immediately; it does not move, freeze or recover tokens already held.</p>
-          <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-            <span class="eea-tag eea-tag--accent">Expiry</span>
-            <span class="eea-tag eea-tag--accent">Revocation</span>
-            <span class="eea-tag eea-tag--accent">Audit trail</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="sec-04" data-screen-label="Before and after" style="margin-top:5rem">
-    <p class="eea-label">Operational view</p>
-    <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap">
-      <span class="eea-badge">04</span>
-      <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">Same controls, less duplication</h2>
-    </div>
-
-    <div class="eea-grid" style="margin-top:1.5rem;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
-      <div class="eea-card" style="gap:0">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0 0 1rem">Today</p>
-        <div style="background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Investor submits documents</p></div>
-        <div style="width:1px;height:1rem;background:var(--eea-border-solid);margin-left:1.5rem"></div>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Issuer A onboarding</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">own identity contract</p></div>
-          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Issuer B onboarding</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">own provider ecosystem</p></div>
-        </div>
-        <div style="width:1px;height:1rem;background:var(--eea-border-solid);margin-left:1.5rem"></div>
-        <div style="background:var(--eea-warning-bg);border:1px solid rgba(118,90,0,0.25);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-warning);margin:0">Manual reconciliation on every update</p><p style="font-family:var(--eea-font-mono);font-size:0.75rem;color:var(--eea-warning);opacity:.8;margin:0.25rem 0 0">expiry &middot; revocation &middot; sanctions</p></div>
-        <p style="font-size:0.8rem;color:var(--eea-text-3);margin:1rem 0 0">Duplicated checks, slow propagation.</p>
-      </div>
-
-      <div class="eea-card" style="gap:0;border-color:rgba(31,92,74,0.25)">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0 0 1rem">With Shibui</p>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Investor verified once</p></div>
-          <div style="flex:1 1 120px;background:var(--eea-success-bg);border:1px solid rgba(31,92,74,0.25);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-success);margin:0">Trusted attester</p><p style="font-size:0.75rem;color:var(--eea-success);opacity:.8;margin:0.25rem 0 0">authorized on-chain</p></div>
-        </div>
-        <div style="width:1px;height:1rem;background:var(--eea-accent);margin-left:1.5rem"></div>
-        <div style="background:var(--eea-accent-bg);border:1px solid rgba(31,92,74,0.25);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">EAS attestation, Investor Eligibility</p><p style="font-family:var(--eea-font-mono);font-size:0.75rem;color:var(--eea-accent-hover);margin:0.25rem 0 0">10 fields &middot; evidenceHash &middot; expiry</p></div>
-        <div style="width:1px;height:1rem;background:var(--eea-accent);margin-left:1.5rem"></div>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Token A</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">requires KYC + country</p></div>
-          <div style="flex:1 1 120px;background:var(--eea-bg-raised);border:1px solid var(--eea-border);padding:0.75rem 1rem"><p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Token B</p><p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.25rem 0 0">requires KYC + accreditation</p></div>
-        </div>
-        <p style="font-size:0.8rem;color:var(--eea-accent-hover);margin:1rem 0 0">One credential, many tokens, updates enforced at transfer time.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="sec-05" data-screen-label="Standard vs stack" style="margin-top:5rem">
-    <p class="eea-label">Scope</p>
-    <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap">
-      <span class="eea-badge">05</span>
-      <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">What is fixed, what stays yours</h2>
-    </div>
-
-    <div class="eea-grid" style="margin-top:1.5rem;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-      <div class="eea-card eea-card--accent">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Standardized</p>
-        <p class="eea-card-title" style="font-size:1.25rem">The language</p>
-        <div style="display:flex;flex-direction:column;gap:0.5rem">
-          <div style="background:var(--eea-bg-raised);padding:0.7rem 0.9rem"><p style="font-size:0.875rem;font-weight:500;color:var(--eea-text);margin:0">Claim topics and their policies</p></div>
-          <div style="background:var(--eea-bg-raised);padding:0.7rem 0.9rem"><p style="font-size:0.875rem;font-weight:500;color:var(--eea-text);margin:0">Investor Eligibility payload, 10 fields</p></div>
-          <div style="background:var(--eea-bg-raised);padding:0.7rem 0.9rem"><p style="font-size:0.875rem;font-weight:500;color:var(--eea-text);margin:0">Update semantics and evidence hash</p></div>
-        </div>
-      </div>
-      <div class="eea-card eea-card--accent" style="--eea-card-accent:var(--eea-text-3)">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Flexible</p>
-        <p class="eea-card-title" style="font-size:1.25rem">The implementation</p>
-        <div style="display:flex;flex-direction:column;gap:0.5rem">
-          <div style="background:var(--eea-bg-raised);padding:0.7rem 0.9rem"><p style="font-size:0.875rem;font-weight:500;color:var(--eea-text);margin:0">Which attesters you trust, per topic</p></div>
-          <div style="background:var(--eea-bg-raised);padding:0.7rem 0.9rem"><p style="font-size:0.875rem;font-weight:500;color:var(--eea-text);margin:0">Identity / KYC backend and wallet flows</p></div>
-          <div style="background:var(--eea-bg-raised);padding:0.7rem 0.9rem"><p style="font-size:0.875rem;font-weight:500;color:var(--eea-text);margin:0">Governance and operating model</p></div>
-        </div>
-      </div>
-    </div>
-
-    <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:2rem 0 0.75rem">Out of scope, stays with the token contract</p>
-    <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
-      <span class="eea-tag">Forced transfer</span>
-      <span class="eea-tag">Freeze &amp; partial freeze</span>
-      <span class="eea-tag">Lost-key recovery</span>
-      <span class="eea-tag">Lock-ups &amp; holder caps</span>
-      <span class="eea-tag">Cross-chain canonicity</span>
-      <span class="eea-tag">Tax &amp; FATCA / CRS reporting</span>
-    </div>
-  </section>
-
-  <section id="sec-06" data-screen-label="Claim topics" style="margin-top:5rem">
-    <p class="eea-label">Reference</p>
-    <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap">
-      <span class="eea-badge">06</span>
-      <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">Claim topics shipped in v0.4.0</h2>
-    </div>
-    <div style="margin-top:1.5rem;max-width:72ch">
-      <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0 0 1rem">A token requires a subset of these topics. <code style="font-family:var(--eea-font-mono);font-size:0.9rem;color:var(--eea-accent-hover)">isVerified</code> returns true only when every required topic has a live attestation from a currently trusted attester whose payload satisfies the topic's policy.</p>
-      <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0 0 1.5rem">The last column shows where the underlying fact actually lives before it ever reaches EAS. <code style="font-family:var(--eea-font-mono);font-size:0.9rem;color:var(--eea-accent-hover)">isVerified</code> only ever reads the attestation payload, it never queries these systems directly.</p>
-    </div>
-    <div style="border:1px solid var(--eea-border);overflow-x:auto;background:var(--eea-bg-card)">
-      <table style="width:100%;border-collapse:collapse;min-width:920px">
-        <thead>
-          <tr style="background:var(--eea-bg-raised)">
-            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">ID</th>
-            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Topic</th>
-            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Rule enforced on payload</th>
-            <th scope="col" style="padding:0.75rem 1rem;font-family:var(--eea-font-mono);font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3)">Source system of record</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-3);vertical-align:top">01</td>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">KYC</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-2);vertical-align:top;white-space:nowrap">kycStatus == VERIFIED</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);vertical-align:top">
-              <p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Identity verification vendor</p>
-              <p style="font-size:0.8rem;line-height:1.55;color:var(--eea-text-2);margin:0.3rem 0 0">e.g. Entrust Identity Verification (formerly Onfido), Jumio, Trulioo, document + biometric check at onboarding.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-3);vertical-align:top">02</td>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">AML</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-2);vertical-align:top;white-space:nowrap">amlStatus == CLEAR</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);vertical-align:top">
-              <p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">AML screening engine</p>
-              <p style="font-size:0.8rem;line-height:1.55;color:var(--eea-text-2);margin:0.3rem 0 0">e.g. LSEG World-Check (formerly Refinitiv / Thomson Reuters), ComplyAdvantage, LexisNexis Bridger Insight.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-3);vertical-align:top">03</td>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Country</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-2);vertical-align:top;white-space:nowrap">countryCode in allow-list or block-list</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);vertical-align:top">
-              <span class="eea-tag eea-tag--accent" style="font-family:var(--eea-font-mono);text-transform:uppercase;letter-spacing:0.06em">Same record as KYC</span>
-              <p style="font-size:0.8rem;line-height:1.55;color:var(--eea-text-2);margin:0.4rem 0 0">Residence / citizenship captured in the same onboarding record, no independent system.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-3);vertical-align:top">07</td>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Accreditation</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-2);vertical-align:top;white-space:nowrap">accreditationType in admin allow-set</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);vertical-align:top">
-              <p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Third-party accreditation verifier</p>
-              <p style="font-size:0.8rem;line-height:1.55;color:var(--eea-text-2);margin:0.3rem 0 0">Law-firm or CPA qualification letter, or the broker-dealer's own suitability file. No single dominant vendor, often manual.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-3);vertical-align:top">09</td>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Professional investor</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-2);vertical-align:top;white-space:nowrap">accreditationType != 0</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);vertical-align:top">
-              <span class="eea-tag" style="font-family:var(--eea-font-mono);text-transform:uppercase;letter-spacing:0.06em">Derived, not a source</span>
-              <p style="font-size:0.8rem;line-height:1.55;color:var(--eea-text-2);margin:0.4rem 0 0">Threshold read on the accreditation record above. Flag any vendor pitching this as a separate feed.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-3);vertical-align:top">10</td>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Institutional investor</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-2);vertical-align:top;white-space:nowrap">accreditationType == INSTITUTIONAL</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);vertical-align:top">
-              <span class="eea-tag" style="font-family:var(--eea-font-mono);text-transform:uppercase;letter-spacing:0.06em">Derived, not a source</span>
-              <p style="font-size:0.8rem;line-height:1.55;color:var(--eea-text-2);margin:0.4rem 0 0">Same accreditation record, highest tier. Not independently sourced.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-3);vertical-align:top">13</td>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Sanctions check</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-2);vertical-align:top;white-space:nowrap">sanctionsStatus == CLEAR</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);vertical-align:top">
-              <p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Sanctions / PEP screening engine</p>
-              <p style="font-size:0.8rem;line-height:1.55;color:var(--eea-text-2);margin:0.3rem 0 0">Same engines as AML, LSEG World-Check, ComplyAdvantage, Dow Jones Risk &amp; Compliance, screened against OFAC, UN and EU consolidated lists.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-3);vertical-align:top">14</td>
-            <th scope="row" style="padding:1rem;border-top:1px solid var(--eea-border);font-size:0.875rem;font-weight:600;color:var(--eea-text);vertical-align:top">Source of funds</th>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-text-2);vertical-align:top;white-space:nowrap">sourceOfFundsStatus == VERIFIED</td>
-            <td style="padding:1rem;border-top:1px solid var(--eea-border);vertical-align:top">
-              <p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Enhanced Due Diligence (EDD) file</p>
-              <p style="font-size:0.8rem;line-height:1.55;color:var(--eea-text-2);margin:0.3rem 0 0">Held inside the AML platform or a dedicated case-management tool (e.g. NICE Actimize). Triggered for high-value or high-risk investors.</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="font-size:0.8rem;line-height:1.6;color:var(--eea-text-3);margin:1rem 0 0">Topic identifiers follow the ERC&#8209;3643 claim-topic convention. Canonical schema strings live in <code style="font-family:var(--eea-font-mono);font-size:0.8rem">script/RegisterSchemas.s.sol</code>. The source-system column is reference material on typical industry providers, the actual vendor is issuer-selected and not endorsed by the EEA.</p>
-
-    <div class="eea-card" style="margin-top:1.5rem;gap:1rem">
-      <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Acronym key</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem 1.5rem">
-        <p style="font-size:0.875rem;line-height:1.5;color:var(--eea-text-2);margin:0"><strong style="font-family:var(--eea-font-mono);font-weight:600;color:var(--eea-text)">KYC</strong>, Know Your Customer</p>
-        <p style="font-size:0.875rem;line-height:1.5;color:var(--eea-text-2);margin:0"><strong style="font-family:var(--eea-font-mono);font-weight:600;color:var(--eea-text)">AML</strong>, Anti-Money Laundering</p>
-        <p style="font-size:0.875rem;line-height:1.5;color:var(--eea-text-2);margin:0"><strong style="font-family:var(--eea-font-mono);font-weight:600;color:var(--eea-text)">PEP</strong>, Politically Exposed Person</p>
-        <p style="font-size:0.875rem;line-height:1.5;color:var(--eea-text-2);margin:0"><strong style="font-family:var(--eea-font-mono);font-weight:600;color:var(--eea-text)">OFAC</strong>, Office of Foreign Assets Control (US Treasury)</p>
-        <p style="font-size:0.875rem;line-height:1.5;color:var(--eea-text-2);margin:0"><strong style="font-family:var(--eea-font-mono);font-weight:600;color:var(--eea-text)">EDD</strong>, Enhanced Due Diligence</p>
-        <p style="font-size:0.875rem;line-height:1.5;color:var(--eea-text-2);margin:0"><strong style="font-family:var(--eea-font-mono);font-weight:600;color:var(--eea-text)">EAS</strong>, Ethereum Attestation Service</p>
-        <p style="font-size:0.875rem;line-height:1.5;color:var(--eea-text-2);margin:0"><strong style="font-family:var(--eea-font-mono);font-weight:600;color:var(--eea-text)">ERC&#8209;3643</strong>, T&#8209;REX permissioned security-token standard</p>
-        <p style="font-size:0.875rem;line-height:1.5;color:var(--eea-text-2);margin:0"><strong style="font-family:var(--eea-font-mono);font-weight:600;color:var(--eea-text)">UID</strong>, Unique Identifier (schema / attestation)</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="sec-07" data-screen-label="Signal interest" style="margin-top:5rem">
-    <p class="eea-label">Testing whether there is appetite</p>
-    <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap">
-      <span class="eea-badge">07</span>
-      <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">Is this worth solving?</h2>
-    </div>
-    <div style="margin-top:1.5rem;max-width:72ch">
-      <p style="font-size:1rem;line-height:1.6;color:var(--eea-text-2);margin:0">There is no working group yet, and no commitment being asked for. Shibui is a research artifact: a reference implementation built to find out whether shared eligibility semantics are a problem the market actually wants solved together. If the answer is yes, that shapes what comes next.</p>
-    </div>
-
-    <div class="eea-grid" style="margin-top:1.5rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-      <div class="eea-card">
-        <p class="eea-card-title">If this sounds familiar</p>
-        <p class="eea-card-desc">You are an issuer, asset manager, venue, transfer agent, KYC or accreditation provider, and you are re-onboarding the same investors token by token.</p>
-      </div>
-      <div class="eea-card">
-        <p class="eea-card-title">What we want to learn</p>
-        <p class="eea-card-desc">Whether the eight claim topics match your real requirements, where the payload is wrong or missing fields, and which evidence expectations you could actually sign off on.</p>
-      </div>
-      <div class="eea-card">
-        <p class="eea-card-title">What signalling means</p>
-        <p class="eea-card-desc">A note, a comment, or a conversation, nothing binding. If enough participants signal interest, the EEA can convene a proper group. If not, this stays a public reference.</p>
-      </div>
-    </div>
-
-    <div class="eea-card" style="margin-top:1.5rem;border-color:rgba(31,92,74,0.25);background:var(--eea-accent-bg-light);flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:2rem">
-      <div style="flex:1 1 320px;min-width:0">
-        <p style="font-size:1.25rem;font-weight:600;line-height:1.4;color:var(--eea-text);margin:0 0 0.5rem">Is this a problem you have?</p>
-        <p style="font-size:0.9rem;line-height:1.6;color:var(--eea-text-2);margin:0">Tell us so, briefly is fine. Reach out through the EEA, or comment in the open on the repository or the article.</p>
-      </div>
-      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-        <a class="eea-btn eea-btn--primary" href="https://entethalliance.org/contact/" target="_blank" rel="noopener noreferrer">Signal interest</a>
-        <a class="eea-btn eea-btn--secondary" href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/issues" target="_blank" rel="noopener noreferrer">Comment on the repo</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="sec-08" data-screen-label="Resources" style="margin-top:5rem">
-    <p class="eea-label">Read further</p>
-    <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap">
-      <span class="eea-badge">08</span>
-      <h2 style="font-size:1.5rem;font-weight:600;color:var(--eea-text);margin:0">Resources</h2>
-    </div>
-
-    <div class="eea-grid" style="margin-top:1.5rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
-      <a class="eea-card eea-card--interactive" href="identity-solutions-map.html">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Landscape</p>
-        <p class="eea-card-title">Identity solutions reference map</p>
-        <p class="eea-card-desc">On-chain primitives, credential standards, institutional platforms, pilots and Travel Rule networks, with adoption notes and limitations.</p>
-        <span class="eea-card-link">Open the map &rarr;</span>
-      </a>
-      <a class="eea-card eea-card--interactive" href="https://www.linkedin.com/pulse/passport-problem-why-tokenized-markets-need-shared-identity-meslem-iryvf/" target="_blank" rel="noopener noreferrer">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Article</p>
-        <p class="eea-card-title">The Passport Problem</p>
-        <p class="eea-card-desc">Why tokenized markets need shared identity, the argument behind Shibui, written for a non-technical audience.</p>
-        <span class="eea-card-link">Read on LinkedIn &rarr;</span>
-      </a>
-      <a class="eea-card eea-card--interactive" href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas" target="_blank" rel="noopener noreferrer">
-        <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:0">Implementation</p>
-        <p class="eea-card-title">Repository and documentation</p>
-        <p class="eea-card-desc">Contracts, schema definitions, architecture notes, gas benchmarks, integration guide and the audit report.</p>
-        <span class="eea-card-link">View on GitHub &rarr;</span>
-      </a>
-    </div>
-
-    
-      <p style="font-family:var(--eea-font-mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--eea-text-3);margin:2rem 0 0.75rem">What a pilot would prove</p>
-      <div class="eea-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-        <div class="eea-card" style="flex-direction:row;gap:1rem">
-          <p style="font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-accent);margin:0">01</p>
-          <p class="eea-card-desc">Reuse one eligibility attestation across two tokens with different topic requirements.</p>
-        </div>
-        <div class="eea-card" style="flex-direction:row;gap:1rem">
-          <p style="font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-accent);margin:0">02</p>
-          <p class="eea-card-desc">Revoke a claim and show the next transfer is blocked, with the reason attributable to a topic.</p>
-        </div>
-        <div class="eea-card" style="flex-direction:row;gap:1rem">
-          <p style="font-family:var(--eea-font-mono);font-size:0.8rem;color:var(--eea-accent);margin:0">03</p>
-          <p class="eea-card-desc">Rotate a trusted attester under multisig control and confirm the authorization trail.</p>
-        </div>
-      </div>
-    
-  </section>
-
-  <footer class="eea-footer" style="text-align:left;padding-inline:0;display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:space-between;align-items:flex-end">
-    <div>
-      <p style="font-size:0.875rem;font-weight:600;color:var(--eea-text);margin:0">Shibui, interoperable investor eligibility for tokenized assets</p>
-      <p style="font-size:0.75rem;color:var(--eea-text-3);margin:0.4rem 0 0">An open-source project by the Enterprise Ethereum Alliance &middot; Apache&#8209;2.0 &middot; Copyright &copy; 2026 Enterprise Ethereum Alliance Inc.</p>
-    </div>
-    <a class="eea-btn eea-btn--secondary eea-btn--sm" href="#sec-01">Back to top</a>
-  </footer>
+ <section id="sec-08" class="section" aria-labelledby="resources-title">
+  <p class="eyebrow">Read further</p><h2 id="resources-title">Resources</h2>
+  <div class="resources"><a class="resource" href="identity-solutions-map.html"><h3>Identity solutions reference map</h3><p>On-chain primitives, credential standards, institutional platforms, pilots and Travel Rule networks, with adoption notes and limitations.</p><span>Open the map →</span></a>
+<a class="resource" href="https://www.linkedin.com/pulse/passport-problem-why-tokenized-markets-need-shared-identity-meslem-iryvf/" target="_blank" rel="noopener noreferrer"><h3>The Passport Problem</h3><p>Why tokenized markets need shared identity, the argument behind Shibui, written for a non-technical audience.</p><span>Read on LinkedIn →</span></a>
+<a class="resource" href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas" target="_blank" rel="noopener noreferrer"><h3>Repository and documentation</h3><p>Contracts, schema definitions, architecture notes, gas benchmarks, integration guide and the audit report.</p><span>View on GitHub →</span></a></div>
+  <details class="disclosure"><summary>What a pilot would prove</summary><ol class="prose"><li>Reuse one eligibility attestation across two tokens with different topic requirements.</li><li>Revoke a claim and show the next transfer is blocked, with the reason attributable to a topic.</li><li>Rotate a trusted attester under multisig control and confirm the authorization trail.</li></ol></details>
+ </section>
+ <footer><p><strong>Shibui</strong> · An open-source project by the Enterprise Ethereum Alliance<br>Apache-2.0 · Copyright © 2026 Enterprise Ethereum Alliance Inc.</p><a href="#sec-01">Back to top ↑</a></footer>
 </main>
 <script>
 (function () {
-  var bar = document.getElementById('shibui-sectionnav');
-  if (!bar) return;
-  var links = Array.prototype.slice.call(bar.querySelectorAll('a[href^="#"]'));
-  function setActive(id) {
-    links.forEach(function (a) {
-      var on = a.getAttribute('href') === '#' + id;
-      a.style.background = on ? 'var(--eea-accent-bg)' : 'transparent';
-      a.style.color = on ? 'var(--eea-text)' : 'var(--eea-text-3)';
-      if (on) a.setAttribute('aria-current', 'true');
-      else a.removeAttribute('aria-current');
-    });
-  }
-  var sections = links
-    .map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); })
-    .filter(Boolean);
-  if (!('IntersectionObserver' in window) || !sections.length) return;
-  var spy = new IntersectionObserver(function (entries) {
-    var visible = entries
-      .filter(function (e) { return e.isIntersecting; })
-      .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; });
-    if (visible[0] && visible[0].target.id) setActive(visible[0].target.id);
-  }, { rootMargin: '-15% 0px -70% 0px', threshold: [0, 0.1, 0.3, 0.6] });
-  sections.forEach(function (s) { spy.observe(s); });
+ const links = Array.from(document.querySelectorAll('#shibui-sectionnav a'));
+ const sections = Array.from(document.querySelectorAll('main > section'));
+ function update() {
+  let current = sections[0].id;
+  sections.forEach(section => { if (section.getBoundingClientRect().top <= 160) current = section.id; });
+  // Problem belongs to Overview; practice and scope belong to How it works.
+  const group = {'sec-02':'sec-01', 'sec-04':'sec-03', 'sec-05':'sec-03'};
+  current = group[current] || current;
+  links.forEach(link => {
+   if (link.hash === '#' + current) link.setAttribute('aria-current', 'true');
+   else link.removeAttribute('aria-current');
+  });
+ }
+ let scheduled = false;
+ window.addEventListener('scroll', function () {
+  if (scheduled) return;
+  scheduled = true;
+  requestAnimationFrame(function () { update(); scheduled = false; });
+ }, {passive:true});
+ update();
 })();
 </script>
+
 </body>
 </html>
