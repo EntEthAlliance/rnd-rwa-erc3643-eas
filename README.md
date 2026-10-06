@@ -2,13 +2,15 @@
 
 **Policy-aware investor-eligibility verification for ERC-3643 security tokens.** Shibui lets an ERC-3643 token answer **"is this wallet currently eligible to hold or receive this security?"** using Ethereum Attestation Service (EAS) attestations issued by trusted compliance providers.
 
-> An open-source project by the [Enterprise Ethereum Alliance](https://entethalliance.org)
+> An open-source research model by the [Enterprise Ethereum Alliance](https://entethalliance.org)
+
+Read the [Shibui specification](docs/schemas/shibui-specification-v0.1.md), [ERC-3643 integration status](docs/erc3643-status.md), and [draft upstream proposal](https://github.com/ERC-3643/ERC-3643/pull/98).
 
 ---
 
 ## In one sentence
 
-Shibui replaces the default ONCHAINID dependency in ERC-3643-style flows with a verifier layer that:
+Shibui's experimental pluggable-verifier path replaces the default ONCHAINID verification backend in a modified ERC-3643 registry with a layer that:
 - reads EAS attestations,
 - maps claim topics to schemas and policies,
 - supports multiple trusted attesters per topic, and
@@ -16,10 +18,10 @@ Shibui replaces the default ONCHAINID dependency in ERC-3643-style flows with a 
 
 ## Why it exists
 
-ERC-3643 requires an on-chain identity check on every transfer. In the reference implementation, that check depends on ONCHAINID contracts and trusted-issuer registries. That model works, but it creates practical constraints for issuers who need:
+ERC-3643 checks investor eligibility on the transfer path using identities, required claim topics and trusted issuers. Its reference implementation supports multiple trusted issuers and custom claim validation. Shibui explores a shared EAS payload and explicit policies for issuers who need:
 
 - **Multiple compliance providers** for the same token
-- **Policy-aware enforcement** rather than checking only that a claim exists
+- **Shared payload semantics** with explicit policy-aware enforcement
 - **Operational governance** for rotating trusted providers and updating control rules
 - **A direct audit trail** from an on-chain eligibility decision back to the underlying compliance evidence
 
@@ -235,6 +237,8 @@ The production deploy script grants all three roles to the multisig atomically a
 
 ## Key references
 
+- **Integration status:** [`docs/erc3643-status.md`](docs/erc3643-status.md)
+- **Shibui specification:** [`docs/schemas/shibui-specification-v0.1.md`](docs/schemas/shibui-specification-v0.1.md)
 - **Integration guide:** [`docs/integration-guide.md`](docs/integration-guide.md)
 - **Schema definitions:** [`docs/schemas/schema-definitions.md`](docs/schemas/schema-definitions.md)
 - **Enforcement boundary:** [`docs/architecture/enforcement-boundary.md`](docs/architecture/enforcement-boundary.md)
@@ -301,7 +305,7 @@ deployments/
 
 ## Integration paths
 
-**Path A: pluggable verifier (recommended).** The token's ERC-3643 compliance flow delegates to `EASClaimVerifier.isVerified(wallet)`. This is the preferred integration path for new deployments.
+**Path A: experimental pluggable verifier.** A modified Identity Registry delegates to `EASClaimVerifier.isVerified(wallet)`. This repository includes integration tests against the EEA fork; the extension proposed in [ERC-3643 PR #98](https://github.com/ERC-3643/ERC-3643/pull/98) remains an unmerged draft. Stock upstream registries do not expose `setIdentityVerifier`. Validate identity-dependent recovery and key-management flows separately.
 
 **Path B: compatibility shim.** `EASClaimVerifierIdentityWrapper` implements the `IIdentity` / ERC-735 interface backed by EAS attestations for deployments where the Identity Registry cannot be modified. It is **not** a full replacement for ONCHAINID:
 
@@ -310,7 +314,7 @@ deployments/
 - Does not run topic policies in `isClaimValid` (only checks existence / revocation / expiration).
 - Gas profile is not suitable for hot paths without caching.
 
-Use Path A for new deployments. Use Path B only when the Identity Registry cannot be modified and the compatibility trade-offs are acceptable.
+Use Path A to evaluate Shibui's full payload policies with the modified registry. Path B is a limited read-compatibility experiment, not a complete identity replacement. Neither path establishes ERC-3643 conformance merely by preserving `isVerified`. ONCHAINID's separately merged EAS claim adapter retains its identity model but does not implement Shibui's policy modules; see the [status note](docs/erc3643-status.md).
 
 ---
 

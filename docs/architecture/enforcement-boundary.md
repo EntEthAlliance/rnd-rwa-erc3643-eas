@@ -4,6 +4,10 @@
 
 This document exists to address audit findings R-1 and R-3, which noted that earlier documentation described Shibui as a "full identity layer for regulated securities," creating a risk that integrators would assume primitives that live elsewhere are provided here.
 
+## Integration assumptions
+
+The pluggable-verifier path is tested against a modified EEA registry; its upstream proposal remains a draft. A token exposing `recoveryAddress` or `forcedTransfer` does not by itself prove those flows work with an alternative identity backend. Recovery can require ONCHAINID-style identity and key APIs. Validate these flows in the selected deployment rather than assuming Shibui supplies them. See [integration status](../erc3643-status.md) and the [integration guide](../integration-guide.md).
+
 ## What Shibui provides
 
 - A payload-aware `isVerified(wallet) → bool` query answerable by the ERC-3643 compliance layer or any downstream consumer.

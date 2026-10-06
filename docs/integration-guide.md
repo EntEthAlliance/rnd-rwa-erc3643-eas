@@ -1,18 +1,22 @@
 # Shibui Integration Guide
 
-> **Scope reminder.** Shibui is an **attestation retrieval adapter**, not a full identity layer. Token-side primitives (forced transfer, freeze, recovery) live in the ERC-3643 token contract. See [`architecture/enforcement-boundary.md`](architecture/enforcement-boundary.md).
+> **Scope reminder.** Shibui is an **attestation retrieval adapter**, not a full identity layer. Token-side primitives (forced transfer, freeze, recovery) live in the ERC-3643 token contract, but recovery and key-management flows can still depend on identity APIs that Shibui does not replace. See [`architecture/enforcement-boundary.md`](architecture/enforcement-boundary.md).
 >
 > **Cross-chain.** EAS attestations are **per-chain**. An investor verified on chain A must be re-attested on chain B. Multi-chain attestation portability is on the V2 roadmap and is **not** a property of the current implementation.
 >
-> **Path B limitations.** `EASClaimVerifierIdentityWrapper` is a **read-compat shim** for legacy ERC-3643 deployments whose Identity Registry cannot be modified. It does not run topic policies in `isClaimValid`, returns empty signatures from `getClaim`, and has a higher gas profile than Path A. New deployments should use Path A. See the wrapper's NatSpec under `contracts/compat/` for the full list of limitations.
+> **Path B limitations.** `EASClaimVerifierIdentityWrapper` is a **read-compat shim** for legacy ERC-3643 deployments whose Identity Registry cannot be modified. It does not run topic policies in `isClaimValid`, returns empty signatures from `getClaim`, and has a higher gas profile than Path A. Path A exercises the full policies but requires a modified registry. See the wrapper's NatSpec under `contracts/compat/` for the full list of limitations.
 
+
+## Integration status
+
+As of October 6, 2026, Shibui has merged end-to-end integration tests in its own repository, while the registry extension in [ERC-3643 PR #98](https://github.com/ERC-3643/ERC-3643/pull/98) remains a draft. This guide describes that modified-registry path and the limited compatibility shim, not an integration already available in the stock upstream implementation. ONCHAINID has separately merged an EAS-backed `ClaimIssuer` that retains its identity/claim model. See [current status and source links](erc3643-status.md).
 
 ## What you'll achieve
 
-By the end of this guide your ERC-3643 security token will verify investor eligibility from EAS attestations, with payload semantics enforced on-chain:
+Path A demonstrates investor eligibility checks from EAS attestations with payload semantics enforced on-chain in a modified ERC-3643 stack. Path B does not provide the same policy enforcement:
 
-- **Token issuers** accept KYC/accreditation credentials from any EAS-compatible provider rather than being tied to a single identity ecosystem.
-- **Investors** complete KYC once per chain with a trusted provider; no per-investor identity contract is deployed.
+- **Token issuers** select trusted EAS attesters per topic; upstream ERC-3643 also supports multiple trusted claim issuers.
+- **Investors** can reuse attestations across tokens on the same chain when trust and policy requirements match. Path A does not deploy per-investor identity contracts; this does not provide ONCHAINID key management or recovery.
 - **KYC providers** issue attestations on EAS; revoke or re-issue them without touching the token.
 - **Compliance officers** revoke access in real-time by revoking the attestation on EAS; the next `isVerified` returns false and the token blocks further transfers.
 
@@ -20,9 +24,9 @@ By the end of this guide your ERC-3643 security token will verify investor eligi
 
 A fund manager launches a tokenised US Treasury product on Base using ERC-3643. Regulation requires investors to be KYC-verified and accredited. A sanctions screener also attests per-investor.
 
-**Without Shibui:** each investor needs an ONCHAINID contract deployed on Base. Only ONCHAINID-compatible KYC providers can participate. Claim existence is checked on-chain, but the payload (did KYC actually complete? is the investor on a sanctions list?) is not.
+**Default reference flow:** investor wallets are linked to ONCHAINID identities on Base. The registry checks required claims from trusted issuers, whose custom `isClaimValid` logic can validate external credentials. Deployment and identity management depend on the onboarding flow.
 
-**With Shibui:** the KYC provider and sanctions screener each attest the investor under the Investor Eligibility schema on EAS (on Base). The Identity Registry delegates `isVerified` to Shibui. When `token.transfer` calls `isVerified`, Shibui checks payload semantics on-chain: KYC verified, country in allow-list, sanctions clear. Deploying the same token on Arbitrum requires re-attesting on Arbitrum (per-chain).
+**With Shibui Path A and the modified registry:** the KYC provider and sanctions screener each attest the investor under the Investor Eligibility schema on EAS (on Base). The Identity Registry delegates `isVerified` to Shibui. When `token.transfer` calls `isVerified`, Shibui checks payload semantics on-chain: KYC verified, country in allow-list, sanctions clear. Deploying the same token on Arbitrum requires re-attesting on Arbitrum (per-chain).
 
 ## Prerequisites
 
@@ -32,18 +36,19 @@ Before integration, ensure you have:
 2. **Registered schemas**: Run [`script/RegisterSchemas.s.sol`](../script/RegisterSchemas.s.sol); schemas documented in [`schemas/schema-definitions.md`](schemas/schema-definitions.md).
 3. **Deployed Shibui contracts**: see below.
 4. **At least one trusted KYC / compliance provider** attesting under the Investor Eligibility schema.
+5. **For Path A, the modified Identity Registry** from the EEA fork, plus an integration review of recovery and other identity-dependent token flows.
 
 ## Integration Paths
 
-### Path A: Pluggable Verifier (recommended)
+### Path A: Experimental Pluggable Verifier
 
 > **"We're building a new token (or we can upgrade our Identity Registry) and want EAS attestations as our identity layer."**
 
-Integrate `EASClaimVerifier` as the backend the ERC-3643 Identity Registry delegates to. The cleanest way is via the `IIdentityVerifier` extension point proposed upstream in [`ERC-3643/ERC-3643#98`](https://github.com/ERC-3643/ERC-3643/pull/98): the Identity Registry gains one admin call, `setIdentityVerifier(shibuiAddress)`, and after that every `isVerified` delegates to Shibui.
+Integrate `EASClaimVerifier` as the backend the ERC-3643 Identity Registry delegates to. The tested route uses the `IIdentityVerifier` extension point proposed upstream in [`ERC-3643/ERC-3643#98`](https://github.com/ERC-3643/ERC-3643/pull/98): the Identity Registry gains one admin call, `setIdentityVerifier(shibuiAddress)`, and after that every `isVerified` delegates to Shibui. This extension is not merged upstream; it is available on the EEA fork pinned by `lib/ERC-3643`.
 
 **When to use:**
-- New ERC-3643 deployments.
-- Existing deployments whose Identity Registry you can upgrade to the version carrying the extension point.
+- Research and integration testing against the modified registry.
+- Deployments adopting that fork only after reviewing its identity, recovery and compliance assumptions; interface compatibility alone is not proof of conformance.
 
 **Steps:**
 
@@ -60,11 +65,11 @@ Integrate `EASClaimVerifier` as the backend the ERC-3643 Identity Registry deleg
 Use `EASClaimVerifierIdentityWrapper` (under `contracts/compat/`) as an `IIdentity`-compatible wrapper: one wrapper per investor identity. The wrapper presents an ONCHAINID-shaped surface whose `isClaimValid` delegates to `EASClaimVerifier` for the attestation existence check.
 
 **Path B limitations:**
-- No ERC-734 keys. `addKey` / `removeKey` revert. Lost-key recovery uses the ERC-3643 token's `recoveryAddress` flow, not this wrapper.
+- No full ERC-734 key management. `addKey` / `removeKey` revert. The wrapper does not implement recovery; the token's `recoveryAddress` flow depends on identity/key checks and must be validated separately for the chosen deployment.
 - No claim signatures. `getClaim` returns an empty `signature`: the attestation is authenticated by EAS at read time, not by a signature stored on the wrapper.
 - No topic policies inside `isClaimValid`. The wrapper only checks attestation existence + non-revocation + non-expiry; full payload-aware enforcement (Investor Eligibility policy modules) only runs through Path A.
 - O(N × M) gas profile on `getClaim`: scales with trusted-attester count × registered attestations. Fine for low-topic, low-attester deployments; avoid for deep required-topic stacks.
-- Targets EthTrust Security Level 1, not Level 2. New deployments should use Path A.
+- Targets EthTrust Security Level 1, not Level 2. Full Shibui topic-policy evaluation uses Path A with its modified-registry prerequisite.
 
 **When to use:** only when the Identity Registry cannot be modified *and* you accept the caveats above.
 
@@ -205,7 +210,7 @@ verifier.registerAttestation(identityAddress, 1, attestationUID); // Topic 1 (KY
 Verification happens automatically via the Identity Registry when the token calls its compliance hook:
 
 ```solidity
-// Inside the Identity Registry (with the upstream IIdentityVerifier extension point,
+// Inside the modified Identity Registry (with the proposed IIdentityVerifier extension point,
 // ERC-3643/ERC-3643#98), isVerified delegates to Shibui:
 function isVerified(address to) external view returns (bool) {
     if (_identityVerifier != address(0)) {
@@ -369,7 +374,7 @@ bytes32 uid = kycProvider.attestInvestorEligibility(
 );
 ```
 
-Check [`test/integration/ERC3643Token.integration.t.sol`](../test/integration/ERC3643Token.integration.t.sol) for the full end-to-end path against a real ERC-3643 / T-REX stack.
+Check [`test/integration/ERC3643Token.integration.t.sol`](../test/integration/ERC3643Token.integration.t.sol) for the end-to-end path against the EEA-modified ERC-3643 / T-REX stack. These tests do not establish upstream adoption or complete identity/recovery compatibility.
 
 ## Security considerations
 

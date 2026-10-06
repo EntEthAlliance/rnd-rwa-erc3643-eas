@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document compares legacy ONCHAINID capabilities with the current Shibui architecture built on Ethereum Attestation Service (EAS). It focuses on the remaining functional gaps and how the current Shibui runtime addresses them.
+This document compares legacy ONCHAINID capabilities with the current Shibui architecture built on Ethereum Attestation Service (EAS). It focuses on the remaining functional gaps and how the current Shibui runtime addresses them. The ONCHAINID column describes the legacy model, not the v3 EAS adapter now implemented in [T-REX-Network/ONCHAINID](https://github.com/T-REX-Network/ONCHAINID). That adapter retains identities and claims while reading EAS live; it does not adopt Shibui's payload policies. See [integration status](../erc3643-status.md) for the distinction and upstream links.
 
 ## Comparison summary
 

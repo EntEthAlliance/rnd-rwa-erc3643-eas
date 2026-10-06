@@ -10,7 +10,7 @@
 
 ## 1. Overview
 
-Shibui uses Ethereum Attestation Service (EAS) to express investor-eligibility and attester-authorization data for ERC-3643 integrations.
+Shibui uses Ethereum Attestation Service (EAS) to express investor-eligibility and attester-authorization data for experimental ERC-3643 integrations. This is an EEA working draft, not an adopted ERC-3643 specification. The [integration status note](../erc3643-status.md) distinguishes Shibui's tested registry extension from ONCHAINID's separate EAS claim adapter.
 
 The architecture has three layers:
 
