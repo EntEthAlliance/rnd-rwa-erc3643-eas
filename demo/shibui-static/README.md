@@ -22,7 +22,7 @@ only external requests are Google Fonts, the design system's
 
 ## Publishing
 
-On every push to `master` that touches these pages, the
+On every push to `main` that touches these pages, the
 [`pages-sync` workflow](../../.github/workflows/pages-sync.yml) copies them
 to the root of the `gh-pages` branch, which GitHub Pages serves. The demo
 app export living under `demo/` on `gh-pages` is deployed separately and is

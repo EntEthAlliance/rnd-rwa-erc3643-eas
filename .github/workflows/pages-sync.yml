@@ -26,7 +26,7 @@ jobs:
     name: Sync static pages to gh-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Check out master
+      - name: Check out source
         uses: actions/checkout@v4
         with:
           path: source
