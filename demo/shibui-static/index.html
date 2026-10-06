@@ -59,6 +59,10 @@ p { margin: 0 0 18px; }
 .button.secondary { color: var(--green); background: transparent; border-color: var(--line); }
 .metadata { font-size: 13px; color: var(--muted); }
 .metadata span { margin-inline: 7px; }
+.project-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 20px 0 0; font-size: 14px; }
+.integration-status { border-left: 2px solid var(--line); padding-left: 16px; margin: 28px 0; font-size: 14px; color: var(--muted); }
+.integration-status p { margin-bottom: 10px; }
+.integration-status p:last-child { margin-bottom: 0; }
 .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin: 48px 0 0; padding: 28px 0; border-block: 1px solid var(--line); }
 .facts > div { display: flex; flex-direction: column; }
 .facts dt { color: var(--muted); font-size: 14px; }
@@ -184,6 +188,11 @@ footer a { flex-shrink: 0; }
   <p class="hero-description">Shibui is an open-source attestation adapter for ERC-3643 security tokens. This proposed model lets tokens evaluate investor eligibility using Ethereum Attestation Service (EAS) attestations from trusted KYC, AML or accreditation providers.</p>
   <div class="actions"><a class="button primary" href="#sec-03">See how it works <span aria-hidden="true">↓</span></a><a class="button secondary" href="#sec-07">Share your requirements</a></div>
   <p class="metadata">Research artifact <span aria-hidden="true">·</span> v0.4.0, April 2026 <span aria-hidden="true">·</span> Apache-2.0</p>
+  <nav class="project-links" aria-label="Project references">
+   <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/master/docs/schemas/shibui-specification-v0.1.md" target="_blank" rel="noopener noreferrer">Read the Shibui spec ↗</a>
+   <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a>
+   <a href="https://github.com/ERC-3643/ERC-3643/pull/98" target="_blank" rel="noopener noreferrer">ERC-3643 proposal (draft) ↗</a>
+  </nav>
   <dl class="facts"><div><dt>Eligibility topics</dt><dd>8</dd></div><div><dt>Fields in one EAS payload</dt><dd>10</dd></div><div><dt>EAS mainnet networks</dt><dd>11</dd></div></dl>
   <details class="disclosure">
    <summary>How Shibui fits into ERC-3643</summary>
@@ -337,6 +346,10 @@ footer a { flex-shrink: 0; }
 </tbody>
 </table></div>
   <p class="note prose">ERC-3643 does not prescribe numeric topic IDs. This implementation follows an ONCHAINID-style convention commonly used in ERC-3643 deployments. Canonical schema strings live in <code>script/RegisterSchemas.s.sol</code>. Provider examples are reference material, issuer-selected and not endorsed by the EEA.</p>
+  <aside class="integration-status prose" aria-label="ERC-3643 integration status">
+   <p><strong>ERC-3643 integration status</strong> · Checked <time datetime="2026-10-06">October 6, 2026</time></p>
+   <p>Shibui's <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/pull/63" target="_blank" rel="noopener noreferrer">integration and tests</a> are merged in its own repository; the proposed <a href="https://github.com/ERC-3643/ERC-3643/pull/98" target="_blank" rel="noopener noreferrer">registry extension</a> remains an unmerged draft upstream. Following the <a href="https://github.com/ERC-3643/ERC-3643/issues/95" target="_blank" rel="noopener noreferrer">ERC-3643 discussion</a>, ONCHAINID separately <a href="https://github.com/T-REX-Network/ONCHAINID/pull/31" target="_blank" rel="noopener noreferrer">merged an EAS claim adapter</a> that retains its identity and claim model. That adapter does not adopt Shibui's eligibility policies. Shibui remains a research model, not an adopted ERC-3643 standard.</p>
+  </aside>
   <details class="disclosure"><summary>Acronym key</summary><div class="acronyms"><p><strong>KYC</strong>, Know Your Customer</p><p><strong>AML</strong>, Anti-Money Laundering</p><p><strong>PEP</strong>, Politically Exposed Person</p><p><strong>OFAC</strong>, Office of Foreign Assets Control (US Treasury)</p><p><strong>EDD</strong>, Enhanced Due Diligence</p><p><strong>EAS</strong>, Ethereum Attestation Service</p><p><strong>ERC‑3643</strong>, T‑REX permissioned security-token standard</p><p><strong>UID</strong>, Unique Identifier (schema / attestation)</p></div></details>
  </section>
 
