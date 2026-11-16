@@ -14,11 +14,20 @@ KERI (Key Event Receipt Infrastructure) protocol. Three credential types are rel
 | `ECR` | Engagement Context Role | A person is authorized to act in a specific context |
 | `OOR` | Official Organizational Role | A person holds an official role (officer, director) |
 
-**Output:** EAS attestations under a dedicated vLEI schema (Schema-2, separate from the
-`InvestorEligibility` schema used by Shibui's existing 8 policy modules).
+**Output:** EAS attestations under the bridge's own schema (separate from both Shibui
+schemas: `InvestorEligibility`, Schema-1, and `IssuerAuthorization`, Schema-2). It is
+registered on Sepolia as UID `0x0b5f333cdb7e06e0d9f7c5fbd7a151bb0d8afbcde17017390ef73b673f841aa7`
+with an `AttesterResolver` (`0xbCD6D24861d467703fbF3221f526c28A1adF9D4F`) that admits a
+single bridge wallet (`0x8EF2312aB6A316a0CA9Ad90661B6bccE8A7eCdc6`); see
+`contracts/deployments/sepolia.json` in the bridge repo.
 
-**Background monitors** re-check vLEI validity every 4 h and GLEIF LEI renewal every 12 h.
-They automatically revoke or renew EAS attestations as the source credential state changes.
+**Background monitors** re-check vLEI validity every 4 h and the GLEIF LEI record every 12 h.
+Liveness is expressed through native EAS fields, not by re-attesting: every attestation is
+revocable and carries an `expirationTime` equal to the LEI's next renewal date. A revoked
+credential or a terminal LEI status triggers an on-chain revocation; a lapsed LEI simply lets
+the attestation expire; a renewed LEI yields a fresh attestation with the extended expiry.
+`verifiedAt` is written once, at issuance, and is not refreshed afterwards, so consumers
+should read `expirationTime` / `revocationTime` for liveness rather than `verifiedAt`.
 
 ---
 
@@ -29,7 +38,7 @@ GLEIF Root of Trust (GLEIF vLEI Root AID)
   └── Qualified vLEI Issuer (QVI) — GLEIF-authorized credential issuer
         └── Legal Entity vLEI (LE credential, SAID verified by vlei-to-eas)
               └── ECR / OOR vLEI (role credential, chained to LE)
-                    └── EAS attestation (minted by bridge wallet, Schema-2)
+                    └── EAS attestation (minted by bridge wallet, bridge schema)
                           └── VLEIPolicy.validate() → Shibui ERC-3643 enforcement
 ```
 
@@ -38,7 +47,8 @@ At each step:
 2. **QVI → LE credential:** The LE credential's SAID is registered in the GLEIF API.
 3. **LE/ECR/OOR → EAS attestation:** `vlei-to-eas` verifies the KERI key-event log via
    a `vlei-verifier` sidecar and confirms the LEI record in the GLEIF API, then writes an
-   EAS attestation. `vleiSaid != bytes32(0)` signals successful GLEIF confirmation.
+   EAS attestation. An attestation exists only after both checks pass; `vleiSaid` always
+   carries the credential's SAID.
 4. **EAS attestation → Shibui:** `VLEIPolicy.validate()` checks `credType` and the optional staleness bound,
    then returns `true`, allowing the ERC-3643 token transfer to proceed.
 
@@ -64,7 +74,7 @@ instances (one per `credType`) and register both as trusted attesters for Topic 
 
 ---
 
-## vLEI Schema (Schema-2)
+## vLEI Schema (bridge schema)
 
 ABI-encoded fields (in order):
 
@@ -73,13 +83,13 @@ string  lei             — GLEIF 20-character LEI code
 string  legalName       — Legal entity name from GLEIF registry
 string  credType        — "LE" | "ECR" | "OOR"
 string  keriAid         — KERI AID of the credential holder
-bytes32 vleiSaid        — SAID of the vLEI credential (zero = not yet GLEIF-confirmed)
-uint64  verifiedAt      — Unix timestamp of last successful bridge verification
+bytes32 vleiSaid        — SAID of the vLEI credential (32-byte digest of the CESR SAID)
+uint64  verifiedAt      — Unix timestamp of the verification at issuance (not refreshed)
 ```
 
-The schema UID must be registered on Sepolia's `SchemaRegistry` before deploying
-`VLEIPolicy` instances. The registered UID goes into `deployments/sepolia.json`
-under `shibui.vlei.bridgeSchemaUID`.
+The schema is already registered on Sepolia by the bridge (UID above). Do not register a
+second copy: `VLEIPolicy` instances and `EASClaimVerifier.setTopicSchema` must point at the
+live UID, which goes into `deployments/sepolia.json` under `shibui.vlei.bridgeSchemaUID`.
 
 ---
 
@@ -90,20 +100,21 @@ in the vlei-to-eas repo. On the Shibui side, the bridge wallet must also be trus
 via the `IssuerAuthorization` schema (Schema-2 in the existing Shibui deployment).
 
 ```bash
-# Register the bridge wallet as trusted for topics 15 and 16.
-# BRIDGE_WALLET = the vlei-to-eas hot wallet address.
-# SCHEMA_UID    = vLEI schema UID registered in SchemaRegistry.
+# 1. An authorizer attests an IssuerAuthorization (Schema-2) record naming the
+#    bridge wallet as attester for topics 15 and 16 (same flow as for any other
+#    attester; see docs/schemas/schema-definitions.md). Keep its UID as AUTH_UID.
+# BRIDGE_WALLET = 0x8EF2312aB6A316a0CA9Ad90661B6bccE8A7eCdc6 (vlei-to-eas attester)
 
+# 2. Register the bridge wallet as a trusted attester for both topics in one call.
 cast send $EAS_TRUSTED_ISSUERS_ADAPTER \
-  "addTrustedIssuer(address,uint256,bytes32)" \
-  $BRIDGE_WALLET 15 $SCHEMA_UID \
-  --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY
-
-cast send $EAS_TRUSTED_ISSUERS_ADAPTER \
-  "addTrustedIssuer(address,uint256,bytes32)" \
-  $BRIDGE_WALLET 16 $SCHEMA_UID \
-  --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY
+  "addTrustedAttester(address,uint256[],bytes32)" \
+  $BRIDGE_WALLET "[15,16]" $AUTH_UID \
+  --rpc-url $SEPOLIA_RPC --private-key $OPERATOR_KEY
 ```
+
+Per wallet, the bridge (or an identity-proxy agent) then calls
+`EASClaimVerifier.registerAttestation(wallet, 15 or 16, attestationUID)`; the verifier
+checks schema, recipient and attester trust at registration time.
 
 ---
 
@@ -113,12 +124,8 @@ cast send $EAS_TRUSTED_ISSUERS_ADAPTER \
 export FOUNDRY_BIN=/home/mg/.foundry/bin
 export PATH="$FOUNDRY_BIN:$PATH"
 
-# 1. Register the vLEI schema on-chain (run once).
-SCHEMA="string lei,string legalName,string credType,string keriAid,bytes32 vleiSaid,uint64 verifiedAt"
-SCHEMA_UID=$(cast send $SCHEMA_REGISTRY \
-  "register(string,address,bool)" "$SCHEMA" $ATTESTER_RESOLVER true \
-  --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY \
-  | grep "logs" -A5 | ...)   # parse UID from receipt
+# 1. Use the schema the bridge already registered on Sepolia.
+SCHEMA_UID=0x0b5f333cdb7e06e0d9f7c5fbd7a151bb0d8afbcde17017390ef73b673f841aa7
 
 # 2. Deploy VLEILegalEntityPolicy (Topic 15, "LE"). The third argument is the optional
 #    staleness bound in seconds; 0 disables it. Use 0 for the vlei-to-eas bridge: it sets
