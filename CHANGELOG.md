@@ -6,6 +6,10 @@ Breaking changes land under **Changed (breaking)** and require a major or minor 
 
 ## [Unreleased]
 
+### Fixed
+
+- `VLEIPolicy`: the staleness check is now optional. `maxStaleness = 0` disables it and the constructor no longer rejects zero; non-zero values keep their existing semantics. The vlei-to-eas bridge sets `verifiedAt` once at issuance and never re-attests (liveness is carried by the EAS `expirationTime`, pinned to the GLEIF LEI renewal date, and `revocationTime`, both enforced by `EASClaimVerifier` before any policy runs), so the previously recommended 6 h bound made every real bridge attestation fail `isVerified` six hours after issuance. Recommended `maxStaleness` for vlei-to-eas deployments is now 0.
+
 ## [0.4.0]: 2026-04-18
 
 Governance + engineering follow-ups from the structured EEA review (issues #64: #71). No behavioural change to the verifier's hot path; Shibui's runtime semantics are identical to v0.3.0. All changes are to the project's posture: license, directory structure, events, pragma pinning, and CI hygiene: so integrators pinning to v0.3.0 can upgrade without code changes, but will pick up new import paths for the wrapper and new license headers throughout.
