@@ -81,7 +81,7 @@ string  legalName       — Legal entity name from GLEIF registry
 string  credType        — "LE" | "ECR" | "OOR"
 string  keriAid         — KERI AID of the credential holder
 bytes32 vleiSaid        — SAID of the vLEI credential (zero = not yet GLEIF-confirmed)
-uint64  verifiedAt      — Unix timestamp of the bridge verification (never refreshed)
+uint64  verifiedAt, Unix timestamp of the bridge verification (never refreshed)
 ```
 
 The schema UID must be registered on Sepolia's `SchemaRegistry` before deploying
