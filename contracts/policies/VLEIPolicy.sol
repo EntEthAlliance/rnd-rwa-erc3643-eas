@@ -24,9 +24,15 @@ import {ITopicPolicy} from "./ITopicPolicy.sol";
  *      Topic 15 (VLEI_LEGAL_ENTITY) accepts "LE" credentials.
  *      Topic 16 (VLEI_AUTHORIZED_ROLE) accepts "ECR" or "OOR" credentials.
  *
- *      Staleness check: `block.timestamp > verifiedAt + maxStaleness` → false.
- *      The vlei-to-eas background monitor refreshes attestations every 4 h (LE) / 4 h (ECR/OOR)
- *      so a maxStaleness of 6 h (21600 s) provides comfortable headroom.
+ *      Liveness: the OnChainTrust vlei-to-eas bridge never refreshes `verifiedAt`. Liveness
+ *      comes from the EAS `expirationTime` (the LEI renewal date) and EAS revocation, both of
+ *      which EASClaimVerifier already enforces before calling `validate()`. Deploy with
+ *      `maxStaleness = 0` (recommended) to rely on those alone.
+ *
+ *      Optional staleness check: when `maxStaleness > 0`,
+ *      `block.timestamp > verifiedAt + maxStaleness` → false. Use it only with a bridge that
+ *      re-issues attestations within that window. Every re-issue is a new EAS UID that must be
+ *      registered again in every verifier.
  */
 contract VLEIPolicy is ITopicPolicy {
     // ============ Immutable configuration ============
@@ -41,11 +47,11 @@ contract VLEIPolicy is ITopicPolicy {
      * @param topicId_          ERC-3643 claim topic this policy enforces (15 or 16).
      * @param expectedCredType_ The credential type string this policy accepts ("LE", "ECR", "OOR").
      * @param maxStaleness_     Maximum seconds since `verifiedAt` before the attestation is
-     *                          considered stale. Recommended: 21600 (6 h).
+     *                          considered stale. 0 disables the check (recommended for the
+     *                          OnChainTrust bridge, which never refreshes `verifiedAt`).
      */
     constructor(uint256 topicId_, string memory expectedCredType_, uint64 maxStaleness_) {
         require(bytes(expectedCredType_).length > 0, "VLEIPolicy: empty credType");
-        require(maxStaleness_ > 0, "VLEIPolicy: zero staleness");
         _topicId = topicId_;
         _expectedCredType = expectedCredType_;
         _maxStaleness = maxStaleness_;
@@ -72,7 +78,7 @@ contract VLEIPolicy is ITopicPolicy {
      *        1. Non-empty data (guard before decode attempt).
      *        2. ABI-decode of the vlei-to-eas schema — catches corrupt/truncated data.
      *        3. vleiSaid != bytes32(0): GLEIF has confirmed the credential SAID.
-     *        4. block.timestamp <= verifiedAt + maxStaleness: bridge confirmed recently.
+     *        4. If maxStaleness > 0: block.timestamp <= verifiedAt + maxStaleness.
      *        5. credType == expectedCredType: correct vLEI class for this topic.
      */
     function validate(Attestation calldata attestation) external view override returns (bool) {
@@ -104,8 +110,8 @@ contract VLEIPolicy is ITopicPolicy {
         // 1. Credential must have been verified by GLEIF (non-zero SAID).
         if (vleiSaid == bytes32(0)) return false;
 
-        // 2. Attestation must not be stale.
-        if (block.timestamp > uint256(verifiedAt) + uint256(_maxStaleness)) return false;
+        // 2. Optional staleness check (0 = disabled; liveness from EAS expiry/revocation).
+        if (_maxStaleness != 0 && block.timestamp > uint256(verifiedAt) + uint256(_maxStaleness)) return false;
 
         // 3. Credential type must match this policy's expected type.
         if (keccak256(bytes(credType)) != keccak256(bytes(_expectedCredType))) return false;

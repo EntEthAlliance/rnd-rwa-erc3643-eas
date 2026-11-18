@@ -99,7 +99,18 @@ contract VLEIPolicyTest is Test {
     function test_constructor_rejects_bad_config() public {
         vm.expectRevert("VLEIPolicy: empty credType");
         new VLEIPolicy(TOPIC_VLEI_LE, "", MAX_STALENESS);
-        vm.expectRevert("VLEIPolicy: zero staleness");
-        new VLEIPolicy(TOPIC_VLEI_LE, "LE", 0);
+    }
+
+    /// @dev The OnChainTrust bridge never refreshes `verifiedAt`; liveness comes from EAS
+    ///      expiry and revocation. With maxStaleness = 0 a credential verified long ago must
+    ///      still pass, or every valid entity is locked out a few hours after onboarding.
+    function test_zero_staleness_disables_check_for_never_refreshed_bridge() public {
+        VLEIPolicy noStaleness = new VLEIPolicy(TOPIC_VLEI_LE, "LE", 0);
+        vm.warp(block.timestamp + 365 days);
+        bytes memory data = _vleiData("LE", keccak256("said"), uint64(block.timestamp - 300 days));
+        assertTrue(noStaleness.validate(_attestation(data)));
+        // The other checks still apply when staleness is disabled.
+        assertFalse(noStaleness.validate(_attestation(_vleiData("LE", bytes32(0), uint64(block.timestamp)))));
+        assertFalse(noStaleness.validate(_attestation(_vleiData("ECR", keccak256("said"), uint64(block.timestamp)))));
     }
 }

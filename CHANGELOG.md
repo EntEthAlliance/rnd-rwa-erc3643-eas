@@ -6,6 +6,20 @@ Breaking changes land under **Changed (breaking)** and require a major or minor 
 
 ## [Unreleased]
 
+Upstream feedback from the Interlock starter kit (finos-hack/fall-hackathon-2026-beta#12).
+
+### Changed
+
+- **`VLEIPolicy`: `maxStaleness = 0` now disables the `verifiedAt` check** (the constructor used to reject 0). The OnChainTrust vlei-to-eas bridge never refreshes `verifiedAt`, so a non-zero window rejected every valid credential a few hours after issuance. Liveness comes from EAS `expirationTime` and revocation, which the verifier already enforces. `docs/integration/vlei-to-eas.md` now deploys with 0. Existing deployments must redeploy the policy: `maxStaleness` is immutable.
+- **A topic policy that reverts now fails closed** (`isVerified` returns false) instead of reverting the whole call.
+
+### Added
+
+- **`isVerifiedForTopics(user, topics)`** on `EASClaimVerifier` and `EASClaimVerifierUpgradeable`: the same checks as `isVerified` against a caller-supplied topic set, so tokens with different rules can share one verifier.
+- **`getTopicStatuses(user, topics)`**: returns one `TopicStatus` per topic (OK, NotConfigured, PolicyMissing, SchemaNotMapped, NotRegistered, AttestationInvalid, Revoked, Expired, AttesterNotTrusted, PolicyRejected). It never reverts on misconfiguration, so ERC-7943 `canSend`/`canReceive`/`canTransfer` can use it directly. It shares one code path (`_topicStatus`) with `isVerified`, so the reason cannot drift from the boolean answer.
+- **`registerAttestations(identity, topics[], uids[])`**: all-or-nothing batch registration with the same authorization rules as `registerAttestation` (audit C-3).
+- `registerAttestation` is now declared in `IEASClaimVerifier`.
+
 ## [0.4.0]: 2026-04-18
 
 Governance + engineering follow-ups from the structured EEA review (issues #64: #71). No behavioural change to the verifier's hot path; Shibui's runtime semantics are identical to v0.3.0. All changes are to the project's posture: license, directory structure, events, pragma pinning, and CI hygiene: so integrators pinning to v0.3.0 can upgrade without code changes, but will pick up new import paths for the wrapper and new license headers throughout.
