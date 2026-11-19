@@ -189,6 +189,15 @@ contract EASClaimVerifierTopicStatusTest is BridgeHarness {
         assertEq(uint8(s[1]), uint8(IEASClaimVerifier.TopicStatus.NotConfigured));
     }
 
+    /// @dev Setters only reject address(0); a dependency pointed at an address with no code must
+    ///      read as NotConfigured rather than revert the status view.
+    function test_status_dependency_without_code_does_not_revert() public {
+        vm.prank(tokenIssuer);
+        verifier.setIdentityProxy(makeAddr("not-a-proxy"));
+        IEASClaimVerifier.TopicStatus[] memory s = verifier.getTopicStatuses(wallet, _topicsArray(TOPIC_KYC));
+        assertEq(uint8(s[0]), uint8(IEASClaimVerifier.TopicStatus.NotConfigured));
+    }
+
     /// @dev A buggy policy that reverts must deny the investor, not brick every transfer.
     function test_reverting_policy_fails_closed() public {
         _attestAndRegister(kyc, investor, _topicsArray(TOPIC_KYC), _happyPayload(_inOneYear()));

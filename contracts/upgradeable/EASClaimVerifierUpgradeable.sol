@@ -182,8 +182,10 @@ contract EASClaimVerifierUpgradeable is Initializable, AccessControlUpgradeable,
         returns (TopicStatus[] memory statuses)
     {
         statuses = new TopicStatus[](topics.length);
-        bool configured = address(_eas) != address(0) && address(_trustedIssuersAdapter) != address(0)
-            && address(_identityProxy) != address(0);
+        // A dependency set to an address with no code counts as unconfigured: calling it would
+        // revert on the empty return data and break this view's no-revert guarantee.
+        bool configured = address(_eas).code.length > 0 && address(_trustedIssuersAdapter).code.length > 0
+            && address(_identityProxy).code.length > 0;
         address identity = configured ? _identityProxy.getIdentity(userAddress) : address(0);
 
         for (uint256 i = 0; i < topics.length; i++) {

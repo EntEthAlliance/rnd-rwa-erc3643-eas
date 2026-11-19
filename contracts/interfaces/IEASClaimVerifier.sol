@@ -112,8 +112,11 @@ interface IEASClaimVerifier {
     /**
      * @notice Explains verification: one status per topic, computed by the same code path as
      *         `isVerified` / `isVerifiedForTopics`.
-     * @dev Never reverts on misconfiguration: unconfigured dependencies yield `NotConfigured`
-     *      and a missing policy yields `PolicyMissing`. A user is verified for `topics` exactly
+     * @dev Does not revert on misconfiguration: an unset dependency (EAS, trusted-issuers
+     *      adapter, identity proxy) or one set to an address with no code yields `NotConfigured`;
+     *      a missing policy yields `PolicyMissing`; a policy with no code or one that reverts
+     *      yields `PolicyRejected`. It can still revert if a configured dependency contract
+     *      itself reverts. A user is verified for `topics` exactly
      *      when every returned status is `OK`, so ERC-7943 `canSend`/`canReceive`/`canTransfer`
      *      can be built on this without wrapping the call.
      * @param userAddress The wallet address to explain
