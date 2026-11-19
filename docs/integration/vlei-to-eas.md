@@ -39,15 +39,8 @@ At each step:
 3. **LE/ECR/OOR → EAS attestation:** `vlei-to-eas` verifies the KERI key-event log via
    a `vlei-verifier` sidecar and confirms the LEI record in the GLEIF API, then writes an
    EAS attestation. `vleiSaid != bytes32(0)` signals successful GLEIF confirmation.
-4. **EAS attestation → Shibui:** `EASClaimVerifier` checks EAS revocation and
-   `expirationTime` (the LEI renewal date), then `VLEIPolicy.validate()` checks `vleiSaid`
-   and `credType` and returns `true`, allowing the ERC-3643 token transfer to proceed.
-
-**Freshness:** the bridge never refreshes `verifiedAt`. Deploy `VLEIPolicy` with
-`maxStaleness = 0` so liveness comes only from EAS expiry and revocation. A non-zero
-`maxStaleness` rejects every attestation older than that window, so use it only with a
-bridge that re-issues attestations within the window (each re-issue is a new UID that must be
-registered again in every verifier).
+4. **EAS attestation → Shibui:** `VLEIPolicy.validate()` checks `credType` and the optional staleness bound,
+   then returns `true`, allowing the ERC-3643 token transfer to proceed.
 
 **Integration boundary:** `vlei-to-eas` owns all KERI/GLEIF verification logic.
 Shibui only reads the resulting EAS attestation; it has no KERI dependency.
@@ -81,7 +74,7 @@ string  legalName       — Legal entity name from GLEIF registry
 string  credType        — "LE" | "ECR" | "OOR"
 string  keriAid         — KERI AID of the credential holder
 bytes32 vleiSaid        — SAID of the vLEI credential (zero = not yet GLEIF-confirmed)
-uint64  verifiedAt      (Unix timestamp of the bridge verification; never refreshed)
+uint64  verifiedAt      — Unix timestamp of last successful bridge verification
 ```
 
 The schema UID must be registered on Sepolia's `SchemaRegistry` before deploying
@@ -127,12 +120,14 @@ SCHEMA_UID=$(cast send $SCHEMA_REGISTRY \
   --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY \
   | grep "logs" -A5 | ...)   # parse UID from receipt
 
-# 2. Deploy VLEILegalEntityPolicy (Topic 15, "LE", staleness check disabled).
+# 2. Deploy VLEILegalEntityPolicy (Topic 15, "LE"). The third argument is the optional
+#    staleness bound in seconds; 0 disables it. Use 0 for the vlei-to-eas bridge: it sets
+#    verifiedAt once at issuance, and liveness comes from EAS expiration and revocation.
 forge create contracts/policies/VLEIPolicy.sol:VLEIPolicy \
   --constructor-args 15 "LE" 0 \
   --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY
 
-# 3. Deploy VLEIAuthorizedRolePolicy (Topic 16, "ECR", staleness check disabled).
+# 3. Deploy VLEIAuthorizedRolePolicy (Topic 16, "ECR"), same staleness argument.
 forge create contracts/policies/VLEIPolicy.sol:VLEIPolicy \
   --constructor-args 16 "ECR" 0 \
   --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY
