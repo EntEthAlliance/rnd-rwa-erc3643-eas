@@ -5,8 +5,8 @@ This folder is the source of truth for the Shibui public site, published at
 
 ## Pages
 
-- `index.html`: the investor credential example, issuer and provider roles,
-  eight-topic reference, Interlock application and participation links.
+- `index.html`: the ten-field investor credential, an animated walkthrough of its example
+  source records, issuer decisions and the eight-topic reference.
   Uses the shared EEA editorial masthead. The three credential states run
   locally in the browser. The Sepolia demo is a separate application.
 - `identity-solutions-map.html`: the identity solutions reference map,

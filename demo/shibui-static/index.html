@@ -12,7 +12,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Shibui | Investor eligibility for tokenized assets | EEA</title>
-<meta content="See how two issuers can check the same investor credential and reach different decisions. Explore Shibui, an open-source research project from the Enterprise Ethereum Alliance." name="description"/>
+<meta content="Trace the ten fields in a Shibui investor credential from their source records to a signed attestation and two issuer decisions. Explore Shibui, an open-source research project from the Enterprise Ethereum Alliance." name="description"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet"/>
@@ -59,19 +59,8 @@ h3 { font-size: 19px; line-height: 1.28; letter-spacing: -.025em; }
 .primary { display: inline-flex; align-items: center; justify-content: center; gap: 16px; border-radius: 6px; background: var(--green); color: white; text-decoration: none; padding: 11px 17px; font-size: 14px; font-weight: 650; }
 .primary:hover { background: #093e30; text-decoration: none; }
 .textlink { font-size: 14px; font-weight: 650; }
-.example { min-width: 0; padding: clamp(16px, 2.1vw, 30px); background: var(--wash); border: 1px solid #d7e1d5; border-radius: 14px; }
-.example figcaption { margin-bottom: 13px; color: var(--muted); }
-.passport { position: relative; isolation: isolate; overflow: hidden; border-radius: 8px; padding: 18px 21px; color: white; background: #164b3e; }
-.passport::before { content: ""; position: absolute; z-index: -1; inset: 0; background: repeating-radial-gradient(ellipse at 100% -65%, transparent 0 9px, #9bc6a829 10px 11px, transparent 12px 19px); mask-image: linear-gradient(90deg,transparent 38%, black); pointer-events: none; }
-.pass-head, .decision { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.pass-head { margin-bottom: 4px; color: #d5e6d9; }
-#validity { font: 600 11px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .04em; border: 1px solid #9dbcab; border-radius: 3px; padding: 2px 7px; background: #194e40; }
-.passport h2 { color: white; font-size: clamp(27px, 2.4vw, 34px); }
-.pass-fields { display: grid; grid-template-columns: .75fr 1fr 1.3fr; gap: 8px; border-top: 1px solid #82a895; margin-top: 15px; padding-top: 12px; }
-.pass-fields dt { font-size: 11px; color: #cfe5d7; }
-.pass-fields dd { margin-top: 2px; font-size: 14px; font-weight: 570; line-height: 1.35; }
 .decisions { display: grid; gap: 6px; margin-block: 10px 14px; }
-.decision { padding: 11px 13px; background: var(--paper); border: 1px solid #cdd9cd; border-radius: 6px; }
+.decision { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 13px; background: var(--paper); border: 1px solid #cdd9cd; border-radius: 6px; }
 .decision h3 { font-size: 15px; }
 .decision p { margin-top: 2px; font-size: 12px; color: var(--muted); }
 .status { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; padding: 4px 8px; border-radius: 4px; font: 600 11px/1.4 var(--mono); white-space: nowrap; }
@@ -106,9 +95,6 @@ details[open] > summary::after { content: "−"; }
 .checks { margin-block: 8px 12px; }
 .checks div { display: grid; grid-template-columns: minmax(120px,.85fr) 1.3fr; gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
 .checks dt { color: var(--ink); font-weight: 600; }
-.application { background: #eaf0e8; border-left: 4px solid #4d7d63; border-radius: 2px 8px 8px 2px; padding: clamp(22px, 3.5vw, 40px); display: grid; grid-template-columns: .85fr 1.15fr; gap: 14px 34px; align-items: center; }
-.application .kicker { margin-bottom: 8px; }
-.application .textlink { display: inline-block; margin-top: 10px; }
 .bottom { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 8vw, 110px); padding-block: clamp(40px, 5vw, 76px); }
 .resources a { display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); padding: 8px 0; font-size: 14px; text-decoration: none; }
 .resources a:hover { text-decoration: underline; }
@@ -120,7 +106,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   h1 { max-width: 14em; }
   .intro { max-width: 57ch; }
   .roles { gap: 20px; }
-  .ref-grid, .application { grid-template-columns: 1fr; }
+  .ref-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 620px) {
   .shibui .eea-site-bar-inner { display: grid; }
@@ -129,24 +115,103 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .hero { padding-block: 34px; }
   .roles, .bottom { grid-template-columns: 1fr; }
   .roles { margin-top: 20px; }
-  .passport { padding: 15px; }
   .decision { padding: 10px; }
   .decision h3 { font-size: 14px; }
   .checks div { grid-template-columns: 1fr; gap: 2px; }
 }
 @media (max-width: 360px) {
   h1 { font-size: 42px; }
-  .pass-fields { grid-template-columns: 1fr 1fr; }
-  .pass-fields > div:last-child { grid-column: span 2; }
-  .example { padding: 12px; }
 }
 @media print {
   body.shibui { background: white; }
   .eea-site-links, .actions, .switcher, .skip, footer a { display: none; }
   .hero, .section, .bottom { padding-block: 16px; }
-  .example, .roles article, details { break-inside: avoid; }
-  .passport, .status { print-color-adjust: exact; }
+  .trace { display: none; }
 }
+/* One record, with a source trace beside its ten encoded fields. */
+.hero { padding-block: clamp(26px, 3.5vw, 54px); }
+.hero .intro { margin-top: 0; max-width: 49ch; }
+.hero h1 { font-size: clamp(42px, 4.1vw, 64px); max-width: 12em; }
+.workbench { margin-bottom: clamp(38px, 5vw, 72px); border: 1px solid var(--line); border-radius: 12px; overflow: clip; }
+.credential-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 20px clamp(16px, 2.3vw, 30px); color: #fff; background: #164b3e; }
+.credential-head h2 { margin-top: 2px; font-size: 34px; }
+.credential-head .tag { color: #c9e8d1; }
+.credential-head .switch { color: var(--ink); background: var(--paper); }
+.credential-head .switch span { padding-inline: 12px; }
+.bench-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .43fr); grid-template-rows: auto 1fr; gap: 20px clamp(20px, 3vw, 40px); padding: clamp(16px, 2.3vw, 30px); }
+.ledger { grid-area: 1 / 1 / 3 / 2; min-width: 0; }
+.trace { grid-area: 1 / 2; align-self: start; min-width: 0; background: var(--wash); border: 1px solid #cfdbcf; padding: 17px; border-radius: 9px; }
+.trace-head, .outcome-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+#step-count, #validity { font: 600 11px/1.45 var(--mono); color: var(--green); }
+.trace-hint { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.flow { padding-block: 13px; }
+.hop { position: relative; padding-left: 22px; }
+.hop + .hop { padding-top: 18px; }
+.hop:not(:last-child)::before { content: ""; position: absolute; width: 2px; background: #acbfb0; top: 13px; bottom: -24px; left: 4px; }
+.hop::after { content: ""; position: absolute; border-radius: 100%; width: 10px; height: 10px; background: var(--green); left: 0; top: 6px; }
+.hop + .hop::after { top: 24px; }
+.hop .tag { color: var(--muted); font-size: 10px; }
+.hop strong { display: block; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+#trace-field, #trace-value { font-family: var(--mono); font-size: 14px; }
+.hop p, .ledger-intro p, .schema-link { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.hop p { margin-top: 3px; }
+@media (prefers-reduced-motion: no-preference) {
+  .flow.moving .hop::after { animation: feed-dot .65s ease-out both; }
+  .flow.moving .hop:nth-child(2)::after { animation-delay: .24s; }
+  .flow.moving .hop:nth-child(3)::after { animation-delay: .48s; }
+  .flow.moving .hop strong { animation: feed-value .38s ease-out both; }
+  .flow.moving .hop:nth-child(2) strong { animation-delay: .24s; }
+  .flow.moving .hop:nth-child(3) strong { animation-delay: .48s; }
+  @keyframes feed-value { from { opacity: .35; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+  @keyframes feed-dot { from { box-shadow: 0 0 0 0 #659d76; } to { box-shadow: 0 0 0 9px #659d7600; } }
+}
+.playback { display: flex; gap: 6px; padding-top: 7px; }
+.playback button { border: 1px solid #9ab4a1; border-radius: 5px; padding: 7px 10px; min-width: 38px; min-height: 38px; color: var(--ink); background: var(--paper); font: 600 13px/1.4 Inter, system-ui, sans-serif; cursor: pointer; }
+.playback .play { flex: 1; color: #fff; background: var(--green); }
+.playback button:disabled { opacity: .48; cursor: default; }
+.ledger-intro p { margin: 7px 0 16px; max-width: 75ch; }
+.fields { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+.col-field { width: 30%; } .col-source { width: 37%; } .col-value { width: 33%; }
+.fields th, .fields td { padding: 10px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.fields thead { background: var(--wash); color: var(--muted); font-size: 12px; }
+.fields tbody tr { border-bottom: 1px solid var(--line); }
+.fields tr.selected { background: #edf4eb; box-shadow: inset 3px 0 var(--green); }
+.field-name { border: 0; background: transparent; padding: 0; color: var(--green); cursor: pointer; font: 600 13px/1.5 var(--mono); text-align: left; overflow-wrap: anywhere; }
+.field-name:hover:enabled { text-decoration: underline; text-underline-offset: 3px; }
+.field-name:disabled { cursor: default; }
+.fields small { display: block; font-size: 12px; line-height: 1.45; margin-top: 2px; color: var(--muted); font-weight: 400; }
+.fields code { font-size: 13px; }
+.schema-link { margin-top: 12px; }
+.outcomes { grid-area: 2 / 2; min-width: 0; }
+.outcomes .decisions { margin-bottom: 0; }
+.outcomes .decision { flex-wrap: wrap; }
+.outcomes .decision h3 { font-size: 14px; }
+@media (max-width: 820px) {
+  .bench-body { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .trace, .ledger, .outcomes { grid-area: auto; }
+  .flow { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+  .hop, .hop + .hop { padding: 0 0 0 13px; }
+  .hop::after, .hop + .hop::after { width: 7px; height: 7px; top: 8px; }
+  .hop:not(:last-child)::before { display: none; }
+  .outcomes .decisions { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 620px) {
+  .hero { gap: 14px; }
+  .credential-head .switcher { width: 100%; }
+  .flow { display: block; }
+  .hop + .hop { padding-top: 9px; }
+  .hop + .hop::after { top: 17px; }
+  .fields, .fields tbody, .fields tr, .fields th, .fields td { display: block; }
+  .fields thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .fields tbody tr { padding: 9px 10px; }
+  .fields tbody th, .fields tbody td { padding: 2px 0; }
+  .fields th small { display: inline; margin-left: 8px; }
+  .fields .origin::before, .fields .cell-value::before { font-size: 12px; color: var(--muted); }
+  .fields .origin::before { content: "Source · "; }
+  .fields .cell-value::before { content: "Value · "; }
+  .outcomes .decisions { grid-template-columns: 1fr; }
+}
+@media print { .bench-body { display: block; } .trace, .switcher { display: none; } .fields tr { break-inside: avoid; } .outcomes { margin-top: 12px; } }
 </style>
 </head>
 <body class="eea-editorial shibui">
@@ -160,8 +225,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <a class="wordmark" href="#sec-01" aria-current="page">Shibui</a>
     </div>
     <nav class="eea-site-links" aria-label="Shibui">
+      <a href="#sec-06">Explore the credential</a>
       <a href="#sec-03">How it works</a>
-      <a href="#sec-06">Credential fields</a>
       <a href="#sec-08">Resources</a>
     </nav>
   </div>
@@ -171,70 +236,131 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <div>
       <p class="kicker">Shibui · EEA research</p>
       <h1 id="hero-title">Can this investor hold <em>this token?</em></h1>
-      <p class="intro">Shibui lets issuers reuse a signed investor credential on Ethereum. Each issuer chooses whose checks to trust and which rules its token enforces.</p>
+    </div>
+    <div>
+      <p class="intro">Shibui checks a signed investor credential against an issuer's rules. Two issuers can trust the same provider and reach different decisions about the same investor.</p>
       <div class="actions">
-        <a class="primary" href="#sec-02">Try the example <span aria-hidden="true">↓</span></a>
+        <a class="primary" href="#sec-06">Explore the ten fields <span aria-hidden="true">↓</span></a>
         <a class="textlink" href="demo/attester.html">Open the Sepolia demo</a>
       </div>
     </div>
-    <figure class="example" id="sec-02" tabindex="-1" aria-labelledby="example-title">
-      <figcaption class="tag" id="example-title">Illustrative example · Two issuer policies</figcaption>
-      <div class="passport">
-        <div class="pass-head"><span class="tag">Investor credential</span><span id="validity">Active</span></div>
-        <h2>John Doe</h2>
-        <dl class="pass-fields">
-          <div><dt>Identity</dt><dd>Verified</dd></div>
-          <div><dt>Country</dt><dd>United States</dd></div>
-          <div><dt>Accreditation</dt><dd id="accreditation">Unconfirmed</dd></div>
-        </dl>
-      </div>
-      <div class="decisions">
-        <div class="decision"><div><h3>Bond</h3><p>Verified identity + allowed country</p></div><span id="bond" class="status" data-pass="true">Eligible</span></div>
-        <div class="decision"><div><h3>Private credit note</h3><p>Verified identity + accreditation</p></div><span id="note" class="status" data-pass="false">Ineligible</span></div>
-      </div>
+  </section>
+  <section id="sec-06" class="workbench" aria-labelledby="investor-title">
+    <header class="credential-head" id="sec-02">
+      <div><p class="tag">Illustrative investor credential</p><h2 id="investor-title">John Doe</h2></div>
       <fieldset class="switcher" hidden>
-        <legend>Change the credential</legend>
+        <legend>Choose a record</legend>
         <div class="switch">
           <label><input class="sr" type="radio" name="scenario" value="initial" checked><span>Initial check</span></label>
           <label><input class="sr" type="radio" name="scenario" value="accredited"><span>Accredited</span></label>
           <label><input class="sr" type="radio" name="scenario" value="revoked"><span>Revoked</span></label>
         </div>
       </fieldset>
-      <p id="announcement" class="explanation" role="status" aria-atomic="true">John qualifies for the bond. The credit note requires proof of accreditation.</p>
-    </figure>
+    </header>
+    <div class="bench-body">
+      <div class="trace" id="sec-04" tabindex="-1" hidden>
+        <div class="trace-head"><h3>Follow a field</h3><span id="step-count">1 of 10</span></div>
+        <p class="trace-hint">Select a field or play the sequence through signing.</p>
+        <div class="flow">
+          <div class="hop"><span class="tag" id="label-source">Source system</span><strong id="trace-source"></strong><p id="trace-detail"></p></div>
+          <div class="hop"><span class="tag" id="label-field">Provider maps to</span><strong id="trace-field"></strong></div>
+          <div class="hop"><span class="tag" id="label-value">Credential value</span><strong id="trace-value"></strong><p id="trace-meaning"></p></div>
+        </div>
+        <div class="playback" aria-label="Field animation controls" role="group">
+          <button type="button" class="play" id="play">Play flow</button>
+          <button type="button" id="prev" aria-label="Previous step">←</button>
+          <button type="button" id="next" aria-label="Next step">→</button>
+        </div>
+        <p class="sr" role="status" id="step-announcement"></p>
+      </div>
+      <div class="ledger">
+        <div class="ledger-intro"><h3>The ten credential fields</h3>
+          <p>These illustrative source records feed one trusted provider. It maps their values to the fields below and signs the credential on Ethereum.</p></div>
+        <table class="fields">
+          <caption class="sr">John Doe's ten Investor Eligibility fields in schema order, their example sources and encoded values</caption>
+          <colgroup><col class="col-field"><col class="col-source"><col class="col-value"></colgroup>
+          <thead><tr><th scope="col">Shibui field</th><th scope="col">Origin system</th><th scope="col">Stored value</th></tr></thead>
+          <tbody>
+              <tr id="field-identity">
+                <th scope="row"><button type="button" class="field-name" disabled>identity</button><small>address</small></th>
+                <td class="origin"><span>Identity registry</span><small>Looks up the identity address linked to John&#x27;s wallet.</small></td>
+                <td class="cell-value"><code>0x00000000000000000000000000000000000004d2</code><small>Investor identity address</small></td>
+              </tr>
+              <tr id="field-kycStatus">
+                <th scope="row"><button type="button" class="field-name" disabled>kycStatus</button><small>uint8</small></th>
+                <td class="origin"><span>Client onboarding</span><small>An analyst verified the identity documents.</small></td>
+                <td class="cell-value"><code>1</code><small>Verified</small></td>
+              </tr>
+              <tr id="field-amlStatus">
+                <th scope="row"><button type="button" class="field-name" disabled>amlStatus</button><small>uint8</small></th>
+                <td class="origin"><span>AML case system</span><small>A reviewer cleared the anti-money laundering case.</small></td>
+                <td class="cell-value"><code>0</code><small>Clear</small></td>
+              </tr>
+              <tr id="field-sanctionsStatus">
+                <th scope="row"><button type="button" class="field-name" disabled>sanctionsStatus</button><small>uint8</small></th>
+                <td class="origin"><span>Sanctions screening</span><small>A reviewer cleared the sanctions screening result.</small></td>
+                <td class="cell-value"><code>0</code><small>Clear</small></td>
+              </tr>
+              <tr id="field-sourceOfFundsStatus">
+                <th scope="row"><button type="button" class="field-name" disabled>sourceOfFundsStatus</button><small>uint8</small></th>
+                <td class="origin"><span>Due diligence file</span><small>The reviewer verified where the funds came from.</small></td>
+                <td class="cell-value"><code>1</code><small>Verified</small></td>
+              </tr>
+              <tr id="field-accreditationType">
+                <th scope="row"><button type="button" class="field-name" disabled>accreditationType</button><small>uint8</small></th>
+                <td class="origin"><span>Investor classification</span><small>The review file contains no confirmed accreditation.</small></td>
+                <td class="cell-value"><code>0</code><small>None</small></td>
+              </tr>
+              <tr id="field-countryCode">
+                <th scope="row"><button type="button" class="field-name" disabled>countryCode</button><small>uint16</small></th>
+                <td class="origin"><span>Client onboarding</span><small>The onboarding file lists the United States as the country of residence.</small></td>
+                <td class="cell-value"><code>840</code><small>United States</small></td>
+              </tr>
+              <tr id="field-expirationTimestamp">
+                <th scope="row"><button type="button" class="field-name" disabled>expirationTimestamp</button><small>uint64</small></th>
+                <td class="origin"><span>Credential issuance system</span><small>The provider sets a deadline under its review policy.</small></td>
+                <td class="cell-value"><code>1830297600</code><small>1 Jan 2028 at 00:00 UTC</small></td>
+              </tr>
+              <tr id="field-evidenceHash">
+                <th scope="row"><button type="button" class="field-name" disabled>evidenceHash</button><small>bytes32</small></th>
+                <td class="origin"><span>Evidence archive</span><small>The provider computes a Keccak-256 hash of the example dossier.</small></td>
+                <td class="cell-value"><code>0xd1c1353d424ee01562dee596aa00a90608a151d143c72d95cbdad3f71dcd4ea9</code><small>Fingerprint of the onboarding dossier</small></td>
+              </tr>
+              <tr id="field-verificationMethod">
+                <th scope="row"><button type="button" class="field-name" disabled>verificationMethod</button><small>uint8</small></th>
+                <td class="origin"><span>Verification case file</span><small>The file records how the provider performed the verification.</small></td>
+                <td class="cell-value"><code>2</code><small>Third-party verification</small></td>
+              </tr>
+          </tbody>
+        </table>
+        <p class="schema-link">On-chain fields are visible. Supporting documents stay with the provider. <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/script/RegisterSchemas.s.sol">View the registered schema</a></p>
+      </div>
+      <div class="outcomes">
+        <div class="outcome-heading"><h3>Issuer decisions</h3><span id="validity">Active record</span></div>
+        <div class="decisions">
+          <div class="decision"><div><h3>Bond</h3><p>Verified identity + allowed country</p></div><span id="bond" class="status" data-pass="true">Eligible</span></div>
+          <div class="decision"><div><h3>Private credit note</h3><p>Verified identity + accreditation</p></div><span id="note" class="status" data-pass="false">Ineligible</span></div>
+        </div>
+        <p id="announcement" class="explanation" role="status" aria-atomic="true">John qualifies for the bond. The credit note requires proof of accreditation.</p>
+      </div>
+    </div>
   </section>
   <section class="section" id="sec-03" aria-labelledby="roles-title">
     <h2 id="roles-title">Who signs, who decides, who enforces?</h2>
-    <p class="section-intro">The passport describes the investor. In this example we call the investor John. On-chain, the credential identifies John by an identity address linked to a wallet.</p>
+    <p class="section-intro">The passport describes the investor. The on-chain credential identifies John by an identity address linked to his wallet.</p>
     <div class="roles">
       <article><h3>The provider signs the facts</h3><p>A verification provider checks the investor's file and issues a signed record through the Ethereum Attestation Service (EAS). The supporting documents stay off-chain.</p></article>
       <article><h3>The issuer sets the rules</h3><p>The issuer selects required checks and trusted providers for each one. In the example, both issuers accept John's identity check. Only the private credit issuer asks for accreditation.</p></article>
       <article><h3>Shibui checks. The token enforces.</h3><p>At transfer time, Shibui checks whether current, trusted records satisfy every required rule. The token uses that answer alongside its own controls, such as a freeze or a holding limit.</p></article>
     </div>
   </section>
-  <section class="section ref-grid" id="sec-06" aria-labelledby="topics-title">
+  <section class="section ref-grid" aria-labelledby="topics-title">
     <div>
-      <p class="kicker">Credential reference</p>
-      <h2 id="topics-title">Ten fields. Eight eligibility checks.</h2>
-      <p class="bodycopy">A field stores a fact. A check applies a rule to that fact. For example, accreditation, professional status and institutional status all use the same investor classification.</p>
+      <p class="kicker">Issuer policy</p>
+      <h2 id="topics-title">How ten fields support eight eligibility checks</h2>
+      <p class="bodycopy">Six fields describe eligibility. One of them, <code>accreditationType</code>, supports three checks. The other four fields identify the investor and record the expiry, evidence hash and verification method.</p>
     </div>
     <div>
-      <details>
-        <summary>What's in the ten fields?</summary>
-        <div class="detail-body">
-          <p>Six fields hold eligibility facts. A provider can draw on these records when it signs.</p>
-          <dl class="checks">
-            <div><dt><code>kycStatus</code></dt><dd>Identity verification result from client onboarding.</dd></div>
-            <div><dt><code>amlStatus</code></dt><dd>Anti-money laundering (AML) review outcome from a monitoring case.</dd></div>
-            <div><dt><code>sanctionsStatus</code></dt><dd>Screening outcome from a sanctions review.</dd></div>
-            <div><dt><code>sourceOfFundsStatus</code></dt><dd>Origin-of-funds check from a due diligence file.</dd></div>
-            <div><dt><code>accreditationType</code></dt><dd>Investor classification supported, for example, by a professional letter.</dd></div>
-            <div><dt><code>countryCode</code></dt><dd>Numeric country code from the onboarding record. United States is 840.</dd></div>
-          </dl>
-          <p>Four fields describe the record itself. <code>identity</code> identifies the investor, <code>expirationTimestamp</code> sets the time limit, <code>evidenceHash</code> fingerprints the supporting file, and <code>verificationMethod</code> records how the provider checked it.</p>
-          <p>On-chain fields are visible. The underlying file stays off-chain.</p>
-          <p><a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/docs/schemas/schema-definitions.md">See the schema and permitted values</a></p></div>
-      </details>
       <details>
         <summary>Which eight checks can an issuer require?</summary>
         <div class="detail-body">
@@ -264,11 +390,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       </details>
     </div>
   </section>
-  <section class="application" id="sec-04" aria-labelledby="interlock-title">
-    <div><p class="kicker">Shibui in use</p><h2 id="interlock-title">Where Interlock fits</h2></div>
-    <div><p>Shibui answers the eligibility question. Interlock uses that answer when it processes a FINOS Common Domain Model trade instruction to exchange fund shares for deposit tokens. In the demo, both legs settle in one Ethereum transaction, or neither moves.</p>
-      <a class="textlink" href="https://finos-hack.github.io/fall-hackathon-2026-beta/">See the Interlock trade demo <span aria-hidden="true">&#8599;&#xfe0e;</span></a></div>
-  </section>
   <div class="bottom">
     <section id="sec-07" aria-labelledby="interest-title">
       <h2 id="interest-title">What would your institution need to trust?</h2>
@@ -286,29 +407,118 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </main>
 <footer><div class="wrap"><span>Shibui · Enterprise Ethereum Alliance · Apache-2.0</span><a href="#sec-01">Back to top ↑</a></div></footer>
 <script>
-// These three local illustrations share one trusted provider and one investor.
+const rows = Array.from(document.querySelectorAll('.fields tbody tr'));
 const controls = document.querySelector('.switcher');
-const bond = document.getElementById('bond');
-const note = document.getElementById('note');
-function showScenario(state) {
-  const active = state !== 'revoked';
-  const accredited = state !== 'initial';
-  document.getElementById('validity').textContent = active ? 'Active' : 'Revoked';
-  document.getElementById('accreditation').textContent = accredited ? 'Confirmed' : 'Unconfirmed';
-  for (const [result, eligible] of [[bond, active], [note, active && accredited]]) {
-    result.dataset.pass = String(eligible);
-    result.textContent = eligible ? 'Eligible' : 'Ineligible';
+const trace = document.querySelector('.trace');
+const play = document.getElementById('play');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+const stepAnnouncement = document.getElementById('step-announcement');
+let step = 0;
+let timer = null;
+let activeRecord = true;
+
+// A new classification letter changes the evidence and method in the newly signed record.
+const accreditedFields = {
+  accreditationType: ['2', 'Accredited', 'The provider accepted a professional accreditation letter.'],
+  verificationMethod: ['3', 'Professional letter', 'The case records a professional letter as the verification method.'],
+  evidenceHash: ['0x8558312166a8603d16c989194529251f57ca92e87caa7f8f81baf18f771b3e98', 'Fingerprint of the updated dossier', 'The provider hashes the updated dossier containing the accreditation evidence.']
+};
+function fieldCells(row) {
+  return [row.querySelector('.cell-value code'), row.querySelector('.cell-value small'), row.querySelector('.origin small')];
+}
+const initialFields = {};
+for (const field of Object.keys(accreditedFields)) {
+  initialFields[field] = fieldCells(document.getElementById('field-' + field)).map(cell => cell.textContent);
+}
+
+function pause() {
+  window.clearInterval(timer);
+  timer = null;
+  play.textContent = step === rows.length ? 'Replay flow' : 'Play flow';
+}
+
+function renderStep(index, animate = true) {
+  step = index;
+  const row = rows[step];
+  const finished = step === rows.length;
+  const labels = finished ? ['Signed by', 'Recorded through', 'Result'] : ['Source system', 'Provider maps to', 'Credential value'];
+  const contents = finished
+    ? ['Trusted verification provider', 'The provider signs all ten fields for the investor identity.', 'Ethereum Attestation Service', activeRecord ? 'Active attestation' : 'Revoked attestation', activeRecord ? 'Shibui can now check this record against issuer rules.' : 'Revocation is recorded separately. The ten signed values stay intact.']
+    : [row.querySelector('.origin span').textContent, row.querySelector('.origin small').textContent, row.querySelector('.field-name').textContent, row.querySelector('.cell-value code').textContent, row.querySelector('.cell-value small').textContent];
+  ['label-source', 'label-field', 'label-value'].forEach((id, i) => document.getElementById(id).textContent = labels[i]);
+  ['trace-source', 'trace-detail', 'trace-field', 'trace-value', 'trace-meaning'].forEach((id, i) => document.getElementById(id).textContent = contents[i]);
+  rows.forEach(item => {
+    item.classList.toggle('selected', item === row);
+    item.querySelector('button').setAttribute('aria-pressed', String(item === row));
+  });
+  document.getElementById('step-count').textContent = finished ? 'Signing' : (step + 1) + ' of ' + rows.length;
+  prev.disabled = step === 0;
+  next.disabled = finished;
+  if (finished) pause();
+  if (animate) {
+    const flow = document.querySelector('.flow');
+    flow.classList.remove('moving');
+    void flow.offsetWidth;
+    flow.classList.add('moving');
+    stepAnnouncement.textContent = finished ? contents[3] : 'Field ' + (step + 1) + '. ' + contents[0] + ' supplies ' + contents[2] + '. ' + contents[4] + '.';
   }
+}
+
+function selectStep(index) {
+  pause();
+  renderStep(index);
+  if (index < rows.length) play.textContent = 'Play flow';
+}
+for (const [i, row] of rows.entries()) {
+  const button = row.querySelector('button');
+  button.disabled = false;
+  button.addEventListener('click', () => {
+    selectStep(i);
+    if (trace.getBoundingClientRect().bottom < 0) {
+      trace.focus({preventScroll: true});
+      trace.scrollIntoView({block: 'start'});
+    }
+  });
+}
+play.addEventListener('click', () => {
+  if (timer !== null) { pause(); return; }
+  renderStep(step === rows.length ? 0 : step);
+  play.textContent = 'Pause flow';
+  timer = window.setInterval(() => renderStep(step + 1), 2600);
+});
+prev.addEventListener('click', () => selectStep(step - 1));
+next.addEventListener('click', () => selectStep(step + 1));
+document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+
+function showScenario(state, changing = true) {
+  activeRecord = state !== 'revoked';
+  const fields = state === 'initial' ? initialFields : accreditedFields;
+  for (const [name, values] of Object.entries(fields)) {
+    fieldCells(document.getElementById('field-' + name)).forEach((cell, i) => cell.textContent = values[i]);
+  }
+  const value = name => document.querySelector('#field-' + name + ' .cell-value code').textContent;
+  const verified = activeRecord && value('kycStatus') === '1';
+  const decisions = {bond: verified && value('countryCode') === '840', note: verified && value('accreditationType') === '2'};
+  for (const [id, eligible] of Object.entries(decisions)) {
+    const badge = document.getElementById(id);
+    badge.dataset.pass = String(eligible);
+    badge.textContent = eligible ? 'Eligible' : 'Ineligible';
+  }
+  document.getElementById('validity').textContent = activeRecord ? 'Active record' : 'Revoked record';
   const explanations = {
     initial: 'John qualifies for the bond. The credit note requires proof of accreditation.',
-    accredited: 'The provider confirmed accreditation. John now qualifies for both assets.',
-    revoked: 'The provider revoked the only credential in this example. Both eligibility checks now fail.'
+    accredited: 'The provider signed a new record with the accreditation letter. John now qualifies for both assets.',
+    revoked: 'The provider revoked the accredited record. Both checks fail even though its ten stored values are unchanged.'
   };
   document.getElementById('announcement').textContent = explanations[state];
+  if (changing) selectStep(activeRecord ? rows.indexOf(document.getElementById('field-accreditationType')) : rows.length);
 }
 controls.addEventListener('change', event => showScenario(event.target.value));
 controls.hidden = false;
-showScenario(controls.querySelector(':checked').value);
+trace.hidden = false;
+showScenario(controls.querySelector(':checked').value, false);
+renderStep(0, false);
 </script>
 </body>
 </html>
