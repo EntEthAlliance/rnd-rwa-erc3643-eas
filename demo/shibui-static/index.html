@@ -181,7 +181,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <figcaption class="tag" id="example-title">Illustrative example · Two issuer policies</figcaption>
       <div class="passport">
         <div class="pass-head"><span class="tag">Investor credential</span><span id="validity">Active</span></div>
-        <h2>Alex Chen</h2>
+        <h2>John Doe</h2>
         <dl class="pass-fields">
           <div><dt>Identity</dt><dd>Verified</dd></div>
           <div><dt>Country</dt><dd>United States</dd></div>
@@ -200,15 +200,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <label><input class="sr" type="radio" name="scenario" value="revoked"><span>Revoked</span></label>
         </div>
       </fieldset>
-      <p id="announcement" class="explanation" role="status" aria-atomic="true">Alex qualifies for the bond. The credit note requires proof of accreditation.</p>
+      <p id="announcement" class="explanation" role="status" aria-atomic="true">John qualifies for the bond. The credit note requires proof of accreditation.</p>
     </figure>
   </section>
   <section class="section" id="sec-03" aria-labelledby="roles-title">
     <h2 id="roles-title">Who signs, who decides, who enforces?</h2>
-    <p class="section-intro">The passport describes the investor. In this example we call the investor Alex. On-chain, the credential identifies Alex by an identity address linked to a wallet.</p>
+    <p class="section-intro">The passport describes the investor. In this example we call the investor John. On-chain, the credential identifies John by an identity address linked to a wallet.</p>
     <div class="roles">
       <article><h3>The provider signs the facts</h3><p>A verification provider checks the investor's file and issues a signed record through the Ethereum Attestation Service (EAS). The supporting documents stay off-chain.</p></article>
-      <article><h3>The issuer sets the rules</h3><p>The issuer selects required checks and trusted providers for each one. In the example, both issuers accept Alex's identity check. Only the private credit issuer asks for accreditation.</p></article>
+      <article><h3>The issuer sets the rules</h3><p>The issuer selects required checks and trusted providers for each one. In the example, both issuers accept John's identity check. Only the private credit issuer asks for accreditation.</p></article>
       <article><h3>Shibui checks. The token enforces.</h3><p>At transfer time, Shibui checks whether current, trusted records satisfy every required rule. The token uses that answer alongside its own controls, such as a freeze or a holding limit.</p></article>
     </div>
   </section>
@@ -300,8 +300,8 @@ function showScenario(state) {
     result.textContent = eligible ? 'Eligible' : 'Ineligible';
   }
   const explanations = {
-    initial: 'Alex qualifies for the bond. The credit note requires proof of accreditation.',
-    accredited: 'The provider confirmed accreditation. Alex now qualifies for both assets.',
+    initial: 'John qualifies for the bond. The credit note requires proof of accreditation.',
+    accredited: 'The provider confirmed accreditation. John now qualifies for both assets.',
     revoked: 'The provider revoked the only credential in this example. Both eligibility checks now fail.'
   };
   document.getElementById('announcement').textContent = explanations[state];
