@@ -5,13 +5,10 @@ This folder is the source of truth for the Shibui public site, published at
 
 ## Pages
 
-- `index.html`: the Shibui main page: the eligibility-interoperability
-  problem, the approach, the claim-topic reference, and a call to signal
-  interest. Built on the hosted
-  [EEA editorial family](https://entethalliance.github.io/eea-design-system/editorial.css),
-  with a local bridge mapping the page's legacy `--eea-*` names onto the
-  `--eea-ed-*` tokens that stylesheet declares. Adds the editorial site bar,
-  a sticky section nav with scroll spy, and print styles.
+- `index.html`: the investor credential example, issuer and provider roles,
+  eight-topic reference, Interlock application and participation links.
+  Uses the shared EEA editorial masthead. The three credential states run
+  locally in the browser. The Sepolia demo is a separate application.
 - `identity-solutions-map.html`: the identity solutions reference map,
   token-bridged onto the same design system. Must stay a sibling of
   `index.html` so the relative link resolves.
