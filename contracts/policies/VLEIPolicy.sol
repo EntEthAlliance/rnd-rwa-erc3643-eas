@@ -18,15 +18,19 @@ import {ITopicPolicy} from "./ITopicPolicy.sol";
  *        string  credType        — "LE" | "ECR" | "OOR"
  *        string  keriAid         — KERI AID of the credential holder
  *        bytes32 vleiSaid        — SAID of the vLEI credential (zero = not yet GLEIF-verified)
- *        uint64  verifiedAt      — unix timestamp when the bridge last confirmed validity
+ *        uint64  verifiedAt      — unix timestamp of the bridge's verification at issuance (set once)
  *
  *      A policy instance is bound to one credential type (e.g. "LE") and one topic ID.
  *      Topic 15 (VLEI_LEGAL_ENTITY) accepts "LE" credentials.
  *      Topic 16 (VLEI_AUTHORIZED_ROLE) accepts "ECR" or "OOR" credentials.
  *
- *      Staleness check: `block.timestamp > verifiedAt + maxStaleness` → false.
- *      The vlei-to-eas background monitor refreshes attestations every 4 h (LE) / 4 h (ECR/OOR)
- *      so a maxStaleness of 6 h (21600 s) provides comfortable headroom.
+ *      Staleness check (optional): when `maxStaleness` is non-zero,
+ *      `block.timestamp > verifiedAt + maxStaleness` → false. The vlei-to-eas bridge sets
+ *      `verifiedAt` once, at issuance, and never re-attests. Liveness is expressed through the
+ *      EAS `expirationTime` (pinned to the GLEIF LEI renewal date) and `revocationTime`, both
+ *      of which `EASClaimVerifier._verifyTopic` already enforces before calling any policy.
+ *      `maxStaleness` is therefore only an extra bound on top of that; 0 disables it.
+ *      Recommended for vlei-to-eas attestations: 0.
  */
 contract VLEIPolicy is ITopicPolicy {
     // ============ Immutable configuration ============
@@ -40,12 +44,13 @@ contract VLEIPolicy is ITopicPolicy {
     /**
      * @param topicId_          ERC-3643 claim topic this policy enforces (15 or 16).
      * @param expectedCredType_ The credential type string this policy accepts ("LE", "ECR", "OOR").
-     * @param maxStaleness_     Maximum seconds since `verifiedAt` before the attestation is
-     *                          considered stale. Recommended: 21600 (6 h).
+     * @param maxStaleness_     Optional upper bound, in seconds, on `block.timestamp - verifiedAt`.
+     *                          0 disables the check. Recommended for vlei-to-eas: 0, because the
+     *                          bridge never refreshes `verifiedAt`; EAS expiration/revocation
+     *                          (enforced by the verifier core) carry the liveness signal.
      */
     constructor(uint256 topicId_, string memory expectedCredType_, uint64 maxStaleness_) {
         require(bytes(expectedCredType_).length > 0, "VLEIPolicy: empty credType");
-        require(maxStaleness_ > 0, "VLEIPolicy: zero staleness");
         _topicId = topicId_;
         _expectedCredType = expectedCredType_;
         _maxStaleness = maxStaleness_;
@@ -72,7 +77,7 @@ contract VLEIPolicy is ITopicPolicy {
      *        1. Non-empty data (guard before decode attempt).
      *        2. ABI-decode of the vlei-to-eas schema — catches corrupt/truncated data.
      *        3. vleiSaid != bytes32(0): GLEIF has confirmed the credential SAID.
-     *        4. block.timestamp <= verifiedAt + maxStaleness: bridge confirmed recently.
+     *        4. Only if maxStaleness != 0: block.timestamp <= verifiedAt + maxStaleness.
      *        5. credType == expectedCredType: correct vLEI class for this topic.
      */
     function validate(Attestation calldata attestation) external view override returns (bool) {
@@ -104,8 +109,11 @@ contract VLEIPolicy is ITopicPolicy {
         // 1. Credential must have been verified by GLEIF (non-zero SAID).
         if (vleiSaid == bytes32(0)) return false;
 
-        // 2. Attestation must not be stale.
-        if (block.timestamp > uint256(verifiedAt) + uint256(_maxStaleness)) return false;
+        // 2. Optional staleness bound (0 = disabled). EAS expiration and revocation are
+        //    enforced by the verifier core before this policy is reached.
+        if (_maxStaleness != 0 && block.timestamp > uint256(verifiedAt) + uint256(_maxStaleness)) {
+            return false;
+        }
 
         // 3. Credential type must match this policy's expected type.
         if (keccak256(bytes(credType)) != keccak256(bytes(_expectedCredType))) return false;

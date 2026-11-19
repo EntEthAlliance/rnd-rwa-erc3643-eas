@@ -39,7 +39,7 @@ At each step:
 3. **LE/ECR/OOR → EAS attestation:** `vlei-to-eas` verifies the KERI key-event log via
    a `vlei-verifier` sidecar and confirms the LEI record in the GLEIF API, then writes an
    EAS attestation. `vleiSaid != bytes32(0)` signals successful GLEIF confirmation.
-4. **EAS attestation → Shibui:** `VLEIPolicy.validate()` checks staleness and `credType`,
+4. **EAS attestation → Shibui:** `VLEIPolicy.validate()` checks `credType` and the optional staleness bound,
    then returns `true`, allowing the ERC-3643 token transfer to proceed.
 
 **Integration boundary:** `vlei-to-eas` owns all KERI/GLEIF verification logic.
@@ -120,14 +120,16 @@ SCHEMA_UID=$(cast send $SCHEMA_REGISTRY \
   --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY \
   | grep "logs" -A5 | ...)   # parse UID from receipt
 
-# 2. Deploy VLEILegalEntityPolicy (Topic 15, "LE", 6 h staleness).
+# 2. Deploy VLEILegalEntityPolicy (Topic 15, "LE"). The third argument is the optional
+#    staleness bound in seconds; 0 disables it. Use 0 for the vlei-to-eas bridge: it sets
+#    verifiedAt once at issuance, and liveness comes from EAS expiration and revocation.
 forge create contracts/policies/VLEIPolicy.sol:VLEIPolicy \
-  --constructor-args 15 "LE" 21600 \
+  --constructor-args 15 "LE" 0 \
   --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY
 
-# 3. Deploy VLEIAuthorizedRolePolicy (Topic 16, "ECR", 6 h staleness).
+# 3. Deploy VLEIAuthorizedRolePolicy (Topic 16, "ECR"), same staleness argument.
 forge create contracts/policies/VLEIPolicy.sol:VLEIPolicy \
-  --constructor-args 16 "ECR" 21600 \
+  --constructor-args 16 "ECR" 0 \
   --rpc-url $SEPOLIA_RPC --private-key $DEPLOYER_KEY
 
 # 4. Register both policies in EASClaimVerifier.

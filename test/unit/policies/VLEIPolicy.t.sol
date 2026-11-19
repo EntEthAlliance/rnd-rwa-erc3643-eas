@@ -14,7 +14,7 @@ import {VLEIPolicy} from "../../../contracts/policies/VLEIPolicy.sol";
  */
 contract VLEIPolicyTest is Test {
     uint256 constant TOPIC_VLEI_LE = 15;
-    uint64 constant MAX_STALENESS = 21600; // 6 h, per policy natspec
+    uint64 constant MAX_STALENESS = 21600; // 6 h; exercises the optional bound (0 disables it)
 
     VLEIPolicy internal policy;
 
@@ -99,7 +99,35 @@ contract VLEIPolicyTest is Test {
     function test_constructor_rejects_bad_config() public {
         vm.expectRevert("VLEIPolicy: empty credType");
         new VLEIPolicy(TOPIC_VLEI_LE, "", MAX_STALENESS);
-        vm.expectRevert("VLEIPolicy: zero staleness");
-        new VLEIPolicy(TOPIC_VLEI_LE, "LE", 0);
+    }
+
+    // ---- maxStaleness = 0: staleness check disabled ----
+    //
+    // The vlei-to-eas bridge sets verifiedAt once at issuance and never re-attests;
+    // liveness comes from the EAS expirationTime/revocationTime, which the verifier
+    // core checks before calling the policy. A zero bound must therefore be accepted
+    // and must skip only the staleness gate, leaving the other checks intact.
+
+    function test_constructor_accepts_zero_staleness() public {
+        VLEIPolicy noStaleness = new VLEIPolicy(TOPIC_VLEI_LE, "LE", 0);
+        assertEq(noStaleness.topicId(), TOPIC_VLEI_LE);
+    }
+
+    function test_zero_staleness_accepts_old_verified_at() public {
+        VLEIPolicy noStaleness = new VLEIPolicy(TOPIC_VLEI_LE, "LE", 0);
+        bytes memory data = _vleiData("LE", keccak256("said"), uint64(block.timestamp - 400 days));
+        assertTrue(noStaleness.validate(_attestation(data)));
+    }
+
+    function test_zero_staleness_still_rejects_zero_said() public {
+        VLEIPolicy noStaleness = new VLEIPolicy(TOPIC_VLEI_LE, "LE", 0);
+        bytes memory data = _vleiData("LE", bytes32(0), uint64(block.timestamp - 400 days));
+        assertFalse(noStaleness.validate(_attestation(data)));
+    }
+
+    function test_zero_staleness_still_rejects_wrong_cred_type() public {
+        VLEIPolicy noStaleness = new VLEIPolicy(TOPIC_VLEI_LE, "LE", 0);
+        bytes memory data = _vleiData("ECR", keccak256("said"), uint64(block.timestamp - 400 days));
+        assertFalse(noStaleness.validate(_attestation(data)));
     }
 }
