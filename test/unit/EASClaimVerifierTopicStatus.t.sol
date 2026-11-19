@@ -24,6 +24,21 @@ contract RevertingPolicy is ITopicPolicy {
     }
 }
 
+/// @dev Returns a 32-byte word that is not a valid bool.
+contract NonBoolPolicy {
+    fallback() external {
+        assembly {
+            mstore(0, 2)
+            return(0, 32)
+        }
+    }
+}
+
+/// @dev Has code but returns no data for any call.
+contract SilentPolicy {
+    fallback() external {}
+}
+
 /**
  * @title EASClaimVerifierTopicStatusTest
  * @notice Per-token topic sets, the per-topic status view, batch registration and the
@@ -220,6 +235,20 @@ contract EASClaimVerifierTopicStatusTest is BridgeHarness {
 
         assertFalse(verifier.isVerified(wallet));
         _assertStatus(TOPIC_KYC, IEASClaimVerifier.TopicStatus.PolicyRejected);
+    }
+
+    /// @dev try/catch decodes the return before the catch can see it, so a policy returning a
+    ///      non-bool or nothing used to revert the "never revert" view. Both must deny instead.
+    function test_policy_with_malformed_return_fails_closed() public {
+        _attestAndRegister(kyc, investor, _topicsArray(TOPIC_KYC), _happyPayload(_inOneYear()));
+        _setRequiredTopics(_topicsArray(TOPIC_KYC));
+        address[2] memory bad = [address(new NonBoolPolicy()), address(new SilentPolicy())];
+        for (uint256 i = 0; i < bad.length; i++) {
+            vm.prank(tokenIssuer);
+            verifier.setTopicPolicy(TOPIC_KYC, bad[i]);
+            assertFalse(verifier.isVerified(wallet));
+            _assertStatus(TOPIC_KYC, IEASClaimVerifier.TopicStatus.PolicyRejected);
+        }
     }
 
     // ============ Point 4: batch registration ============

@@ -21,7 +21,7 @@ interface IEASClaimVerifier {
      */
     enum TopicStatus {
         OK, //                   topic satisfied
-        NotConfigured, //        verifier has no EAS, trusted-issuers adapter or identity proxy
+        NotConfigured, //        EAS, trusted-issuers adapter or identity proxy unset or without code
         PolicyMissing, //        no policy bound to the topic (isVerified reverts here)
         SchemaNotMapped, //      no schema bound to the topic
         NotRegistered, //        no attestation registered by any trusted attester
@@ -29,7 +29,7 @@ interface IEASClaimVerifier {
         Revoked, //              attestation revoked in EAS
         Expired, //              EAS expirationTime has passed
         AttesterNotTrusted, //   attester no longer trusted for the topic
-        PolicyRejected //        topic policy rejected (or reverted on) the payload
+        PolicyRejected //        policy rejected the payload, reverted, has no code or returned malformed data
     }
 
     // ============ Events ============
@@ -114,11 +114,13 @@ interface IEASClaimVerifier {
      *         `isVerified` / `isVerifiedForTopics`.
      * @dev Does not revert on misconfiguration: an unset dependency (EAS, trusted-issuers
      *      adapter, identity proxy) or one set to an address with no code yields `NotConfigured`;
-     *      a missing policy yields `PolicyMissing`; a policy with no code or one that reverts
-     *      yields `PolicyRejected`. It can still revert if a configured dependency contract
-     *      itself reverts. A user is verified for `topics` exactly
-     *      when every returned status is `OK`, so ERC-7943 `canSend`/`canReceive`/`canTransfer`
-     *      can be built on this without wrapping the call.
+     *      a missing policy yields `PolicyMissing`; a policy that reverts, has no code or returns
+     *      malformed data yields `PolicyRejected`. It can still revert if a configured dependency
+     *      contract itself reverts. For a non-empty `topics`, a user is verified exactly when every
+     *      returned status is `OK`, so ERC-7943 `canSend`/`canReceive`/`canTransfer` can be built
+     *      on this without wrapping the call. An empty `topics` returns an empty array; callers
+     *      must not treat that as verified on its own (`isVerifiedForTopics` reverts first when
+     *      the verifier is unconfigured).
      * @param userAddress The wallet address to explain
      * @param topics The claim topics to evaluate (e.g. the registry's `getClaimTopics()`)
      * @return statuses `statuses[i]` is the outcome for `topics[i]`

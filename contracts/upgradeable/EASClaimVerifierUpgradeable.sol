@@ -276,15 +276,11 @@ contract EASClaimVerifierUpgradeable is Initializable, AccessControlUpgradeable,
         // Attester may have been de-trusted since registration:
         if (!_trustedIssuersAdapter.isAttesterTrusted(att.attester, claimTopic)) return TopicStatus.AttesterNotTrusted;
 
-        // A policy address with no code would make the call below revert outside the catch
-        // (empty return data cannot be decoded), so fail closed before calling it.
-        if (address(policy).code.length == 0) return TopicStatus.PolicyRejected;
-
-        // Policies must never revert; if one does, fail closed instead of bubbling the revert.
-        try policy.validate(att) returns (bool ok) {
-            return ok ? TopicStatus.OK : TopicStatus.PolicyRejected;
-        } catch {
-            return TopicStatus.PolicyRejected;
-        }
+        // Policies must never revert. A low-level call fails closed on everything a misbehaving
+        // policy can do: revert, no code (empty return), short return, or a non-bool value.
+        // try/catch would not catch the last three, because its return decoding reverts.
+        (bool success, bytes memory ret) = address(policy).staticcall(abi.encodeCall(ITopicPolicy.validate, (att)));
+        if (!success || ret.length < 32) return TopicStatus.PolicyRejected;
+        return abi.decode(ret, (uint256)) == 1 ? TopicStatus.OK : TopicStatus.PolicyRejected;
     }
 }
