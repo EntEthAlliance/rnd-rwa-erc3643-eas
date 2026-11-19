@@ -12,7 +12,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Shibui | Investor eligibility for tokenized assets | EEA</title>
-<meta content="Trace the ten fields in a Shibui investor credential from their source records to a signed attestation and two issuer decisions. Explore Shibui, an open-source research project from the Enterprise Ethereum Alliance." name="description"/>
+<meta content="Explore a ten-field investor passport and see how a bond issuer and a private credit issuer apply their own entry rules. Explore Shibui, an open-source research project from the Enterprise Ethereum Alliance." name="description"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet"/>
@@ -209,7 +209,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .fields tbody th, .fields tbody td { padding: 2px 0; }
   .fields th small { display: inline; margin-left: 8px; }
   .fields .origin::before, .fields .cell-value::before { font-size: 12px; color: var(--muted); }
-  .fields .origin::before { content: "Source · "; }
+  .fields .origin::before { content: "Possible source · "; }
   .fields .cell-value::before { content: "Value · "; }
   .outcomes .decisions { grid-template-columns: 1fr; }
 }
@@ -222,6 +222,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .count-map { list-style: none; padding: 0; margin: 16px 0 0; }
 .count-map li { margin-top: 12px; color: var(--muted); }
 .count-map strong { color: var(--ink); }
+.fields .source-record { font-weight: 550; }
+.trace-system { display: block; color: var(--muted); font-size: 12px; }
 .fields .origin a { text-decoration-color: #98afa1; }
 .fields .origin a:hover { text-decoration-color: currentColor; }
 .encoded-control { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 13px; cursor: pointer; color: var(--muted); }
@@ -255,7 +257,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <a class="wordmark" href="#sec-01" aria-current="page">Shibui</a>
     </div>
     <nav class="eea-site-links" aria-label="Shibui">
-      <a href="#sec-06">Explore the credential</a>
+      <a href="#sec-06">Explore the passport</a>
       <a href="#sec-03">How it works</a>
       <a href="#sec-08">Resources</a>
     </nav>
@@ -268,7 +270,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <h1 id="hero-title">Can this investor hold <em>this token?</em></h1>
     </div>
     <div>
-      <p class="intro">Shibui checks a signed investor credential against an issuer's rules. Two issuers can trust the same provider and reach different decisions about the same investor.</p>
+      <p class="intro">In Shibui, an investor passport is a signed record with ten fields. Like countries reading the same passport at a border, each token issuer decides which checks an investor must pass.</p>
       <div class="actions">
         <a class="primary" href="#sec-06">Explore the ten fields <span aria-hidden="true">↓</span></a>
         <a class="textlink" href="demo/attester.html">Open the Sepolia demo</a>
@@ -277,9 +279,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   </section>
   <section id="sec-06" class="workbench" aria-labelledby="investor-title">
     <header class="credential-head" id="sec-02">
-      <div><p class="tag">Illustrative investor credential</p><h2 id="investor-title">John Doe</h2></div>
+      <div><p class="tag">Example investor passport</p><h2 id="investor-title">John Doe</h2></div>
       <fieldset class="switcher" hidden>
-        <legend>Choose a record</legend>
+        <legend>Passport state</legend>
         <div class="switch">
           <label><input class="sr" type="radio" name="scenario" value="initial" checked><span>Initial check</span></label>
           <label><input class="sr" type="radio" name="scenario" value="accredited"><span>Accredited</span></label>
@@ -288,17 +290,17 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       </fieldset>
     </header>
     <div class="concepts">
-      <div><h3>10 fields on the credential</h3><p>The provider records a fact in each field. John's <code>countryCode</code> is <strong>840</strong>, the United States.</p></div>
-      <div><h3>8 checks an issuer can choose</h3><p>Shibui calls each kind of check a <strong>topic</strong>. The bond issuer asks whether John's country is on its allowed list.</p></div>
+      <div><h3>What John's passport says</h3><p>A provider signs ten fields about John and his verification. One field records his country of residence as <strong>United States</strong>.</p></div>
+      <div><h3>What the issuer asks</h3><p>The bond issuer checks whether it accepts that country. The private credit issuer also asks for accreditation. Each chooses its own checks.</p><a class="textlink" href="#issuer-checks">How six fields support eight checks</a></div>
     </div>
     <div class="bench-body">
       <div class="trace" id="sec-04" tabindex="-1" hidden>
         <div class="trace-head"><h3>Follow a field</h3><span id="step-count">1 of 10</span></div>
         <p class="trace-hint">Select a field or play the sequence through signing.</p>
         <div class="flow">
-          <div class="hop"><span class="tag" id="label-source">Source system</span><strong id="trace-source"></strong><p id="trace-detail"></p></div>
-          <div class="hop"><span class="tag" id="label-field">Provider maps to</span><strong id="trace-field"></strong></div>
-          <div class="hop"><span class="tag" id="label-value">Credential value</span><strong id="trace-value"></strong><p id="trace-meaning"></p></div>
+          <div class="hop"><span class="tag" id="label-source">Possible source record</span><strong id="trace-source"></strong><span id="trace-system" class="trace-system"></span><p id="trace-detail"></p></div>
+          <div class="hop"><span class="tag" id="label-field">Passport field</span><strong id="trace-field"></strong></div>
+          <div class="hop"><span class="tag" id="label-value">Recorded value</span><strong id="trace-value"></strong><p id="trace-meaning"></p></div>
         </div>
         <p id="trace-use" class="trace-use"></p>
         <div class="playback" aria-label="Field animation controls" role="group">
@@ -309,62 +311,62 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <p class="sr" role="status" id="step-announcement"></p>
       </div>
       <div class="ledger">
-        <div class="ledger-intro"><h3>The ten credential fields</h3>
-          <p>The provider signs the answers. Each issuer decides which providers it trusts for each check. The product links are illustrative examples, without EEA endorsement or live integrations.</p></div>
+        <div class="ledger-intro"><h3>The ten passport fields</h3>
+          <p>For each field, see one record the provider could use and one system that could supply it. These products are examples only. The EEA endorses no vendor.</p></div>
         <label class="encoded-control"><input type="checkbox" id="show-encoded"> Show encoded values</label>
         <table class="fields">
           <caption class="sr">John Doe's ten Investor Eligibility fields in schema order, their example sources and encoded values</caption>
           <colgroup><col class="col-field"><col class="col-source"><col class="col-value"></colgroup>
-          <thead><tr><th scope="col">Shibui field</th><th scope="col">Example source</th><th scope="col">Recorded value</th></tr></thead>
+          <thead><tr><th scope="col">Passport field</th><th scope="col">Where it could come from</th><th scope="col">Recorded value</th></tr></thead>
           <tbody>
               <tr id="field-identity" data-use="Links the record to John. Applies across all checks.">
                 <th scope="row"><button type="button" class="field-name" disabled>identity</button><small>address</small></th>
-                <td class="origin"><a href="https://docs.onchainid.com/docs/developers/contracts/factory/"><span>ONCHAINID Factory</span></a><small>Wallet-to-identity mapping. Shibui uses its own identity proxy in the demo.</small></td>
+                <td class="origin"><strong class="source-record">Wallet-to-identity registry entry</strong><small class="system-example">For example, <a href="https://docs.onchainid.com/docs/developers/contracts/factory/">ONCHAINID Factory</a></small><span class="source-action" hidden>Wallet-to-identity mapping. Shibui uses its own identity proxy in the demo.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true"></span><span class="meaning">Identity ending in 04d2</span></span><code>0x00000000000000000000000000000000000004d2</code></td>
               </tr>
               <tr id="field-kycStatus" data-use="Identity check · Has the provider verified John?">
                 <th scope="row"><button type="button" class="field-name" disabled>kycStatus</button><small>uint8</small></th>
-                <td class="origin"><a href="https://support.identity.entrust.com/s/article/Document-Verification-Identity-Document-Check"><span>Entrust Identity Verification</span></a><small>The provider reviews the identity document check.</small></td>
+                <td class="origin"><strong class="source-record">Identity document verification report</strong><small class="system-example">For example, <a href="https://support.identity.entrust.com/s/article/Document-Verification-Identity-Document-Check">Entrust Identity Verification</a></small><span class="source-action" hidden>The provider reviews the identity document check.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="pass"><span class="value-symbol" aria-hidden="true">✓</span><span class="meaning">Verified</span></span><code>1</code></td>
               </tr>
               <tr id="field-amlStatus" data-use="AML check · Has the provider cleared the case?">
                 <th scope="row"><button type="button" class="field-name" disabled>amlStatus</button><small>uint8</small></th>
-                <td class="origin"><a href="https://www.niceactimize.com/enterprise-risk-case-management"><span>NICE Actimize</span></a><small>The reviewer closes the AML investigation with a clear result.</small></td>
+                <td class="origin"><strong class="source-record">Reviewed AML case</strong><small class="system-example">For example, <a href="https://www.niceactimize.com/enterprise-risk-case-management">NICE Actimize</a></small><span class="source-action" hidden>The reviewer closes the AML investigation with a clear result.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="pass"><span class="value-symbol" aria-hidden="true">✓</span><span class="meaning">Clear</span></span><code>0</code></td>
               </tr>
               <tr id="field-sanctionsStatus" data-use="Sanctions check · Has the provider cleared the screening?">
                 <th scope="row"><button type="button" class="field-name" disabled>sanctionsStatus</button><small>uint8</small></th>
-                <td class="origin"><a href="https://www.lseg.com/en/risk-intelligence/screening-solutions/world-check-kyc-screening"><span>LSEG World-Check</span></a><small>The provider reviews screening matches and records its conclusion.</small></td>
+                <td class="origin"><strong class="source-record">Reviewed sanctions screening results</strong><small class="system-example">For example, <a href="https://www.lseg.com/en/risk-intelligence/screening-solutions/world-check-kyc-screening">LSEG World-Check</a></small><span class="source-action" hidden>The provider reviews screening matches and records its conclusion.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="pass"><span class="value-symbol" aria-hidden="true">✓</span><span class="meaning">Clear</span></span><code>0</code></td>
               </tr>
               <tr id="field-sourceOfFundsStatus" data-use="Source-of-funds check · Has the provider verified the origin?">
                 <th scope="row"><button type="button" class="field-name" disabled>sourceOfFundsStatus</button><small>uint8</small></th>
-                <td class="origin"><a href="https://docs.sumsub.com/docs/alldocs-verification"><span>Sumsub AllDocs</span></a><small>The reviewer accepts payslips as evidence of the source of funds.</small></td>
+                <td class="origin"><strong class="source-record">Payslips in a due diligence file</strong><small class="system-example">For example, <a href="https://docs.sumsub.com/docs/alldocs-verification">Sumsub AllDocs</a></small><span class="source-action" hidden>The reviewer accepts payslips as evidence of the source of funds.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="pass"><span class="value-symbol" aria-hidden="true">✓</span><span class="meaning">Verified</span></span><code>1</code></td>
               </tr>
-              <tr id="field-accreditationType" data-use="Three topics read this field: accreditation, professional investor and institutional investor.">
+              <tr id="field-accreditationType" data-use="Three checks use this field: accreditation, professional status and institutional status.">
                 <th scope="row"><button type="button" class="field-name" disabled>accreditationType</button><small>uint8</small></th>
-                <td class="origin"><a href="https://www.verifyinvestor.com/accredited-investor-verification"><span>VerifyInvestor.com</span></a><small>The provider has no accreditation letter on file.</small></td>
+                <td class="origin"><strong class="source-record">Accreditation review file</strong><small class="system-example">For example, <a href="https://www.verifyinvestor.com/accredited-investor-verification">VerifyInvestor.com</a></small><span class="source-action" hidden>The provider has no accreditation letter on file.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="pending"><span class="value-symbol" aria-hidden="true">○</span><span class="meaning">Unconfirmed</span></span><code>0</code></td>
               </tr>
               <tr id="field-countryCode" data-use="Country check · Does the recorded country pass this issuer&#x27;s country rule?">
                 <th scope="row"><button type="button" class="field-name" disabled>countryCode</button><small>uint16</small></th>
-                <td class="origin"><a href="https://www.fenergo.com/client-lifecycle-management"><span>Fenergo CLM</span></a><small>The provider takes the residence country from John&#x27;s onboarding file.</small></td>
+                <td class="origin"><strong class="source-record">Residence in the onboarding file</strong><small class="system-example">For example, <a href="https://www.fenergo.com/client-lifecycle-management">Fenergo CLM</a></small><span class="source-action" hidden>The provider takes the residence country from John&#x27;s onboarding file.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true"></span><span class="meaning">United States</span></span><code>840</code></td>
               </tr>
-              <tr id="field-expirationTimestamp" data-use="Shared expiry test · An expired record cannot satisfy any topic.">
+              <tr id="field-expirationTimestamp" data-use="Expiry applies to every check. The passport must still be current.">
                 <th scope="row"><button type="button" class="field-name" disabled>expirationTimestamp</button><small>uint64</small></th>
-                <td class="origin"><a href="https://www.fenergo.com/faqs/know-your-customer"><span>Fenergo CLM</span></a><small>The provider uses its next review date to set this credential deadline.</small></td>
+                <td class="origin"><strong class="source-record">Provider's review schedule</strong><small class="system-example">For example, <a href="https://www.fenergo.com/faqs/know-your-customer">Fenergo CLM</a></small><span class="source-action" hidden>The provider uses its review policy to set the passport expiry.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true"></span><span class="meaning">1 Jan 2028 · 00:00 UTC</span></span><code>1830297600</code></td>
               </tr>
               <tr id="field-evidenceHash" data-use="Audit evidence · Identifies the dossier used by the signer.">
                 <th scope="row"><button type="button" class="field-name" disabled>evidenceHash</button><small>bytes32</small></th>
-                <td class="origin"><a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html"><span>Amazon S3 Object Lock</span></a><small>The archive holds the dossier. The provider hashes its contents with Keccak-256.</small></td>
+                <td class="origin"><strong class="source-record">Archived evidence file</strong><small class="system-example">For example, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html">Amazon S3 Object Lock</a></small><span class="source-action" hidden>The archive holds the dossier. The provider hashes its contents with Keccak-256.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true">#</span><span class="meaning">Onboarding dossier</span></span><code>0xd1c1353d424ee01562dee596aa00a90608a151d143c72d95cbdad3f71dcd4ea9</code></td>
               </tr>
               <tr id="field-verificationMethod" data-use="Audit evidence · Records how the provider reached its conclusion.">
                 <th scope="row"><button type="button" class="field-name" disabled>verificationMethod</button><small>uint8</small></th>
-                <td class="origin"><a href="https://www.fenergo.com/client-lifecycle-management"><span>Fenergo CLM</span></a><small>The provider codes the review method from its case file.</small></td>
+                <td class="origin"><strong class="source-record">Verification case notes</strong><small class="system-example">For example, <a href="https://www.fenergo.com/client-lifecycle-management">Fenergo CLM</a></small><span class="source-action" hidden>The provider codes the review method from its case file.</span></td>
                 <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true"></span><span class="meaning">Third-party verification</span></span><code>2</code></td>
               </tr>
           </tbody>
@@ -372,7 +374,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <p class="schema-link">On-chain fields are visible. Supporting documents stay with the provider. <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/script/RegisterSchemas.s.sol">View the registered schema</a></p>
       </div>
       <div class="outcomes">
-        <div class="outcome-heading"><h3>Issuer decisions</h3><span id="validity">Active record</span></div>
+        <div class="outcome-heading"><h3>Issuer decisions</h3><span id="validity">Active passport</span></div>
         <div class="decisions">
           <div class="decision"><div><h3>Bond</h3><p>Verified identity + allowed country</p></div><span id="bond" class="status" data-pass="true">Eligible</span></div>
           <div class="decision"><div><h3>Private credit note</h3><p>Verified identity + accreditation</p></div><span id="note" class="status" data-pass="false">Ineligible</span></div>
@@ -383,21 +385,21 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   </section>
   <section class="section" id="sec-03" aria-labelledby="roles-title">
     <h2 id="roles-title">Who signs, who decides, who enforces?</h2>
-    <p class="section-intro">The passport describes the investor. The on-chain credential identifies John by an identity address linked to his wallet.</p>
+    <p class="section-intro">John's passport is linked to his wallet through an identity address. Each issuer decides which providers it trusts to sign the information it needs.</p>
     <div class="roles">
       <article><h3>The provider signs the facts</h3><p>A screening tool such as World-Check supplies potential matches. The verification provider reviews them and signs its conclusion through the Ethereum Attestation Service (EAS). The supporting file stays off-chain.</p></article>
       <article><h3>The issuer sets the rules</h3><p>The issuer selects required checks and trusted providers for each one. In the example, both issuers accept John's identity check. Only the private credit issuer asks for accreditation.</p></article>
       <article><h3>Shibui checks. The token enforces.</h3><p>At transfer time, Shibui checks whether current, trusted records satisfy every required rule. The token uses that answer alongside its own controls, such as a freeze or a holding limit.</p></article>
     </div>
   </section>
-  <section class="section ref-grid" aria-labelledby="topics-title">
+  <section class="section ref-grid" id="issuer-checks" aria-labelledby="topics-title">
     <div>
       <p class="kicker">Issuer policy</p>
-      <h2 id="topics-title">Why ten fields give eight checks</h2>
+      <h2 id="topics-title">Which passport fields do issuers check?</h2>
       <ul class="count-map">
-        <li><strong>Five fields feed one check each.</strong> Identity verification, AML, sanctions, source of funds and country.</li>
-        <li><strong>One field feeds three checks.</strong> The credit note accepts code 2 (accredited). That same code passes Shibui's professional test. The institutional test requires code 4.</li>
-        <li><strong>Four fields describe the record.</strong> Identity address, expiry, evidence hash and verification method. Expiry affects every check.</li>
+        <li><strong>Five fields each answer one question.</strong> Identity verification, AML, sanctions, source of funds and country.</li>
+        <li><strong>One field can answer three questions.</strong> An issuer can use John's investor classification to check accreditation, professional status or institutional status.</li>
+        <li><strong>Four fields identify and document the passport.</strong> They give its investor identity, expiry, evidence hash and verification method. Every check respects expiry.</li>
       </ul>
     </div>
     <div>
@@ -414,18 +416,18 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <div><dt>13 · Sanctions</dt><dd>The provider recorded a clear sanctions result.</dd></div>
             <div><dt>14 · Source of funds</dt><dd>The provider verified the source of funds.</dd></div>
           </dl>
-          <p>Five single-field checks plus three classification checks give eight topics. The numbers are Shibui topic IDs. Issuers must map these model categories to their own eligibility requirements.</p>
+          <p>In the technical specification, each kind of check has a &quot;claim topic&quot; ID. Those IDs are shown here for reference.</p>
         </div>
       </details>
       <details>
-        <summary>Who can sign or withdraw a credential?</summary>
-        <div class="detail-body"><p>An approved authorizer identifies which topics a provider may attest to. The issuer's operator adds that provider to its trusted list. An onboarding file, screening result or accreditation letter can supply the evidence for a provider's decision.</p>
+        <summary>Who can sign or revoke a passport?</summary>
+        <div class="detail-body"><p>An approved authorizer specifies which checks a provider may sign for. The issuer's operator adds that provider to its trusted list. An onboarding file, screening result or accreditation letter can supply the evidence for a provider's decision.</p>
         <p>A provider can issue a new attestation when facts change or revoke an earlier one. Expiry or revocation removes that record from future checks. Another current record from a trusted provider may still satisfy the rule. Existing holdings stay in place.</p></div>
       </details>
       <details id="sec-05">
         <summary>What runs on Ethereum today?</summary>
         <div class="detail-body"><p>The EEA reference implementation links a wallet to its investor identity. Its modified ERC-3643 registry calls <code>isVerified(wallet)</code> and receives a yes or no. Each verifier uses its configured rules and registered attestations on that chain.</p>
-        <p>An issuer on another chain needs a local attestation and its own trust configuration. The project documents a separate vLEI integration for evidence about organizations and authorized representatives.</p>
+        <p>Using the passport on another chain requires a local attestation and issuer trust settings there. The project documents a separate vLEI integration for organizational identity and authorized representatives.</p>
         <p><a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/docs/erc3643-status.md">ERC-3643 integration status</a> · <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/docs/integration/vlei-to-eas.md">vLEI integration notes</a></p></div>
       </details>
     </div>
@@ -465,7 +467,7 @@ const accreditedFields = {
   evidenceHash: ['0x8558312166a8603d16c989194529251f57ca92e87caa7f8f81baf18f771b3e98', 'Updated dossier', 'The provider hashes the updated dossier containing the accreditation evidence.']
 };
 function fieldCells(row) {
-  return [row.querySelector('.cell-value code'), row.querySelector('.meaning'), row.querySelector('.origin small')];
+  return [row.querySelector('.cell-value code'), row.querySelector('.meaning'), row.querySelector('.source-action')];
 }
 const initialFields = {};
 for (const field of Object.keys(accreditedFields)) {
@@ -482,12 +484,15 @@ function renderStep(index, animate = true) {
   step = index;
   const row = rows[step];
   const finished = step === rows.length;
-  const labels = finished ? ['Signed by', 'Recorded through', 'Result'] : ['Source system', 'Provider maps to', 'Credential value'];
+  const labels = finished ? ['Signed by', 'Recorded through', 'Result'] : ['Possible source record', 'Passport field', 'Recorded value'];
   const contents = finished
-    ? ['Trusted verification provider', 'The provider signs all ten fields for the investor identity.', 'Ethereum Attestation Service', activeRecord ? 'Active attestation' : 'Revoked attestation', activeRecord ? 'Shibui can now check this record against issuer rules.' : 'Revocation is recorded separately. The ten signed values stay intact.']
-    : [row.querySelector('.origin span').textContent, row.querySelector('.origin small').textContent, row.querySelector('.field-name').textContent, row.querySelector('.cell-value code').textContent, row.querySelector('.meaning').textContent];
+    ? ['Trusted verification provider', 'The provider signs all ten fields for the investor identity.', 'Ethereum Attestation Service', activeRecord ? 'Active passport' : 'Revoked passport', activeRecord ? 'Shibui can now check this record against issuer rules.' : 'Revocation is recorded separately. The ten signed values stay intact.']
+    : [row.querySelector('.source-record').textContent, row.querySelector('.source-action').textContent, row.querySelector('.field-name').textContent, row.querySelector('.cell-value code').textContent, row.querySelector('.meaning').textContent];
   ['label-source', 'label-field', 'label-value'].forEach((id, i) => document.getElementById(id).textContent = labels[i]);
   ['trace-source', 'trace-detail', 'trace-field', 'trace-value', 'trace-meaning'].forEach((id, i) => document.getElementById(id).textContent = contents[i]);
+  const system = document.getElementById('trace-system');
+  system.hidden = finished;
+  system.textContent = row ? row.querySelector('.system-example').textContent : '';
   const usage = document.getElementById('trace-use');
   usage.hidden = finished;
   usage.textContent = row ? row.dataset.use : '';
@@ -502,7 +507,7 @@ function renderStep(index, animate = true) {
       usage.textContent = 'Three checks on code ' + classification + ': ' +
         results.map(([passes, topic]) => topic + (passes ? ' passes' : ' fails')).join(', ') + '.';
     } else {
-      usage.textContent = 'This record was revoked. It cannot satisfy any of the three classification checks.';
+      usage.textContent = 'This passport was revoked. It cannot satisfy any of the three classification checks.';
     }
   }
   rows.forEach(item => {
@@ -565,11 +570,11 @@ function showScenario(state, changing = true) {
     badge.dataset.pass = String(eligible);
     badge.textContent = eligible ? 'Eligible' : 'Ineligible';
   }
-  document.getElementById('validity').textContent = activeRecord ? 'Active record' : 'Revoked record';
+  document.getElementById('validity').textContent = activeRecord ? 'Active passport' : 'Revoked passport';
   const explanations = {
     initial: "John's country is on the bond issuer's allowed list. The credit note also needs proof of accreditation.",
-    accredited: 'The provider signed a new record with the accreditation letter. John now qualifies for both assets.',
-    revoked: 'The provider revoked the accredited record. Both checks fail even though its ten stored values are unchanged.'
+    accredited: 'The provider signed a new passport using the accreditation letter. John now qualifies for both assets.',
+    revoked: 'The provider revoked the accredited passport. Both checks fail even though its ten stored values are unchanged.'
   };
   document.getElementById('announcement').textContent = explanations[state];
   if (changing) selectStep(activeRecord ? rows.indexOf(document.getElementById('field-accreditationType')) : rows.length);
