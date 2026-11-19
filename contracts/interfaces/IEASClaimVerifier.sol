@@ -9,6 +9,29 @@ pragma solidity =0.8.24;
  * @dev Enables ERC-3643 security tokens to evaluate investor eligibility using EAS attestations
  */
 interface IEASClaimVerifier {
+    // ============ Types ============
+
+    /**
+     * @notice Per-topic verification outcome returned by `getTopicStatuses`.
+     * @dev When several trusted attesters have registered attestations for a topic and none
+     *      passes, the status reports the candidate that got furthest through the checks
+     *      (later enum values = further). Order of checks per candidate:
+     *      registered → exists with matching schema → not revoked → not expired →
+     *      attester still trusted → policy accepts.
+     */
+    enum TopicStatus {
+        OK, //                   topic satisfied
+        NotConfigured, //        EAS, trusted-issuers adapter or identity proxy unset or without code
+        PolicyMissing, //        no policy bound to the topic (isVerified reverts here)
+        SchemaNotMapped, //      no schema bound to the topic
+        NotRegistered, //        no attestation registered by any trusted attester
+        AttestationInvalid, //   registered UID not found in EAS or schema no longer matches
+        Revoked, //              attestation revoked in EAS
+        Expired, //              EAS expirationTime has passed
+        AttesterNotTrusted, //   attester no longer trusted for the topic
+        PolicyRejected //        policy rejected the payload, reverted, has no code or returned malformed data
+    }
+
     // ============ Events ============
 
     /// @notice Emitted when a claim topic to schema UID mapping is set
@@ -62,6 +85,9 @@ interface IEASClaimVerifier {
     /// @param claimTopic The topic with no bound policy
     error PolicyNotConfiguredForTopic(uint256 claimTopic);
 
+    /// @notice Thrown when `registerAttestations` receives arrays of different lengths.
+    error ArrayLengthMismatch();
+
     // ============ View Functions ============
 
     /**
@@ -70,6 +96,39 @@ interface IEASClaimVerifier {
      * @return bool True if the address has valid attestations for all required topics
      */
     function isVerified(address userAddress) external view returns (bool);
+
+    /**
+     * @notice Same checks as `isVerified`, against a caller-supplied topic set instead of the
+     *         ClaimTopicsRegistry. Lets several tokens with different rules share one verifier.
+     * @dev Reverts on the same misconfigurations as `isVerified`. An empty `topics` returns true.
+     *      Schema, policy and trusted attesters are still configured per topic on this verifier,
+     *      so tokens that need different rules for the same concept use different topic IDs.
+     * @param userAddress The wallet address to verify
+     * @param topics The claim topics that must all be satisfied
+     * @return True if every topic in `topics` is satisfied
+     */
+    function isVerifiedForTopics(address userAddress, uint256[] calldata topics) external view returns (bool);
+
+    /**
+     * @notice Explains verification: one status per topic, computed by the same code path as
+     *         `isVerified` / `isVerifiedForTopics`.
+     * @dev Does not revert on misconfiguration: an unset dependency (EAS, trusted-issuers
+     *      adapter, identity proxy) or one set to an address with no code yields `NotConfigured`;
+     *      a missing policy yields `PolicyMissing`; a policy that reverts, has no code or returns
+     *      malformed data yields `PolicyRejected`. It can still revert if a configured dependency
+     *      contract itself reverts. For a non-empty `topics`, a user is verified exactly when every
+     *      returned status is `OK`, so ERC-7943 `canSend`/`canReceive`/`canTransfer` can be built
+     *      on this without wrapping the call. An empty `topics` returns an empty array; callers
+     *      must not treat that as verified on its own (`isVerifiedForTopics` reverts first when
+     *      the verifier is unconfigured).
+     * @param userAddress The wallet address to explain
+     * @param topics The claim topics to evaluate (e.g. the registry's `getClaimTopics()`)
+     * @return statuses `statuses[i]` is the outcome for `topics[i]`
+     */
+    function getTopicStatuses(address userAddress, uint256[] calldata topics)
+        external
+        view
+        returns (TopicStatus[] memory statuses);
 
     /**
      * @notice Returns the EAS schema UID mapped to a given claim topic
@@ -113,6 +172,27 @@ interface IEASClaimVerifier {
         external
         view
         returns (bytes32);
+
+    // ============ Registration Functions ============
+
+    /**
+     * @notice Registers an attestation UID for (identity, topic, attester).
+     * @dev Callable by the attester or an authorized identity-proxy agent, never the identity itself.
+     * @param identity The identity the attestation is about (must equal its recipient)
+     * @param claimTopic The claim topic the attestation satisfies
+     * @param attestationUID The EAS attestation UID
+     */
+    function registerAttestation(address identity, uint256 claimTopic, bytes32 attestationUID) external;
+
+    /**
+     * @notice Batch form of `registerAttestation` for one identity: registers
+     *         `attestationUIDs[i]` for `claimTopics[i]`. All-or-nothing: reverts if any entry fails.
+     * @param identity The identity the attestations are about
+     * @param claimTopics The claim topics, one per UID
+     * @param attestationUIDs The EAS attestation UIDs
+     */
+    function registerAttestations(address identity, uint256[] calldata claimTopics, bytes32[] calldata attestationUIDs)
+        external;
 
     // ============ Configuration Functions ============
 

@@ -7,6 +7,7 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
 
 import {EASClaimVerifierUpgradeable} from "../../contracts/upgradeable/EASClaimVerifierUpgradeable.sol";
+import {IEASClaimVerifier} from "../../contracts/interfaces/IEASClaimVerifier.sol";
 import {EASTrustedIssuersAdapterUpgradeable} from "../../contracts/upgradeable/EASTrustedIssuersAdapterUpgradeable.sol";
 import {EASIdentityProxyUpgradeable} from "../../contracts/upgradeable/EASIdentityProxyUpgradeable.sol";
 
@@ -45,6 +46,22 @@ contract UpgradeableContractsTest is Test {
 
         assertTrue(v.hasRole(DEFAULT_ADMIN_ROLE, admin));
         assertTrue(v.hasRole(OPERATOR_ROLE, admin));
+    }
+
+    /// @dev The upgradeable verifier must expose the same non-reverting status view and batch
+    ///      registration as the core verifier, through the proxy.
+    function test_verifier_proxy_exposes_status_view_and_batch_registration() public {
+        EASClaimVerifierUpgradeable impl = new EASClaimVerifierUpgradeable();
+        bytes memory initData = abi.encodeWithSelector(EASClaimVerifierUpgradeable.initialize.selector, admin);
+        EASClaimVerifierUpgradeable v = EASClaimVerifierUpgradeable(address(new ERC1967Proxy(address(impl), initData)));
+
+        uint256[] memory topics = new uint256[](1);
+        topics[0] = 1;
+        IEASClaimVerifier.TopicStatus[] memory s = v.getTopicStatuses(outsider, topics);
+        assertEq(uint8(s[0]), uint8(IEASClaimVerifier.TopicStatus.NotConfigured));
+
+        vm.expectRevert(IEASClaimVerifier.ArrayLengthMismatch.selector);
+        v.registerAttestations(outsider, topics, new bytes32[](0));
     }
 
     function test_verifier_initialize_zero_admin_reverts() public {

@@ -6,6 +6,19 @@ Breaking changes land under **Changed (breaking)** and require a major or minor 
 
 ## [Unreleased]
 
+Upstream feedback from the Interlock starter kit (finos-hack/fall-hackathon-2026-beta#12).
+
+### Added
+
+- **`isVerifiedForTopics(user, topics)`** on `EASClaimVerifier` and `EASClaimVerifierUpgradeable`: the same checks as `isVerified` against a caller-supplied topic set, so tokens with different rules can share one verifier.
+- **`getTopicStatuses(user, topics)`**: returns one `TopicStatus` per topic (OK, NotConfigured, PolicyMissing, SchemaNotMapped, NotRegistered, AttestationInvalid, Revoked, Expired, AttesterNotTrusted, PolicyRejected). It does not revert on misconfiguration (unset or no-code dependencies, a missing policy, or a policy that reverts, has no code or returns malformed data), so ERC-7943 `canSend`/`canReceive`/`canTransfer` can use it directly; it can still revert if a configured dependency contract itself reverts. It shares one code path (`_topicStatus`) with `isVerified`, so the reason cannot drift from the boolean answer.
+- **`registerAttestations(identity, topics[], uids[])`**: all-or-nothing batch registration with the same authorization rules as `registerAttestation` (audit C-3).
+- `registerAttestation` is now declared in `IEASClaimVerifier`.
+
+### Changed
+
+- **A topic policy that reverts, has no code or returns malformed data now fails closed** (`isVerified` returns false) instead of reverting the whole call.
+
 ### Fixed
 
 - `VLEIPolicy`: the staleness check is now optional. `maxStaleness = 0` disables it and the constructor no longer rejects zero; non-zero values keep their existing semantics. The vlei-to-eas bridge sets `verifiedAt` once at issuance and never re-attests (liveness is carried by the EAS `expirationTime`, pinned to the GLEIF LEI renewal date, and `revocationTime`, both enforced by `EASClaimVerifier` before any policy runs), so the previously recommended 6 h bound made every real bridge attestation fail `isVerified` six hours after issuance. Recommended `maxStaleness` for vlei-to-eas deployments is now 0.
