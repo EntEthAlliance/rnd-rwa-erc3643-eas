@@ -300,6 +300,10 @@ contract EASClaimVerifier is IEASClaimVerifier, AccessControl {
         // Attester may have been de-trusted since registration:
         if (!_trustedIssuersAdapter.isAttesterTrusted(att.attester, claimTopic)) return TopicStatus.AttesterNotTrusted;
 
+        // A policy address with no code would make the call below revert outside the catch
+        // (empty return data cannot be decoded), so fail closed before calling it.
+        if (address(policy).code.length == 0) return TopicStatus.PolicyRejected;
+
         // Policies must never revert; if one does, fail closed instead of bubbling the revert.
         try policy.validate(att) returns (bool ok) {
             return ok ? TopicStatus.OK : TopicStatus.PolicyRejected;

@@ -201,6 +201,18 @@ contract EASClaimVerifierTopicStatusTest is BridgeHarness {
         _assertStatus(TOPIC_KYC, IEASClaimVerifier.TopicStatus.PolicyRejected);
     }
 
+    /// @dev An operator mistake (policy set to an address with no code) must deny, not revert:
+    ///      try/catch alone does not catch the decode failure of an empty return.
+    function test_policy_without_code_fails_closed() public {
+        _attestAndRegister(kyc, investor, _topicsArray(TOPIC_KYC), _happyPayload(_inOneYear()));
+        vm.prank(tokenIssuer);
+        verifier.setTopicPolicy(TOPIC_KYC, makeAddr("not-a-contract"));
+        _setRequiredTopics(_topicsArray(TOPIC_KYC));
+
+        assertFalse(verifier.isVerified(wallet));
+        _assertStatus(TOPIC_KYC, IEASClaimVerifier.TopicStatus.PolicyRejected);
+    }
+
     // ============ Point 4: batch registration ============
 
     function test_registerAttestations_registers_all_topics_in_one_call() public {
