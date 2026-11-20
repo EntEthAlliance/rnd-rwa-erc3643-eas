@@ -88,8 +88,9 @@ uint64  verifiedAt      — Unix timestamp of the verification at issuance (not 
 ```
 
 The schema is already registered on Sepolia by the bridge (UID above). Do not register a
-second copy: `VLEIPolicy` instances and `EASClaimVerifier.setTopicSchema` must point at the
+second copy: `EASClaimVerifier.setTopicSchemaMapping` must map topics 15 and 16 to the
 live UID, which goes into `deployments/sepolia.json` under `shibui.vlei.bridgeSchemaUID`.
+`VLEIPolicy` itself never sees a schema UID; only the verifier is bound to the schema.
 
 ---
 
@@ -112,9 +113,13 @@ cast send $EAS_TRUSTED_ISSUERS_ADAPTER \
   --rpc-url $SEPOLIA_RPC --private-key $OPERATOR_KEY
 ```
 
-Per wallet, the bridge (or an identity-proxy agent) then calls
-`EASClaimVerifier.registerAttestation(wallet, 15 or 16, attestationUID)`; the verifier
-checks schema, recipient and attester trust at registration time.
+Per attestation, the bridge (or an identity-proxy agent) then calls
+`EASClaimVerifier.registerAttestation(identity, 15 or 16, attestationUID)`, where
+`identity` is the attestation's `recipient`. That is the holder's wallet unless the wallet
+is linked to a separate identity in `EASIdentityProxy`. The verifier checks schema,
+recipient and attester trust at registration time. Several attestations for one identity
+can be registered in a single transaction with
+`registerAttestations(identity, topics[], uids[])`.
 
 ---
 
