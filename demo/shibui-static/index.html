@@ -11,387 +11,579 @@
 </script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Shibui, Interoperable Investor Eligibility for Tokenized Assets</title>
-<meta content="Shibui is an open-source attestation adapter for ERC-3643 security tokens, letting a token evaluate investor eligibility from Ethereum Attestation Service attestations issued by any trusted KYC, AML or accreditation provider." name="description"/>
+<title>Shibui | Investor eligibility for tokenized assets | EEA</title>
+<meta content="Explore a ten-field investor passport and see how a bond issuer and a private credit issuer apply their own entry rules. Explore Shibui, an open-source research project from the Enterprise Ethereum Alliance." name="description"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet"/>
 <link href="https://hub.entethalliance.org/eea-design-system/editorial.css" rel="stylesheet"/>
 <style>
-/* Keep the shared EEA masthead; give the article a consistent reading system. */
 :root {
-  --eea-ed-font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --ink: #202925;
-  --muted: #52615a;
-  --green: #1f5c4a;
-  --line: #d7ded8;
-  --paper: #fcfcf9;
-  --wash: #f1f5f0;
+  --ink: #142c26;
+  --green: #125640;
+  --muted: #4c635b;
+  --line: #cbd7cd;
+  --wash: #eaf0e8;
+  --paper: #fbfcf8;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body.shibui-page { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--eea-ed-font); font-size: 16px; line-height: 1.7; }
-.page-width { width: min(100% - 64px, 1040px); margin-inline: auto; }
-a { color: var(--green); text-underline-offset: 4px; }
-a:hover { text-decoration: underline; }
-a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--green); outline-offset: 5px; }
-.skip-link { position: fixed; top: -100px; left: 24px; padding: 12px; background: var(--paper); z-index: 1100; }
-.skip-link:focus { top: 12px; }
-#shibui-sectionnav { position: sticky; top: 0; z-index: 900; border-bottom: 1px solid var(--line); background: var(--paper); }
-#shibui-sectionnav > div { display: flex; gap: 32px; overflow-x: auto; }
-#shibui-sectionnav a { flex-shrink: 0; padding: 16px 0 13px; font-size: 14px; font-weight: 500; color: var(--muted); border-bottom: 3px solid transparent; text-decoration: none; }
-#shibui-sectionnav a[aria-current] { color: var(--green); border-bottom-color: var(--green); }
-section[id] { scroll-margin-top: 92px; }
-.hero { padding: 80px 0 0; }
-.eyebrow { margin: 0 0 16px; color: var(--green); font-size: 14px; font-weight: 600; }
-h1, h2, h3 { color: var(--ink); letter-spacing: -.025em; line-height: 1.2; }
-h1 { max-width: 820px; font-size: clamp(36px, 4.5vw, 58px); font-weight: 600; margin: 0 0 28px; }
-h2 { font-size: clamp(27px, 3vw, 36px); font-weight: 600; margin: 0 0 24px; }
-h3 { font-size: 19px; font-weight: 600; margin: 0 0 12px; line-height: 1.4; }
-p { margin: 0 0 18px; }
-.lead { font-size: 23px; color: var(--ink); line-height: 1.5; margin-bottom: 16px; }
-.hero-description { max-width: 65ch; font-size: 18px; color: var(--muted); }
-.actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 20px; }
-.button { display: inline-flex; align-items: center; justify-content: center; gap: 20px; min-height: 46px; padding: 10px 18px; border: 1px solid var(--green); border-radius: 4px; font-size: 14px; font-weight: 600; text-decoration: none; }
-.button:hover { text-decoration: none; background: var(--wash); }
-.button.primary { color: #fff; background: var(--green); }
-.button.primary:hover { background: #174636; }
-.button.secondary { color: var(--green); background: transparent; border-color: var(--line); }
-.metadata { font-size: 13px; color: var(--muted); }
-.metadata span { margin-inline: 7px; }
-.project-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 20px 0 0; font-size: 14px; }
-.integration-status { border-left: 2px solid var(--line); padding-left: 16px; margin: 28px 0; font-size: 14px; color: var(--muted); }
-.integration-status p { margin-bottom: 10px; }
-.integration-status p:last-child { margin-bottom: 0; }
-.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin: 48px 0 0; padding: 28px 0; border-block: 1px solid var(--line); }
-.facts > div { display: flex; flex-direction: column; }
-.facts dt { color: var(--muted); font-size: 14px; }
-.facts dd { order: -1; margin: 0 0 4px; font-size: 34px; font-weight: 600; line-height: 1.3; }
-.section { padding-top: 64px; margin-top: 64px; border-top: 1px solid var(--line); }
-.prose { max-width: 68ch; }
-.prose p:last-child { margin-bottom: 0; }
-.columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin: 32px 0; }
-.columns p { color: var(--muted); }
-.columns ul, .columns ol { padding-left: 20px; margin: 0; }
-li { padding-left: 4px; margin-bottom: 10px; }
-.note, .related { font-size: 14px; color: var(--muted); }
-.related { margin: 20px 0 0; }
-.disclosure { border-bottom: 1px solid var(--line); margin-top: 20px; }
-.disclosure > summary { padding: 16px 0; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--green); }
-.disclosure > :not(summary) { margin: 8px 0 24px; }
-summary:hover { text-decoration: underline; text-underline-offset: 4px; }
-.steps { padding: 0; margin: 36px 0 0; list-style: none; counter-reset: steps; }
-.steps > li { counter-increment: steps; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 20px; padding: 24px 0; margin: 0; border-top: 1px solid var(--line); }
-.steps > li::before { content: counter(steps, decimal-leading-zero); font-size: 14px; color: var(--green); font-weight: 600; padding-top: 3px; }
-.steps > li > div { max-width: 68ch; }
-.steps p { color: var(--muted); margin: 0; }
-.field-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 36px; padding-left: 24px; }
-.field-list li { font-size: 15px; }
-.comparison { padding: 28px; background: var(--wash); border-radius: 4px; }
-.comparison .note { margin: 16px 0 0; }
-.entry-point { display: flex; flex-direction: column; gap: 8px; border-left: 3px solid var(--green); padding: 12px 20px; margin: 28px 0; background: var(--wash); }
-.entry-point span { font-size: 13px; color: var(--muted); }
-.entry-point p { margin: 0; font-size: 14px; }
-code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .9em; overflow-wrap: anywhere; }
-.table-scroll { overflow-x: auto; margin: 24px 0; }
-table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 14px; }
-#sec-06 table { min-width: 850px; }
-caption { text-align: left; font-size: 14px; font-weight: 600; color: var(--muted); margin: 0 0 16px; }
-th, td { text-align: left; vertical-align: top; padding: 16px 12px; border-bottom: 1px solid var(--line); line-height: 1.6; }
-thead th { font-weight: 600; background: var(--wash); }
-th:first-child, td:first-child { padding-left: 12px; }
-tbody th { font-weight: 600; }
-#sec-06 th:nth-child(1) { width: 5%; }
-#sec-06 th:nth-child(2) { width: 20%; }
-#sec-06 th:nth-child(3) { width: 32%; }
-td p { margin: 0; }
-.source-detail summary { cursor: pointer; font-size: 14px; color: var(--green); }
-.source-detail p { margin-top: 10px; color: var(--muted); }
-.acronyms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 32px; }
-.acronyms p { margin: 0; font-size: 14px; }
-.resources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin: 32px 0; }
-.resource { border-top: 2px solid var(--line); padding-top: 20px; text-decoration: none; display: flex; flex-direction: column; }
-.resource:hover { border-color: var(--green); text-decoration: none; }
-.resource:hover h3 { text-decoration: underline; text-underline-offset: 4px; }
-.resource p { color: var(--muted); font-size: 15px; flex: 1; }
-.resource span { font-size: 14px; font-weight: 500; }
-footer { display: flex; gap: 24px; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); margin-top: 64px; padding: 32px 0; font-size: 13px; color: var(--muted); }
-footer p { margin: 0; }
-footer a { flex-shrink: 0; }
-@media (max-width: 700px) {
- .page-width { width: calc(100% - 40px); }
- #shibui-sectionnav > div { gap: 24px; }
- .hero { padding-top: 40px; }
- .lead { font-size: 20px; }
- .hero-description { font-size: 16px; }
- .facts { gap: 16px; margin-top: 32px; }
- .facts dt { font-size: 12px; }
- .facts dd { font-size: 28px; }
- .section { padding-top: 40px; margin-top: 40px; }
- .columns, .resources { grid-template-columns: 1fr; gap: 28px; }
- .comparison { padding: 20px; }
- .field-list, .acronyms { grid-template-columns: 1fr; }
- .steps > li { grid-template-columns: 28px minmax(0, 1fr); gap: 12px; }
- footer { flex-direction: column; gap: 16px; }
+body.shibui { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 Inter, system-ui, sans-serif; }
+a { color: var(--green); text-underline-offset: .23em; }
+a:hover, summary:hover { text-decoration: underline; }
+:focus-visible { outline: 3px solid #1673ba; outline-offset: 4px; }
+.skip:not(:focus), .sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip:focus { position: absolute; top: .5rem; left: .5rem; padding: .5rem; background: white; z-index: 9; }
+[hidden] { display: none !important; }
+.wrap, .shibui .eea-site-bar-inner { width: min(1180px, calc(100% - clamp(36px, 8vw, 112px))); margin-inline: auto; }
+.shibui .eea-site-bar { background: var(--paper); border-bottom: 1px solid var(--line); }
+.shibui .eea-site-bar-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px 28px; padding: 18px 0; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand .eea-site-id { text-decoration: none; }
+.brand .eea-site-id-name { color: var(--muted); }
+.wordmark { text-decoration: none; color: var(--ink); border-left: 1px solid var(--line); padding-left: 14px; font-weight: 650; }
+.shibui .eea-site-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.shibui .eea-site-links a { color: var(--muted); font: 550 14px/1.6 Inter, system-ui, sans-serif; text-transform: none; letter-spacing: normal; text-decoration: none; }
+.shibui .eea-site-links a:hover { color: var(--green); text-decoration: underline; }
+h1, h2, h3, p, figure, dl, dd { margin: 0; }
+h1, h2, h3 { font-weight: 620; text-wrap: balance; }
+h1 { max-width: 10.1em; font-size: clamp(48px, 5.3vw, 82px); line-height: 1.02; letter-spacing: -.065em; }
+h1 em { color: var(--green); font-family: Georgia, serif; font-weight: 400; letter-spacing: -.055em; white-space: nowrap; }
+h2 { font-size: clamp(28px, 3vw, 44px); line-height: 1.12; letter-spacing: -.045em; }
+h3 { font-size: 19px; line-height: 1.28; letter-spacing: -.025em; }
+.tag, .kicker { font: 600 11px/1.45 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.kicker { color: var(--green); margin-bottom: 16px; }
+.hero { display: grid; grid-template-columns: .95fr 1.05fr; gap: clamp(32px, 5vw, 80px); align-items: center; padding-block: clamp(46px, 6vw, 84px); }
+.intro { max-width: 42ch; margin-top: 24px; font-size: clamp(17px, 1.45vw, 21px); line-height: 1.52; color: var(--muted); }
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; margin-top: 26px; }
+.primary { display: inline-flex; align-items: center; justify-content: center; gap: 16px; border-radius: 6px; background: var(--green); color: white; text-decoration: none; padding: 11px 17px; font-size: 14px; font-weight: 650; }
+.primary:hover { background: #093e30; text-decoration: none; }
+.textlink { font-size: 14px; font-weight: 650; }
+.decisions { display: grid; gap: 6px; margin-block: 10px 14px; }
+.decision { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 13px; background: var(--paper); border: 1px solid #cdd9cd; border-radius: 6px; }
+.decision h3 { font-size: 15px; }
+.decision p { margin-top: 2px; font-size: 12px; color: var(--muted); }
+.status { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; padding: 4px 8px; border-radius: 4px; font: 600 11px/1.4 var(--mono); white-space: nowrap; }
+.status::before { font: 700 13px/1 system-ui,sans-serif; }
+.status[data-pass="true"]::before { content: "✓" / ""; }
+.status[data-pass="false"]::before { content: "×" / ""; }
+.status[data-pass="true"] { background: #dbedde; color: #14543a; }
+.status[data-pass="false"] { background: #f6e7ce; color: #6f450b; }
+fieldset { border: 0; min-width: 0; padding: 0; margin: 0; }
+legend { padding: 0; margin-bottom: 6px; font-size: 12px; font-weight: 600; }
+.switch { display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid #b9c9bb; padding: 3px; border-radius: 6px; gap: 2px; }
+.switch label { display: grid; place-items: center; position: relative; cursor: pointer; }
+.switch span { width: 100%; display: grid; place-items: center; text-align: center; font-size: 12px; font-weight: 600; padding: 7px 2px; border-radius: 3px; }
+.switch input:checked + span { background: #20563f; color: white; }
+.switch input:focus-visible + span { outline: 3px solid #1673ba; outline-offset: 1px; }
+.switch label:hover span { text-decoration: underline; }
+.explanation { margin-top: 10px; font-size: 13px; line-height: 1.5; color: var(--muted); }
+section, figure[id], details[id] { scroll-margin-top: 20px; }
+.section { padding-block: clamp(38px, 4vw, 66px); border-top: 1px solid var(--line); }
+.roles { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(22px, 4vw, 56px); margin-top: 30px; }
+.roles article { border-top: 2px solid #709b83; padding-top: 13px; }
+.roles p, .section-intro, .bodycopy { margin-top: 10px; color: var(--muted); }
+.section-intro { max-width: 66ch; }
+.ref-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(24px, 7vw, 95px); }
+details { border-top: 1px solid var(--line); }
+details:last-child { border-bottom: 1px solid var(--line); }
+summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0; color: var(--ink); cursor: pointer; font-weight: 620; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font: 20px/1 var(--mono); color: var(--green); }
+details[open] > summary::after { content: "−"; }
+.detail-body { padding-bottom: 20px; color: var(--muted); }
+.detail-body p + p { margin-top: 10px; }
+.detail-body code { font-size: .88em; overflow-wrap: anywhere; }
+.checks { margin-block: 8px 12px; }
+.checks div { display: grid; grid-template-columns: minmax(120px,.85fr) 1.3fr; gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.checks dt { color: var(--ink); font-weight: 600; }
+.bottom { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 8vw, 110px); padding-block: clamp(40px, 5vw, 76px); }
+.resources a { display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); padding: 8px 0; font-size: 14px; text-decoration: none; }
+.resources a:hover { text-decoration: underline; }
+.resources h2 { font-size: 23px; margin: 0 0 12px; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 15px; padding-block: 22px; }
+@media (max-width: 820px) {
+  .hero { grid-template-columns: 1fr; gap: 28px; }
+  h1 { max-width: 14em; }
+  .intro { max-width: 57ch; }
+  .roles { gap: 20px; }
+  .ref-grid { grid-template-columns: 1fr; }
 }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (max-width: 620px) {
+  .shibui .eea-site-bar-inner { display: grid; }
+  .shibui .eea-site-links { column-gap: 16px; }
+  .shibui .eea-site-links a { font-size: 12px; }
+  .hero { padding-block: 34px; }
+  .roles, .bottom { grid-template-columns: 1fr; }
+  .roles { margin-top: 20px; }
+  .decision { padding: 10px; }
+  .decision h3 { font-size: 14px; }
+  .checks div { grid-template-columns: 1fr; gap: 2px; }
+}
+@media (max-width: 360px) {
+  h1 { font-size: 42px; }
+}
 @media print {
- .eea-site-bar, #shibui-sectionnav, .skip-link, .actions { display: none; }
- .page-width { width: 100%; }
- body.shibui-page { background: #fff; }
- .hero, .section { padding-top: 24px; margin-top: 24px; }
- .table-scroll { overflow: visible; }
- table, #sec-06 table { min-width: 0; }
- h2, h3, summary { break-after: avoid; }
+  body.shibui { background: white; }
+  .eea-site-links, .actions, .switcher, .skip, footer a { display: none; }
+  .hero, .section, .bottom { padding-block: 16px; }
+  .trace { display: none; }
 }
-
-
-/* Match article typography in the shared masthead, without changing its links. */
-.shibui-page .eea-site-bar { background: var(--paper); border-bottom: 1px solid var(--line); }
-.shibui-page .eea-site-bar-inner { max-width: 1104px; padding-inline: 32px; }
-.shibui-page .eea-site-id-name, .shibui-page .eea-site-links a { font-family: var(--eea-ed-font); text-transform: none; letter-spacing: 0; font-size: 13px; }
-.mobile-table-hint { display: none; }
-@media (max-width: 700px) {
- .shibui-page .eea-site-bar-inner { padding-inline: 20px; }
- .mobile-table-hint { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+/* One record, with a source trace beside its ten encoded fields. */
+.hero { padding-block: clamp(26px, 3.5vw, 54px); }
+.hero .intro { margin-top: 0; max-width: 49ch; }
+.hero h1 { font-size: clamp(42px, 4.1vw, 64px); max-width: 12em; }
+.workbench { margin-bottom: clamp(38px, 5vw, 72px); border: 1px solid var(--line); border-radius: 12px; overflow: clip; }
+.credential-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 20px clamp(16px, 2.3vw, 30px); color: #fff; background: #164b3e; }
+.credential-head h2 { margin-top: 2px; font-size: 34px; }
+.credential-head .tag { color: #c9e8d1; }
+.credential-head .switch { color: var(--ink); background: var(--paper); }
+.credential-head .switch span { padding-inline: 12px; }
+.bench-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .43fr); grid-template-rows: auto 1fr; gap: 20px clamp(20px, 3vw, 40px); padding: clamp(16px, 2.3vw, 30px); }
+.ledger { grid-area: 1 / 1 / 3 / 2; min-width: 0; }
+.trace { grid-area: 1 / 2; align-self: start; min-width: 0; background: var(--wash); border: 1px solid #cfdbcf; padding: 17px; border-radius: 9px; }
+.trace-head, .outcome-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+#step-count, #validity { font: 600 11px/1.45 var(--mono); color: var(--green); }
+.trace-hint { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.flow { padding-block: 13px; }
+.hop { position: relative; padding-left: 22px; }
+.hop + .hop { padding-top: 18px; }
+.hop:not(:last-child)::before { content: ""; position: absolute; width: 2px; background: #acbfb0; top: 13px; bottom: -24px; left: 4px; }
+.hop::after { content: ""; position: absolute; border-radius: 100%; width: 10px; height: 10px; background: var(--green); left: 0; top: 6px; }
+.hop + .hop::after { top: 24px; }
+.hop .tag { color: var(--muted); font-size: 10px; }
+.hop strong { display: block; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+#trace-field, #trace-value { font-family: var(--mono); font-size: 14px; }
+.hop p, .ledger-intro p, .schema-link { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.hop p { margin-top: 3px; }
+@media (prefers-reduced-motion: no-preference) {
+  .flow.moving .hop::after { animation: feed-dot .65s ease-out both; }
+  .flow.moving .hop:nth-child(2)::after { animation-delay: .24s; }
+  .flow.moving .hop:nth-child(3)::after { animation-delay: .48s; }
+  .flow.moving .hop strong { animation: feed-value .38s ease-out both; }
+  .flow.moving .hop:nth-child(2) strong { animation-delay: .24s; }
+  .flow.moving .hop:nth-child(3) strong { animation-delay: .48s; }
+  @keyframes feed-value { from { opacity: .35; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+  @keyframes feed-dot { from { box-shadow: 0 0 0 0 #659d76; } to { box-shadow: 0 0 0 9px #659d7600; } }
+}
+.playback { display: flex; gap: 6px; padding-top: 7px; }
+.playback button { border: 1px solid #9ab4a1; border-radius: 5px; padding: 7px 10px; min-width: 38px; min-height: 38px; color: var(--ink); background: var(--paper); font: 600 13px/1.4 Inter, system-ui, sans-serif; cursor: pointer; }
+.playback .play { flex: 1; color: #fff; background: var(--green); }
+.playback button:disabled { opacity: .48; cursor: default; }
+.ledger-intro p { margin: 7px 0 16px; max-width: 75ch; }
+.fields { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+.col-field { width: 30%; } .col-source { width: 37%; } .col-value { width: 33%; }
+.fields th, .fields td { padding: 10px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.fields thead { background: var(--wash); color: var(--muted); font-size: 12px; }
+.fields tbody tr { border-bottom: 1px solid var(--line); }
+.fields tr.selected { background: #edf4eb; box-shadow: inset 3px 0 var(--green); }
+.field-name { border: 0; background: transparent; padding: 0; color: var(--green); cursor: pointer; font: 600 13px/1.5 var(--mono); text-align: left; overflow-wrap: anywhere; }
+.field-name:hover:enabled { text-decoration: underline; text-underline-offset: 3px; }
+.field-name:disabled { cursor: default; }
+.fields small { display: block; font-size: 12px; line-height: 1.45; margin-top: 2px; color: var(--muted); font-weight: 400; }
+.fields code { font-size: 13px; }
+.schema-link { margin-top: 12px; }
+.outcomes { grid-area: 2 / 2; min-width: 0; }
+.outcomes .decisions { margin-bottom: 0; }
+.outcomes .decision { flex-wrap: wrap; }
+.outcomes .decision h3 { font-size: 14px; }
+@media (max-width: 820px) {
+  .bench-body { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .trace, .ledger, .outcomes { grid-area: auto; }
+  .flow { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+  .hop, .hop + .hop { padding: 0 0 0 13px; }
+  .hop::after, .hop + .hop::after { width: 7px; height: 7px; top: 8px; }
+  .hop:not(:last-child)::before { display: none; }
+  .outcomes .decisions { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 620px) {
+  .hero { gap: 14px; }
+  .credential-head .switcher { width: 100%; }
+  .flow { display: block; }
+  .hop + .hop { padding-top: 9px; }
+  .hop + .hop::after { top: 17px; }
+  .fields, .fields tbody, .fields tr, .fields th, .fields td { display: block; }
+  .fields thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .fields tbody tr { padding: 9px 10px; }
+  .fields tbody th, .fields tbody td { padding: 2px 0; }
+  .fields th small { display: inline; margin-left: 8px; }
+  .fields .origin::before, .fields .cell-value::before { font-size: 12px; color: var(--muted); }
+  .fields .origin::before { content: "Possible source · "; }
+  .fields .cell-value::before { content: "Value · "; }
+  .outcomes .decisions { grid-template-columns: 1fr; }
+}
+@media print { .bench-body { display: block; } .trace, .switcher { display: none; } .fields tr { break-inside: avoid; } .outcomes { margin-top: 12px; } }
+/* Source records and issuer checks have different roles. */
+.concepts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; padding: 18px clamp(16px, 2.3vw, 30px); background: #f1f5ee; border-bottom: 1px solid var(--line); }
+.concepts > div + div { border-left: 1px solid var(--line); padding-left: 24px; }
+.concepts h3 { font-size: 16px; }
+.concepts p { color: var(--muted); margin-top: 4px; font-size: 14px; }
+.count-map { list-style: none; padding: 0; margin: 16px 0 0; }
+.count-map li { margin-top: 12px; color: var(--muted); }
+.count-map strong { color: var(--ink); }
+.fields .source-record { font-weight: 550; }
+.trace-system { display: block; color: var(--muted); font-size: 12px; }
+.fields .origin a { text-decoration-color: #98afa1; }
+.fields .origin a:hover { text-decoration-color: currentColor; }
+.encoded-control { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.encoded-control input { width: 16px; height: 16px; accent-color: var(--green); }
+.cell-value .datum { display: inline-flex; align-items: baseline; gap: 5px; font-size: 14px; color: var(--ink); font-weight: 600; }
+.cell-value .datum[data-tone="pass"] { color: #155b3c; }
+.cell-value .datum[data-tone="pending"] { color: #754915; }
+.value-symbol { font-family: system-ui,sans-serif; font-weight: 700; }
+.value-symbol:empty { display: none; }
+.fields .cell-value code { display: block; color: var(--muted); margin-top: 4px; }
+.ledger:has(#show-encoded:not(:checked)) .cell-value code { display: none; }
+.trace-use { font-size: 13px; margin: 0 0 10px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--green); }
+@media (max-width: 620px) {
+  .concepts { grid-template-columns: 1fr; }
+  .concepts > div + div { border-left: 0; padding: 12px 0 0; border-top: 1px solid var(--line); }
+}
+@media print {
+  .encoded-control { display: none; }
+  .ledger:has(#show-encoded:not(:checked)) .cell-value code { display: block; }
 }
 </style>
 </head>
-<body class="eea-editorial shibui-page">
-
-<a class="skip-link" href="#main">Skip to content</a>
+<body class="eea-editorial shibui">
+<a class="skip" href="#main">Skip to content</a>
 <header class="eea-site-bar">
-<div class="eea-site-bar-inner">
-<a class="eea-site-id" href="https://entethalliance.github.io/">
-<span class="eea-site-id-stack">
-<span class="eea-site-id-name">Enterprise Ethereum Alliance</span>
-<span aria-hidden="true" class="eea-site-id-bars"><i></i><i></i><i></i></span>
-</span>
-</a>
-<nav aria-label="Shibui" class="eea-site-links">
-<a href="https://entethalliance.github.io/">Hub</a>
-<a aria-current="page" href="index.html">Shibui</a>
-<a href="identity-solutions-map.html">Reference map</a>
-<a href="demo/attester.html">Live demo</a>
-<a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas">Repo</a>
-</nav>
-</div>
+  <div class="eea-site-bar-inner">
+    <div class="brand">
+      <a class="eea-site-id" href="https://hub.entethalliance.org/">
+        <span class="eea-site-id-stack"><span class="eea-site-id-name">Enterprise Ethereum Alliance</span><span aria-hidden="true" class="eea-site-id-bars"><i></i><i></i><i></i></span></span>
+      </a>
+      <a class="wordmark" href="#sec-01" aria-current="page">Shibui</a>
+    </div>
+    <nav class="eea-site-links" aria-label="Shibui">
+      <a href="#sec-06">Explore the passport</a>
+      <a href="#sec-03">How it works</a>
+      <a href="#sec-08">Resources</a>
+    </nav>
+  </div>
 </header>
-<nav id="shibui-sectionnav" aria-label="On this page">
- <div class="page-width"><a href="#sec-01" aria-current="true">Overview</a><a href="#sec-03">How it works</a><a href="#sec-06">Eligibility topics</a><a href="#sec-07">Get involved</a><a href="#sec-08">Resources</a></div>
-</nav>
-<main id="main" class="page-width">
- <section id="sec-01" class="hero" aria-labelledby="hero-title">
-  <p class="eyebrow">Shibui / EEA research</p>
-  <h1 id="hero-title">A shared model for<br>investor eligibility</h1>
-  <p class="lead">May this wallet hold this security right now?</p>
-  <p class="hero-description">Shibui is an open-source attestation adapter for ERC-3643 security tokens. This proposed model lets tokens evaluate investor eligibility using Ethereum Attestation Service (EAS) attestations from trusted KYC, AML or accreditation providers.</p>
-  <div class="actions"><a class="button primary" href="#sec-03">See how it works <span aria-hidden="true">↓</span></a><a class="button secondary" href="#sec-07">Share your requirements</a></div>
-  <p class="metadata">Research artifact <span aria-hidden="true">·</span> v0.4.0, April 2026 <span aria-hidden="true">·</span> Apache-2.0</p>
-  <nav class="project-links" aria-label="Project references">
-   <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/master/docs/schemas/shibui-specification-v0.1.md" target="_blank" rel="noopener noreferrer">Read the Shibui spec ↗</a>
-   <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a>
-   <a href="https://github.com/ERC-3643/ERC-3643/pull/98" target="_blank" rel="noopener noreferrer">ERC-3643 proposal (draft) ↗</a>
-  </nav>
-  <dl class="facts"><div><dt>Eligibility topics</dt><dd>8</dd></div><div><dt>Fields in one EAS payload</dt><dd>10</dd></div><div><dt>EAS mainnet networks</dt><dd>11</dd></div></dl>
-  <details class="disclosure">
-   <summary>How Shibui fits into ERC-3643</summary>
-   <div class="prose"><p>ERC-3643 checks investor eligibility on the transfer path. Its reference implementation links investor wallets to ONCHAINID identity contracts and checks required claims from trusted issuers. It supports multiple trusted issuers; identity deployment and management depend on the onboarding flow.</p><p>Shibui replaces that identity layer with a small stack of contracts that read EAS attestations, validate the shared payload against a configurable policy per claim topic, and gate trust changes with a cryptographic audit trail.</p></div>
-  </details>
- </section>
-
- <section id="sec-02" class="section" aria-labelledby="problem-title">
-  <p class="eyebrow">The problem</p><h2 id="problem-title">Distribution breaks on one question</h2>
-  <div class="prose"><p>Tokenization modernizes issuance and settlement. Distribution still stalls on <strong>who may hold the asset, and when</strong>, because every participant answers that question in its own dialect.</p></div>
-  <div class="columns"><div><h3>Eligibility is fragmented</h3><p>Each issuer defines "KYC", "accredited" and "qualified purchaser" differently. Investors repeat identical checks per token and per venue. Expiry, revocation and sanctions updates are applied by hand.</p></div><div><h3>The cost lands on distribution</h3><p>Slower onboarding, higher servicing cost, inconsistent evidence across jurisdictions, and a compliance posture that depends on manual reconciliation rather than on the token itself.</p></div></div>
-  <details class="disclosure"><summary>Compare issuer-by-issuer onboarding with the proposed model</summary><div class="table-scroll" role="region" aria-label="Onboarding comparison" tabindex="0"><table><caption>Issuer-by-issuer vs. proposed shared model</caption>
-<thead>
-<tr>
-<th scope="col">Capability</th>
-<th scope="col">Issuer-by-issuer</th>
-<th scope="col">Proposed shared model</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">Onboarding</th>
-<td>Repeated checks and bespoke integrations</td>
-<td>Reusable evidence recognized across assets</td>
-</tr>
-<tr>
-<th scope="row">Eligibility updates</th>
-<td>Manual, slow propagation</td>
-<td>Expiry and revocation enforced on the hot path</td>
-</tr>
-<tr>
-<th scope="row">Oversight</th>
-<td>Fragmented evidence trails</td>
-<td>Common definitions and an <code>evidenceHash</code> per claim</td>
-</tr>
-<tr>
-<th scope="row">Provider choice</th>
-<td>Bespoke provider integrations per token</td>
-<td>Many trusted attesters per topic, rotatable</td>
-</tr>
-</tbody>
-</table></div></details>
-  <p class="related">Read the argument: <a href="https://www.linkedin.com/pulse/passport-problem-why-tokenized-markets-need-shared-identity-meslem-iryvf/" target="_blank" rel="noopener noreferrer">The Passport Problem ↗</a></p>
- </section>
-
- <section id="sec-03" class="section" aria-labelledby="approach-title">
-  <p class="eyebrow">How it works</p><h2 id="approach-title">One payload. Three responsibilities.</h2>
-  <p class="prose">One 10-field EAS payload is evaluated through eight independently enforceable eligibility policies.</p>
-  <ol class="steps">
-   <li><div><h3>Standardize what eligibility means</h3><p>Every topic policy decodes the same Investor Eligibility payload. Fields may support multiple topics or carry shared metadata, so eight topics do not mean eight fields.</p><details class="disclosure"><summary>See all 10 payload fields</summary><ol class="field-list"><li>Investor identity</li><li>KYC status</li><li>AML status</li><li>Sanctions status</li><li>Source-of-funds status</li><li>Accreditation type</li><li>Country code (ISO 3166)</li><li>Expiration timestamp</li><li>Evidence hash</li><li>Verification method</li></ol></details></div></li>
-   <li><div><h3>Let issuers choose who they trust</h3><p>Each token recognizes its own set of trusted attesters per claim topic. Adding one requires a live Issuer Authorization attestation, so trust changes leave a cryptographic trail. Administration is role-gated, with multisig governance in production.</p></div></li>
-   <li><div><h3>Make change predictable</h3><p>Revocation, EAS-level expiry and payload-level expiry are checked on the transfer path. Revoking a claim blocks future transfers immediately; it does not move, freeze or recover tokens already held.</p></div></li>
-  </ol>
- </section>
-
- <section id="sec-04" class="section" aria-labelledby="reuse-title">
-  <p class="eyebrow">In practice</p><h2 id="reuse-title">Same controls, less duplication</h2>
-  <div class="columns comparison"><div><h3>Issuer-by-issuer</h3><ol><li>An investor submits documents.</li><li>Issuer A registers the identity; Issuer B builds its own provider integration.</li><li>Each issuer reconciles expiry, revocation and sanctions updates.</li></ol><p class="note">Duplicated checks, slow propagation.</p></div><div><h3>With Shibui</h3><ol><li>A trusted, on-chain authorized attester issues an Investor Eligibility attestation per chain.</li><li>The payload contains 10 fields, including evidence hash and expiry.</li><li>Token A checks KYC + country. Token B checks KYC + accreditation.</li></ol><p class="note">Reusable across tokens whose trust and policy requirements it satisfies. Updates are enforced at transfer time.</p></div></div>
-  <details class="disclosure"><summary>Networks and underlying standards</summary><div class="prose"><p>The same contracts read the same two schemas wherever EAS is deployed. Attestations are per-chain: investors are re-attested on each chain rather than bridged.</p><p>Ethereum, Base, Arbitrum One, Arbitrum Nova, Optimism, Polygon, zkSync, Scroll, Linea, Blast and Celo.</p><p class="note">Plus Sepolia, Base Sepolia, Optimism Sepolia, Arbitrum Goerli, Polygon Amoy, Scroll Sepolia and Linea Goerli testnets.</p><p><a href="https://docs.attest.org/docs/quick--start/contracts" target="_blank" rel="noopener noreferrer">EAS deployments ↗</a></p><p>Built on <a href="https://attest.org" target="_blank" rel="noopener noreferrer">Ethereum Attestation Service</a> and <a href="https://eips.ethereum.org/EIPS/eip-3643" target="_blank" rel="noopener noreferrer">ERC-3643</a>, with <a href="https://entethalliance.org/specs/ethtrust-sl/" target="_blank" rel="noopener noreferrer">EthTrust SL Level 2</a>.</p></div></details>
- </section>
-
- <section id="sec-05" class="section" aria-labelledby="scope-title">
-  <p class="eyebrow">Scope</p><h2 id="scope-title">A shared language. Your implementation.</h2>
-  <div class="columns"><div><h3>Defined by this model</h3><ul><li>Claim topics and their policies</li><li>Investor Eligibility payload, 10 fields</li><li>Update semantics and evidence hash</li></ul></div><div><h3>Chosen by each issuer</h3><ul><li>Which attesters you trust, per topic</li><li>Identity / KYC backend and wallet flows</li><li>Governance and operating model</li></ul></div></div>
-  <p class="note prose">Forced transfers, freezes, lost-key recovery, lock-ups and holder caps remain with the token contract. Cross-chain canonicity and tax / FATCA / CRS reporting are outside Shibui's scope.</p>
- </section>
-
- <section id="sec-06" class="section" aria-labelledby="topics-title">
-  <p class="eyebrow">Technical reference</p><h2 id="topics-title">Eight eligibility topics, one shared payload</h2>
-  <div class="prose"><p>A token requires a subset of these topics. <code>isVerified</code> returns true only when every required topic has a live attestation from a currently trusted attester whose payload satisfies the topic's policy.</p></div>
-  <div class="entry-point"><span>Public entry point</span><code>isVerified(address wallet) → bool</code><p>Called by the token's compliance hook on every transfer.</p></div>
-  <p class="note">Provider examples expand in the last column. The verifier reads the attestation payload; it never queries those source systems directly.</p>
-  <p class="mobile-table-hint">Scroll the table sideways to see rules and source systems.</p>
-  <div class="table-scroll" role="region" aria-label="Eligibility topic policies" tabindex="0"><table><caption>Eight eligibility topics shipped in v0.4.0</caption>
-<thead>
-<tr>
-<th scope="col">ID</th>
-<th scope="col">Topic</th>
-<th scope="col">Rule enforced on payload</th>
-<th scope="col">Source system of record</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>01</td>
-<th scope="row">KYC</th>
-<td>kycStatus == VERIFIED</td>
-<td><details class="source-detail"><summary>Identity verification vendor</summary>
-<p>e.g. Entrust Identity Verification (formerly Onfido), Jumio, Trulioo, document + biometric check at onboarding.</p>
-</details></td>
-</tr>
-<tr>
-<td>02</td>
-<th scope="row">AML</th>
-<td>amlStatus == CLEAR</td>
-<td><details class="source-detail"><summary>AML screening engine</summary>
-<p>e.g. LSEG World-Check (formerly Refinitiv / Thomson Reuters), ComplyAdvantage, LexisNexis Bridger Insight.</p>
-</details></td>
-</tr>
-<tr>
-<td>03</td>
-<th scope="row">Country</th>
-<td>countryCode in allow-list or block-list</td>
-<td>
-<span>Same record as KYC</span>
-<p>Residence / citizenship captured in the same onboarding record, no independent system.</p>
-</td>
-</tr>
-<tr>
-<td>07</td>
-<th scope="row">Accreditation</th>
-<td>accreditationType in admin allow-set</td>
-<td><details class="source-detail"><summary>Third-party accreditation verifier</summary>
-<p>Law-firm or CPA qualification letter, or the broker-dealer's own suitability file. No single dominant vendor, often manual.</p>
-</details></td>
-</tr>
-<tr>
-<td>09</td>
-<th scope="row">Professional investor</th>
-<td>accreditationType != 0</td>
-<td>
-<span>Derived, not a source</span>
-<p>Threshold read on the accreditation record above. Flag any vendor pitching this as a separate feed.</p>
-</td>
-</tr>
-<tr>
-<td>10</td>
-<th scope="row">Institutional investor</th>
-<td>accreditationType == INSTITUTIONAL</td>
-<td>
-<span>Derived, not a source</span>
-<p>Same accreditation record, highest tier. Not independently sourced.</p>
-</td>
-</tr>
-<tr>
-<td>13</td>
-<th scope="row">Sanctions check</th>
-<td>sanctionsStatus == CLEAR</td>
-<td><details class="source-detail"><summary>Sanctions / PEP screening engine</summary>
-<p>Same engines as AML, LSEG World-Check, ComplyAdvantage, Dow Jones Risk &amp; Compliance, screened against OFAC, UN and EU consolidated lists.</p>
-</details></td>
-</tr>
-<tr>
-<td>14</td>
-<th scope="row">Source of funds</th>
-<td>sourceOfFundsStatus == VERIFIED</td>
-<td><details class="source-detail"><summary>Enhanced Due Diligence (EDD) file</summary>
-<p>Held inside the AML platform or a dedicated case-management tool (e.g. NICE Actimize). Triggered for high-value or high-risk investors.</p>
-</details></td>
-</tr>
-</tbody>
-</table></div>
-  <p class="note prose">ERC-3643 does not prescribe numeric topic IDs. This implementation follows an ONCHAINID-style convention commonly used in ERC-3643 deployments. Canonical schema strings live in <code>script/RegisterSchemas.s.sol</code>. Provider examples are reference material, issuer-selected and not endorsed by the EEA.</p>
-  <aside class="integration-status prose" aria-label="ERC-3643 integration status">
-   <p><strong>ERC-3643 integration status</strong> · Checked <time datetime="2026-10-06">October 6, 2026</time></p>
-   <p>Shibui's <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/pull/63" target="_blank" rel="noopener noreferrer">integration and tests</a> are merged in its own repository; the proposed <a href="https://github.com/ERC-3643/ERC-3643/pull/98" target="_blank" rel="noopener noreferrer">registry extension</a> remains an unmerged draft upstream. Following the <a href="https://github.com/ERC-3643/ERC-3643/issues/95" target="_blank" rel="noopener noreferrer">ERC-3643 discussion</a>, ONCHAINID separately <a href="https://github.com/T-REX-Network/ONCHAINID/pull/31" target="_blank" rel="noopener noreferrer">merged an EAS claim adapter</a> that retains its identity and claim model. That adapter does not adopt Shibui's eligibility policies. Shibui remains a research model, not an adopted ERC-3643 standard.</p>
-  </aside>
-  <details class="disclosure"><summary>Acronym key</summary><div class="acronyms"><p><strong>KYC</strong>, Know Your Customer</p><p><strong>AML</strong>, Anti-Money Laundering</p><p><strong>PEP</strong>, Politically Exposed Person</p><p><strong>OFAC</strong>, Office of Foreign Assets Control (US Treasury)</p><p><strong>EDD</strong>, Enhanced Due Diligence</p><p><strong>EAS</strong>, Ethereum Attestation Service</p><p><strong>ERC‑3643</strong>, T‑REX permissioned security-token standard</p><p><strong>UID</strong>, Unique Identifier (schema / attestation)</p></div></details>
- </section>
-
- <section id="sec-07" class="section" aria-labelledby="interest-title">
-  <p class="eyebrow">Get involved</p><h2 id="interest-title">Is this worth solving together?</h2>
-  <div class="prose"><p>There is no working group yet, and no commitment being asked for. Shibui is a research artifact: a reference implementation built to find out whether shared eligibility semantics are a problem the market actually wants solved together.</p><p>If you are an issuer, asset manager, venue, transfer agent, KYC or accreditation provider re-onboarding the same investors token by token, we want to hear from you.</p><h3>Tell us what would need to work</h3><p>Do the eight topics match your requirements? Which fields are wrong or missing? What evidence expectations could you sign off on?</p><p>A note, a comment, or a conversation is enough. If enough participants signal interest, the EEA can convene a group. If not, this stays a public reference.</p></div>
-  <div class="actions"><a class="button primary" href="https://entethalliance.org/contact/" target="_blank" rel="noopener noreferrer">Signal interest ↗</a><a class="button secondary" href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/issues" target="_blank" rel="noopener noreferrer">Comment on the repo ↗</a></div>
- </section>
-
- <section id="sec-08" class="section" aria-labelledby="resources-title">
-  <p class="eyebrow">Read further</p><h2 id="resources-title">Resources</h2>
-  <div class="resources"><a class="resource" href="identity-solutions-map.html"><h3>Identity solutions reference map</h3><p>On-chain primitives, credential standards, institutional platforms, pilots and Travel Rule networks, with adoption notes and limitations.</p><span>Open the map →</span></a>
-<a class="resource" href="https://www.linkedin.com/pulse/passport-problem-why-tokenized-markets-need-shared-identity-meslem-iryvf/" target="_blank" rel="noopener noreferrer"><h3>The Passport Problem</h3><p>Why tokenized markets need shared identity, the argument behind Shibui, written for a non-technical audience.</p><span>Read on LinkedIn →</span></a>
-<a class="resource" href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas" target="_blank" rel="noopener noreferrer"><h3>Repository and documentation</h3><p>Contracts, schema definitions, architecture notes, gas benchmarks, integration guide and the audit report.</p><span>View on GitHub →</span></a></div>
-  <details class="disclosure"><summary>What a pilot would prove</summary><ol class="prose"><li>Reuse one eligibility attestation across two tokens with different topic requirements.</li><li>Revoke a claim and show the next transfer is blocked, with the reason attributable to a topic.</li><li>Rotate a trusted attester under multisig control and confirm the authorization trail.</li></ol></details>
- </section>
- <footer><p><strong>Shibui</strong> · An open-source project by the Enterprise Ethereum Alliance<br>Apache-2.0 · Copyright © 2026 Enterprise Ethereum Alliance Inc.</p><a href="#sec-01">Back to top ↑</a></footer>
+<main id="main" class="wrap">
+  <section class="hero" id="sec-01" aria-labelledby="hero-title">
+    <div>
+      <p class="kicker">Shibui · EEA research</p>
+      <h1 id="hero-title">Can this investor hold <em>this token?</em></h1>
+    </div>
+    <div>
+      <p class="intro">In Shibui, an investor passport is a signed record with ten fields. Like countries reading the same passport at a border, each token issuer decides which checks an investor must pass.</p>
+      <div class="actions">
+        <a class="primary" href="#sec-06">Explore the ten fields <span aria-hidden="true">↓</span></a>
+        <a class="textlink" href="demo/attester.html">Open the Sepolia demo</a>
+      </div>
+    </div>
+  </section>
+  <section id="sec-06" class="workbench" aria-labelledby="investor-title">
+    <header class="credential-head" id="sec-02">
+      <div><p class="tag">Example investor passport</p><h2 id="investor-title">John Doe</h2></div>
+      <fieldset class="switcher" hidden>
+        <legend>Passport state</legend>
+        <div class="switch">
+          <label><input class="sr" type="radio" name="scenario" value="initial" checked><span>Initial check</span></label>
+          <label><input class="sr" type="radio" name="scenario" value="accredited"><span>Accredited</span></label>
+          <label><input class="sr" type="radio" name="scenario" value="revoked"><span>Revoked</span></label>
+        </div>
+      </fieldset>
+    </header>
+    <div class="concepts">
+      <div><h3>What John's passport says</h3><p>A provider signs ten fields about John and his verification. One field records his country of residence as <strong>United States</strong>.</p></div>
+      <div><h3>What the issuer asks</h3><p>The bond issuer checks whether it accepts that country. The private credit issuer also asks for accreditation. Each chooses its own checks.</p><a class="textlink" href="#issuer-checks">How six fields support eight checks</a></div>
+    </div>
+    <div class="bench-body">
+      <div class="trace" id="sec-04" tabindex="-1" hidden>
+        <div class="trace-head"><h3>Follow a field</h3><span id="step-count">1 of 10</span></div>
+        <p class="trace-hint">Select a field or play the sequence through signing.</p>
+        <div class="flow">
+          <div class="hop"><span class="tag" id="label-source">Possible source record</span><strong id="trace-source"></strong><span id="trace-system" class="trace-system"></span><p id="trace-detail"></p></div>
+          <div class="hop"><span class="tag" id="label-field">Passport field</span><strong id="trace-field"></strong></div>
+          <div class="hop"><span class="tag" id="label-value">Recorded value</span><strong id="trace-value"></strong><p id="trace-meaning"></p></div>
+        </div>
+        <p id="trace-use" class="trace-use"></p>
+        <div class="playback" aria-label="Field animation controls" role="group">
+          <button type="button" class="play" id="play">Play flow</button>
+          <button type="button" id="prev" aria-label="Previous step">←</button>
+          <button type="button" id="next" aria-label="Next step">→</button>
+        </div>
+        <p class="sr" role="status" id="step-announcement"></p>
+      </div>
+      <div class="ledger">
+        <div class="ledger-intro"><h3>The ten passport fields</h3>
+          <p>For each field, see one record the provider could use and one system that could supply it. These products are examples only. The EEA endorses no vendor.</p></div>
+        <label class="encoded-control"><input type="checkbox" id="show-encoded"> Show encoded values</label>
+        <table class="fields">
+          <caption class="sr">John Doe's ten Investor Eligibility fields in schema order, their example sources and encoded values</caption>
+          <colgroup><col class="col-field"><col class="col-source"><col class="col-value"></colgroup>
+          <thead><tr><th scope="col">Passport field</th><th scope="col">Where it could come from</th><th scope="col">Recorded value</th></tr></thead>
+          <tbody>
+              <tr id="field-identity" data-use="Links the record to John. Applies across all checks.">
+                <th scope="row"><button type="button" class="field-name" disabled>identity</button><small>address</small></th>
+                <td class="origin"><strong class="source-record">Wallet-to-identity registry entry</strong><small class="system-example">For example, <a href="https://docs.onchainid.com/docs/developers/contracts/factory/">ONCHAINID Factory</a></small><span class="source-action" hidden>Wallet-to-identity mapping. Shibui uses its own identity proxy in the demo.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true"></span><span class="meaning">Identity ending in 04d2</span></span><code>0x00000000000000000000000000000000000004d2</code></td>
+              </tr>
+              <tr id="field-kycStatus" data-use="Identity check · Has the provider verified John?">
+                <th scope="row"><button type="button" class="field-name" disabled>kycStatus</button><small>uint8</small></th>
+                <td class="origin"><strong class="source-record">Identity document verification report</strong><small class="system-example">For example, <a href="https://support.identity.entrust.com/s/article/Document-Verification-Identity-Document-Check">Entrust Identity Verification</a></small><span class="source-action" hidden>The provider reviews the identity document check.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="pass"><span class="value-symbol" aria-hidden="true">✓</span><span class="meaning">Verified</span></span><code>1</code></td>
+              </tr>
+              <tr id="field-amlStatus" data-use="AML check · Has the provider cleared the case?">
+                <th scope="row"><button type="button" class="field-name" disabled>amlStatus</button><small>uint8</small></th>
+                <td class="origin"><strong class="source-record">Reviewed AML case</strong><small class="system-example">For example, <a href="https://www.niceactimize.com/enterprise-risk-case-management">NICE Actimize</a></small><span class="source-action" hidden>The reviewer closes the AML investigation with a clear result.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="pass"><span class="value-symbol" aria-hidden="true">✓</span><span class="meaning">Clear</span></span><code>0</code></td>
+              </tr>
+              <tr id="field-sanctionsStatus" data-use="Sanctions check · Has the provider cleared the screening?">
+                <th scope="row"><button type="button" class="field-name" disabled>sanctionsStatus</button><small>uint8</small></th>
+                <td class="origin"><strong class="source-record">Reviewed sanctions screening results</strong><small class="system-example">For example, <a href="https://www.lseg.com/en/risk-intelligence/screening-solutions/world-check-kyc-screening">LSEG World-Check</a></small><span class="source-action" hidden>The provider reviews screening matches and records its conclusion.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="pass"><span class="value-symbol" aria-hidden="true">✓</span><span class="meaning">Clear</span></span><code>0</code></td>
+              </tr>
+              <tr id="field-sourceOfFundsStatus" data-use="Source-of-funds check · Has the provider verified the origin?">
+                <th scope="row"><button type="button" class="field-name" disabled>sourceOfFundsStatus</button><small>uint8</small></th>
+                <td class="origin"><strong class="source-record">Payslips in a due diligence file</strong><small class="system-example">For example, <a href="https://docs.sumsub.com/docs/alldocs-verification">Sumsub AllDocs</a></small><span class="source-action" hidden>The reviewer accepts payslips as evidence of the source of funds.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="pass"><span class="value-symbol" aria-hidden="true">✓</span><span class="meaning">Verified</span></span><code>1</code></td>
+              </tr>
+              <tr id="field-accreditationType" data-use="Three checks use this field: accreditation, professional status and institutional status.">
+                <th scope="row"><button type="button" class="field-name" disabled>accreditationType</button><small>uint8</small></th>
+                <td class="origin"><strong class="source-record">Accreditation review file</strong><small class="system-example">For example, <a href="https://www.verifyinvestor.com/accredited-investor-verification">VerifyInvestor.com</a></small><span class="source-action" hidden>The provider has no accreditation letter on file.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="pending"><span class="value-symbol" aria-hidden="true">○</span><span class="meaning">Unconfirmed</span></span><code>0</code></td>
+              </tr>
+              <tr id="field-countryCode" data-use="Country check · Does the recorded country pass this issuer&#x27;s country rule?">
+                <th scope="row"><button type="button" class="field-name" disabled>countryCode</button><small>uint16</small></th>
+                <td class="origin"><strong class="source-record">Residence in the onboarding file</strong><small class="system-example">For example, <a href="https://www.fenergo.com/client-lifecycle-management">Fenergo CLM</a></small><span class="source-action" hidden>The provider takes the residence country from John&#x27;s onboarding file.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true"></span><span class="meaning">United States</span></span><code>840</code></td>
+              </tr>
+              <tr id="field-expirationTimestamp" data-use="Expiry applies to every check. The passport must still be current.">
+                <th scope="row"><button type="button" class="field-name" disabled>expirationTimestamp</button><small>uint64</small></th>
+                <td class="origin"><strong class="source-record">Provider's review schedule</strong><small class="system-example">For example, <a href="https://www.fenergo.com/faqs/know-your-customer">Fenergo CLM</a></small><span class="source-action" hidden>The provider uses its review policy to set the passport expiry.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true"></span><span class="meaning">1 Jan 2028 · 00:00 UTC</span></span><code>1830297600</code></td>
+              </tr>
+              <tr id="field-evidenceHash" data-use="Audit evidence · Identifies the dossier used by the signer.">
+                <th scope="row"><button type="button" class="field-name" disabled>evidenceHash</button><small>bytes32</small></th>
+                <td class="origin"><strong class="source-record">Archived evidence file</strong><small class="system-example">For example, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html">Amazon S3 Object Lock</a></small><span class="source-action" hidden>The archive holds the dossier. The provider hashes its contents with Keccak-256.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true">#</span><span class="meaning">Onboarding dossier</span></span><code>0xd1c1353d424ee01562dee596aa00a90608a151d143c72d95cbdad3f71dcd4ea9</code></td>
+              </tr>
+              <tr id="field-verificationMethod" data-use="Audit evidence · Records how the provider reached its conclusion.">
+                <th scope="row"><button type="button" class="field-name" disabled>verificationMethod</button><small>uint8</small></th>
+                <td class="origin"><strong class="source-record">Verification case notes</strong><small class="system-example">For example, <a href="https://www.fenergo.com/client-lifecycle-management">Fenergo CLM</a></small><span class="source-action" hidden>The provider codes the review method from its case file.</span></td>
+                <td class="cell-value"><span class="datum" data-tone="neutral"><span class="value-symbol" aria-hidden="true"></span><span class="meaning">Third-party verification</span></span><code>2</code></td>
+              </tr>
+          </tbody>
+        </table>
+        <p class="schema-link">On-chain fields are visible. Supporting documents stay with the provider. <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/script/RegisterSchemas.s.sol">View the registered schema</a></p>
+      </div>
+      <div class="outcomes">
+        <div class="outcome-heading"><h3>Issuer decisions</h3><span id="validity">Active passport</span></div>
+        <div class="decisions">
+          <div class="decision"><div><h3>Bond</h3><p>Verified identity + allowed country</p></div><span id="bond" class="status" data-pass="true">Eligible</span></div>
+          <div class="decision"><div><h3>Private credit note</h3><p>Verified identity + accreditation</p></div><span id="note" class="status" data-pass="false">Ineligible</span></div>
+        </div>
+        <p id="announcement" class="explanation" role="status" aria-atomic="true">John's country is on the bond issuer's allowed list. The credit note also needs proof of accreditation.</p>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="sec-03" aria-labelledby="roles-title">
+    <h2 id="roles-title">Who signs, who decides, who enforces?</h2>
+    <p class="section-intro">John's passport is linked to his wallet through an identity address. Each issuer decides which providers it trusts to sign the information it needs.</p>
+    <div class="roles">
+      <article><h3>The provider signs the facts</h3><p>A screening tool such as World-Check supplies potential matches. The verification provider reviews them and signs its conclusion through the Ethereum Attestation Service (EAS). The supporting file stays off-chain.</p></article>
+      <article><h3>The issuer sets the rules</h3><p>The issuer selects required checks and trusted providers for each one. In the example, both issuers accept John's identity check. Only the private credit issuer asks for accreditation.</p></article>
+      <article><h3>Shibui checks. The token enforces.</h3><p>At transfer time, Shibui checks whether current, trusted records satisfy every required rule. The token uses that answer alongside its own controls, such as a freeze or a holding limit.</p></article>
+    </div>
+  </section>
+  <section class="section ref-grid" id="issuer-checks" aria-labelledby="topics-title">
+    <div>
+      <p class="kicker">Issuer policy</p>
+      <h2 id="topics-title">Which passport fields do issuers check?</h2>
+      <ul class="count-map">
+        <li><strong>Five fields each answer one question.</strong> Identity verification, AML, sanctions, source of funds and country.</li>
+        <li><strong>One field can answer three questions.</strong> An issuer can use John's investor classification to check accreditation, professional status or institutional status.</li>
+        <li><strong>Four fields identify and document the passport.</strong> They give its investor identity, expiry, evidence hash and verification method. Every check respects expiry.</li>
+      </ul>
+    </div>
+    <div>
+      <details open>
+        <summary>Which eight checks can an issuer require?</summary>
+        <div class="detail-body">
+          <dl class="checks">
+            <div><dt>01 · Identity (KYC)</dt><dd>The provider verified the investor's identity.</dd></div>
+            <div><dt>02 · AML</dt><dd>The provider recorded a clear AML result.</dd></div>
+            <div><dt>03 · Country</dt><dd>The recorded country passes the issuer's allow-list or block-list.</dd></div>
+            <div><dt>07 · Accreditation</dt><dd>The classification is in the set the issuer accepts.</dd></div>
+            <div><dt>09 · Professional investor</dt><dd>The classification is 1 or higher on Shibui's scale.</dd></div>
+            <div><dt>10 · Institutional investor</dt><dd>The classification is 4 (institutional).</dd></div>
+            <div><dt>13 · Sanctions</dt><dd>The provider recorded a clear sanctions result.</dd></div>
+            <div><dt>14 · Source of funds</dt><dd>The provider verified the source of funds.</dd></div>
+          </dl>
+          <p>In the technical specification, each kind of check has a &quot;claim topic&quot; ID. Those IDs are shown here for reference.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Who can sign or revoke a passport?</summary>
+        <div class="detail-body"><p>An approved authorizer specifies which checks a provider may sign for. The issuer's operator adds that provider to its trusted list. An onboarding file, screening result or accreditation letter can supply the evidence for a provider's decision.</p>
+        <p>A provider can issue a new attestation when facts change or revoke an earlier one. Expiry or revocation removes that record from future checks. Another current record from a trusted provider may still satisfy the rule. Existing holdings stay in place.</p></div>
+      </details>
+      <details id="sec-05">
+        <summary>What runs on Ethereum today?</summary>
+        <div class="detail-body"><p>The EEA reference implementation links a wallet to its investor identity. Its modified ERC-3643 registry calls <code>isVerified(wallet)</code> and receives a yes or no. Each verifier uses its configured rules and registered attestations on that chain.</p>
+        <p>Using the passport on another chain requires a local attestation and issuer trust settings there. The project documents a separate vLEI integration for organizational identity and authorized representatives.</p>
+        <p><a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/docs/erc3643-status.md">ERC-3643 integration status</a> · <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/docs/integration/vlei-to-eas.md">vLEI integration notes</a></p></div>
+      </details>
+    </div>
+  </section>
+  <div class="bottom">
+    <section id="sec-07" aria-labelledby="interest-title">
+      <h2 id="interest-title">What would your institution need to trust?</h2>
+      <p class="bodycopy">If you issue assets or verify investors, tell the EEA one check you could reuse, who could sign it and what evidence you would need.</p>
+      <div class="actions"><a class="primary" href="https://entethalliance.org/contact/">Share your requirements</a><a class="textlink" href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/issues">Discuss on GitHub</a></div>
+    </section>
+    <section class="resources" id="sec-08" aria-labelledby="resources-title">
+      <h2 id="resources-title">Explore the research</h2>
+      <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas/blob/main/docs/schemas/shibui-specification-v0.1.md">Shibui specification <span aria-hidden="true">&#8599;&#xfe0e;</span></a>
+      <a href="https://github.com/EntEthAlliance/rnd-rwa-erc3643-eas">Open-source contracts and tests <span aria-hidden="true">&#8599;&#xfe0e;</span></a>
+      <a href="identity-solutions-map.html">Identity solutions reference map <span aria-hidden="true">→</span></a>
+      <a href="https://www.linkedin.com/pulse/passport-problem-why-tokenized-markets-need-shared-identity-meslem-iryvf/">The Passport Problem <span aria-hidden="true">&#8599;&#xfe0e;</span></a>
+    </section>
+  </div>
 </main>
+<footer><div class="wrap"><span>Shibui · Enterprise Ethereum Alliance · Apache-2.0</span><a href="#sec-01">Back to top ↑</a></div></footer>
 <script>
-(function () {
- const links = Array.from(document.querySelectorAll('#shibui-sectionnav a'));
- const sections = Array.from(document.querySelectorAll('main > section'));
- function update() {
-  let current = sections[0].id;
-  sections.forEach(section => { if (section.getBoundingClientRect().top <= 160) current = section.id; });
-  // Problem belongs to Overview; practice and scope belong to How it works.
-  const group = {'sec-02':'sec-01', 'sec-04':'sec-03', 'sec-05':'sec-03'};
-  current = group[current] || current;
-  links.forEach(link => {
-   if (link.hash === '#' + current) link.setAttribute('aria-current', 'true');
-   else link.removeAttribute('aria-current');
-  });
- }
- let scheduled = false;
- window.addEventListener('scroll', function () {
-  if (scheduled) return;
-  scheduled = true;
-  requestAnimationFrame(function () { update(); scheduled = false; });
- }, {passive:true});
- update();
-})();
-</script>
+const rows = Array.from(document.querySelectorAll('.fields tbody tr'));
+const controls = document.querySelector('.switcher');
+const trace = document.querySelector('.trace');
+const play = document.getElementById('play');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+const stepAnnouncement = document.getElementById('step-announcement');
+let step = 0;
+let timer = null;
+let activeRecord = true;
 
+// A new classification letter changes the evidence and method in the newly signed record.
+const accreditedFields = {
+  accreditationType: ['2', 'Accredited', 'The provider accepted a professional accreditation letter.'],
+  verificationMethod: ['3', 'Professional letter', 'The case records a professional letter as the verification method.'],
+  evidenceHash: ['0x8558312166a8603d16c989194529251f57ca92e87caa7f8f81baf18f771b3e98', 'Updated dossier', 'The provider hashes the updated dossier containing the accreditation evidence.']
+};
+function fieldCells(row) {
+  return [row.querySelector('.cell-value code'), row.querySelector('.meaning'), row.querySelector('.source-action')];
+}
+const initialFields = {};
+for (const field of Object.keys(accreditedFields)) {
+  initialFields[field] = fieldCells(document.getElementById('field-' + field)).map(cell => cell.textContent);
+}
+
+function pause() {
+  window.clearInterval(timer);
+  timer = null;
+  play.textContent = step === rows.length ? 'Replay flow' : 'Play flow';
+}
+
+function renderStep(index, animate = true) {
+  step = index;
+  const row = rows[step];
+  const finished = step === rows.length;
+  const labels = finished ? ['Signed by', 'Recorded through', 'Result'] : ['Possible source record', 'Passport field', 'Recorded value'];
+  const contents = finished
+    ? ['Trusted verification provider', 'The provider signs all ten fields for the investor identity.', 'Ethereum Attestation Service', activeRecord ? 'Active passport' : 'Revoked passport', activeRecord ? 'Shibui can now check this record against issuer rules.' : 'Revocation is recorded separately. The ten signed values stay intact.']
+    : [row.querySelector('.source-record').textContent, row.querySelector('.source-action').textContent, row.querySelector('.field-name').textContent, row.querySelector('.cell-value code').textContent, row.querySelector('.meaning').textContent];
+  ['label-source', 'label-field', 'label-value'].forEach((id, i) => document.getElementById(id).textContent = labels[i]);
+  ['trace-source', 'trace-detail', 'trace-field', 'trace-value', 'trace-meaning'].forEach((id, i) => document.getElementById(id).textContent = contents[i]);
+  const system = document.getElementById('trace-system');
+  system.hidden = finished;
+  system.textContent = row ? row.querySelector('.system-example').textContent : '';
+  const usage = document.getElementById('trace-use');
+  usage.hidden = finished;
+  usage.textContent = row ? row.dataset.use : '';
+  if (row?.id === 'field-accreditationType') {
+    const classification = Number(row.querySelector('.cell-value code').textContent);
+    if (activeRecord) {
+      const results = [
+        [classification === 2, 'accreditation for this note'],
+        [classification >= 1, 'professional investor'],
+        [classification === 4, 'institutional investor']
+      ];
+      usage.textContent = 'Three checks on code ' + classification + ': ' +
+        results.map(([passes, topic]) => topic + (passes ? ' passes' : ' fails')).join(', ') + '.';
+    } else {
+      usage.textContent = 'This passport was revoked. It cannot satisfy any of the three classification checks.';
+    }
+  }
+  rows.forEach(item => {
+    item.classList.toggle('selected', item === row);
+    item.querySelector('button').setAttribute('aria-pressed', String(item === row));
+  });
+  document.getElementById('step-count').textContent = finished ? 'Signing' : (step + 1) + ' of ' + rows.length;
+  prev.disabled = step === 0;
+  next.disabled = finished;
+  if (finished) pause();
+  if (animate) {
+    const flow = document.querySelector('.flow');
+    flow.classList.remove('moving');
+    void flow.offsetWidth;
+    flow.classList.add('moving');
+    stepAnnouncement.textContent = finished ? contents[3] : 'Field ' + (step + 1) + '. ' + contents[0] + ' supplies ' + contents[2] + '. ' + contents[4] + '.';
+  }
+}
+
+function selectStep(index) {
+  pause();
+  renderStep(index);
+  if (index < rows.length) play.textContent = 'Play flow';
+}
+for (const [i, row] of rows.entries()) {
+  const button = row.querySelector('button');
+  button.disabled = false;
+  button.addEventListener('click', () => {
+    selectStep(i);
+    if (trace.getBoundingClientRect().bottom < 0) {
+      trace.focus({preventScroll: true});
+      trace.scrollIntoView({block: 'start'});
+    }
+  });
+}
+play.addEventListener('click', () => {
+  if (timer !== null) { pause(); return; }
+  renderStep(step === rows.length ? 0 : step);
+  play.textContent = 'Pause flow';
+  timer = window.setInterval(() => renderStep(step + 1), 2600);
+});
+prev.addEventListener('click', () => selectStep(step - 1));
+next.addEventListener('click', () => selectStep(step + 1));
+document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+
+function showScenario(state, changing = true) {
+  activeRecord = state !== 'revoked';
+  const fields = state === 'initial' ? initialFields : accreditedFields;
+  for (const [name, values] of Object.entries(fields)) {
+    fieldCells(document.getElementById('field-' + name)).forEach((cell, i) => cell.textContent = values[i]);
+  }
+  const classification = document.querySelector('#field-accreditationType .datum');
+  classification.dataset.tone = state === 'initial' ? 'pending' : 'pass';
+  classification.querySelector('.value-symbol').textContent = state === 'initial' ? '○' : '✓';
+  const value = name => document.querySelector('#field-' + name + ' .cell-value code').textContent;
+  const verified = activeRecord && value('kycStatus') === '1';
+  const decisions = {bond: verified && value('countryCode') === '840', note: verified && value('accreditationType') === '2'};
+  for (const [id, eligible] of Object.entries(decisions)) {
+    const badge = document.getElementById(id);
+    badge.dataset.pass = String(eligible);
+    badge.textContent = eligible ? 'Eligible' : 'Ineligible';
+  }
+  document.getElementById('validity').textContent = activeRecord ? 'Active passport' : 'Revoked passport';
+  const explanations = {
+    initial: "John's country is on the bond issuer's allowed list. The credit note also needs proof of accreditation.",
+    accredited: 'The provider signed a new passport using the accreditation letter. John now qualifies for both assets.',
+    revoked: 'The provider revoked the accredited passport. Both checks fail even though its ten stored values are unchanged.'
+  };
+  document.getElementById('announcement').textContent = explanations[state];
+  if (changing) selectStep(activeRecord ? rows.indexOf(document.getElementById('field-accreditationType')) : rows.length);
+}
+controls.addEventListener('change', event => showScenario(event.target.value));
+controls.hidden = false;
+trace.hidden = false;
+showScenario(controls.querySelector(':checked').value, false);
+renderStep(0, false);
+</script>
 </body>
 </html>

@@ -28,7 +28,7 @@ import {ITopicPolicy} from "./ITopicPolicy.sol";
  *      `block.timestamp > verifiedAt + maxStaleness` → false. The vlei-to-eas bridge sets
  *      `verifiedAt` once, at issuance, and never re-attests. Liveness is expressed through the
  *      EAS `expirationTime` (pinned to the GLEIF LEI renewal date) and `revocationTime`, both
- *      of which `EASClaimVerifier._verifyTopic` already enforces before calling any policy.
+ *      of which `EASClaimVerifier._attestationStatus` already enforces before calling any policy.
  *      `maxStaleness` is therefore only an extra bound on top of that; 0 disables it.
  *      Recommended for vlei-to-eas attestations: 0.
  */
